@@ -12,6 +12,7 @@ class Material {
 public:
   virtual ~Material() = 0;
 
+  [[nodiscard]] virtual bool IsTransparent() const noexcept = 0;
   virtual void Apply(QOpenGLFunctions_2_0 *f) const noexcept = 0;
 };
 
@@ -25,6 +26,7 @@ public:
 
   ~StandardMaterial() final;
 
+  [[nodiscard]] bool IsTransparent() const noexcept final;
   void Apply(QOpenGLFunctions_2_0 *f) const noexcept final;
 
 private:

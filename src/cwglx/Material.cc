@@ -20,6 +20,12 @@ StandardMaterial::StandardMaterial(RGBAColor ambient,
 
 StandardMaterial::~StandardMaterial() = default;
 
+bool StandardMaterial::IsTransparent() const noexcept {
+  return m_Ambient.IsTransparent()
+         || m_Diffuse.IsTransparent()
+         || m_Specular.IsTransparent();
+}
+
 void StandardMaterial::Apply(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glColorMaterial(GL_FRONT, m_ColorDimension);
   f->glMaterialfv(m_ColorDimension, GL_AMBIENT, m_Ambient.GetRepr().data());

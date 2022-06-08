@@ -1,28 +1,36 @@
 #ifndef PROJECT_WG_TEXTURE_H
 #define PROJECT_WG_TEXTURE_H
 
+#include <vector>
 #include <QtGui/qopengl.h>
+
+#include "cwglx/Vertex.h"
 
 class QImage;
 class QOpenGLFunctions_2_0;
 
 namespace cw {
 
-class Texture {
+class Texture2D {
 public:
-  Texture(const QImage &image, QOpenGLFunctions_2_0 *f);
+  Texture2D(const QImage &image, QOpenGLFunctions_2_0 *f);
 
   [[nodiscard]] GLuint GetTextureId() const noexcept;
 
+  void BeginTexture(QOpenGLFunctions_2_0 *f) const noexcept;
+  void ApplyTexture(QOpenGLFunctions_2_0 *f,
+                    GLfloat x,
+                    GLfloat y) const noexcept;
+
   void DeleteTexture(QOpenGLFunctions_2_0 *f) noexcept;
 
-  ~Texture() noexcept;
+  ~Texture2D() noexcept;
 
-  Texture(const Texture &) = delete;
-  Texture &operator=(const Texture &) = delete;
+  Texture2D(const Texture2D &) = delete;
+  Texture2D &operator=(const Texture2D &) = delete;
 
-  Texture(Texture &&) = delete;
-  Texture &operator=(Texture &&) = delete;
+  Texture2D(Texture2D &&) = delete;
+  Texture2D &operator=(Texture2D &&) = delete;
 
 private:
   GLuint m_TextureId;

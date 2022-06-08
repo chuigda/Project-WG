@@ -12,15 +12,26 @@ namespace cw {
 
 class RGBAColor {
 public:
-  explicit RGBAColor(std::array<std::uint8_t, 4> repr) noexcept;
-  explicit RGBAColor(std::uint8_t red,
-                     std::uint8_t green,
-                     std::uint8_t blue,
-                     std::uint8_t alpha = 255) noexcept;
-  explicit RGBAColor(float red,
-                     float green,
-                     float blue,
-                     float alpha = 1.0f) noexcept;
+  explicit constexpr RGBAColor(std::array<std::uint8_t, 4> repr) noexcept
+    : m_Repr(repr)
+  {}
+
+  explicit constexpr RGBAColor(std::uint8_t red,
+                               std::uint8_t green,
+                               std::uint8_t blue,
+                               std::uint8_t alpha = 255) noexcept
+    : m_Repr({ red, green, blue, alpha })
+  {}
+
+  explicit constexpr RGBAColor(float red,
+                               float green,
+                               float blue,
+                               float alpha = 1.0f) noexcept
+    : m_Repr({ static_cast<std::uint8_t>(red * 255.0f),
+               static_cast<std::uint8_t>(green * 255.0f),
+               static_cast<std::uint8_t>(blue * 255.0f),
+               static_cast<std::uint8_t>(alpha * 255.0f) })
+  {}
 
   [[nodiscard]]
   constexpr inline std::uint8_t GetRed() const noexcept {
@@ -47,11 +58,18 @@ public:
     return m_Repr;
   }
 
+  [[nodiscard]]
+  constexpr inline bool IsTransparent() const noexcept {
+    return m_Repr[3] != 255;
+  }
+
   void Apply(QOpenGLFunctions_2_0 *f) noexcept;
 
 private:
   std::array<std::uint8_t, 4> m_Repr;
 };
+
+constexpr RGBAColor g_White { static_cast<std::uint8_t>(255), 255, 255, 255 };
 
 class RGBAColorFloat {
 public:
@@ -87,7 +105,12 @@ public:
     return m_Repr;
   }
 
-  void Apply(QOpenGLFunctions_2_0 *f) noexcept;
+  [[nodiscard]]
+  constexpr inline bool IsTransparent() const noexcept {
+    return m_Repr[3] <= 0.99;
+  }
+
+  void Apply(QOpenGLFunctions_2_0 *f) const noexcept;
 
 private:
   std::array<GLfloat, 4> m_Repr;

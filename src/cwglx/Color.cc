@@ -4,28 +4,6 @@
 
 namespace cw {
 
-RGBAColor::RGBAColor(std::array<std::uint8_t, 4> repr) noexcept
-  : m_Repr(repr)
-{}
-
-RGBAColor::RGBAColor(std::uint8_t red,
-                               std::uint8_t green,
-                               std::uint8_t blue,
-                               std::uint8_t alpha) noexcept
-  : m_Repr({red, green, blue, alpha})
-{}
-
-RGBAColor::RGBAColor(float red,
-                     float green,
-                     float blue,
-                     float alpha) noexcept
-  : m_Repr({ static_cast<std::uint8_t>(red * 255.0f),
-             static_cast<std::uint8_t>(green * 255.0f),
-             static_cast<std::uint8_t>(blue * 255.0f),
-             static_cast<std::uint8_t>(alpha * 255.0f) })
-{
-}
-
 void RGBAColor::Apply(QOpenGLFunctions_2_0 *f) noexcept {
   f->glColor4ubv(m_Repr.data());
 }
@@ -48,7 +26,7 @@ RGBAColorFloat::RGBAColorFloat(RGBAColor color) noexcept
              static_cast<GLfloat>(color.GetAlpha()) / 255.0f })
 {}
 
-void RGBAColorFloat::Apply(QOpenGLFunctions_2_0 *f) noexcept {
+void RGBAColorFloat::Apply(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glColor4fv(m_Repr.data());
 }
 

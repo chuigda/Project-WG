@@ -1,13 +1,37 @@
 #ifndef PROJECT_WG_VERTEX_H
 #define PROJECT_WG_VERTEX_H
 
+#include <array>
 #include <QtGui/qopengl.h>
 
 namespace cw {
 
 class Vector;
 
-class Vertex {
+class Vertex2D final {
+public:
+  explicit Vertex2D(GLdouble x, GLdouble y) noexcept;
+
+  [[nodiscard]]
+  constexpr inline GLdouble GetX() const noexcept {
+    return m_Repr[0];
+  }
+
+  [[nodiscard]]
+  constexpr inline GLdouble GetY() const noexcept {
+    return m_Repr[1];
+  }
+
+  [[nodiscard]]
+  constexpr inline const std::array<GLdouble, 2> &GetRepr() const noexcept {
+    return m_Repr;
+  }
+
+private:
+  std::array<GLdouble, 2> m_Repr;
+};
+
+class Vertex final {
 public:
   explicit Vertex(GLdouble x, GLdouble y, GLdouble z = 0.0) noexcept;
 
@@ -39,7 +63,7 @@ private:
   std::array<GLdouble, 3> m_Repr;
 };
 
-class Vector {
+class Vector final {
 public:
   explicit Vector(GLdouble x, GLdouble y, GLdouble z = 0.0) noexcept;
 

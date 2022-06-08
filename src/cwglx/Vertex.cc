@@ -2,6 +2,10 @@
 
 namespace cw {
 
+Vertex2D::Vertex2D(GLdouble x, GLdouble y) noexcept
+  : m_Repr({x, y})
+{}
+
 Vertex::Vertex(GLdouble x, GLdouble y, GLdouble z) noexcept
   : m_Repr({x, y, z})
 {}
