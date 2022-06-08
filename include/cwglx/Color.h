@@ -3,7 +3,6 @@
 
 #include <array>
 #include <cstdint>
-#include <tuple>
 
 #include <QtGui/qopengl.h>
 

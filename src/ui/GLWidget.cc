@@ -1,5 +1,7 @@
 #include "ui/GLWidget.h"
+
 #include "glu/FakeGLU.h"
+#include "cwglx/Setup.h"
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
@@ -21,22 +23,7 @@ GLWidget::GLWidget(QWidget *parent)
 GLWidget::~GLWidget() = default;
 
 void GLWidget::initializeGL() {
-  initializeOpenGLFunctions();
-
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-  glFrontFace(GL_CCW);
-  glDepthFunc(GL_LESS);
-  glBlendFuncSeparate(GL_ONE,
-                      GL_ONE_MINUS_SRC_ALPHA,
-                      GL_ONE,
-                      GL_ONE_MINUS_SRC_ALPHA);
-  glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
-  glShadeModel(GL_SMOOTH);
-  glEnable(GL_MULTISAMPLE);
-  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-  glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-  glEnable(GL_COLOR_MATERIAL);
-  glEnable(GL_TEXTURE_2D);
+  cw::SetupPreferredSettings(this);
 }
 
 void GLWidget::paintGL() {
@@ -48,11 +35,11 @@ void GLWidget::resizeGL(int w, int h) {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-  glu::Perspective(this,
-                   45.0,
-                   (static_cast<GLdouble>(w) / static_cast<GLdouble>(h)),
-                   0.1,
-                   100.0);
+    glu::Perspective(this,
+                     45.0,
+                     (static_cast<GLdouble>(w) / static_cast<GLdouble>(h)),
+                     0.1,
+                     100.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
