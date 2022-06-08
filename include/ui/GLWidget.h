@@ -2,19 +2,19 @@
 #define PRWG_GLWIDGET_H
 
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions_1_5>
+#include <QOpenGLFunctions_2_0>
 
-class GLWidget final : public QOpenGLWidget, public QOpenGLFunctions_1_5 {
+class GLWidget final : public QOpenGLWidget, public QOpenGLFunctions_2_0 {
   Q_OBJECT
 
 public:
-  GLWidget(QWidget *parent = nullptr);
-  ~GLWidget();
+  explicit GLWidget(QWidget *parent = nullptr);
+  ~GLWidget() final;
 
 protected:
-  void initializeGL() override final;
-  void paintGL() override final;
-  void resizeGL(int w, int h) override final;
+  void initializeGL() final;
+  void paintGL() final;
+  void resizeGL(int w, int h) final;
 };
 
 #endif // PRWG_GLWIDGET_H
