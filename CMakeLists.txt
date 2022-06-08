@@ -48,7 +48,11 @@ set(PROJECT_SOURCES
     include/cwglx/DefaultMaterials.inc
 
     src/cwglx/drawable/Triangle.cc
-    include/cwglx/drawable/Triangle.h)
+    src/cwglx/drawable/Rectangle.cc
+    src/cwglx/drawable/Fan.cc
+    include/cwglx/drawable/Triangle.h
+    include/cwglx/drawable/Rectangle.h
+    include/cwglx/drawable/Fan.h)
 
 include_directories(include)
 

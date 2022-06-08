@@ -1,16 +1,15 @@
 #include "cwglx/drawable/Triangle.h"
 
-#include <experimental/array>
 #include <QOpenGLFunctions_2_0>
 
 namespace cw {
 
-Triangle::Triangle(const std::array<Vertex, 3> &vertexes,
+Triangle::Triangle(const std::array<Vertex, 3> &vertices,
                    const std::optional<std::array<RGBAColor, 3>> &colors,
                    const Material *material,
                    const Texture2D *texture,
                    Triangle::TextureClipMode clipMode) noexcept
-  : m_Vertexes(vertexes),
+  : m_Vertices(vertices),
     m_Colors(std::nullopt),
     m_Material(material),
     m_Texture(texture),
@@ -18,40 +17,15 @@ Triangle::Triangle(const std::array<Vertex, 3> &vertexes,
 {
   if (colors.has_value()) {
     const std::array<RGBAColor, 3> &colorsInt = colors.value();
-    for (const auto& color : colorsInt) {
-      m_DeferRender |= color.IsTransparent();
-    }
-
     m_Colors = std::experimental::make_array(
         RGBAColorFloat(colorsInt[0]),
         RGBAColorFloat(colorsInt[1]),
         RGBAColorFloat(colorsInt[2])
     );
   }
-
-  if (material) {
-    m_DeferRender |= material->IsTransparent();
-  }
 }
 
-constexpr std::array<std::array<std::pair<GLfloat, GLfloat>, 3>, 3>
-TriangleTextureCoords = std::experimental::make_array(
-    std::experimental::make_array(
-       std::make_pair(0.0f, 1.0f),
-       std::make_pair(0.0f, 0.0f),
-       std::make_pair(1.0f, 0.0f)
-    ),
-    std::experimental::make_array(
-       std::make_pair(1.0f, 1.0f),
-       std::make_pair(0.0f, 0.0f),
-       std::make_pair(1.0f, 0.0f)
-    ),
-    std::experimental::make_array(
-       std::make_pair(0.5f, 1.0f),
-       std::make_pair(0.0f, 0.0f),
-       std::make_pair(1.0f, 0.0f)
-    )
-);
+Triangle::~Triangle() = default;
 
 void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPushAttrib(GL_CURRENT_BIT);
@@ -62,10 +36,11 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
 
   if (m_Texture) {
     m_Texture->BeginTexture(f);
+    f->glNormal3f(0.0f, 0.0f, 1.0f);
   }
 
   const std::array<std::pair<GLfloat, GLfloat>, 3>& textureCoords =
-      TriangleTextureCoords[m_ClipMode];
+      g_TriangleTextureCoords[m_ClipMode];
 
   f->glBegin(GL_TRIANGLES);
   for (std::size_t i = 0; i < 3; ++i) {
@@ -78,7 +53,7 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
       m_Texture->ApplyTexture(f, tx, ty);
     }
 
-    f->glVertex3dv(m_Vertexes[i].GetRepr().data());
+    f->glVertex3dv(m_Vertices[i].GetRepr().data());
   }
   f->glEnd();
 
