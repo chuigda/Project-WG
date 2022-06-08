@@ -1,0 +1,96 @@
+#ifndef PROJECT_WG_VERTEX_H
+#define PROJECT_WG_VERTEX_H
+
+#include <QtGui/qopengl.h>
+
+namespace cw {
+
+class Vector;
+
+class Vertex {
+public:
+  explicit Vertex(GLdouble x, GLdouble y, GLdouble z = 0.0) noexcept;
+
+  [[nodiscard]]
+  constexpr inline GLdouble GetX() const noexcept {
+    return m_Repr[0];
+  }
+
+  [[nodiscard]]
+  constexpr inline GLdouble GetY() const noexcept {
+    return m_Repr[1];
+  }
+
+  [[nodiscard]]
+  constexpr inline GLdouble GetZ() const noexcept {
+    return m_Repr[2];
+  }
+
+  [[nodiscard]]
+  constexpr inline const std::array<GLdouble, 3>& GetRepr() const noexcept {
+    return m_Repr;
+  }
+
+  Vertex& operator+=(const Vector& rhs) noexcept;
+
+  Vertex& operator-=(const Vector& rhs) noexcept;
+
+private:
+  std::array<GLdouble, 3> m_Repr;
+};
+
+class Vector {
+public:
+  explicit Vector(GLdouble x, GLdouble y, GLdouble z = 0.0) noexcept;
+
+  [[nodiscard]]
+  constexpr inline GLdouble GetX() const noexcept {
+    return m_Repr[0];
+  }
+
+  [[nodiscard]]
+  constexpr inline GLdouble GetY() const noexcept {
+    return m_Repr[1];
+  }
+
+  [[nodiscard]]
+  constexpr inline GLdouble GetZ() const noexcept {
+    return m_Repr[2];
+  }
+
+  [[nodiscard]]
+  constexpr inline const std::array<GLdouble, 3>& GetRepr() const noexcept {
+    return m_Repr;
+  }
+
+  Vector& operator+=(const Vector& rhs) noexcept;
+
+  Vector& operator-=(const Vector& rhs) noexcept;
+
+  Vector& operator*=(GLdouble rhs) noexcept;
+
+private:
+  std::array<GLdouble, 3> m_Repr;
+};
+
+Vector operator+(const Vector& lhs, const Vector& rhs) noexcept;
+
+Vector operator-(const Vector& lhs, const Vector& rhs) noexcept;
+
+Vector operator*(const Vector& lhs, GLdouble rhs) noexcept;
+
+Vector operator*(GLdouble lhs, const Vector& rhs) noexcept;
+
+Vector operator*(const Vector& lhs, const Vector& rhs) noexcept;
+
+Vertex operator+(const Vertex& lhs, const Vector& rhs) noexcept;
+
+Vertex operator-(const Vertex& lhs, const Vector& rhs) noexcept;
+
+Vertex operator+(const Vector& lhs, const Vertex& rhs) noexcept;
+
+Vertex operator-(const Vector& lhs, const Vertex& rhs) noexcept;
+
+} // namespace cw
+
+#endif //PROJECT_WG_VERTEX_H

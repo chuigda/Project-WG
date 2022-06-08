@@ -32,9 +32,11 @@ set(PROJECT_SOURCES
         src/cwglx/Color.cc
         src/cwglx/Material.cc
         src/cwglx/Drawable.cc
+        src/cwglx/Vertex.cc
         include/cwglx/Color.h
         include/cwglx/Material.h
         include/cwglx/Drawable.h
+        include/cwglx/Vertex.h
         include/cwglx/DefaultMaterials.inc
 )
 
