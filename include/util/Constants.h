@@ -1,5 +1,5 @@
-#ifndef PRWG_CONSTANTS_H
-#define PRWG_CONSTANTS_H
+#ifndef PROJECT_WG_CONSTANTS_H
+#define PROJECT_WG_CONSTANTS_H
 
 namespace cw::constants {
 
@@ -8,4 +8,4 @@ constexpr double G = 9.81;
 
 } // namespace cw
 
-#endif // PRWG_CONSTANTS_H
+#endif // PROJECT_WG_CONSTANTS_H

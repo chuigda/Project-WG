@@ -1,5 +1,5 @@
-#ifndef PRWG_WIFE_H
-#define PRWG_WIFE_H
+#ifndef PROJECT_WG_WIFE_H
+#define PROJECT_WG_WIFE_H
 
 namespace cw {
 
@@ -9,4 +9,4 @@ concept Wife = true;
 
 } // namespace cw
 
-#endif // PRWG_WIFE_H
+#endif // PROJECT_WG_WIFE_H

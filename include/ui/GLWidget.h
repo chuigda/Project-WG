@@ -1,5 +1,5 @@
-#ifndef PRWG_GLWIDGET_H
-#define PRWG_GLWIDGET_H
+#ifndef PROJECT_WG_GLWIDGET_H
+#define PROJECT_WG_GLWIDGET_H
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions_2_0>
@@ -17,4 +17,4 @@ protected:
   void resizeGL(int w, int h) final;
 };
 
-#endif // PRWG_GLWIDGET_H
+#endif // PROJECT_WG_GLWIDGET_H

@@ -1,5 +1,5 @@
-#ifndef PRWG_FAKEGLU_H
-#define PRWG_FAKEGLU_H
+#ifndef PROJECT_WG_FAKEGLU_H
+#define PROJECT_WG_FAKEGLU_H
 
 #include <QtGui/qopengl.h>
 
@@ -15,4 +15,4 @@ void Perspective(QOpenGLFunctions_2_0 *f,
 
 } // namespace glu
 
-#endif // PRWG_FAKEGLU_H
+#endif // PROJECT_WG_FAKEGLU_H
