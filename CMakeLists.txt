@@ -52,7 +52,10 @@ set(PROJECT_SOURCES
     src/cwglx/drawable/Fan.cc
     include/cwglx/drawable/Triangle.h
     include/cwglx/drawable/Rectangle.h
-    include/cwglx/drawable/Fan.h)
+    include/cwglx/drawable/Fan.h
+
+    src/pl2/pl2q.cc
+    include/pl2/pl2q.h)
 
 include_directories(include)
 

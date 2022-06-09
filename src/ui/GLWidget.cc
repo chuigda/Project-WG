@@ -41,7 +41,7 @@ GLWidget::~GLWidget() {
   doneCurrent();
 }
 
-void GLWidget::timerEvent(QTimerEvent *event) {
+void GLWidget::timerEvent(QTimerEvent*) {
   this->m_Rotation += 0.5f;
   this->update();
 }
