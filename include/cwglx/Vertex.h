@@ -31,6 +31,9 @@ private:
   std::array<GLdouble, 2> m_Repr;
 };
 
+static_assert(sizeof(Vertex2D) == sizeof(GLdouble) * 2,
+              "Vertex2D must be exactly 2 GLdouble's in size");
+
 class Vertex final {
 public:
   explicit Vertex(GLdouble x, GLdouble y, GLdouble z = 0.0) noexcept;
@@ -62,6 +65,9 @@ public:
 private:
   std::array<GLdouble, 3> m_Repr;
 };
+
+static_assert(sizeof(Vertex) == sizeof(GLdouble) * 3,
+              "Vertex must be exactly 3 GLdouble's in size");
 
 class Vector final {
 public:
@@ -96,6 +102,9 @@ public:
 private:
   std::array<GLdouble, 3> m_Repr;
 };
+
+static_assert(sizeof(Vector) == sizeof(GLdouble) * 3,
+              "Vector must be exactly 3 GLdouble's in size");
 
 Vector operator+(const Vector& lhs, const Vector& rhs) noexcept;
 

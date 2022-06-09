@@ -69,6 +69,9 @@ private:
   std::array<std::uint8_t, 4> m_Repr;
 };
 
+static_assert(sizeof(RGBAColor) == sizeof(std::array<std::uint8_t, 4>),
+              "RGBAColor must be the same size as std::array<std::uint8_t, 4>");
+
 constexpr RGBAColor g_White { static_cast<std::uint8_t>(255), 255, 255, 255 };
 
 class RGBAColorFloat {
@@ -115,6 +118,9 @@ public:
 private:
   std::array<GLfloat, 4> m_Repr;
 };
+
+static_assert(sizeof(RGBAColorFloat) == sizeof(std::array<GLfloat, 4>),
+              "RGBAColorFloat must be the same size as std::array<GLfloat, 4>");
 
 } // namespace cw
 
