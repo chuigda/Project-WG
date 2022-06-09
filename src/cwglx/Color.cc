@@ -8,7 +8,7 @@ void RGBAColor::Apply(QOpenGLFunctions_2_0 *f) noexcept {
   f->glColor4ubv(m_Repr.data());
 }
 
-RGBAColorFloat::RGBAColorFloat(std::array<float, 4> repr) noexcept
+RGBAColorFloat::RGBAColorFloat(const std::array<float, 4> &repr) noexcept
   : m_Repr(repr)
 {}
 

@@ -39,6 +39,7 @@ public:
     ClipMiddle = 2
   };
 
+  explicit
   Triangle(const std::array<Vertex, 3>& vertices,
            const std::optional<std::array<RGBAColor, 3>>& colors = std::nullopt,
            const Material *material = nullptr,

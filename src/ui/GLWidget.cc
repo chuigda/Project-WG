@@ -42,9 +42,9 @@ static cw::Triangle triangle( // NOLINT(cert-err58-cpp)
     cw::Vertex { 1.0f, -1.0f, 0.0f }
   ),
   std::experimental::make_array(
-    cw::RGBAColor { std::uint8_t(255), 0, 0 },
-    cw::RGBAColor { 0, std::uint8_t(255), 0 },
-    cw::RGBAColor { 0, 0, std::uint8_t(255) }
+    cw::RGBAColor { 255, 0, 0 },
+    cw::RGBAColor { 0, 255, 0 },
+    cw::RGBAColor { 0, 0, 255 }
   )
 );
 

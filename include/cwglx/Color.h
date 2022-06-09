@@ -23,16 +23,6 @@ public:
     : m_Repr({ red, green, blue, alpha })
   {}
 
-  explicit constexpr RGBAColor(float red,
-                               float green,
-                               float blue,
-                               float alpha = 1.0f) noexcept
-    : m_Repr({ static_cast<std::uint8_t>(red * 255.0f),
-               static_cast<std::uint8_t>(green * 255.0f),
-               static_cast<std::uint8_t>(blue * 255.0f),
-               static_cast<std::uint8_t>(alpha * 255.0f) })
-  {}
-
   [[nodiscard]]
   constexpr inline std::uint8_t GetRed() const noexcept {
     return m_Repr[0];
@@ -76,7 +66,7 @@ constexpr RGBAColor g_White { static_cast<std::uint8_t>(255), 255, 255, 255 };
 
 class RGBAColorFloat {
 public:
-  explicit RGBAColorFloat(std::array<float, 4> repr) noexcept;
+  explicit RGBAColorFloat(const std::array<float, 4> &repr) noexcept;
   explicit RGBAColorFloat(GLfloat red,
                           GLfloat green,
                           GLfloat blue,
