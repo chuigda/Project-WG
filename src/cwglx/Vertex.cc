@@ -121,4 +121,16 @@ VertexF VertexF::Downscale(const Vertex &v) noexcept {
   };
 }
 
+VectorF::VectorF(GLfloat x, GLfloat y, GLfloat z) noexcept
+  : m_Repr({x, y, z})
+{}
+
+VectorF VectorF::Downscale(const Vector &v) noexcept {
+  return VectorF {
+    static_cast<GLfloat>(v.GetX()),
+    static_cast<GLfloat>(v.GetY()),
+    static_cast<GLfloat>(v.GetZ())
+  };
+}
+
 } // namespace cw

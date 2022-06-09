@@ -150,6 +150,9 @@ private:
   std::array<GLfloat, 2> m_Repr;
 };
 
+static_assert(sizeof(Vertex2DF) == sizeof(std::array<GLfloat, 2>),
+              "Vertex2DF must be the same size as std::array<GLfloat, 2>");
+
 class VertexF final {
 public:
   explicit VertexF(GLfloat x, GLfloat y, GLfloat z = 0.0f) noexcept;
@@ -183,6 +186,40 @@ private:
 
 static_assert(sizeof(VertexF) == sizeof(std::array<GLfloat, 3>),
               "VertexF must be the same size as std::array<GLfloat, 3>");
+
+class VectorF final {
+public:
+  explicit VectorF(GLfloat x, GLfloat y, GLfloat z = 0.0f) noexcept;
+
+  [[nodiscard]]
+  static VectorF Downscale(const Vector& v) noexcept;
+
+  [[nodiscard]]
+  constexpr inline GLfloat GetX() const noexcept {
+    return m_Repr[0];
+  }
+
+  [[nodiscard]]
+  constexpr inline GLfloat GetY() const noexcept {
+    return m_Repr[1];
+  }
+
+  [[nodiscard]]
+  constexpr inline GLfloat GetZ() const noexcept {
+    return m_Repr[2];
+  }
+
+  [[nodiscard]]
+  constexpr inline const std::array<GLfloat, 3>& GetRepr() const noexcept {
+    return m_Repr;
+  }
+
+private:
+  std::array<GLfloat, 3> m_Repr;
+};
+
+static_assert(sizeof(VectorF) == sizeof(std::array<GLfloat, 3>),
+              "VectorF must be the same size as std::array<GLfloat, 3>");
 
 } // namespace cw
 

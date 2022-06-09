@@ -35,6 +35,7 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   }
 
   if (m_Texture) {
+    f->glPushAttrib(GL_TEXTURE_BIT);
     m_Texture->BeginTexture(f);
     f->glNormal3f(0.0f, 0.0f, 1.0f);
   }
@@ -57,6 +58,9 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   }
   f->glEnd();
 
+  if (m_Texture) {
+    f->glPopAttrib();
+  }
   f->glPopAttrib();
 }
 
