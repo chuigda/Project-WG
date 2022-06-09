@@ -58,21 +58,6 @@ void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
 }
 #pragma clang diagnostic pop
 
-void Texture2D::DeleteTexture(QOpenGLFunctions_2_0 *f) noexcept {
-  Q_ASSERT(!m_IsDeleted && "Texture2D has been deleted");
-
-  f->glDeleteTextures(1, &m_TextureId);
-  m_IsDeleted = true;
-}
-
-Texture2D::~Texture2D() noexcept {
-  if (!m_IsDeleted) {
-    qWarning() << "Texture2D"
-               << m_TextureId
-               << "has not been deleted before running dtor";
-  }
-}
-
 void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
                              const std::array<GLfloat, 2> *points,
                              std::size_t numPoints) const noexcept
@@ -93,6 +78,21 @@ void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
   BeginTexture(f);
   f->glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
   f->glTexCoordPointer(2, GL_FLOAT, 0, points);
+}
+
+void Texture2D::DeleteTexture(QOpenGLFunctions_2_0 *f) noexcept {
+  Q_ASSERT(!m_IsDeleted && "Texture2D has been deleted");
+
+  f->glDeleteTextures(1, &m_TextureId);
+  m_IsDeleted = true;
+}
+
+Texture2D::~Texture2D() noexcept {
+  if (!m_IsDeleted) {
+    qWarning() << "Texture2D"
+               << m_TextureId
+               << "has not been deleted before running dtor";
+  }
 }
 
 } // namespace cw
