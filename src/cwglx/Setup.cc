@@ -10,6 +10,9 @@ void SetupPreferredSettings(QOpenGLFunctions_2_0 *f) noexcept {
   f->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   f->glFrontFace(GL_CCW);
   f->glDepthFunc(GL_LESS);
+  f->glEnable(GL_CULL_FACE);
+  f->glEnable(GL_DEPTH_TEST);
+  f->glEnable(GL_BLEND);
   f->glBlendFuncSeparate(GL_ONE,
                          GL_ONE_MINUS_SRC_ALPHA,
                          GL_ONE,
@@ -18,6 +21,7 @@ void SetupPreferredSettings(QOpenGLFunctions_2_0 *f) noexcept {
   f->glShadeModel(GL_SMOOTH);
 
   f->glEnable(GL_LIGHTING);
+  f->glEnable(GL_NORMALIZE);
   f->glEnable(GL_COLOR_MATERIAL);
 
   f->glEnable(GL_MULTISAMPLE);

@@ -35,17 +35,17 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
   f->glPushAttrib(GL_CURRENT_BIT);
 
-  if (m_Material) {
-    m_Material->Apply(f);
-    f->glNormal3f(0.0f, 0.0f, 1.0f);
-  }
-
   if (m_Texture) {
     const std::array<std::pair<GLfloat, GLfloat>, 3>& textureCoords =
         g_TriangleTextureCoords[m_ClipMode];
 
     f->glPushAttrib(GL_TEXTURE_BIT);
     m_Texture->ApplyTexture(f, textureCoords.data(), 3);
+  }
+
+  if (m_Material) {
+    m_Material->Apply(f);
+    f->glNormal3f(0.0f, 0.0f, 1.0f);
   }
 
   if (m_Colors.has_value()) {
