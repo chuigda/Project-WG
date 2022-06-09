@@ -66,8 +66,8 @@ private:
   std::array<GLdouble, 3> m_Repr;
 };
 
-static_assert(sizeof(Vertex) == sizeof(GLdouble) * 3,
-              "Vertex must be exactly 3 GLdouble's in size");
+static_assert(sizeof(Vertex) == sizeof(std::array<GLdouble, 3>),
+              "Vertex must be the same size as std::array<GLdouble, 3>");
 
 class Vector final {
 public:
@@ -103,8 +103,8 @@ private:
   std::array<GLdouble, 3> m_Repr;
 };
 
-static_assert(sizeof(Vector) == sizeof(GLdouble) * 3,
-              "Vector must be exactly 3 GLdouble's in size");
+static_assert(sizeof(Vector) == sizeof(std::array<GLdouble, 3>),
+              "Vector must be the same size as std::array<GLdouble, 3>");
 
 Vector operator+(const Vector& lhs, const Vector& rhs) noexcept;
 
@@ -123,6 +123,66 @@ Vertex operator-(const Vertex& lhs, const Vector& rhs) noexcept;
 Vertex operator+(const Vector& lhs, const Vertex& rhs) noexcept;
 
 Vertex operator-(const Vector& lhs, const Vertex& rhs) noexcept;
+
+class Vertex2DF final {
+public:
+  explicit Vertex2DF(GLfloat x, GLfloat y) noexcept;
+
+  [[nodiscard]]
+  static Vertex2DF Downscale(const Vertex2D& v) noexcept;
+
+  [[nodiscard]]
+  constexpr inline GLfloat GetX() const noexcept {
+    return m_Repr[0];
+  }
+
+  [[nodiscard]]
+  constexpr inline GLfloat GetY() const noexcept {
+    return m_Repr[1];
+  }
+
+  [[nodiscard]]
+  constexpr inline const std::array<GLfloat, 2>& GetRepr() const noexcept {
+    return m_Repr;
+  }
+
+private:
+  std::array<GLfloat, 2> m_Repr;
+};
+
+class VertexF final {
+public:
+  explicit VertexF(GLfloat x, GLfloat y, GLfloat z = 0.0f) noexcept;
+
+  [[nodiscard]]
+  static VertexF Downscale(const Vertex& v) noexcept;
+
+  [[nodiscard]]
+  constexpr inline GLfloat GetX() const noexcept {
+    return m_Repr[0];
+  }
+
+  [[nodiscard]]
+  constexpr inline GLfloat GetY() const noexcept {
+    return m_Repr[1];
+  }
+
+  [[nodiscard]]
+  constexpr inline GLfloat GetZ() const noexcept {
+    return m_Repr[2];
+  }
+
+  [[nodiscard]]
+  constexpr inline const std::array<GLfloat, 3>& GetRepr() const noexcept {
+    return m_Repr;
+  }
+
+private:
+  std::array<GLfloat, 3> m_Repr;
+};
+
+static_assert(sizeof(VertexF) == sizeof(std::array<GLfloat, 3>),
+              "VertexF must be the same size as std::array<GLfloat, 3>");
 
 } // namespace cw
 

@@ -100,4 +100,25 @@ Vertex operator-(const Vector& lhs, const Vertex& rhs) noexcept {
   return rhs - lhs;
 }
 
+Vertex2DF::Vertex2DF(GLfloat x, GLfloat y) noexcept
+  : m_Repr({x, y})
+{}
+
+Vertex2DF Vertex2DF::Downscale(const Vertex2D &v) noexcept {
+  return Vertex2DF { static_cast<GLfloat>(v.GetX()),
+                     static_cast<GLfloat>(v.GetY()) };
+}
+
+VertexF::VertexF(GLfloat x, GLfloat y, GLfloat z) noexcept
+  : m_Repr({x, y, z})
+{}
+
+VertexF VertexF::Downscale(const Vertex &v) noexcept {
+  return VertexF {
+    static_cast<GLfloat>(v.GetX()),
+    static_cast<GLfloat>(v.GetY()),
+    static_cast<GLfloat>(v.GetZ())
+  };
+}
+
 } // namespace cw
