@@ -25,11 +25,6 @@ void SetupPreferredSettings(QOpenGLFunctions_2_0 *f) noexcept {
   f->glEnable(GL_TEXTURE_2D);
   f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
   f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 4);
-
-  // f->glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
-  f->glEnableClientState(GL_VERTEX_ARRAY);
-  f->glEnableClientState(GL_COLOR_ARRAY);
-  // f->glEnableClientState(GL_NORMAL_ARRAY);
 }
 
 } // namespace cw

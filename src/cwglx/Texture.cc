@@ -90,6 +90,7 @@ void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
   Q_UNUSED(numPoints)
 
   BeginTexture(f);
+  f->glEnableClientState(GL_TEXTURE_COORD_ARRAY_EXT);
   f->glTexCoordPointer(2, GL_FLOAT, 0, points);
 }
 

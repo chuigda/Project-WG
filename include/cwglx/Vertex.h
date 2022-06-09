@@ -4,6 +4,8 @@
 #include <array>
 #include <QtGui/qopengl.h>
 
+class QOpenGLFunctions_2_0;
+
 namespace cw {
 
 class Vector;
@@ -220,6 +222,16 @@ private:
 
 static_assert(sizeof(VectorF) == sizeof(std::array<GLfloat, 3>),
               "VectorF must be the same size as std::array<GLfloat, 3>");
+
+void DrawVertexArray(QOpenGLFunctions_2_0 *f,
+                     const VertexF *vertices,
+                     GLsizei count) noexcept;
+
+template <std::size_t N>
+void DrawVertexArray(QOpenGLFunctions_2_0 *f,
+                     const std::array<VertexF, N>& vertices) noexcept {
+  DrawVertexArray(f, vertices.data(), static_cast<GLsizei>(vertices.size()));
+}
 
 } // namespace cw
 

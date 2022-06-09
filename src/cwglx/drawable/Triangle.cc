@@ -9,7 +9,11 @@ Triangle::Triangle(const std::array<Vertex, 3> &vertices,
                    const Material *material,
                    const Texture2D *texture,
                    Triangle::TextureClipMode clipMode) noexcept
-  : m_Vertices(vertices),
+  : m_Vertices {
+      VertexF::Downscale(vertices[0]),
+      VertexF::Downscale(vertices[1]),
+      VertexF::Downscale(vertices[2])
+    },
     m_Colors(std::nullopt),
     m_Material(material),
     m_Texture(texture),
@@ -28,6 +32,7 @@ Triangle::Triangle(const std::array<Vertex, 3> &vertices,
 Triangle::~Triangle() = default;
 
 void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
+  f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
   f->glPushAttrib(GL_CURRENT_BIT);
 
   if (m_Material) {
@@ -47,6 +52,9 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
     ApplyColorArray(f, m_Colors.value().data(), 3);
   }
 
+  DrawVertexArray(f, m_Vertices);
+
+  f->glEnableClientState(GL_VERTEX_ARRAY);
   f->glVertexPointer(3, GL_DOUBLE, 0, m_Vertices.data());
   f->glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -54,6 +62,7 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
     f->glPopAttrib();
   }
   f->glPopAttrib();
+  f->glPopClientAttrib();
 }
 
 } // namespace cw

@@ -1,5 +1,7 @@
 #include "cwglx/Vertex.h"
 
+#include <QOpenGLFunctions_2_0>
+
 namespace cw {
 
 Vertex2D::Vertex2D(GLdouble x, GLdouble y) noexcept
@@ -131,6 +133,15 @@ VectorF VectorF::Downscale(const Vector &v) noexcept {
     static_cast<GLfloat>(v.GetY()),
     static_cast<GLfloat>(v.GetZ())
   };
+}
+
+void DrawVertexArray(QOpenGLFunctions_2_0 *f,
+                     const VertexF *vertices,
+                     GLsizei count) noexcept
+{
+  f->glEnableClientState(GL_VERTEX_ARRAY);
+  f->glVertexPointer(3, GL_FLOAT, 0, vertices);
+  f->glDrawArrays(GL_TRIANGLES, 0, count);
 }
 
 } // namespace cw

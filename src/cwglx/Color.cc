@@ -36,6 +36,7 @@ void ApplyColorArray(QOpenGLFunctions_2_0 *f,
 {
   Q_UNUSED(numColor)
 
+  f->glEnableClientState(GL_COLOR_ARRAY);
   f->glColorPointer(4, GL_FLOAT, 0, colors);
 }
 } // namespace cw
