@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <experimental/array>
+#include <QTimerEvent>
 
 #include "glu/FakeGLU.h"
 #include "cwglx/Setup.h"
@@ -11,7 +12,8 @@
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
     QOpenGLFunctions_2_0(),
-    m_Light(nullptr)
+    m_Light(nullptr),
+    m_Rotation(0.0f)
 {
   QSurfaceFormat format;
   format.setSamples(8);
@@ -24,6 +26,11 @@ GLWidget::GLWidget(QWidget *parent)
   this->setAttribute(Qt::WA_TranslucentBackground);
   this->setAttribute(Qt::WA_TransparentForMouseEvents);
   this->setAttribute(Qt::WA_AlwaysStackOnTop);
+
+  int timerId = this->startTimer(10);
+  if (timerId == 0) {
+    qDebug() << "could not start timer correctly";
+  }
 }
 
 GLWidget::~GLWidget() {
@@ -32,6 +39,11 @@ GLWidget::~GLWidget() {
   // TODO: Manually delete all loaded textures
 
   doneCurrent();
+}
+
+void GLWidget::timerEvent(QTimerEvent *event) {
+  this->m_Rotation += 0.5f;
+  this->update();
 }
 
 void GLWidget::initializeGL() {
@@ -61,7 +73,9 @@ void GLWidget::paintGL() {
 
   m_Light->Enable(this);
   glTranslatef(0.0f, 0.0f, -5.0f);
-  glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
+  glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
+  triangle.Draw(this);
+  glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
   triangle.Draw(this);
 }
 

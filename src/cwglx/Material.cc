@@ -40,10 +40,10 @@ bool StandardMaterial::IsTransparent() const noexcept {
 
 void StandardMaterial::Apply(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glColorMaterial(GL_FRONT, m_ColorDimension);
-  f->glMaterialfv(m_ColorDimension, GL_AMBIENT, m_Ambient.GetRepr().data());
-  f->glMaterialfv(m_ColorDimension, GL_DIFFUSE, m_Diffuse.GetRepr().data());
-  f->glMaterialfv(m_ColorDimension, GL_SPECULAR, m_Specular.GetRepr().data());
-  f->glMaterialf(m_ColorDimension, GL_SHININESS, m_Shine);
+  f->glMaterialfv(GL_FRONT, GL_AMBIENT, m_Ambient.GetRepr().data());
+  f->glMaterialfv(GL_FRONT, GL_DIFFUSE, m_Diffuse.GetRepr().data());
+  f->glMaterialfv(GL_FRONT, GL_SPECULAR, m_Specular.GetRepr().data());
+  f->glMaterialf(GL_FRONT, GL_SHININESS, m_Shine);
 }
 
 #define CW_DEFINE_MATERIAL(NAME, \

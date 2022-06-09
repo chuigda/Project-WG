@@ -15,12 +15,15 @@ public:
   ~GLWidget() final;
 
 protected:
+  void timerEvent(QTimerEvent *event) override final;
+
   void initializeGL() final;
   void paintGL() final;
   void resizeGL(int w, int h) final;
 
 private:
   QScopedPointer<cw::Light> m_Light;
+  GLfloat m_Rotation;
 };
 
 #endif // PROJECT_WG_GLWIDGET_H

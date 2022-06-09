@@ -22,13 +22,13 @@ public:
                    RGBAColor diffuse,
                    RGBAColor specular,
                    float shininess,
-                   GLenum colorDimension = GL_AMBIENT_AND_DIFFUSE) noexcept;
+                   GLenum colorDimension = GL_SPECULAR) noexcept;
 
   StandardMaterial(const RGBAColorF& ambient,
                    const RGBAColorF& diffuse,
                    const RGBAColorF& specular,
                    float shininess,
-                   GLenum colorDimension = GL_AMBIENT_AND_DIFFUSE) noexcept;
+                   GLenum colorDimension = GL_SPECULAR) noexcept;
 
   ~StandardMaterial() final;
 
