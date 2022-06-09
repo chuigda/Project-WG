@@ -1,7 +1,7 @@
 = Project-WG
 Author: Chuigda<icey@icey.tech>
 
-试图用 OpenGL 2.0 （遗留的固定管线）画个可爱（？大概吧）的小机器人。
+试图用 OpenGL 2.0（遗留的固定管线）画个可爱（？大概吧）的小机器人。
 
 == ⚠️⚠️⚠️ 警告：包含远古技术 ⚠️⚠️⚠️
 [quote]

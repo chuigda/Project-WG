@@ -17,6 +17,15 @@ Texture2D::Texture2D(const QImage &image, QOpenGLFunctions_2_0 *f)
 
   f->glGenTextures(1, &m_TextureId);
   f->glBindTexture(GL_TEXTURE_2D, m_TextureId);
+  f->glTexParameteri(GL_TEXTURE_2D,
+                     GL_TEXTURE_MAG_FILTER,
+                     GL_LINEAR);
+  f->glTexParameteri(GL_TEXTURE_2D,
+                     GL_TEXTURE_MIN_FILTER,
+                     GL_LINEAR_MIPMAP_LINEAR);
+  f->glTexParameteri(GL_TEXTURE_2D,
+                     GL_GENERATE_MIPMAP,
+                     GL_TRUE);
   f->glTexImage2D(GL_TEXTURE_2D,
                   0,
                   GL_RGBA,
@@ -26,8 +35,6 @@ Texture2D::Texture2D(const QImage &image, QOpenGLFunctions_2_0 *f)
                   GL_RGBA,
                   GL_UNSIGNED_BYTE,
                   rgbaImage.bits());
-  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 #pragma clang diagnostic pop
 
