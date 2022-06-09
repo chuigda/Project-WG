@@ -54,10 +54,6 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
 
   DrawVertexArray(f, m_Vertices);
 
-  f->glEnableClientState(GL_VERTEX_ARRAY);
-  f->glVertexPointer(3, GL_DOUBLE, 0, m_Vertices.data());
-  f->glDrawArrays(GL_TRIANGLES, 0, 3);
-
   if (m_Texture) {
     f->glPopAttrib();
   }
