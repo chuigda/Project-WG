@@ -22,6 +22,14 @@ public:
                     GLfloat x,
                     GLfloat y) const noexcept;
 
+  void ApplyTexture(QOpenGLFunctions_2_0 *f,
+                    const std::array<GLfloat, 2>* points,
+                    std::size_t numPoints) const noexcept;
+
+  void ApplyTexture(QOpenGLFunctions_2_0 *f,
+                    const std::pair<GLfloat, GLfloat>* points,
+                    std::size_t numPoints) const noexcept;
+
   void DeleteTexture(QOpenGLFunctions_2_0 *f) noexcept;
 
   ~Texture2D() noexcept;

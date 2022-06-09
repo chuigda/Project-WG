@@ -48,12 +48,15 @@ void Texture2D::BeginTexture(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glBindTexture(GL_TEXTURE_2D, m_TextureId);
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "readability-convert-member-functions-to-static"
 void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
                              GLfloat x,
                              GLfloat y) const noexcept
 {
   f->glTexCoord2f(x, y);
 }
+#pragma clang diagnostic pop
 
 void Texture2D::DeleteTexture(QOpenGLFunctions_2_0 *f) noexcept {
   Q_ASSERT(!m_IsDeleted && "Texture2D has been deleted");
@@ -68,6 +71,26 @@ Texture2D::~Texture2D() noexcept {
                << m_TextureId
                << "has not been deleted before running dtor";
   }
+}
+
+void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
+                             const std::array<GLfloat, 2> *points,
+                             std::size_t numPoints) const noexcept
+{
+  Q_UNUSED(numPoints)
+
+  BeginTexture(f);
+  f->glTexCoordPointer(2, GL_FLOAT, 0, points);
+}
+
+void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
+                             const std::pair<GLfloat, GLfloat> *points,
+                             std::size_t numPoints) const noexcept
+{
+  Q_UNUSED(numPoints)
+
+  BeginTexture(f);
+  f->glTexCoordPointer(2, GL_FLOAT, 0, points);
 }
 
 } // namespace cw

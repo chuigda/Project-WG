@@ -35,28 +35,20 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   }
 
   if (m_Texture) {
+    const std::array<std::pair<GLfloat, GLfloat>, 3>& textureCoords =
+        g_TriangleTextureCoords[m_ClipMode];
+
     f->glPushAttrib(GL_TEXTURE_BIT);
-    m_Texture->BeginTexture(f);
     f->glNormal3f(0.0f, 0.0f, 1.0f);
+    m_Texture->ApplyTexture(f, textureCoords.data(), 3);
   }
 
-  const std::array<std::pair<GLfloat, GLfloat>, 3>& textureCoords =
-      g_TriangleTextureCoords[m_ClipMode];
-
-  f->glBegin(GL_TRIANGLES);
-  for (std::size_t i = 0; i < 3; ++i) {
-    if (m_Colors.has_value()) {
-      m_Colors.value()[i].Apply(f);
-    }
-
-    if (m_Texture) {
-      const auto& [tx, ty] = textureCoords[i];
-      m_Texture->ApplyTexture(f, tx, ty);
-    }
-
-    f->glVertex3dv(m_Vertices[i].GetRepr().data());
+  if (m_Colors.has_value()) {
+    ApplyColorArray(f, m_Colors.value().data(), 3);
   }
-  f->glEnd();
+
+  f->glVertexPointer(3, GL_DOUBLE, 0, m_Vertices.data());
+  f->glDrawArrays(GL_TRIANGLES, 0, 3);
 
   if (m_Texture) {
     f->glPopAttrib();

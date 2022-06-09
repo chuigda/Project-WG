@@ -30,4 +30,12 @@ void RGBAColorFloat::Apply(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glColor4fv(m_Repr.data());
 }
 
+void ApplyColorArray(QOpenGLFunctions_2_0 *f,
+                     const RGBAColorFloat *colors,
+                     std::size_t numColor) noexcept
+{
+  Q_UNUSED(numColor)
+
+  f->glColorPointer(4, GL_FLOAT, 0, colors);
+}
 } // namespace cw

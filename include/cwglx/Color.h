@@ -119,6 +119,10 @@ private:
   std::array<GLfloat, 4> m_Repr;
 };
 
+void ApplyColorArray(QOpenGLFunctions_2_0 *f,
+                     const RGBAColorFloat* colors,
+                     std::size_t numColor) noexcept;
+
 static_assert(sizeof(RGBAColorFloat) == sizeof(std::array<GLfloat, 4>),
               "RGBAColorFloat must be the same size as std::array<GLfloat, 4>");
 
