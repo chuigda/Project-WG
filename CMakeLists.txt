@@ -50,9 +50,11 @@ set(PROJECT_SOURCES
     src/cwglx/drawable/Triangle.cc
     src/cwglx/drawable/Rectangle.cc
     src/cwglx/drawable/Fan.cc
+    src/cwglx/drawable/Composition.cc
     include/cwglx/drawable/Triangle.h
     include/cwglx/drawable/Rectangle.h
     include/cwglx/drawable/Fan.h
+    include/cwglx/drawable/Composition.h
 
     src/pl2/pl2q.cc
     include/pl2/pl2q.h)
