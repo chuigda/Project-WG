@@ -1,14 +1,17 @@
 #include "ui/GLWidget.h"
 
+#include <optional>
+#include <experimental/array>
+
 #include "glu/FakeGLU.h"
 #include "cwglx/Setup.h"
+#include "cwglx/Material.h"
 #include "cwglx/drawable/Triangle.h"
-
-#include <experimental/array>
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
-    QOpenGLFunctions_2_0()
+    QOpenGLFunctions_2_0(),
+    m_Light(nullptr)
 {
   QSurfaceFormat format;
   format.setSamples(8);
@@ -33,6 +36,12 @@ GLWidget::~GLWidget() {
 
 void GLWidget::initializeGL() {
   cw::SetupPreferredSettings(this);
+  m_Light.reset(new cw::PointLight(GL_LIGHT0,
+                                   cw::RGBAColor(32, 32, 32),
+                                   cw::RGBAColor(127, 127, 127),
+                                   cw::RGBAColor(255, 255, 255),
+                                   cw::Vertex(0.0, 1.0, 0.0),
+                                   this));
 }
 
 static cw::Triangle triangle( // NOLINT(cert-err58-cpp)
@@ -41,11 +50,8 @@ static cw::Triangle triangle( // NOLINT(cert-err58-cpp)
     cw::Vertex { -1.0f, -1.0f, 0.0f },
     cw::Vertex { 1.0f, -1.0f, 0.0f }
   ),
-  std::experimental::make_array(
-    cw::RGBAColor { 255, 0, 0 },
-    cw::RGBAColor { 0, 255, 0 },
-    cw::RGBAColor { 0, 0, 255 }
-  )
+  std::nullopt,
+  cw::GetBrassMaterial()
 );
 
 void GLWidget::paintGL() {
@@ -53,7 +59,9 @@ void GLWidget::paintGL() {
 
   glLoadIdentity();
 
+  m_Light->Enable(this);
   glTranslatef(0.0f, 0.0f, -5.0f);
+  glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
   triangle.Draw(this);
 }
 

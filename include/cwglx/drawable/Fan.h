@@ -12,7 +12,7 @@
 
 namespace cw {
 
-using FanColorFunc = std::function<RGBAColorFloat(GLfloat)>;
+using FanColorFunc = std::function<RGBAColorF(GLfloat)>;
 
 class Fan final : Drawable {
 public:
@@ -28,7 +28,7 @@ public:
 
 private:
   std::vector<Vertex> m_PrecomputedVertices;
-  std::vector<RGBAColorFloat> m_PrecomputedColors;
+  std::vector<RGBAColorF> m_PrecomputedColors;
   const Material *m_Material;
   const Texture2D *m_Texture;
   std::vector<Vertex2D> m_PrecomputedTextureCoords;

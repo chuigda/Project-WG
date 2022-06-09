@@ -33,7 +33,7 @@ public:
 
 private:
   std::array<Vertex, 4> m_Vertices;
-  std::optional<std::array<RGBAColorFloat, 4>> m_Colors;
+  std::optional<std::array<RGBAColorF, 4>> m_Colors;
   const Material *m_Material;
   const Texture2D *m_Texture;
 };

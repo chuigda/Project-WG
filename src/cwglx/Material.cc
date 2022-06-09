@@ -18,6 +18,18 @@ StandardMaterial::StandardMaterial(RGBAColor ambient,
     m_ColorDimension(colorDimension)
 {}
 
+StandardMaterial::StandardMaterial(const RGBAColorF &ambient,
+                                   const RGBAColorF &diffuse,
+                                   const RGBAColorF &specular,
+                                   float shininess,
+                                   GLenum colorDimension) noexcept
+  : m_Ambient(ambient),
+    m_Diffuse(diffuse),
+    m_Specular(specular),
+    m_Shine(shininess),
+    m_ColorDimension(colorDimension)
+{}
+
 StandardMaterial::~StandardMaterial() = default;
 
 bool StandardMaterial::IsTransparent() const noexcept {
@@ -41,9 +53,9 @@ void StandardMaterial::Apply(QOpenGLFunctions_2_0 *f) const noexcept {
                            SHINE) \
   const StandardMaterial* Get##NAME##Material() noexcept { \
     static const StandardMaterial material { \
-      cw::RGBAColor(AR, AG, AB, AA), \
-      cw::RGBAColor(DR, DG, DB, DA), \
-      cw::RGBAColor(SR, SG, SB, SA), \
+      cw::RGBAColorF(AR, AG, AB, AA), \
+      cw::RGBAColorF(DR, DG, DB, DA), \
+      cw::RGBAColorF(SR, SG, SB, SA), \
       SHINE \
     }; \
     return &material; \

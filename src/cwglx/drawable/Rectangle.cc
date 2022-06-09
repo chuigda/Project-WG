@@ -16,10 +16,10 @@ Rectangle::Rectangle(const std::array<Vertex, 4> &vertices,
   if (colors.has_value()) {
     const std::array<RGBAColor, 4> &colorsInt = colors.value();
     m_Colors = std::experimental::make_array(
-        RGBAColorFloat(colorsInt[0]),
-        RGBAColorFloat(colorsInt[1]),
-        RGBAColorFloat(colorsInt[2]),
-        RGBAColorFloat(colorsInt[3])
+        RGBAColorF(colorsInt[0]),
+        RGBAColorF(colorsInt[1]),
+        RGBAColorF(colorsInt[2]),
+        RGBAColorF(colorsInt[3])
     );
   }
 }
@@ -30,12 +30,12 @@ void Rectangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPushAttrib(GL_CURRENT_BIT);
 
   if (m_Material) {
+    f->glNormal3f(0.0f, 0.0f, 1.0f);
     m_Material->Apply(f);
   }
 
   if (m_Texture) {
     m_Texture->BeginTexture(f);
-    f->glNormal3f(0.0f, 0.0f, 1.0f);
   }
 
   f->glBegin(GL_QUADS);

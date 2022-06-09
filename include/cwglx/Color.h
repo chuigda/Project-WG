@@ -64,14 +64,14 @@ static_assert(sizeof(RGBAColor) == sizeof(std::array<std::uint8_t, 4>),
 
 constexpr RGBAColor g_White { static_cast<std::uint8_t>(255), 255, 255, 255 };
 
-class RGBAColorFloat {
+class RGBAColorF {
 public:
-  explicit RGBAColorFloat(const std::array<float, 4> &repr) noexcept;
-  explicit RGBAColorFloat(GLfloat red,
-                          GLfloat green,
-                          GLfloat blue,
-                          GLfloat alpha = 1.0f) noexcept;
-  explicit RGBAColorFloat(RGBAColor color) noexcept;
+  explicit RGBAColorF(const std::array<float, 4> &repr) noexcept;
+  explicit RGBAColorF(GLfloat red,
+                      GLfloat green,
+                      GLfloat blue,
+                      GLfloat alpha = 1.0f) noexcept;
+  explicit RGBAColorF(RGBAColor color) noexcept;
 
   [[nodiscard]]
   constexpr inline GLfloat GetRed() const noexcept {
@@ -110,11 +110,11 @@ private:
 };
 
 void ApplyColorArray(QOpenGLFunctions_2_0 *f,
-                     const RGBAColorFloat* colors,
+                     const RGBAColorF* colors,
                      std::size_t numColor) noexcept;
 
-static_assert(sizeof(RGBAColorFloat) == sizeof(std::array<GLfloat, 4>),
-              "RGBAColorFloat must be the same size as std::array<GLfloat, 4>");
+static_assert(sizeof(RGBAColorF) == sizeof(std::array<GLfloat, 4>),
+              "RGBAColorF must be the same size as std::array<GLfloat, 4>");
 
 } // namespace cw
 

@@ -29,25 +29,25 @@ public:
   }
 
   [[nodiscard]]
-  constexpr inline const RGBAColorFloat& GetAmbient() const noexcept {
+  constexpr inline const RGBAColorF& GetAmbient() const noexcept {
     return m_Ambient;
   }
 
   [[nodiscard]]
-  constexpr inline const RGBAColorFloat& GetDiffuse() const noexcept {
+  constexpr inline const RGBAColorF& GetDiffuse() const noexcept {
     return m_Diffuse;
   }
 
   [[nodiscard]]
-  constexpr inline const RGBAColorFloat& GetSpecular() const noexcept {
+  constexpr inline const RGBAColorF& GetSpecular() const noexcept {
     return m_Specular;
   }
 
 private:
   GLenum m_LightId;
-  RGBAColorFloat m_Ambient;
-  RGBAColorFloat m_Diffuse;
-  RGBAColorFloat m_Specular;
+  RGBAColorF m_Ambient;
+  RGBAColorF m_Diffuse;
+  RGBAColorF m_Specular;
 };
 
 class ParallelLight final : public Light {

@@ -52,7 +52,7 @@ public:
 
 private:
   std::array<VertexF, 3> m_Vertices;
-  std::optional<std::array<RGBAColorFloat, 3>> m_Colors;
+  std::optional<std::array<RGBAColorF, 3>> m_Colors;
   const Material *m_Material;
   const Texture2D *m_Texture;
   TextureClipMode m_ClipMode;

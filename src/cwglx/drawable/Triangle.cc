@@ -22,9 +22,9 @@ Triangle::Triangle(const std::array<Vertex, 3> &vertices,
   if (colors.has_value()) {
     const std::array<RGBAColor, 3> &colorsInt = colors.value();
     m_Colors = std::experimental::make_array(
-        RGBAColorFloat(colorsInt[0]),
-        RGBAColorFloat(colorsInt[1]),
-        RGBAColorFloat(colorsInt[2])
+        RGBAColorF(colorsInt[0]),
+        RGBAColorF(colorsInt[1]),
+        RGBAColorF(colorsInt[2])
     );
   }
 }
@@ -37,6 +37,7 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
 
   if (m_Material) {
     m_Material->Apply(f);
+    f->glNormal3f(0.0f, 0.0f, 1.0f);
   }
 
   if (m_Texture) {
@@ -44,7 +45,6 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
         g_TriangleTextureCoords[m_ClipMode];
 
     f->glPushAttrib(GL_TEXTURE_BIT);
-    f->glNormal3f(0.0f, 0.0f, 1.0f);
     m_Texture->ApplyTexture(f, textureCoords.data(), 3);
   }
 

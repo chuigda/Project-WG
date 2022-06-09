@@ -16,13 +16,19 @@ public:
   virtual void Apply(QOpenGLFunctions_2_0 *f) const noexcept = 0;
 };
 
-class StandardMaterial final : Material {
+class StandardMaterial final : public Material {
 public:
   StandardMaterial(RGBAColor ambient,
                    RGBAColor diffuse,
                    RGBAColor specular,
                    float shininess,
-                   GLenum colorDimension = GL_SPECULAR) noexcept;
+                   GLenum colorDimension = GL_AMBIENT_AND_DIFFUSE) noexcept;
+
+  StandardMaterial(const RGBAColorF& ambient,
+                   const RGBAColorF& diffuse,
+                   const RGBAColorF& specular,
+                   float shininess,
+                   GLenum colorDimension = GL_AMBIENT_AND_DIFFUSE) noexcept;
 
   ~StandardMaterial() final;
 
@@ -30,9 +36,9 @@ public:
   void Apply(QOpenGLFunctions_2_0 *f) const noexcept final;
 
 private:
-  RGBAColorFloat m_Ambient;
-  RGBAColorFloat m_Diffuse;
-  RGBAColorFloat m_Specular;
+  RGBAColorF m_Ambient;
+  RGBAColorF m_Diffuse;
+  RGBAColorF m_Specular;
   GLfloat m_Shine;
   GLenum m_ColorDimension;
 };
