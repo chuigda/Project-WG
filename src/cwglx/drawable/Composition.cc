@@ -64,6 +64,10 @@ void MaterializedDrawable::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPopAttrib();
 }
 
+void MaterializedDrawable::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
+  Q_UNUSED(f)
+}
+
 Composition::Composition(std::vector<TranslationStep> &&translationSteps,
                          std::vector<Drawable const*> &&drawables)
   : m_TranslationSteps(std::move(translationSteps)),

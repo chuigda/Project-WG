@@ -7,7 +7,7 @@
 
 namespace cw {
 
-class PlainTriangles final : Drawable {
+class PlainTriangles final : public Drawable {
 public:
   PlainTriangles(const std::vector<Vertex>& vertices,
                  std::vector<GLuint> &&indices,

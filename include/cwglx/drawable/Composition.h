@@ -45,7 +45,7 @@ private:
   Drawable const* m_Drawable;
 };
 
-class MaterializedDrawable final : Drawable {
+class MaterializedDrawable final : public Drawable {
 public:
   MaterializedDrawable(const Material* material,
                        std::vector<Drawable const*>&& drawables);
@@ -53,6 +53,8 @@ public:
   ~MaterializedDrawable() final;
 
   void Draw(QOpenGLFunctions_2_0 *f) const noexcept final;
+
+  void Delete(QOpenGLFunctions_2_0 *f) const noexcept final;
 
   CW_DERIVE_UNCOPYABLE(MaterializedDrawable)
   CW_DERIVE_UNMOVABLE(MaterializedDrawable)

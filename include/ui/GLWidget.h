@@ -6,6 +6,7 @@
 #include <QScopedPointer>
 
 #include "cwglx/Light.h"
+#include "cwglx/Drawable.h"
 
 class GLWidget final : public QOpenGLWidget, public QOpenGLFunctions_2_0 {
   Q_OBJECT
@@ -23,6 +24,8 @@ protected:
 
 private:
   QScopedPointer<cw::Light> m_Light;
+  QScopedPointer<cw::Drawable> m_PlainTriangles;
+  QScopedPointer<cw::Drawable> m_MaterializedTriangles;
   GLfloat m_Rotation;
 };
 

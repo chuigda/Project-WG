@@ -7,7 +7,8 @@
 #include "glu/FakeGLU.h"
 #include "cwglx/Setup.h"
 #include "cwglx/Material.h"
-#include "cwglx/drawable/Triangle.h"
+#include "cwglx/drawable/Composition.h"
+#include "cwglx/drawable/PlainTriangles.h"
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
@@ -36,7 +37,8 @@ GLWidget::GLWidget(QWidget *parent)
 GLWidget::~GLWidget() {
   makeCurrent();
 
-  // TODO: Manually delete all loaded textures
+  m_MaterializedTriangles->Delete(this);
+  m_PlainTriangles->Delete(this);
 
   doneCurrent();
 }
@@ -54,17 +56,18 @@ void GLWidget::initializeGL() {
                                    cw::RGBAColor(255, 255, 255),
                                    cw::Vertex(0.0, 1.0, 0.0),
                                    this));
+  m_PlainTriangles.reset(new cw::PlainTriangles(
+      std::vector { cw::Vertex(0.0, 1.0, 0.0),
+                    cw::Vertex(-1.0, -1.0, 0.0),
+                    cw::Vertex(1.0, -1.0, 0.0) },
+      std::vector { GLuint(0), GLuint(1), GLuint(2),
+                    GLuint(0), GLuint(2), GLuint(1) }
+  ));
+  m_MaterializedTriangles.reset(new cw::MaterializedDrawable(
+      cw::GetBrassMaterial(),
+      std::vector { const_cast<cw::Drawable const*>(m_PlainTriangles.data()) }
+  ));
 }
-
-static cw::Triangle triangle( // NOLINT(cert-err58-cpp)
-  std::experimental::make_array(
-    cw::Vertex { 0.0f, 1.0f, 0.0f },
-    cw::Vertex { -1.0f, -1.0f, 0.0f },
-    cw::Vertex { 1.0f, -1.0f, 0.0f }
-  ),
-  std::nullopt,
-  cw::GetBrassMaterial()
-);
 
 void GLWidget::paintGL() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -74,9 +77,9 @@ void GLWidget::paintGL() {
   m_Light->Enable(this);
   glTranslatef(0.0f, 0.0f, -5.0f);
   glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
-  triangle.Draw(this);
-  glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-  triangle.Draw(this);
+  m_MaterializedTriangles->Draw(this);
+
+  glFlush();
 }
 
 void GLWidget::resizeGL(int w, int h) {

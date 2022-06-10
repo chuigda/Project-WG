@@ -49,10 +49,37 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   }
 
   if (!m_VBOInitialized) {
-    // TODO initialize VBO
+    f->glGenBuffers(3, m_VBO.data());
+
+    f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
+    f->glBufferData(GL_ARRAY_BUFFER,
+                    m_Vertices.size() * sizeof(VertexF),
+                    m_Vertices.data(),
+                    GL_STATIC_DRAW);
+
+    f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
+    f->glBufferData(GL_ARRAY_BUFFER,
+                    m_NormalVectors.size() * sizeof(VectorF),
+                    m_NormalVectors.data(),
+                    GL_STATIC_DRAW);
+
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
+    f->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                    m_Indices.size() * sizeof(GLuint),
+                    m_Indices.data(),
+                    GL_STATIC_DRAW);
+
+    m_VBOInitialized = true;
   }
 
-  // TODO draw with VBO
+  f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
+  f->glVertexPointer(3, GL_FLOAT, 0, nullptr);
+
+  f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
+  f->glNormalPointer(GL_FLOAT, 0, nullptr);
+
+  f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
+  f->glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr);
 }
 
 void PlainTriangles::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
