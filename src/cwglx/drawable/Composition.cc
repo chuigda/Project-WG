@@ -46,6 +46,24 @@ void PositionedDrawable::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPopMatrix();
 }
 
+MaterializedDrawable::
+MaterializedDrawable(const Material *material,
+                     std::vector<const Drawable *> &&drawables)
+  : m_Material(material),
+    m_Drawables(std::move(drawables))
+{}
+
+MaterializedDrawable::~MaterializedDrawable() = default;
+
+void MaterializedDrawable::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
+  f->glPushAttrib(GL_CURRENT_BIT);
+  m_Material->Apply(f);
+  for (const auto &drawable : m_Drawables) {
+    drawable->Draw(f);
+  }
+  f->glPopAttrib();
+}
+
 Composition::Composition(std::vector<TranslationStep> &&translationSteps,
                          std::vector<Drawable const*> &&drawables)
   : m_TranslationSteps(std::move(translationSteps)),
@@ -65,5 +83,4 @@ void Composition::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   }
   f->glPopMatrix();
 }
-
 } // namespace cw

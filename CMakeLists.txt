@@ -27,6 +27,7 @@ set(PROJECT_SOURCES
 
     include/util/Wife.h
     include/util/Constants.h
+    include/util/Derive.h
 
     src/glu/FakeGLU.cc
     include/glu/FakeGLU.h
@@ -48,10 +49,12 @@ set(PROJECT_SOURCES
     include/cwglx/DefaultMaterials.inc
 
     src/cwglx/drawable/Triangle.cc
+    src/cwglx/drawable/PlainTriangles.cc
     src/cwglx/drawable/Rectangle.cc
     src/cwglx/drawable/Fan.cc
     src/cwglx/drawable/Composition.cc
     include/cwglx/drawable/Triangle.h
+    include/cwglx/drawable/PlainTriangles.h
     include/cwglx/drawable/Rectangle.h
     include/cwglx/drawable/Fan.h
     include/cwglx/drawable/Composition.h

@@ -102,6 +102,12 @@ Vertex operator-(const Vector& lhs, const Vertex& rhs) noexcept {
   return rhs - lhs;
 }
 
+Vector operator-(const Vertex& lhs, const Vertex& rhs) noexcept {
+  return Vector(lhs.GetX() - rhs.GetX(),
+                lhs.GetY() - rhs.GetY(),
+                lhs.GetZ() - rhs.GetZ());
+}
+
 Vertex2DF::Vertex2DF(GLfloat x, GLfloat y) noexcept
   : m_Repr({x, y})
 {}

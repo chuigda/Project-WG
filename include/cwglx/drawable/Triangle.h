@@ -50,6 +50,8 @@ public:
 
   void Draw(QOpenGLFunctions_2_0 *f) const noexcept final;
 
+  void Delete(QOpenGLFunctions_2_0 *f) const noexcept final;
+
 private:
   std::array<VertexF, 3> m_Vertices;
   std::optional<std::array<RGBAColorF, 3>> m_Colors;

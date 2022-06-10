@@ -61,4 +61,8 @@ void Triangle::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPopClientAttrib();
 }
 
+void Triangle::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
+  Q_UNUSED(f)
+}
+
 } // namespace cw

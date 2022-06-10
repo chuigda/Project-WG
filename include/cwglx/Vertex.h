@@ -126,6 +126,8 @@ Vertex operator+(const Vector& lhs, const Vertex& rhs) noexcept;
 
 Vertex operator-(const Vector& lhs, const Vertex& rhs) noexcept;
 
+Vector operator-(const Vertex& lhs, const Vertex& rhs) noexcept;
+
 class Vertex2DF final {
 public:
   explicit Vertex2DF(GLfloat x, GLfloat y) noexcept;
