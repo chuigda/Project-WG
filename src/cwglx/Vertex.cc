@@ -51,6 +51,17 @@ Vector &Vector::operator*=(GLdouble rhs) noexcept {
   return *this;
 }
 
+Vector Vector::Normalize() const noexcept {
+  const double length = std::sqrt(GetX() * GetX()
+                                  + GetY() * GetY()
+                                  + GetZ() * GetZ());
+  return Vector(GetX() / length, GetY() / length, GetZ() / length);
+}
+
+Vector Vector::ABS() const noexcept {
+  return Vector(std::abs(GetX()), std::abs(GetY()), std::abs(GetZ()));
+}
+
 Vector operator+(const Vector& lhs, const Vector& rhs) noexcept {
   return Vector(lhs.GetX() + rhs.GetX(),
                 lhs.GetY() + rhs.GetY(),

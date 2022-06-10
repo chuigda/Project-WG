@@ -60,9 +60,9 @@ public:
     return m_Repr;
   }
 
-  Vertex& operator+=(const Vector& rhs) noexcept;
+  [[nodiscard]] Vertex& operator+=(const Vector& rhs) noexcept;
 
-  Vertex& operator-=(const Vector& rhs) noexcept;
+  [[nodiscard]] Vertex& operator-=(const Vector& rhs) noexcept;
 
 private:
   std::array<GLdouble, 3> m_Repr;
@@ -95,11 +95,15 @@ public:
     return m_Repr;
   }
 
-  Vector& operator+=(const Vector& rhs) noexcept;
+  [[nodiscard]] Vector& operator+=(const Vector& rhs) noexcept;
 
-  Vector& operator-=(const Vector& rhs) noexcept;
+  [[nodiscard]] Vector& operator-=(const Vector& rhs) noexcept;
 
-  Vector& operator*=(GLdouble rhs) noexcept;
+  [[nodiscard]] Vector& operator*=(GLdouble rhs) noexcept;
+
+  [[nodiscard]] Vector Normalize() const noexcept;
+
+  [[nodiscard]] Vector ABS() const noexcept;
 
 private:
   std::array<GLdouble, 3> m_Repr;
@@ -108,25 +112,25 @@ private:
 static_assert(sizeof(Vector) == sizeof(std::array<GLdouble, 3>),
               "Vector must be the same size as std::array<GLdouble, 3>");
 
-Vector operator+(const Vector& lhs, const Vector& rhs) noexcept;
+[[nodiscard]] Vector operator+(const Vector& lhs, const Vector& rhs) noexcept;
 
-Vector operator-(const Vector& lhs, const Vector& rhs) noexcept;
+[[nodiscard]] Vector operator-(const Vector& lhs, const Vector& rhs) noexcept;
 
-Vector operator*(const Vector& lhs, GLdouble rhs) noexcept;
+[[nodiscard]] Vector operator*(const Vector& lhs, GLdouble rhs) noexcept;
 
-Vector operator*(GLdouble lhs, const Vector& rhs) noexcept;
+[[nodiscard]] Vector operator*(GLdouble lhs, const Vector& rhs) noexcept;
 
-Vector operator*(const Vector& lhs, const Vector& rhs) noexcept;
+[[nodiscard]] Vector operator*(const Vector& lhs, const Vector& rhs) noexcept;
 
-Vertex operator+(const Vertex& lhs, const Vector& rhs) noexcept;
+[[nodiscard]] Vertex operator+(const Vertex& lhs, const Vector& rhs) noexcept;
 
-Vertex operator-(const Vertex& lhs, const Vector& rhs) noexcept;
+[[nodiscard]] Vertex operator-(const Vertex& lhs, const Vector& rhs) noexcept;
 
-Vertex operator+(const Vector& lhs, const Vertex& rhs) noexcept;
+[[nodiscard]] Vertex operator+(const Vector& lhs, const Vertex& rhs) noexcept;
 
-Vertex operator-(const Vector& lhs, const Vertex& rhs) noexcept;
+[[nodiscard]] Vertex operator-(const Vector& lhs, const Vertex& rhs) noexcept;
 
-Vector operator-(const Vertex& lhs, const Vertex& rhs) noexcept;
+[[nodiscard]] Vector operator-(const Vertex& lhs, const Vertex& rhs) noexcept;
 
 class Vertex2DF final {
 public:

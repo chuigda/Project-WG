@@ -19,7 +19,7 @@ PlainTriangles::PlainTriangles(const std::vector<Vertex>& vertices,
   }
 
   if (computeNormal) {
-    m_NormalVectors.reserve(m_Indices.size() / 3);
+    m_NormalVectors.reserve(m_Indices.size());
     for (std::size_t i = 0; i < m_Indices.size(); i += 3) {
       const auto &v0 = vertices[m_Indices[i]];
       const auto &v1 = vertices[m_Indices[i + 1]];
@@ -29,6 +29,9 @@ PlainTriangles::PlainTriangles(const std::vector<Vertex>& vertices,
       const auto v1v2 = v2 - v1;
 
       const auto normal = v0v1 * v1v2;
+
+      m_NormalVectors.push_back(VectorF::Downscale(normal));
+      m_NormalVectors.push_back(VectorF::Downscale(normal));
       m_NormalVectors.push_back(VectorF::Downscale(normal));
     }
   }
@@ -72,19 +75,27 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
     m_VBOInitialized = true;
   }
 
-  f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
-  f->glVertexPointer(3, GL_FLOAT, 0, nullptr);
+  f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+  {
+    f->glEnableClientState(GL_VERTEX_ARRAY);
+    f->glEnableClientState(GL_NORMAL_ARRAY);
 
-  f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
-  f->glNormalPointer(GL_FLOAT, 0, nullptr);
+    f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
+    f->glVertexPointer(3, GL_FLOAT, 0, nullptr);
 
-  f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
-  f->glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+    f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
+    f->glNormalPointer(GL_FLOAT, 0, nullptr);
+
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
+    f->glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+  }
+  f->glPopClientAttrib();
 }
 
 void PlainTriangles::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
   if (!m_VBODeleted) {
     f->glDeleteBuffers(2, m_VBO.data());
+    m_VBODeleted = true;
   }
 }
 

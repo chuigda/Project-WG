@@ -1,6 +1,5 @@
 #include "ui/GLWidget.h"
 
-#include <optional>
 #include <experimental/array>
 #include <QTimerEvent>
 
@@ -54,14 +53,17 @@ void GLWidget::initializeGL() {
                                    cw::RGBAColor(32, 32, 32),
                                    cw::RGBAColor(127, 127, 127),
                                    cw::RGBAColor(255, 255, 255),
-                                   cw::Vertex(0.0, 1.0, 0.0),
+                                   cw::Vertex(0.0, 0.0, 0.0),
                                    this));
   m_PlainTriangles.reset(new cw::PlainTriangles(
       std::vector { cw::Vertex(0.0, 1.0, 0.0),
                     cw::Vertex(-1.0, -1.0, 0.0),
-                    cw::Vertex(1.0, -1.0, 0.0) },
+                    cw::Vertex(1.0, -1.0, 0.0),
+                    cw::Vertex(0.0, 1.0, 0.0),
+                    cw::Vertex(1.0, -1.0, 0.0),
+                    cw::Vertex(-1.0, -1.0, 0.0) },
       std::vector { GLuint(0), GLuint(1), GLuint(2),
-                    GLuint(0), GLuint(2), GLuint(1) }
+                    GLuint(3), GLuint(4), GLuint(5) }
   ));
   m_MaterializedTriangles.reset(new cw::MaterializedDrawable(
       cw::GetBrassMaterial(),
@@ -73,13 +75,12 @@ void GLWidget::paintGL() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glLoadIdentity();
-
   m_Light->Enable(this);
+
+  glLoadIdentity();
   glTranslatef(0.0f, 0.0f, -5.0f);
   glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
   m_MaterializedTriangles->Draw(this);
-
-  glFlush();
 }
 
 void GLWidget::resizeGL(int w, int h) {
