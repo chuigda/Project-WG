@@ -1,6 +1,7 @@
 #ifndef PROJECT_WG_PLAIN_TRIANGLES_H
 #define PROJECT_WG_PLAIN_TRIANGLES_H
 
+#include <vector>
 #include "cwglx/Drawable.h"
 #include "cwglx/Vertex.h"
 #include "util/Derive.h"
@@ -10,7 +11,6 @@ namespace cw {
 class PlainTriangles final : public Drawable {
 public:
   PlainTriangles(const std::vector<Vertex>& vertices,
-                 std::vector<GLushort> &&indices,
                  bool computeNormal = true);
 
   ~PlainTriangles() final;
