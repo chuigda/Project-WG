@@ -30,9 +30,14 @@ public:
   CW_DERIVE_UNCOPYABLE(PlainTriangles)
   CW_DERIVE_UNMOVABLE(PlainTriangles)
 
+  void AddTriangle(const std::array<Vertex, 3>& triangle);
   void AddTriangles(TriangleGenerator *generator);
 
 private:
+  void SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
+      const std::array<Vertex, 3> &triangle
+  );
+
   std::vector<VertexF> m_Vertices;
   std::vector<GLushort> m_Indices;
   std::vector<VectorF> m_NormalVectors;

@@ -105,6 +105,23 @@ void PlainTriangles::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
   }
 }
 
+void PlainTriangles::AddTriangle(const std::array<Vertex, 3> &triangle) {
+  if (m_VBOInitialized) {
+    qWarning() << "PlainTriangles::AddTriangles():"
+               << "VBO already initialized, any newly added triangles simply"
+               << "wont draw!";
+    return;
+  }
+
+  if (m_VBODeleted) {
+    qWarning() << "PlainTriangles::AddTriangles():"
+               << "VBO deleted, any newly added triangles simply wont draw!";
+    return;
+  }
+
+  SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(triangle);
+}
+
 void PlainTriangles::AddTriangles(TriangleGenerator *generator) {
   if (m_VBOInitialized) {
     qWarning() << "PlainTriangles::AddTriangles():"
@@ -121,16 +138,22 @@ void PlainTriangles::AddTriangles(TriangleGenerator *generator) {
 
   while (generator->HasNextTriangle()) {
     const auto triangle = generator->NextTriangle();
-    const auto &[v0, v1, v2] = triangle;
+    SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(triangle);
+  }
+}
 
-    const Vector v0v1 = v1 - v0;
-    const Vector v1v2 = v2 - v1;
-    const VectorF normal = VectorF::Downscale(v0v1 * v1v2);
+void PlainTriangles::SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
+    const std::array<Vertex, 3> &triangle
+) {
+  const auto &[v0, v1, v2] = triangle;
 
-    for (std::size_t i = 0; i < 3; i++) {
-      m_Vertices.push_back(VertexF::Downscale(triangle[i]));
-      m_NormalVectors.push_back(normal);
-    }
+  const Vector v0v1 = v1 - v0;
+  const Vector v1v2 = v2 - v1;
+  const VectorF normal = VectorF::Downscale(v0v1 * v1v2);
+
+  for (std::size_t i = 0; i < 3; i++) {
+    m_Vertices.push_back(VertexF::Downscale(triangle[i]));
+    m_NormalVectors.push_back(normal);
   }
 }
 
