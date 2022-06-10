@@ -46,6 +46,10 @@ void PositionedDrawable::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPopMatrix();
 }
 
+void PositionedDrawable::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
+  Q_UNUSED(f)
+}
+
 MaterializedDrawable::
 MaterializedDrawable(const Material *material,
                      std::vector<const Drawable *> &&drawables)
@@ -87,4 +91,9 @@ void Composition::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   }
   f->glPopMatrix();
 }
+
+void Composition::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
+  Q_UNUSED(f)
+}
+
 } // namespace cw

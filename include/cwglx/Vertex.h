@@ -60,9 +60,9 @@ public:
     return m_Repr;
   }
 
-  [[nodiscard]] Vertex& operator+=(const Vector& rhs) noexcept;
+  Vertex& operator+=(const Vector& rhs) noexcept;
 
-  [[nodiscard]] Vertex& operator-=(const Vector& rhs) noexcept;
+  Vertex& operator-=(const Vector& rhs) noexcept;
 
 private:
   std::array<GLdouble, 3> m_Repr;
@@ -95,11 +95,11 @@ public:
     return m_Repr;
   }
 
-  [[nodiscard]] Vector& operator+=(const Vector& rhs) noexcept;
+  Vector& operator+=(const Vector& rhs) noexcept;
 
-  [[nodiscard]] Vector& operator-=(const Vector& rhs) noexcept;
+  Vector& operator-=(const Vector& rhs) noexcept;
 
-  [[nodiscard]] Vector& operator*=(GLdouble rhs) noexcept;
+  Vector& operator*=(GLdouble rhs) noexcept;
 
   [[nodiscard]] Vector Normalize() const noexcept;
 

@@ -28,7 +28,7 @@ private:
   GLfloat m_RotationValue;
 };
 
-class PositionedDrawable final : Drawable {
+class PositionedDrawable final : public Drawable {
 public:
   PositionedDrawable(std::vector<TranslationStep>&& translationSteps,
                      Drawable const* drawable);
@@ -36,6 +36,8 @@ public:
   ~PositionedDrawable() final;
 
   void Draw(QOpenGLFunctions_2_0 *f) const noexcept final;
+
+  void Delete(QOpenGLFunctions_2_0 *f) const noexcept final;
 
   CW_DERIVE_UNCOPYABLE(PositionedDrawable)
   CW_DERIVE_UNMOVABLE(PositionedDrawable)
@@ -72,6 +74,8 @@ public:
   ~Composition() final;
 
   void Draw(QOpenGLFunctions_2_0 *f) const noexcept final;
+
+  void Delete(QOpenGLFunctions_2_0 *f) const noexcept final;
 
   CW_DERIVE_UNCOPYABLE(Composition)
   CW_DERIVE_UNMOVABLE(Composition)
