@@ -7,7 +7,7 @@ namespace cw {
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
 PlainTriangles::PlainTriangles(const std::vector<Vertex>& vertices,
-                               std::vector<GLuint> &&indices,
+                               std::vector<GLushort> &&indices,
                                bool computeNormal)
   : m_Indices(std::move(indices)),
     m_VBOInitialized(false),
@@ -68,7 +68,7 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
 
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
     f->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                    m_Indices.size() * sizeof(GLuint),
+                    m_Indices.size() * sizeof(GLushort),
                     m_Indices.data(),
                     GL_STATIC_DRAW);
 
@@ -87,7 +87,7 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
     f->glNormalPointer(GL_FLOAT, 0, nullptr);
 
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
-    f->glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr);
+    f->glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_SHORT, nullptr);
   }
   f->glPopClientAttrib();
 }

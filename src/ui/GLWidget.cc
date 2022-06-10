@@ -58,12 +58,9 @@ void GLWidget::initializeGL() {
   m_PlainTriangles.reset(new cw::PlainTriangles(
       std::vector { cw::Vertex(0.0, 1.0, 0.0),
                     cw::Vertex(-1.0, -1.0, 0.0),
-                    cw::Vertex(1.0, -1.0, 0.0),
-                    cw::Vertex(0.0, 1.0, 0.0),
-                    cw::Vertex(1.0, -1.0, 0.0),
-                    cw::Vertex(-1.0, -1.0, 0.0) },
-      std::vector { GLuint(0), GLuint(1), GLuint(2),
-                    GLuint(3), GLuint(4), GLuint(5) }
+                    cw::Vertex(1.0, -1.0, 0.0) },
+      std::vector { GLushort(0), GLushort(1), GLushort(2),
+                    GLushort(0), GLushort(2), GLushort(1) }
   ));
   m_MaterializedTriangles.reset(new cw::MaterializedDrawable(
       cw::GetBrassMaterial(),

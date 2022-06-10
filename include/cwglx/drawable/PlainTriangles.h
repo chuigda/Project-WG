@@ -10,7 +10,7 @@ namespace cw {
 class PlainTriangles final : public Drawable {
 public:
   PlainTriangles(const std::vector<Vertex>& vertices,
-                 std::vector<GLuint> &&indices,
+                 std::vector<GLushort> &&indices,
                  bool computeNormal = true);
 
   ~PlainTriangles() final;
@@ -24,7 +24,7 @@ public:
 
 private:
   std::vector<VertexF> m_Vertices;
-  std::vector<GLuint> m_Indices;
+  std::vector<GLushort> m_Indices;
   std::vector<VectorF> m_NormalVectors;
 
   mutable bool m_VBOInitialized;
