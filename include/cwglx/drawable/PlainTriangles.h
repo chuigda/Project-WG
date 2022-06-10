@@ -8,10 +8,18 @@
 
 namespace cw {
 
+class TriangleGenerator {
+public:
+  virtual ~TriangleGenerator() = 0;
+
+  virtual bool HasNextTriangle() = 0;
+  virtual std::array<Vertex, 3> NextTriangle() = 0;
+};
+
 class PlainTriangles final : public Drawable {
 public:
-  PlainTriangles(const std::vector<Vertex>& vertices,
-                 bool computeNormal = true);
+  explicit PlainTriangles(const std::vector<Vertex>& vertices,
+                          bool computeNormal = true);
 
   ~PlainTriangles() final;
 
@@ -21,6 +29,8 @@ public:
 
   CW_DERIVE_UNCOPYABLE(PlainTriangles)
   CW_DERIVE_UNMOVABLE(PlainTriangles)
+
+  void AddTriangles(TriangleGenerator *generator);
 
 private:
   std::vector<VertexF> m_Vertices;

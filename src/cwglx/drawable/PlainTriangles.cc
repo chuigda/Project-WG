@@ -4,6 +4,8 @@
 
 namespace cw {
 
+TriangleGenerator::~TriangleGenerator() = default;
+
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
 PlainTriangles::PlainTriangles(const std::vector<Vertex>& vertices,
@@ -33,7 +35,7 @@ PlainTriangles::PlainTriangles(const std::vector<Vertex>& vertices,
 
       const VectorF normal = VectorF::Downscale(v0v1 * v1v2);
 
-      for (std::size_t i = 0; i < 3; i++) {
+      for (std::size_t j = 0; j < 3; j++) {
         m_NormalVectors.push_back(normal);
       }
     }
@@ -59,19 +61,20 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
 
     f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
     f->glBufferData(GL_ARRAY_BUFFER,
-                    m_Vertices.size() * sizeof(VertexF),
+                    static_cast<GLsizei>(m_Vertices.size() * sizeof(VertexF)),
                     m_Vertices.data(),
                     GL_STATIC_DRAW);
 
     f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
     f->glBufferData(GL_ARRAY_BUFFER,
-                    m_NormalVectors.size() * sizeof(VectorF),
+                    static_cast<GLsizei>(m_NormalVectors.size()
+                                         * sizeof(VectorF)),
                     m_NormalVectors.data(),
                     GL_STATIC_DRAW);
 
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
     f->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                    m_Indices.size() * sizeof(GLushort),
+                    static_cast<GLsizei>(m_Indices.size() * sizeof(GLushort)),
                     m_Indices.data(),
                     GL_STATIC_DRAW);
 
@@ -99,6 +102,35 @@ void PlainTriangles::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
   if (!m_VBODeleted) {
     f->glDeleteBuffers(2, m_VBO.data());
     m_VBODeleted = true;
+  }
+}
+
+void PlainTriangles::AddTriangles(TriangleGenerator *generator) {
+  if (m_VBOInitialized) {
+    qWarning() << "PlainTriangles::AddTriangles():"
+               << "VBO already initialized, any newly added triangles simply"
+               << "wont draw!";
+    return;
+  }
+
+  if (m_VBODeleted) {
+    qWarning() << "PlainTriangles::AddTriangles():"
+               << "VBO deleted, any newly added triangles simply wont draw!";
+    return;
+  }
+
+  while (generator->HasNextTriangle()) {
+    const auto triangle = generator->NextTriangle();
+    const auto &[v0, v1, v2] = triangle;
+
+    const Vector v0v1 = v1 - v0;
+    const Vector v1v2 = v2 - v1;
+    const VectorF normal = VectorF::Downscale(v0v1 * v1v2);
+
+    for (std::size_t i = 0; i < 3; i++) {
+      m_Vertices.push_back(VertexF::Downscale(triangle[i]));
+      m_NormalVectors.push_back(normal);
+    }
   }
 }
 
