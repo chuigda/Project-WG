@@ -8,13 +8,7 @@
 
 namespace cw {
 
-class TriangleGenerator {
-public:
-  virtual ~TriangleGenerator() = 0;
-
-  virtual bool HasNextTriangle() = 0;
-  virtual std::array<Vertex, 3> NextTriangle() = 0;
-};
+class TriangleGenerator;
 
 class PlainTriangles final : public Drawable {
 public:

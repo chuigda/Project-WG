@@ -1,10 +1,9 @@
 #include "cwglx/drawable/PlainTriangles.h"
 
 #include <QOpenGLFunctions_2_0>
+#include "cwglx/drawable/TriangleGenerator.h"
 
 namespace cw {
-
-TriangleGenerator::~TriangleGenerator() = default;
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
@@ -93,7 +92,9 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
     f->glNormalPointer(GL_FLOAT, 0, nullptr);
 
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
-    f->glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_SHORT, nullptr);
+    f->glDrawElements(GL_TRIANGLES,
+                      static_cast<GLsizei>(m_Indices.size()),
+                      GL_UNSIGNED_SHORT, nullptr);
   }
   f->glPopClientAttrib();
 }
