@@ -57,14 +57,22 @@ void GLWidget::initializeGL() {
                                    cw::Vertex(0.0, 0.0, 0.0),
                                    this));
   cw::PlainTriangles *triangles = new cw::PlainTriangles();
-  cw::FanGenerator fan {
+  cw::FanGenerator fan1 {
     cw::Vector { 0.0f, 0.0f, 0.0f },
     1.5,
     0.0,
     360.0,
     64
   };
-  triangles->AddTriangles(&fan);
+  cw::FanGenerator fan2 {
+      cw::Vector { 0.0f, 0.0f, 0.0f },
+      1.5,
+      360.0,
+      0.0,
+      64
+  };
+  triangles->AddTriangles(&fan1);
+  triangles->AddTriangles(&fan2);
   m_PlainTriangles.reset(triangles);
 
   m_MaterializedTriangles.reset(new cw::MaterializedDrawable(
