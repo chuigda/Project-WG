@@ -56,6 +56,7 @@ private:
 
 class Composer final : public TriangleGenerator {
 public:
+  explicit
   Composer(std::vector<std::unique_ptr<TriangleGenerator>> &&generators);
 
   ~Composer() final;
@@ -71,13 +72,16 @@ private:
   std::vector<std::unique_ptr<TriangleGenerator>>::iterator m_CurrentGenerator;
 };
 
+enum class CircleAxis { XAxis, YAxis, ZAxis };
+
 class FanGenerator final : public TriangleGenerator {
 public:
   FanGenerator(const Vector& centerPoint,
                GLdouble radius,
                GLdouble startAngle,
                GLdouble endAngle,
-               std::size_t count);
+               std::size_t count,
+               CircleAxis axis);
 
   ~FanGenerator() final;
 
@@ -92,10 +96,53 @@ private:
   GLdouble m_Radius;
   GLdouble m_StartAngle;
   std::size_t m_Count;
+  CircleAxis m_Axis;
 
   GLdouble m_PieceDegree;
   std::size_t m_CurrentCount;
 };
+
+class CylinderGenerator final : public TriangleGenerator {
+public:
+  CylinderGenerator(const Vector &centerPoint,
+                    GLdouble radius,
+                    GLdouble height,
+                    GLdouble startAngle,
+                    GLdouble endAngle,
+                    std::size_t count,
+                    CircleAxis axis);
+
+  ~CylinderGenerator() final;
+
+  CW_DERIVE_UNCOPYABLE(CylinderGenerator)
+
+  bool HasNextTriangle() final;
+
+  std::array<Vertex, 3> NextTriangle() final;
+
+private:
+  Vertex ArrangeAxisValues(GLdouble fanX, GLdouble fanY, GLdouble height);
+
+  Vector m_CenterPoint;
+  GLdouble m_Radius;
+  GLdouble m_HalfHeight;
+  GLdouble m_StartAngle;
+  std::size_t m_Count;
+  CircleAxis m_Axis;
+
+  GLdouble m_PieceDegree;
+  std::size_t m_CurrentCount;
+  bool m_UpTriangle;
+};
+
+std::unique_ptr<TriangleGenerator>
+CreateClosedCylinder(const Vector &centerPoint,
+                     GLdouble radius,
+                     GLdouble height,
+                     GLdouble startAngle,
+                     GLdouble endAngle,
+                     std::size_t count,
+                     CircleAxis axis);
 
 } // namespace cw
 
