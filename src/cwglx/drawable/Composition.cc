@@ -82,11 +82,11 @@ Composition::~Composition() = default;
 
 void Composition::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPushMatrix();
-  for (const auto &step : m_TranslationSteps) {
+  for (const TranslationStep &step : m_TranslationSteps) {
     step.ApplyTranslation(f);
   }
 
-  for (const auto &drawable : m_Drawables) {
+  for (const Drawable *drawable : m_Drawables) {
     drawable->Draw(f);
   }
   f->glPopMatrix();

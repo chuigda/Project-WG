@@ -25,6 +25,7 @@ public:
   CW_DERIVE_UNMOVABLE(PlainTriangles)
 
   void AddTriangle(const std::array<Vertex, 3>& triangle);
+  void AddTriangles(const std::array<Vertex, 3> *triangles, std::size_t count);
   void AddTriangles(TriangleGenerator *generator);
 
 private:

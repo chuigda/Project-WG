@@ -3,6 +3,7 @@
 
 #include <array>
 #include <memory>
+#include <vector>
 #include "cwglx/Vertex.h"
 #include "util/Derive.h"
 
@@ -37,7 +38,8 @@ private:
 
 class Positioner final : public TriangleGenerator {
 public:
-  Positioner(std::unique_ptr<TriangleGenerator> &&generator, const Vector& position);
+  Positioner(std::unique_ptr<TriangleGenerator> &&generator,
+             const Vector& position);
 
   ~Positioner() final;
 
@@ -50,6 +52,23 @@ public:
 private:
   std::unique_ptr<TriangleGenerator> m_Generator;
   Vector m_Position;
+};
+
+class Composer final : public TriangleGenerator {
+public:
+  Composer(std::vector<std::unique_ptr<TriangleGenerator>> &&generators);
+
+  ~Composer() final;
+
+  CW_DERIVE_UNCOPYABLE(Composer)
+
+  bool HasNextTriangle() final;
+
+  std::array<Vertex, 3> NextTriangle() final;
+
+private:
+  std::vector<std::unique_ptr<TriangleGenerator>> m_Generators;
+  std::vector<std::unique_ptr<TriangleGenerator>>::iterator m_CurrentGenerator;
 };
 
 } // namespace cw

@@ -44,4 +44,27 @@ std::array<Vertex, 3> Positioner::NextTriangle() {
   return triangle;
 }
 
+Composer::Composer(std::vector<std::unique_ptr<TriangleGenerator>> &&generators)
+  : m_Generators(std::move(generators))
+{}
+
+Composer::~Composer() = default;
+
+bool Composer::HasNextTriangle() {
+  while (!m_CurrentGenerator->get()->HasNextTriangle()
+         && m_CurrentGenerator == m_Generators.cend()) {
+    ++m_CurrentGenerator;
+  }
+
+  return m_CurrentGenerator != m_Generators.cend();
+}
+
+std::array<Vertex, 3> Composer::NextTriangle() {
+  while (!m_CurrentGenerator->get()->HasNextTriangle()) {
+    ++m_CurrentGenerator;
+  }
+
+  return m_CurrentGenerator->get()->NextTriangle();
+}
+
 } // namespace cw
