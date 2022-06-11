@@ -105,6 +105,8 @@ public:
 
   [[nodiscard]] Vector ABS() const noexcept;
 
+  [[nodiscard]] Vertex AsVertex() const noexcept;
+
 private:
   std::array<GLdouble, 3> m_Repr;
 };

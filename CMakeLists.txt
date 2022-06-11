@@ -25,6 +25,7 @@ set(PROJECT_SOURCES
     src/ui/GLWidget.cc
     include/ui/GLWidget.h
 
+    src/util/Constants.cc
     include/util/Wife.h
     include/util/Constants.h
     include/util/Derive.h

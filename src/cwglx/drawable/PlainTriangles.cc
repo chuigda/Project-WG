@@ -5,12 +5,25 @@
 
 namespace cw {
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
+PlainTriangles::PlainTriangles(bool computeNormal)
+  : m_ComputeNormal(computeNormal),
+    m_Vertices(),
+    m_Indices(),
+    m_NormalVectors(),
+    m_VBOInitialized(false),
+    m_VBODeleted(false),
+    m_VBO()
+{}
+
 PlainTriangles::PlainTriangles(const std::vector<Vertex>& vertices,
                                bool computeNormal)
-  : m_VBOInitialized(false),
-    m_VBODeleted(false)
+  : m_ComputeNormal(computeNormal),
+    m_Vertices(),
+    m_Indices(),
+    m_NormalVectors(),
+    m_VBOInitialized(false),
+    m_VBODeleted(false),
+    m_VBO()
 {
   m_Vertices.reserve(vertices.size());
   for (const auto& vertex : vertices) {
@@ -64,12 +77,14 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
                     m_Vertices.data(),
                     GL_STATIC_DRAW);
 
-    f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
-    f->glBufferData(GL_ARRAY_BUFFER,
-                    static_cast<GLsizei>(m_NormalVectors.size()
-                                         * sizeof(VectorF)),
-                    m_NormalVectors.data(),
-                    GL_STATIC_DRAW);
+    if (m_ComputeNormal) {
+      f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
+      f->glBufferData(GL_ARRAY_BUFFER,
+                      static_cast<GLsizei>(m_NormalVectors.size()
+                                           * sizeof(VectorF)),
+                      m_NormalVectors.data(),
+                      GL_STATIC_DRAW);
+    }
 
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
     f->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
@@ -83,13 +98,14 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
   {
     f->glEnableClientState(GL_VERTEX_ARRAY);
-    f->glEnableClientState(GL_NORMAL_ARRAY);
-
     f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
     f->glVertexPointer(3, GL_FLOAT, 0, nullptr);
 
-    f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
-    f->glNormalPointer(GL_FLOAT, 0, nullptr);
+    if (m_ComputeNormal) {
+      f->glEnableClientState(GL_NORMAL_ARRAY);
+      f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
+      f->glNormalPointer(GL_FLOAT, 0, nullptr);
+    }
 
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
     f->glDrawElements(GL_TRIANGLES,
@@ -175,7 +191,10 @@ void PlainTriangles::SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
 
   for (std::size_t i = 0; i < 3; i++) {
     m_Vertices.push_back(VertexF::Downscale(triangle[i]));
-    m_NormalVectors.push_back(normal);
+    if (m_ComputeNormal) {
+      m_NormalVectors.push_back(normal);
+    }
+    m_Indices.push_back(m_Indices.size());
   }
 }
 

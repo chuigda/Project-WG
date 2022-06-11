@@ -71,6 +71,32 @@ private:
   std::vector<std::unique_ptr<TriangleGenerator>>::iterator m_CurrentGenerator;
 };
 
+class FanGenerator final : public TriangleGenerator {
+public:
+  FanGenerator(const Vector& centerPoint,
+               GLdouble radius,
+               GLdouble startAngle,
+               GLdouble endAngle,
+               std::size_t count);
+
+  ~FanGenerator() final;
+
+  CW_DERIVE_UNCOPYABLE(FanGenerator)
+
+  bool HasNextTriangle() final;
+
+  std::array<Vertex, 3> NextTriangle() final;
+
+private:
+  Vector m_CenterPoint;
+  GLdouble m_Radius;
+  GLdouble m_StartAngle;
+  std::size_t m_Count;
+
+  GLdouble m_PieceDegree;
+  std::size_t m_CurrentCount;
+};
+
 } // namespace cw
 
 #endif // PROJECT_WG_TRIANGLE_GENERATOR_H

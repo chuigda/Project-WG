@@ -8,6 +8,7 @@
 #include "cwglx/Material.h"
 #include "cwglx/drawable/Composition.h"
 #include "cwglx/drawable/PlainTriangles.h"
+#include "cwglx/drawable/TriangleGenerator.h"
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
@@ -55,14 +56,17 @@ void GLWidget::initializeGL() {
                                    cw::RGBAColor(255, 255, 255),
                                    cw::Vertex(0.0, 0.0, 0.0),
                                    this));
-  m_PlainTriangles.reset(new cw::PlainTriangles(
-      std::vector { cw::Vertex(0.0, 1.0, 0.0),
-                    cw::Vertex(-1.0, -1.0, 0.0),
-                    cw::Vertex(1.0, -1.0, 0.0),
-                    cw::Vertex(0.0, 1.0, 0.0),
-                    cw::Vertex(1.0, -1.0, 0.0),
-                    cw::Vertex(-1.0, -1.0, 0.0) }
-  ));
+  cw::PlainTriangles *triangles = new cw::PlainTriangles();
+  cw::FanGenerator fan {
+    cw::Vector { 0.0f, 0.0f, 0.0f },
+    1.5,
+    0.0,
+    360.0,
+    64
+  };
+  triangles->AddTriangles(&fan);
+  m_PlainTriangles.reset(triangles);
+
   m_MaterializedTriangles.reset(new cw::MaterializedDrawable(
       cw::GetBrassMaterial(),
       std::vector { const_cast<cw::Drawable const*>(m_PlainTriangles.data()) }

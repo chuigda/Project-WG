@@ -12,6 +12,8 @@ class TriangleGenerator;
 
 class PlainTriangles final : public Drawable {
 public:
+  explicit PlainTriangles(bool computeNormal = true);
+
   explicit PlainTriangles(const std::vector<Vertex>& vertices,
                           bool computeNormal = true);
 
@@ -33,6 +35,7 @@ private:
       const std::array<Vertex, 3> &triangle
   );
 
+  bool m_ComputeNormal;
   std::vector<VertexF> m_Vertices;
   std::vector<GLushort> m_Indices;
   std::vector<VectorF> m_NormalVectors;

@@ -62,6 +62,10 @@ Vector Vector::ABS() const noexcept {
   return Vector(std::abs(GetX()), std::abs(GetY()), std::abs(GetZ()));
 }
 
+Vertex Vector::AsVertex() const noexcept {
+  return Vertex { GetX(), GetY(), GetZ() };
+}
+
 Vector operator+(const Vector& lhs, const Vector& rhs) noexcept {
   return Vector(lhs.GetX() + rhs.GetX(),
                 lhs.GetY() + rhs.GetY(),
