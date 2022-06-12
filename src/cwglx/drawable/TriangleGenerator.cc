@@ -467,9 +467,9 @@ std::array<Vertex, 3> SphereGenerator::NextTriangle() {
       + static_cast<GLdouble>(m_CurrentXYCount + 1) * m_XYPieceDegree;
 
   GLdouble z0 = m_Radius * std::sin(zStartAngle);
-  GLdouble z0r = m_Radius * std::cos(zStartAngle);
+  GLdouble z0r = std::abs(m_Radius * std::cos(zStartAngle));
   GLdouble z1 = m_Radius * std::sin(zEndAngle);
-  GLdouble z1r = m_Radius * std::cos(zEndAngle);
+  GLdouble z1r = std::abs(m_Radius * std::cos(zEndAngle));
 
   GLdouble x01 = z0r * std::cos(xyStartAngle);
   GLdouble y01 = z0r * std::sin(xyStartAngle);
