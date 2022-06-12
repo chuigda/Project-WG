@@ -10,6 +10,8 @@
 
 namespace cw {
 
+enum class PlaneFace { FrontFace, BackFace };
+
 enum class CircleAxis { XAxis, YAxis, ZAxis };
 
 class TriangleGenerator {
@@ -42,6 +44,25 @@ public:
 private:
   std::array<Vertex, 3> m_Vertices;
   bool m_Generated;
+};
+
+class StoredTriangles final : public TriangleGenerator {
+public:
+  explicit StoredTriangles(std::vector<std::array<Vertex, 3>>&& triangles);
+
+  ~StoredTriangles() final;
+
+  [[nodiscard]] bool HasNextTriangle() final;
+
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
+
+private:
+  std::vector<std::array<Vertex, 3>> m_Triangles;
+  std::size_t m_CurrentTriangle;
 };
 
 class Positioner final : public TriangleGenerator {
@@ -114,15 +135,12 @@ public:
                GLdouble radius,
                GLdouble startAngle,
                GLdouble endAngle,
-               std::size_t count,
-               CircleAxis axis);
+               std::size_t count);
 
-  // Secret internals, do not use, or you will be fired
   FanGenerator(const Vector &centerPoint,
                GLdouble radius,
                GLdouble startAngleRad,
                std::size_t count,
-               CircleAxis axis,
                GLdouble pieceDegreeRad,
                const SecretInternalsDoNotUseOrYouWillBeFired&);
 
@@ -141,7 +159,6 @@ private:
   GLdouble m_Radius;
   GLdouble m_StartAngle;
   std::size_t m_Count;
-  CircleAxis m_Axis;
 
   GLdouble m_PieceDegree;
   std::size_t m_CurrentCount;
@@ -154,15 +171,13 @@ public:
                     GLdouble height,
                     GLdouble startAngle,
                     GLdouble endAngle,
-                    std::size_t count,
-                    CircleAxis axis);
+                    std::size_t count);
 
   CylinderGenerator(const Vector &centerPoint,
                     GLdouble radius,
                     GLdouble halfHeight,
                     GLdouble startAngleRad,
                     std::size_t count,
-                    CircleAxis axis,
                     GLdouble pieceDegreeRad,
                     const SecretInternalsDoNotUseOrYouWillBeFired&);
 
@@ -182,7 +197,6 @@ private:
   GLdouble m_HalfHeight;
   GLdouble m_StartAngle;
   std::size_t m_Count;
-  CircleAxis m_Axis;
 
   GLdouble m_PieceDegree;
   std::size_t m_CurrentCount;
@@ -195,8 +209,7 @@ CreateClosedCylinder(const Vector &centerPoint,
                      GLdouble height,
                      GLdouble startAngle,
                      GLdouble endAngle,
-                     std::size_t count,
-                     CircleAxis axis);
+                     std::size_t count);
 
 } // namespace cw
 
