@@ -7,6 +7,7 @@
 
 #include "cwglx/Light.h"
 #include "cwglx/Drawable.h"
+#include "cwglx/DrawableArena.h"
 
 class GLWidget final : public QOpenGLWidget, public QOpenGLFunctions_2_0 {
   Q_OBJECT
@@ -24,9 +25,11 @@ protected:
 
 private:
   QScopedPointer<cw::Light> m_Light;
-  QScopedPointer<cw::Drawable> m_PlainTriangles;
-  QScopedPointer<cw::Drawable> m_MaterializedTriangles;
+  QScopedPointer<cw::Light> m_Light2;
   GLfloat m_Rotation;
+
+  cw::DrawableArena m_Arena;
+  std::size_t m_MaterializedId;
 };
 
 #endif // PROJECT_WG_GLWIDGET_H

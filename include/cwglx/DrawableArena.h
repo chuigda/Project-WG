@@ -8,6 +8,8 @@
 #include "cwglx/Drawable.h"
 #include "util/Derive.h"
 
+class QOpenGLFunctions_2_0;
+
 namespace cw {
 
 class DrawableArena {
@@ -17,11 +19,15 @@ public:
   CW_DERIVE_UNCOPYABLE(DrawableArena);
   CW_DERIVE_UNMOVABLE(DrawableArena);
 
-  [[nodiscard]] std::size_t Put(std::unique_ptr<Drawable> &&drawable);
+  std::pair<std::size_t, Drawable const*>
+  Put(std::unique_ptr<Drawable> &&drawable);
 
-  std::size_t Put(std::unique_ptr<Drawable> &&drawable, std::size_t id);
+  std::pair<std::size_t, Drawable const*>
+  Put(std::unique_ptr<Drawable> &&drawable, std::size_t id);
 
   [[nodiscard]] Drawable const* Get(std::size_t id) const;
+
+  void Delete(QOpenGLFunctions_2_0 *f) const noexcept;
 
 private:
   std::size_t m_CurrentId;

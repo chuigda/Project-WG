@@ -9,12 +9,16 @@
 #include "cwglx/drawable/Composition.h"
 #include "cwglx/drawable/PlainTriangles.h"
 #include "cwglx/drawable/TriangleGenerator.h"
+#include "wgc0310/Head.h"
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
     QOpenGLFunctions_2_0(),
     m_Light(nullptr),
-    m_Rotation(0.0f)
+    m_Light2(nullptr),
+    m_Rotation(0.0f),
+    m_Arena(),
+    m_MaterializedId(0)
 {
   QSurfaceFormat format;
   format.setSamples(8);
@@ -37,8 +41,7 @@ GLWidget::GLWidget(QWidget *parent)
 GLWidget::~GLWidget() {
   makeCurrent();
 
-  m_MaterializedTriangles->Delete(this);
-  m_PlainTriangles->Delete(this);
+  m_Arena.Delete(this);
 
   doneCurrent();
 }
@@ -54,42 +57,24 @@ void GLWidget::initializeGL() {
                                    cw::RGBAColor(32, 32, 32),
                                    cw::RGBAColor(127, 127, 127),
                                    cw::RGBAColor(255, 255, 255),
-                                   cw::Vertex(0.0, 0.0, 0.0),
+                                   cw::Vertex(-25.0, 0.0, 0.0),
                                    this));
-  cw::PlainTriangles *triangles = new cw::PlainTriangles();
-  std::unique_ptr<cw::TriangleGenerator> box =
-      std::make_unique<cw::BoxGenerator>(cw::Vector(0.0, 0.0, 0.0), 1.0, 1.0, 1.0);
-  std::unique_ptr<cw::Rotator> rotator1 = std::make_unique<cw::Rotator>(
-      box->Clone(),
-      cw::Vertex(0.0, 0.0, 0.0),
-      cw::CircleAxis::XAxis,
-      45.0
-  );
-  std::unique_ptr<cw::Rotator> rotator2 = std::make_unique<cw::Rotator>(
-      box->Clone(),
-      cw::Vertex(0.0, 0.0, 0.0),
-      cw::CircleAxis::XAxis,
-      90.0
-  );
-  std::unique_ptr<cw::Positioner> positioner1 =
-      std::make_unique<cw::Positioner>(
-          std::move(box),
-          cw::Vector(-2.0, 0.0, 0.0)
-      );
-  std::unique_ptr<cw::Positioner> positioner2 =
-      std::make_unique<cw::Positioner>(
-          std::move(rotator2),
-          cw::Vector(2.0, 0.0, 0.0)
-      );
-  triangles->AddTriangles(positioner1.get());
-  triangles->AddTriangles(rotator1.get());
-  triangles->AddTriangles(positioner2.get());
-  m_PlainTriangles.reset(triangles);
+  m_Light2.reset(new cw::PointLight(GL_LIGHT1,
+                                    cw::RGBAColor(32, 32, 32),
+                                    cw::RGBAColor(127, 127, 127),
+                                    cw::RGBAColor(255, 255, 255),
+                                    cw::Vertex(25.0, 0.0, 0.0),
+                                    this));
 
-  m_MaterializedTriangles.reset(new cw::MaterializedDrawable(
-      cw::GetBrassMaterial(),
-      std::vector { const_cast<cw::Drawable const*>(m_PlainTriangles.data()) }
-  ));
+  cw::Drawable const* sideThermalController =
+      wgc0310::SideThermalController(&m_Arena);
+  const auto [materializedId, materialized] = m_Arena.Put(
+      std::make_unique<cw::MaterializedDrawable>(
+          cw::GetBrassMaterial(),
+          std::vector { sideThermalController }
+      )
+  );
+  m_MaterializedId = materializedId;
 }
 
 void GLWidget::paintGL() {
@@ -97,11 +82,14 @@ void GLWidget::paintGL() {
 
   glLoadIdentity();
   m_Light->Enable(this);
+  m_Light2->Enable(this);
 
   glLoadIdentity();
-  glTranslatef(0.0f, 0.0f, -5.0f);
-  glRotatef(m_Rotation, 1.0f, 0.0f, 0.0f);
-  m_MaterializedTriangles->Draw(this);
+  glTranslatef(0.0f, 0.0f, -30.0f);
+  glRotatef(15, 1.0f, 0.0f, 0.0f);
+  glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
+
+  m_Arena.Get(m_MaterializedId)->Draw(this);
 }
 
 void GLWidget::resizeGL(int w, int h) {
@@ -117,4 +105,5 @@ void GLWidget::resizeGL(int w, int h) {
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+  glScalef(0.01f, 0.01f, 0.01f);
 }

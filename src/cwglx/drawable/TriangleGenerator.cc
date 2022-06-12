@@ -676,69 +676,69 @@ BoxGenerator::~BoxGenerator() = default;
   switch (m_CurrentCount - 1) {
     // front face, z = +Z
     case 0: return {
-        Vertex(-m_XScale, m_YScale, m_ZScale),
-        Vertex(-m_XScale, -m_YScale, m_ZScale),
-        Vertex(m_XScale, -m_YScale, m_ZScale)
+        m_CenterPoint + Vertex(-m_XScale, m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, -m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, -m_YScale, m_ZScale)
     };
     case 1: return {
-        Vertex(-m_XScale, m_YScale, m_ZScale),
-        Vertex(m_XScale, -m_YScale, m_ZScale),
-        Vertex(m_XScale, m_YScale, m_ZScale)
+        m_CenterPoint + Vertex(-m_XScale, m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, -m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, m_YScale, m_ZScale)
     };
     // back face, z = -Z
     case 2: return {
-        Vertex(m_XScale, m_YScale, -m_ZScale),
-        Vertex(m_XScale, -m_YScale, -m_ZScale),
-        Vertex(-m_XScale, -m_YScale, -m_ZScale)
+        m_CenterPoint + Vertex(m_XScale, m_YScale, -m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, -m_YScale, -m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, -m_YScale, -m_ZScale)
     };
     case 3: return {
-        Vertex(m_XScale, m_YScale, -m_ZScale),
-        Vertex(-m_XScale, -m_YScale, -m_ZScale),
-        Vertex(-m_XScale, m_YScale, -m_ZScale)
+        m_CenterPoint + Vertex(m_XScale, m_YScale, -m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, -m_YScale, -m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, m_YScale, -m_ZScale)
     };
     // right face, x = X
     case 4: return {
-        Vertex(m_XScale, m_YScale, -m_ZScale),
-        Vertex(m_XScale, -m_YScale, m_ZScale),
-        Vertex(m_XScale, -m_YScale, -m_ZScale)
+        m_CenterPoint + Vertex(m_XScale, m_YScale, -m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, -m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, -m_YScale, -m_ZScale)
     };
     case 5: return {
-        Vertex(m_XScale, m_YScale, -m_ZScale),
-        Vertex(m_XScale, m_YScale, m_ZScale),
-        Vertex(m_XScale, -m_YScale, m_ZScale)
+        m_CenterPoint + Vertex(m_XScale, m_YScale, -m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, -m_YScale, m_ZScale)
     };
     // left face, x = -X
     case 6: return {
-        Vertex(-m_XScale, m_YScale, m_ZScale),
-        Vertex(-m_XScale, -m_YScale, -m_ZScale),
-        Vertex(-m_XScale, -m_YScale, m_ZScale)
+        m_CenterPoint + Vertex(-m_XScale, m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, -m_YScale, -m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, -m_YScale, m_ZScale)
     };
     case 7: return {
-        Vertex(-m_XScale, m_YScale, m_ZScale),
-        Vertex(-m_XScale, m_YScale, -m_ZScale),
-        Vertex(-m_XScale, -m_YScale, -m_ZScale)
+        m_CenterPoint + Vertex(-m_XScale, m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, m_YScale, -m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, -m_YScale, -m_ZScale)
     };
     // top face, y = +Y
     case 8: return {
-        Vertex(-m_XScale, m_YScale, -m_ZScale),
-        Vertex(-m_XScale, m_YScale, m_ZScale),
-        Vertex(m_XScale, m_YScale, m_ZScale)
+        m_CenterPoint + Vertex(-m_XScale, m_YScale, -m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, m_YScale, m_ZScale)
     };
     case 9: return {
-        Vertex(-m_XScale, m_YScale, -m_ZScale),
-        Vertex(m_XScale, m_YScale, m_ZScale),
-        Vertex(m_XScale, m_YScale, -m_ZScale)
+        m_CenterPoint + Vertex(-m_XScale, m_YScale, -m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, m_YScale, -m_ZScale)
     };
     // bottom face, y = -Y
     case 10: return {
-        Vertex(m_XScale, -m_YScale, m_ZScale),
-        Vertex(-m_XScale, -m_YScale, -m_ZScale),
-        Vertex(m_XScale, -m_YScale, -m_ZScale)
+        m_CenterPoint + Vertex(m_XScale, -m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, -m_YScale, -m_ZScale),
+        m_CenterPoint + Vertex(m_XScale, -m_YScale, -m_ZScale)
     };
     case 11: return {
-        Vertex(m_XScale, -m_YScale, m_ZScale),
-        Vertex(-m_XScale, -m_YScale, m_ZScale),
-        Vertex(-m_XScale, -m_YScale, -m_ZScale)
+        m_CenterPoint + Vertex(m_XScale, -m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, -m_YScale, m_ZScale),
+        m_CenterPoint + Vertex(-m_XScale, -m_YScale, -m_ZScale)
     };
 
     default:

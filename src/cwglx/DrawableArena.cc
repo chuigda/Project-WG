@@ -6,24 +6,28 @@ namespace cw {
 
 DrawableArena::DrawableArena() : m_CurrentId(0) {}
 
-std::size_t DrawableArena::Put(std::unique_ptr<Drawable> &&drawable) {
+std::pair<std::size_t, Drawable const*>
+DrawableArena::Put(std::unique_ptr<Drawable> &&drawable) {
   while (m_ReservedIds.find(m_CurrentId) != m_ReservedIds.end()) {
     ++m_CurrentId;
   }
 
-  m_Drawables[m_CurrentId] = std::move(drawable);
-  return m_CurrentId++;
+  const auto [it, _] =
+      m_Drawables.insert(std::make_pair<>(m_CurrentId, std::move(drawable)));
+  return std::make_pair(m_CurrentId++, it->second.get());
 }
 
-std::size_t DrawableArena::Put(std::unique_ptr<Drawable> &&drawable,
+std::pair<std::size_t, Drawable const*>
+DrawableArena::Put(std::unique_ptr<Drawable> &&drawable,
                                 std::size_t id) {
-  Q_ASSERT(id < m_CurrentId && "id is already in use");
-  Q_ASSERT(m_ReservedIds.find(id) != m_ReservedIds.end()
+  Q_ASSERT(id >= m_CurrentId && "id is already in use");
+  Q_ASSERT(m_ReservedIds.find(id) == m_ReservedIds.end()
            && "id is already in use");
 
-  m_Drawables[id] = std::move(drawable);
+  const auto [it, _] =
+      m_Drawables.insert(std::make_pair<>(id, std::move(drawable)));
   m_ReservedIds.insert(id);
-  return id;
+  return std::make_pair(id, it->second.get());
 }
 
 const Drawable *DrawableArena::Get(std::size_t id) const {
@@ -34,6 +38,12 @@ const Drawable *DrawableArena::Get(std::size_t id) const {
   }
 
   return it->second.get();
+}
+
+void DrawableArena::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
+  for (const auto &[_, drawable] : m_Drawables) {
+    drawable->Delete(f);
+  }
 }
 
 } // namespace cw
