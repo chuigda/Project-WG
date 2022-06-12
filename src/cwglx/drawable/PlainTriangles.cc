@@ -88,7 +88,7 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
 
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
     f->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                    static_cast<GLsizei>(m_Indices.size() * sizeof(GLushort)),
+                    static_cast<GLsizei>(m_Indices.size() * sizeof(GLuint)),
                     m_Indices.data(),
                     GL_STATIC_DRAW);
 
@@ -110,7 +110,7 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
     f->glDrawElements(GL_TRIANGLES,
                       static_cast<GLsizei>(m_Indices.size()),
-                      GL_UNSIGNED_SHORT, nullptr);
+                      GL_UNSIGNED_INT, nullptr);
   }
   f->glPopClientAttrib();
 }

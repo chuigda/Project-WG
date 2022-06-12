@@ -50,6 +50,10 @@ class StoredTriangles final : public TriangleGenerator {
 public:
   explicit StoredTriangles(std::vector<std::array<Vertex, 3>>&& triangles);
 
+  explicit
+  StoredTriangles(std::shared_ptr<std::vector<std::array<Vertex, 3>>> triangles,
+                  const SecretInternalsDoNotUseOrYouWillBeFired&);
+
   ~StoredTriangles() final;
 
   [[nodiscard]] bool HasNextTriangle() final;
@@ -61,8 +65,8 @@ public:
   void Reset() final;
 
 private:
-  std::vector<std::array<Vertex, 3>> m_Triangles;
-  std::size_t m_CurrentTriangle;
+  std::shared_ptr<std::vector<std::array<Vertex, 3>>> m_Triangles;
+  typename std::vector<std::array<Vertex, 3>>::iterator m_CurrentTriangle;
 };
 
 class Positioner final : public TriangleGenerator {
@@ -210,6 +214,52 @@ CreateClosedCylinder(const Vector &centerPoint,
                      GLdouble startAngle,
                      GLdouble endAngle,
                      std::size_t count);
+
+class SphereGenerator final : public TriangleGenerator {
+public:
+  SphereGenerator(const Vector &centerPoint,
+                  GLdouble radius,
+                  GLdouble xyStartAngle,
+                  GLdouble xyEndAngle,
+                  GLdouble zStartAngle,
+                  GLdouble zEndAngle,
+                  std::size_t xyCount,
+                  std::size_t zCount);
+
+  SphereGenerator(const Vector &centerPoint,
+                  GLdouble radius,
+                  GLdouble xyStartAngleRad,
+                  GLdouble zStartAngleRad,
+                  std::size_t xyCount,
+                  std::size_t zCount,
+                  GLdouble xyPieceDegreeRad,
+                  GLdouble zPieceDegreeRad,
+                  const SecretInternalsDoNotUseOrYouWillBeFired&);
+
+  ~SphereGenerator() final;
+
+  [[nodiscard]] bool HasNextTriangle() final;
+
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
+
+private:
+  Vector m_CenterPoint;
+  GLdouble m_Radius;
+  GLdouble m_XYStartAngle;
+  GLdouble m_ZStartAngle;
+  std::size_t m_XYCount;
+  std::size_t m_ZCount;
+  GLdouble m_XYPieceDegree;
+  GLdouble m_ZPieceDegree;
+
+  std::size_t m_CurrentXYCount;
+  std::size_t m_CurrentZCount;
+  bool m_UpTriangle;
+};
 
 } // namespace cw
 

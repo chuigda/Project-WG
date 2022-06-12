@@ -37,7 +37,7 @@ private:
 
   bool m_ComputeNormal;
   std::vector<VertexF> m_Vertices;
-  std::vector<GLushort> m_Indices;
+  std::vector<GLuint> m_Indices;
   std::vector<VectorF> m_NormalVectors;
 
   mutable bool m_VBOInitialized;

@@ -57,30 +57,32 @@ void GLWidget::initializeGL() {
                                    cw::Vertex(0.0, 0.0, 0.0),
                                    this));
   cw::PlainTriangles *triangles = new cw::PlainTriangles();
-  std::unique_ptr<cw::TriangleGenerator> cylinder1 =
-      cw::CreateClosedCylinder(
+  std::unique_ptr<cw::TriangleGenerator> sphere =
+      std::make_unique<cw::SphereGenerator>(
           cw::Vector(0.0, 0.0, 0.0),
-          0.5f,
-          1.0f,
-          0.0f,
-          360.0f,
-          512
+          1.0,
+          0.0,
+          90.0,
+          0.0,
+          90.0,
+          64,
+          64
       );
   std::unique_ptr<cw::Rotator> rotator1 = std::make_unique<cw::Rotator>(
-      cylinder1->Clone(),
+      sphere->Clone(),
       cw::Vertex(0.0, 0.0, 0.0),
       cw::CircleAxis::XAxis,
       45.0
   );
   std::unique_ptr<cw::Rotator> rotator2 = std::make_unique<cw::Rotator>(
-      cylinder1->Clone(),
+      sphere->Clone(),
       cw::Vertex(0.0, 0.0, 0.0),
       cw::CircleAxis::XAxis,
       90.0
   );
   std::unique_ptr<cw::Positioner> positioner1 =
       std::make_unique<cw::Positioner>(
-          std::move(cylinder1),
+          std::move(sphere),
           cw::Vector(-1.5, 0.0, 0.0)
       );
   std::unique_ptr<cw::Positioner> positioner2 =
@@ -107,7 +109,7 @@ void GLWidget::paintGL() {
 
   glLoadIdentity();
   glTranslatef(0.0f, 0.0f, -5.0f);
-  glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
+  // glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
   m_MaterializedTriangles->Draw(this);
 }
 

@@ -1,5 +1,6 @@
 #include "cwglx/drawable/TriangleGenerator.h"
 
+#include "cwglx/drawable/PlainTriangles.h"
 #include "util/Constants.h"
 
 namespace cw {
@@ -30,6 +31,43 @@ std::unique_ptr<TriangleGenerator> SimpleTriangle::Clone() const {
 
 void SimpleTriangle::Reset() {
   m_Generated = false;
+}
+
+StoredTriangles::StoredTriangles(std::vector<std::array<Vertex, 3>> &&triangles)
+  : m_Triangles(std::make_shared<std::vector<std::array<Vertex, 3>>>(
+      std::move(triangles)
+    )),
+    m_CurrentTriangle(m_Triangles->begin())
+{}
+
+StoredTriangles::
+StoredTriangles(std::shared_ptr<std::vector<std::array<Vertex, 3>>> triangles,
+                const SecretInternalsDoNotUseOrYouWillBeFired &)
+  : m_Triangles(std::move(triangles)),
+    m_CurrentTriangle(m_Triangles->begin())
+{}
+
+StoredTriangles::~StoredTriangles() = default;
+
+bool StoredTriangles::HasNextTriangle() {
+  return m_CurrentTriangle < m_Triangles->end();
+}
+
+std::array<Vertex, 3> StoredTriangles::NextTriangle() {
+  std::array<Vertex, 3> triangle = *m_CurrentTriangle;
+  m_CurrentTriangle++;
+  return triangle;
+}
+
+std::unique_ptr<TriangleGenerator> StoredTriangles::Clone() const {
+  return std::make_unique<StoredTriangles>(
+      m_Triangles,
+      SecretInternalsDoNotUseOrYouWillBeFired::Instance
+  );
+}
+
+void StoredTriangles::Reset() {
+  m_CurrentTriangle = m_Triangles->begin();
 }
 
 Positioner::Positioner(std::unique_ptr<TriangleGenerator> &&generator,
@@ -110,7 +148,7 @@ std::unique_ptr<TriangleGenerator> Rotator::Clone() const {
 
 std::array<Vertex, 3> Rotator::NextTriangle() {
   std::array<Vertex, 3> triangle = m_Base->NextTriangle();
-  for (auto& vertex : triangle) {
+  for (Vertex &vertex : triangle) {
     vertex = Rotate(vertex, m_CenterPoint, m_Axis, m_Degree);
   }
   return triangle;
@@ -360,5 +398,126 @@ CreateClosedCylinder(const Vector &centerPoint,
   );
 }
 #pragma clang diagnostic pop
+
+SphereGenerator::SphereGenerator(const Vector &centerPoint,
+                                 GLdouble radius,
+                                 GLdouble xyStartAngle,
+                                 GLdouble xyEndAngle,
+                                 GLdouble zStartAngle,
+                                 GLdouble zEndAngle,
+                                 std::size_t xyCount,
+                                 std::size_t zCount)
+  : SphereGenerator(centerPoint,
+                    radius,
+                    DegToRad(xyStartAngle),
+                    DegToRad(zStartAngle),
+                    xyCount,
+                    zCount,
+                    DegToRad(xyEndAngle - xyStartAngle)
+                      / static_cast<GLdouble>(xyCount),
+                    DegToRad(zEndAngle - zStartAngle)
+                      / static_cast<GLdouble>(zCount),
+                    SecretInternalsDoNotUseOrYouWillBeFired::Instance)
+{}
+
+SphereGenerator::SphereGenerator(const Vector &centerPoint,
+                                 GLdouble radius,
+                                 GLdouble xyStartAngleRad,
+                                 GLdouble zStartAngleRad,
+                                 std::size_t xyCount,
+                                 std::size_t zCount,
+                                 GLdouble xyPieceDegreeRad,
+                                 GLdouble zPieceDegreeRad,
+                                 const SecretInternalsDoNotUseOrYouWillBeFired&)
+  : m_CenterPoint(centerPoint),
+    m_Radius(radius),
+    m_XYStartAngle(xyStartAngleRad),
+    m_ZStartAngle(zStartAngleRad),
+    m_XYCount(xyCount),
+    m_ZCount(zCount),
+    m_XYPieceDegree(xyPieceDegreeRad),
+    m_ZPieceDegree(zPieceDegreeRad),
+
+    m_CurrentXYCount(0),
+    m_CurrentZCount(0),
+    m_UpTriangle(true)
+{}
+
+SphereGenerator::~SphereGenerator() = default;
+
+bool SphereGenerator::HasNextTriangle() {
+  return m_CurrentXYCount < m_XYCount && m_CurrentZCount < m_ZCount;
+}
+
+std::array<Vertex, 3> SphereGenerator::NextTriangle() {
+  Q_ASSERT(HasNextTriangle());
+
+  GLdouble zStartAngle =
+      m_ZStartAngle
+      + static_cast<GLdouble>(m_CurrentZCount) * m_ZPieceDegree;
+  GLdouble zEndAngle =
+      m_ZStartAngle
+      + static_cast<GLdouble>(m_CurrentZCount + 1) * m_ZPieceDegree;
+
+  GLdouble xyStartAngle =
+      m_XYStartAngle
+      + static_cast<GLdouble>(m_CurrentXYCount) * m_XYPieceDegree;
+  GLdouble xyEndAngle =
+      m_XYStartAngle
+      + static_cast<GLdouble>(m_CurrentXYCount + 1) * m_XYPieceDegree;
+
+  GLdouble z0 = m_Radius * std::sin(zStartAngle);
+  GLdouble z0r = m_Radius * std::cos(zStartAngle);
+  GLdouble z1 = m_Radius * std::sin(zEndAngle);
+  GLdouble z1r = m_Radius * std::cos(zEndAngle);
+
+  GLdouble x01 = z0r * std::cos(xyStartAngle);
+  GLdouble y01 = z0r * std::sin(xyStartAngle);
+  GLdouble x02 = z0r * std::cos(xyEndAngle);
+  GLdouble y02 = z0r * std::sin(xyEndAngle);
+
+  GLdouble x11 = z1r * std::cos(xyStartAngle);
+  GLdouble y11 = z1r * std::sin(xyStartAngle);
+  GLdouble x12 = z1r * std::cos(xyEndAngle);
+  GLdouble y12 = z1r * std::sin(xyEndAngle);
+
+  Vertex v1(x01, y01, z0);
+  Vertex v3(x12, y12, z1);
+
+  if (m_UpTriangle) {
+    Vertex v2(x02, y02, z0);
+    m_UpTriangle = false;
+    return {v1, v2, v3};
+  } else {
+    Vertex v2(x11, y11, z1);
+    m_UpTriangle = true;
+    m_CurrentXYCount += 1;
+    if (m_CurrentXYCount == m_XYCount) {
+      m_CurrentXYCount = 0;
+      m_CurrentZCount += 1;
+    }
+    return {v1, v3, v2};
+  }
+}
+
+std::unique_ptr<TriangleGenerator> SphereGenerator::Clone() const {
+  return std::make_unique<SphereGenerator>(
+      m_CenterPoint,
+      m_Radius,
+      m_XYStartAngle,
+      m_ZStartAngle,
+      m_XYCount,
+      m_ZCount,
+      m_XYPieceDegree,
+      m_ZPieceDegree,
+      SecretInternalsDoNotUseOrYouWillBeFired::Instance
+  );
+}
+
+void SphereGenerator::Reset() {
+  m_CurrentXYCount = 0;
+  m_CurrentZCount = 0;
+  m_UpTriangle = true;
+}
 
 } // namespace cw
