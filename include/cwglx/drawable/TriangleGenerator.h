@@ -4,15 +4,12 @@
 #include <array>
 #include <memory>
 #include <vector>
+#include "cwglx/Defs.h"
 #include "cwglx/Vertex.h"
 #include "util/Derive.h"
 #include "util/Sinkrate.h"
 
 namespace cw {
-
-enum class PlaneFace { FrontFace, BackFace };
-
-enum class CircleAxis { XAxis, YAxis, ZAxis };
 
 class TriangleGenerator {
 public:
@@ -258,6 +255,51 @@ private:
 
   std::size_t m_CurrentXYCount;
   std::size_t m_CurrentZCount;
+  bool m_UpTriangle;
+};
+
+class DonutGenerator final : public TriangleGenerator {
+public:
+  DonutGenerator(const Vector &centerPosition,
+                 GLdouble radius,
+                 GLdouble pipeRadius,
+                 GLdouble startAngle,
+                 GLdouble endAngle,
+                 std::size_t pipeCount,
+                 std::size_t pipePolyCount);
+
+  DonutGenerator(const Vector &centerPosition,
+                 GLdouble radius,
+                 GLdouble pipeRadius,
+                 GLdouble startAngleRad,
+                 std::size_t pipeCount,
+                 std::size_t pipePolyCount,
+                 GLdouble pieceDegreeRad,
+                 GLdouble piecePolyDegreeRad,
+                 const SecretInternalsDoNotUseOrYouWillBeFired&);
+
+  ~DonutGenerator() final;
+
+  [[nodiscard]] bool HasNextTriangle() final;
+
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
+
+private:
+  Vector m_CenterPoint;
+  GLdouble m_Radius;
+  GLdouble m_PipeRadius;
+  GLdouble m_StartAngle;
+  std::size_t m_PipeCount;
+  std::size_t m_PipePolyCount;
+  GLdouble m_PieceDegree;
+  GLdouble m_PiecePolyDegree;
+
+  std::size_t m_CurrentPipeCount;
+  std::size_t m_CurrentPipePolyCount;
   bool m_UpTriangle;
 };
 

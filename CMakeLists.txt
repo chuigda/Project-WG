@@ -49,6 +49,7 @@ set(PROJECT_SOURCES
     include/cwglx/Vertex.h
     include/cwglx/Setup.h
     include/cwglx/Light.h
+    include/cwglx/Defs.h
     include/cwglx/DefaultMaterials.inc
 
     src/cwglx/drawable/Triangle.cc

@@ -4,6 +4,8 @@
 #include <array>
 #include <QtGui/qopengl.h>
 
+#include "cwglx/Defs.h"
+
 class QOpenGLFunctions_2_0;
 
 namespace cw {
@@ -74,6 +76,8 @@ static_assert(sizeof(Vertex) == sizeof(std::array<GLdouble, 3>),
 class Vector final {
 public:
   explicit Vector(GLdouble x, GLdouble y, GLdouble z = 0.0) noexcept;
+
+  static Vector FromVertex(const Vertex& vertex) noexcept;
 
   [[nodiscard]]
   constexpr inline GLdouble GetX() const noexcept {
@@ -240,6 +244,21 @@ void DrawVertexArray(QOpenGLFunctions_2_0 *f,
                      const std::array<VertexF, N>& vertices) noexcept {
   DrawVertexArray(f, vertices.data(), static_cast<GLsizei>(vertices.size()));
 }
+
+Vertex RotateVertex(const Vertex &vertex,
+                    const Vertex &centerPoint,
+                    CircleAxis axis,
+                    GLdouble degree);
+
+namespace constants {
+
+extern Vertex g_ZeroVertex;
+extern Vector g_ZeroVector;
+extern Vector g_UnitVectorX;
+extern Vector g_UnitVectorY;
+extern Vector g_UnitVectorZ;
+
+} // namespace constants
 
 } // namespace cw
 

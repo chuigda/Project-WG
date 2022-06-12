@@ -114,31 +114,6 @@ bool Rotator::HasNextTriangle() {
   return m_Base->HasNextTriangle();
 }
 
-static Vertex Rotate(const Vertex& vertex,
-                     const Vertex &centerPoint,
-                     CircleAxis axis,
-                     GLdouble degree)
-{
-  Vector diff = vertex - centerPoint;
-  const auto [x, y, z] = diff.GetRepr();
-  double cos = std::cos(degree);
-  double sin = std::sin(degree);
-  switch (axis) {
-    case CircleAxis::XAxis:
-      return Vertex(x,
-                    y * cos - z * sin,
-                    y * sin + z * cos);
-    case CircleAxis::YAxis:
-      return Vertex(x * cos + z * sin,
-                    y,
-                    -x * sin + z * cos);
-    case CircleAxis::ZAxis:
-      return Vertex(x * cos - y * sin,
-                    x * sin + y * cos,
-                    z);
-  }
-}
-
 std::unique_ptr<TriangleGenerator> Rotator::Clone() const {
   return std::make_unique<Rotator>(m_Base->Clone(),
                                    m_CenterPoint,
@@ -149,7 +124,7 @@ std::unique_ptr<TriangleGenerator> Rotator::Clone() const {
 std::array<Vertex, 3> Rotator::NextTriangle() {
   std::array<Vertex, 3> triangle = m_Base->NextTriangle();
   for (Vertex &vertex : triangle) {
-    vertex = Rotate(vertex, m_CenterPoint, m_Axis, m_Degree);
+    vertex = RotateVertex(vertex, m_CenterPoint, m_Axis, m_Degree);
   }
   return triangle;
 }
@@ -492,7 +467,7 @@ std::array<Vertex, 3> SphereGenerator::NextTriangle() {
   if (m_UpTriangle) {
     Vertex v2(x02, y02, z0);
     m_UpTriangle = false;
-    return {v1, v2, v3};
+    return {v1 + m_CenterPoint, v2 + m_CenterPoint, v3 + m_CenterPoint};
   } else {
     Vertex v2(x11, y11, z1);
     m_UpTriangle = true;
@@ -501,7 +476,7 @@ std::array<Vertex, 3> SphereGenerator::NextTriangle() {
       m_CurrentXYCount = 0;
       m_CurrentZCount += 1;
     }
-    return {v1, v3, v2};
+    return {v1 + m_CenterPoint, v3 + m_CenterPoint, v2 + m_CenterPoint};
   }
 }
 
@@ -522,6 +497,141 @@ std::unique_ptr<TriangleGenerator> SphereGenerator::Clone() const {
 void SphereGenerator::Reset() {
   m_CurrentXYCount = 0;
   m_CurrentZCount = 0;
+  m_UpTriangle = true;
+}
+
+DonutGenerator::DonutGenerator(const Vector &centerPoint,
+                               GLdouble radius,
+                               GLdouble pipeRadius,
+                               GLdouble startAngle,
+                               GLdouble endAngle,
+                               std::size_t pipeCount,
+                               std::size_t pipePolyCount)
+  : DonutGenerator(centerPoint,
+                   radius + pipeRadius / 2.0,
+                   pipeRadius,
+                   DegToRad(startAngle),
+                   pipeCount,
+                   pipePolyCount,
+                   DegToRad(endAngle - startAngle)
+                   / static_cast<GLdouble>(pipeCount),
+                   constants::PI * 2 / static_cast<GLdouble>(pipePolyCount),
+                   SecretInternalsDoNotUseOrYouWillBeFired::Instance)
+{}
+
+DonutGenerator::DonutGenerator(const Vector &centerPoint,
+                               GLdouble radius,
+                               GLdouble pipeRadius,
+                               GLdouble startAngleRad,
+                               std::size_t pipeCount,
+                               std::size_t pipePolyCount,
+                               GLdouble pieceDegreeRad,
+                               GLdouble piecePolyDegreeRad,
+                               const SecretInternalsDoNotUseOrYouWillBeFired &)
+  : m_CenterPoint(centerPoint),
+    m_Radius(radius),
+    m_PipeRadius(pipeRadius),
+    m_StartAngle(startAngleRad),
+    m_PipeCount(pipeCount),
+    m_PipePolyCount(pipePolyCount),
+    m_PieceDegree(pieceDegreeRad),
+    m_PiecePolyDegree(piecePolyDegreeRad),
+
+    m_CurrentPipeCount(0),
+    m_CurrentPipePolyCount(0),
+    m_UpTriangle(true)
+{}
+
+DonutGenerator::~DonutGenerator() = default;
+
+bool DonutGenerator::HasNextTriangle() {
+  return m_CurrentPipeCount < m_PipeCount
+         && m_CurrentPipePolyCount < m_PipePolyCount;
+}
+
+std::array<Vertex, 3> DonutGenerator::NextTriangle() {
+  Q_ASSERT(HasNextTriangle());
+
+  GLdouble yStartAngle =
+      m_StartAngle
+      + static_cast<GLdouble>(m_CurrentPipeCount) * m_PieceDegree;
+  GLdouble yEndAngle =
+      m_StartAngle
+      + static_cast<GLdouble>(m_CurrentPipeCount + 1) * m_PieceDegree;
+
+  GLdouble xzStartAngle =
+      m_StartAngle
+      + static_cast<GLdouble>(m_CurrentPipePolyCount) * m_PiecePolyDegree;
+  GLdouble xzEndAngle =
+      m_StartAngle
+      + static_cast<GLdouble>(m_CurrentPipePolyCount + 1) * m_PiecePolyDegree;
+
+  GLdouble x0 = m_PipeRadius * std::cos(xzStartAngle);
+  GLdouble z0 = m_PipeRadius * std::sin(xzStartAngle);
+  GLdouble x1 = m_PipeRadius * std::cos(xzEndAngle);
+  GLdouble z1 = m_PipeRadius * std::sin(xzEndAngle);
+
+  Vertex v0 = Vertex(x0 + m_Radius, 0, z0);
+  Vertex v1 = Vertex(x1 + m_Radius, 0, z1);
+
+  Vertex v01 = RotateVertex(v0,
+                            constants::g_ZeroVertex,
+                            CircleAxis::ZAxis,
+                            yStartAngle);
+  Vertex v11 = RotateVertex(v1,
+                            constants::g_ZeroVertex,
+                            CircleAxis::ZAxis,
+                            yStartAngle);
+  Vertex v02 = RotateVertex(v0,
+                            constants::g_ZeroVertex,
+                            CircleAxis::ZAxis,
+                            yEndAngle);
+  Vertex v12 = RotateVertex(v1,
+                            constants::g_ZeroVertex,
+                            CircleAxis::ZAxis,
+                            yEndAngle);
+
+  if (m_UpTriangle) {
+    m_UpTriangle = false;
+
+    return {
+        v01 + m_CenterPoint,
+        v12 + m_CenterPoint,
+        v11 + m_CenterPoint
+    };
+  } else {
+    m_UpTriangle = true;
+    m_CurrentPipeCount += 1;
+    if (m_CurrentPipeCount == m_PipeCount) {
+      m_CurrentPipeCount = 0;
+      m_CurrentPipePolyCount += 1;
+    }
+
+    return {
+        v01 + m_CenterPoint,
+        v02 + m_CenterPoint,
+        v12 + m_CenterPoint
+    };
+  }
+}
+
+std::unique_ptr<TriangleGenerator> DonutGenerator::Clone() const {
+  return std::make_unique<DonutGenerator>(
+      m_CenterPoint,
+      m_Radius,
+      m_PipeRadius,
+      m_StartAngle,
+      m_PipeCount,
+      m_PipePolyCount,
+      m_PieceDegree,
+      m_PiecePolyDegree,
+      SecretInternalsDoNotUseOrYouWillBeFired::Instance
+  );
+}
+
+void DonutGenerator::Reset() {
+  m_CurrentPipeCount = 0;
+  m_CurrentPipePolyCount = 0;
   m_UpTriangle = true;
 }
 

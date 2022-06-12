@@ -12,6 +12,10 @@ Vertex::Vertex(GLdouble x, GLdouble y, GLdouble z) noexcept
   : m_Repr({x, y, z})
 {}
 
+Vector Vector::FromVertex(const Vertex &vertex) noexcept {
+  return Vector { vertex.GetX(), vertex.GetY(), vertex.GetZ() };
+}
+
 Vertex &Vertex::operator+=(const Vector &rhs) noexcept {
   m_Repr[0] += rhs.GetX();
   m_Repr[1] += rhs.GetY();
@@ -165,4 +169,41 @@ void DrawVertexArray(QOpenGLFunctions_2_0 *f,
   f->glDrawArrays(GL_TRIANGLES, 0, count);
 }
 
+Vertex RotateVertex(const Vertex &vertex,
+                    const Vertex &centerPoint,
+                    CircleAxis axis,
+                    GLdouble degree)
+{
+  Vector diff = vertex - centerPoint;
+  const auto [x, y, z] = diff.GetRepr();
+  double cos = std::cos(degree);
+  double sin = std::sin(degree);
+  switch (axis) {
+    case CircleAxis::XAxis:
+      return Vertex(x,
+                    y * cos - z * sin,
+                    y * sin + z * cos);
+    case CircleAxis::YAxis:
+      return Vertex(x * cos + z * sin,
+                    y,
+                    -x * sin + z * cos);
+    case CircleAxis::ZAxis:
+      return Vertex(x * cos - y * sin,
+                    x * sin + y * cos,
+                    z);
+  }
+}
+
+namespace constants {
+
+Vertex g_ZeroVertex {0.0, 0.0, 0.0};
+
+Vector g_ZeroVector {0.0, 0.0, 0.0};
+Vector g_UnitVectorX {1.0, 0.0, 0.0};
+Vector g_UnitVectorY {0.0, 1.0, 0.0};
+Vector g_UnitVectorZ {0.0, 0.0, 1.0};
+
+} // namespace constants
+
 } // namespace cw
+
