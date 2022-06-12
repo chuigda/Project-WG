@@ -60,12 +60,12 @@ void GLWidget::initializeGL() {
   std::unique_ptr<cw::TriangleGenerator> donut =
       std::make_unique<cw::DonutGenerator>(
           cw::Vector(0.0, 0.0, 0.0),
-          0.5,
-          0.5,
+          0.25,
+          0.1,
           0.0,
-          90.0,
-          64,
-          256
+          360.0,
+          32,
+          16
       );
   std::unique_ptr<cw::Rotator> rotator1 = std::make_unique<cw::Rotator>(
       donut->Clone(),

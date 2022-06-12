@@ -39,6 +39,7 @@ set(PROJECT_SOURCES
     src/cwglx/Material.cc
     src/cwglx/Texture.cc
     src/cwglx/Drawable.cc
+    src/cwglx/DrawableArena.cc
     src/cwglx/Vertex.cc
     src/cwglx/Setup.cc
     src/cwglx/Light.cc
@@ -46,6 +47,7 @@ set(PROJECT_SOURCES
     include/cwglx/Material.h
     include/cwglx/Texture.h
     include/cwglx/Drawable.h
+    include/cwglx/DrawableArena.h
     include/cwglx/Vertex.h
     include/cwglx/Setup.h
     include/cwglx/Light.h

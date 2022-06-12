@@ -16,7 +16,7 @@ public:
   ~GLWidget() final;
 
 protected:
-  void timerEvent(QTimerEvent *event) override final;
+  void timerEvent(QTimerEvent *event) final;
 
   void initializeGL() final;
   void paintGL() final;
