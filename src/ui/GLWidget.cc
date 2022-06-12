@@ -57,31 +57,23 @@ void GLWidget::initializeGL() {
                                    cw::Vertex(0.0, 0.0, 0.0),
                                    this));
   cw::PlainTriangles *triangles = new cw::PlainTriangles();
-  std::unique_ptr<cw::TriangleGenerator> donut =
-      std::make_unique<cw::DonutGenerator>(
-          cw::Vector(0.0, 0.0, 0.0),
-          0.25,
-          0.1,
-          0.0,
-          360.0,
-          32,
-          16
-      );
+  std::unique_ptr<cw::TriangleGenerator> box =
+      std::make_unique<cw::BoxGenerator>(cw::Vector(0.0, 0.0, 0.0), 1.0, 1.0, 1.0);
   std::unique_ptr<cw::Rotator> rotator1 = std::make_unique<cw::Rotator>(
-      donut->Clone(),
+      box->Clone(),
       cw::Vertex(0.0, 0.0, 0.0),
       cw::CircleAxis::XAxis,
       45.0
   );
   std::unique_ptr<cw::Rotator> rotator2 = std::make_unique<cw::Rotator>(
-      donut->Clone(),
+      box->Clone(),
       cw::Vertex(0.0, 0.0, 0.0),
       cw::CircleAxis::XAxis,
       90.0
   );
   std::unique_ptr<cw::Positioner> positioner1 =
       std::make_unique<cw::Positioner>(
-          std::move(donut),
+          std::move(box),
           cw::Vector(-2.0, 0.0, 0.0)
       );
   std::unique_ptr<cw::Positioner> positioner2 =

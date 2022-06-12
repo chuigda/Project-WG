@@ -67,6 +67,10 @@ set(PROJECT_SOURCES
     include/cwglx/drawable/Fan.h
     include/cwglx/drawable/Composition.h
 
+    src/wgc0310/Head.cc
+    include/wgc0310/Head.h
+    include/wgc0310/Components.h
+
     src/pl2/pl2q.cc
     include/pl2/pl2q.h)
 

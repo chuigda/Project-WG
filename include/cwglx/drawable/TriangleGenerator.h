@@ -81,6 +81,8 @@ public:
 
   void Reset() final;
 
+  void ResetPosition(const Vector& position);
+
 private:
   std::unique_ptr<TriangleGenerator> m_Generator;
   Vector m_Position;
@@ -301,6 +303,38 @@ private:
   std::size_t m_CurrentPipeCount;
   std::size_t m_CurrentPipePolyCount;
   bool m_UpTriangle;
+};
+
+class BoxGenerator final : public TriangleGenerator {
+public:
+  BoxGenerator(const Vector &centerPoint,
+               GLdouble xScale,
+               GLdouble yScale,
+               GLdouble zScale);
+
+  BoxGenerator(const Vector &centerPoint,
+               GLdouble xScale,
+               GLdouble yScale,
+               GLdouble zScale,
+               const SecretInternalsDoNotUseOrYouWillBeFired&);
+
+  ~BoxGenerator() final;
+
+  [[nodiscard]] bool HasNextTriangle() final;
+
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
+
+private:
+  Vector m_CenterPoint;
+  GLdouble m_XScale;
+  GLdouble m_YScale;
+  GLdouble m_ZScale;
+
+  std::size_t m_CurrentCount;
 };
 
 } // namespace cw

@@ -98,6 +98,11 @@ void Positioner::Reset() {
   m_Generator->Reset();
 }
 
+void Positioner::ResetPosition(const Vector &position) {
+  m_Position = position;
+  Reset();
+}
+
 Rotator::Rotator(std::unique_ptr<TriangleGenerator> &&base,
                  const Vertex &centerPoint,
                  CircleAxis m_Axis,
@@ -633,6 +638,126 @@ void DonutGenerator::Reset() {
   m_CurrentPipeCount = 0;
   m_CurrentPipePolyCount = 0;
   m_UpTriangle = true;
+}
+
+BoxGenerator::BoxGenerator(const Vector &centerPoint,
+                           GLdouble xScale,
+                           GLdouble yScale,
+                           GLdouble zScale)
+  : BoxGenerator(centerPoint,
+                 xScale / 2.0,
+                 yScale / 2.0,
+                 zScale / 2.0,
+                 SecretInternalsDoNotUseOrYouWillBeFired::Instance)
+{}
+
+BoxGenerator::BoxGenerator(const Vector &centerPoint,
+                           GLdouble xScale,
+                           GLdouble yScale,
+                           GLdouble zScale,
+                           const SecretInternalsDoNotUseOrYouWillBeFired &)
+  : m_CenterPoint(centerPoint),
+    m_XScale(xScale),
+    m_YScale(yScale),
+    m_ZScale(zScale),
+    m_CurrentCount(0)
+{}
+
+BoxGenerator::~BoxGenerator() = default;
+
+[[nodiscard]] bool BoxGenerator::HasNextTriangle() {
+  return m_CurrentCount < 12;
+}
+
+[[nodiscard]] std::array<Vertex, 3> BoxGenerator::NextTriangle() {
+  Q_ASSERT(HasNextTriangle());
+
+  m_CurrentCount += 1;
+  switch (m_CurrentCount - 1) {
+    // front face, z = +Z
+    case 0: return {
+        Vertex(-m_XScale, m_YScale, m_ZScale),
+        Vertex(-m_XScale, -m_YScale, m_ZScale),
+        Vertex(m_XScale, -m_YScale, m_ZScale)
+    };
+    case 1: return {
+        Vertex(-m_XScale, m_YScale, m_ZScale),
+        Vertex(m_XScale, -m_YScale, m_ZScale),
+        Vertex(m_XScale, m_YScale, m_ZScale)
+    };
+    // back face, z = -Z
+    case 2: return {
+        Vertex(m_XScale, m_YScale, -m_ZScale),
+        Vertex(m_XScale, -m_YScale, -m_ZScale),
+        Vertex(-m_XScale, -m_YScale, -m_ZScale)
+    };
+    case 3: return {
+        Vertex(m_XScale, m_YScale, -m_ZScale),
+        Vertex(-m_XScale, -m_YScale, -m_ZScale),
+        Vertex(-m_XScale, m_YScale, -m_ZScale)
+    };
+    // right face, x = X
+    case 4: return {
+        Vertex(m_XScale, m_YScale, -m_ZScale),
+        Vertex(m_XScale, -m_YScale, m_ZScale),
+        Vertex(m_XScale, -m_YScale, -m_ZScale)
+    };
+    case 5: return {
+        Vertex(m_XScale, m_YScale, -m_ZScale),
+        Vertex(m_XScale, m_YScale, m_ZScale),
+        Vertex(m_XScale, -m_YScale, m_ZScale)
+    };
+    // left face, x = -X
+    case 6: return {
+        Vertex(-m_XScale, m_YScale, m_ZScale),
+        Vertex(-m_XScale, -m_YScale, -m_ZScale),
+        Vertex(-m_XScale, -m_YScale, m_ZScale)
+    };
+    case 7: return {
+        Vertex(-m_XScale, m_YScale, m_ZScale),
+        Vertex(-m_XScale, m_YScale, -m_ZScale),
+        Vertex(-m_XScale, -m_YScale, -m_ZScale)
+    };
+    // top face, y = +Y
+    case 8: return {
+        Vertex(-m_XScale, m_YScale, -m_ZScale),
+        Vertex(-m_XScale, m_YScale, m_ZScale),
+        Vertex(m_XScale, m_YScale, m_ZScale)
+    };
+    case 9: return {
+        Vertex(-m_XScale, m_YScale, -m_ZScale),
+        Vertex(m_XScale, m_YScale, m_ZScale),
+        Vertex(m_XScale, m_YScale, -m_ZScale)
+    };
+    // bottom face, y = -Y
+    case 10: return {
+        Vertex(m_XScale, -m_YScale, m_ZScale),
+        Vertex(-m_XScale, -m_YScale, -m_ZScale),
+        Vertex(m_XScale, -m_YScale, -m_ZScale)
+    };
+    case 11: return {
+        Vertex(m_XScale, -m_YScale, m_ZScale),
+        Vertex(-m_XScale, -m_YScale, m_ZScale),
+        Vertex(-m_XScale, -m_YScale, -m_ZScale)
+    };
+
+    default:
+      Q_UNREACHABLE();
+  }
+}
+
+std::unique_ptr<TriangleGenerator> BoxGenerator::Clone() const {
+  return std::make_unique<BoxGenerator>(
+      m_CenterPoint,
+      m_XScale,
+      m_YScale,
+      m_ZScale,
+      SecretInternalsDoNotUseOrYouWillBeFired::Instance
+  );
+}
+
+void BoxGenerator::Reset() {
+  m_CurrentCount = 0;
 }
 
 } // namespace cw
