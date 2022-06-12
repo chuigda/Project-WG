@@ -26,9 +26,11 @@ set(PROJECT_SOURCES
     include/ui/GLWidget.h
 
     src/util/Constants.cc
+    src/util/Sinkrate.cc
     include/util/Wife.h
     include/util/Constants.h
     include/util/Derive.h
+    include/util/Sinkrate.h
 
     src/glu/FakeGLU.cc
     include/glu/FakeGLU.h

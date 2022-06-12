@@ -6,15 +6,23 @@
 #include <vector>
 #include "cwglx/Vertex.h"
 #include "util/Derive.h"
+#include "util/Sinkrate.h"
 
 namespace cw {
 
+enum class CircleAxis { XAxis, YAxis, ZAxis };
+
 class TriangleGenerator {
 public:
+  TriangleGenerator();
   virtual ~TriangleGenerator() = 0;
 
-  virtual bool HasNextTriangle() = 0;
-  virtual std::array<Vertex, 3> NextTriangle() = 0;
+  [[nodiscard]] virtual bool HasNextTriangle() = 0;
+  [[nodiscard]] virtual std::array<Vertex, 3> NextTriangle() = 0;
+  [[nodiscard]] virtual std::unique_ptr<TriangleGenerator> Clone() const = 0;
+  virtual void Reset() = 0;
+
+  CW_DERIVE_UNCOPYABLE(TriangleGenerator)
 };
 
 class SimpleTriangle final : public TriangleGenerator {
@@ -23,13 +31,13 @@ public:
 
   ~SimpleTriangle() final;
 
-  CW_DERIVE_UNCOPYABLE(SimpleTriangle)
+  [[nodiscard]] bool HasNextTriangle() final;
 
-  bool HasNextTriangle() final;
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
 
-  std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
 
-  SimpleTriangle Clone() noexcept;
+  void Reset() final;
 
 private:
   std::array<Vertex, 3> m_Vertices;
@@ -43,15 +51,41 @@ public:
 
   ~Positioner() final;
 
-  CW_DERIVE_UNCOPYABLE(Positioner)
+  [[nodiscard]] bool HasNextTriangle() final;
 
-  bool HasNextTriangle() final;
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
 
-  std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
 
 private:
   std::unique_ptr<TriangleGenerator> m_Generator;
   Vector m_Position;
+};
+
+class Rotator final : public TriangleGenerator {
+public:
+  Rotator(std::unique_ptr<TriangleGenerator> &&base,
+          const Vertex &centerPoint,
+          CircleAxis m_Axis,
+          GLdouble m_Degree);
+
+  ~Rotator() final;
+
+  [[nodiscard]] bool HasNextTriangle() final;
+
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
+
+private:
+  std::unique_ptr<TriangleGenerator> m_Base;
+  Vertex m_CenterPoint;
+  CircleAxis m_Axis;
+  GLdouble m_Degree;
 };
 
 class Composer final : public TriangleGenerator {
@@ -61,18 +95,18 @@ public:
 
   ~Composer() final;
 
-  CW_DERIVE_UNCOPYABLE(Composer)
+  [[nodiscard]] bool HasNextTriangle() final;
 
-  bool HasNextTriangle() final;
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
 
-  std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
 
 private:
   std::vector<std::unique_ptr<TriangleGenerator>> m_Generators;
   std::vector<std::unique_ptr<TriangleGenerator>>::iterator m_CurrentGenerator;
 };
-
-enum class CircleAxis { XAxis, YAxis, ZAxis };
 
 class FanGenerator final : public TriangleGenerator {
 public:
@@ -83,13 +117,24 @@ public:
                std::size_t count,
                CircleAxis axis);
 
+  // Secret internals, do not use, or you will be fired
+  FanGenerator(const Vector &centerPoint,
+               GLdouble radius,
+               GLdouble startAngleRad,
+               std::size_t count,
+               CircleAxis axis,
+               GLdouble pieceDegreeRad,
+               const SecretInternalsDoNotUseOrYouWillBeFired&);
+
   ~FanGenerator() final;
 
-  CW_DERIVE_UNCOPYABLE(FanGenerator)
+  [[nodiscard]] bool HasNextTriangle() final;
 
-  bool HasNextTriangle() final;
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
 
-  std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
 
 private:
   Vector m_CenterPoint;
@@ -112,17 +157,26 @@ public:
                     std::size_t count,
                     CircleAxis axis);
 
+  CylinderGenerator(const Vector &centerPoint,
+                    GLdouble radius,
+                    GLdouble halfHeight,
+                    GLdouble startAngleRad,
+                    std::size_t count,
+                    CircleAxis axis,
+                    GLdouble pieceDegreeRad,
+                    const SecretInternalsDoNotUseOrYouWillBeFired&);
+
   ~CylinderGenerator() final;
 
-  CW_DERIVE_UNCOPYABLE(CylinderGenerator)
+  [[nodiscard]] bool HasNextTriangle() final;
 
-  bool HasNextTriangle() final;
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
 
-  std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
 
 private:
-  Vertex ArrangeAxisValues(GLdouble fanX, GLdouble fanY, GLdouble height);
-
   Vector m_CenterPoint;
   GLdouble m_Radius;
   GLdouble m_HalfHeight;
