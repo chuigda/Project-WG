@@ -418,7 +418,12 @@ SphereGenerator::SphereGenerator(const Vector &centerPoint,
                     DegToRad(zEndAngle - zStartAngle)
                       / static_cast<GLdouble>(zCount),
                     SecretInternalsDoNotUseOrYouWillBeFired::Instance)
-{}
+{
+  Q_ASSERT(xyStartAngle >= 0.0 && "Only first octant is ok");
+  Q_ASSERT(xyEndAngle <= 90.0 && "Only first octant is ok");
+  Q_ASSERT(zStartAngle >= 0.0 && "Only first octant is ok");
+  Q_ASSERT(zEndAngle <= 90.0 && "Only first octant is ok");
+}
 
 SphereGenerator::SphereGenerator(const Vector &centerPoint,
                                  GLdouble radius,
@@ -467,9 +472,9 @@ std::array<Vertex, 3> SphereGenerator::NextTriangle() {
       + static_cast<GLdouble>(m_CurrentXYCount + 1) * m_XYPieceDegree;
 
   GLdouble z0 = m_Radius * std::sin(zStartAngle);
-  GLdouble z0r = std::abs(m_Radius * std::cos(zStartAngle));
+  GLdouble z0r = m_Radius * std::cos(zStartAngle);
   GLdouble z1 = m_Radius * std::sin(zEndAngle);
-  GLdouble z1r = std::abs(m_Radius * std::cos(zEndAngle));
+  GLdouble z1r = m_Radius * std::cos(zEndAngle);
 
   GLdouble x01 = z0r * std::cos(xyStartAngle);
   GLdouble y01 = z0r * std::sin(xyStartAngle);

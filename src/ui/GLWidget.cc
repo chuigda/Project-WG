@@ -61,10 +61,10 @@ void GLWidget::initializeGL() {
       std::make_unique<cw::SphereGenerator>(
           cw::Vector(0.0, 1.0, 0.0),
           0.5,
+          45.0,
+          90.0,
           0.0,
           90.0,
-          90.0,
-          180.0,
           256,
           256
       );
@@ -72,7 +72,7 @@ void GLWidget::initializeGL() {
       sphere->Clone(),
       cw::Vertex(0.0, 0.0, 0.0),
       cw::CircleAxis::XAxis,
-      45.0
+      90.0
   );
   std::unique_ptr<cw::Rotator> rotator2 = std::make_unique<cw::Rotator>(
       sphere->Clone(),
@@ -109,7 +109,7 @@ void GLWidget::paintGL() {
 
   glLoadIdentity();
   glTranslatef(0.0f, 0.0f, -5.0f);
-  glRotatef(m_Rotation, 1.0f, 0.0f, 0.0f);
+  // glRotatef(m_Rotation, 1.0f, 0.0f, 0.0f);
   m_MaterializedTriangles->Draw(this);
 }
 
