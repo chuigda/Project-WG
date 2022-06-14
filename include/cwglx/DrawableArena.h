@@ -16,8 +16,8 @@ class DrawableArena {
 public:
   DrawableArena();
 
-  CW_DERIVE_UNCOPYABLE(DrawableArena);
-  CW_DERIVE_UNMOVABLE(DrawableArena);
+  CW_DERIVE_UNCOPYABLE(DrawableArena)
+  CW_DERIVE_UNMOVABLE(DrawableArena)
 
   std::pair<std::size_t, Drawable const*>
   Put(std::unique_ptr<Drawable> &&drawable);

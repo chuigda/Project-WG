@@ -1,18 +1,14 @@
 #ifndef PROJECT_WG_WGC0310_HEAD_H
 #define PROJECT_WG_WGC0310_HEAD_H
 
+#include <memory>
 #include <utility>
 
-namespace cw {
-
-class Drawable;
-class DrawableArena;
-
-} // namespace cw
+#include "cwglx/drawable/TriangleGenerator.h"
 
 namespace wgc0310 {
 
-cw::Drawable const* SideThermalController(cw::DrawableArena *arena);
+std::unique_ptr<cw::TriangleGenerator> IntakeRight();
 
 } // namespace wgc0310
 

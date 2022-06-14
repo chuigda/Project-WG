@@ -139,19 +139,30 @@ void Rotator::Reset() {
 }
 
 Composer::Composer(std::vector<std::unique_ptr<TriangleGenerator>> &&generators)
-  : m_Generators(std::move(generators)),
-    m_CurrentGenerator(m_Generators.begin())
+  : Composer(
+      std::make_shared<std::vector<std::unique_ptr<TriangleGenerator>>>(
+          std::move(generators)
+      ),
+      SecretInternalsDoNotUseOrYouWillBeFired::Instance
+    )
+{}
+
+Composer::
+Composer(std::shared_ptr<std::vector<std::unique_ptr<TriangleGenerator>>> ptr,
+         const SecretInternalsDoNotUseOrYouWillBeFired&)
+  : m_Generators(std::move(ptr)),
+    m_CurrentGenerator(m_Generators->begin())
 {}
 
 Composer::~Composer() = default;
 
 bool Composer::HasNextTriangle() {
-  while (m_CurrentGenerator != m_Generators.cend()
+  while (m_CurrentGenerator != m_Generators->cend()
          && !m_CurrentGenerator->get()->HasNextTriangle()) {
     ++m_CurrentGenerator;
   }
 
-  return m_CurrentGenerator != m_Generators.cend();
+  return m_CurrentGenerator != m_Generators->cend();
 }
 
 std::array<Vertex, 3> Composer::NextTriangle() {
@@ -163,20 +174,17 @@ std::array<Vertex, 3> Composer::NextTriangle() {
 }
 
 std::unique_ptr<TriangleGenerator> Composer::Clone() const {
-  std::vector<std::unique_ptr<TriangleGenerator>> clonedGenerators;
-  clonedGenerators.reserve(m_Generators.size());
-  for (const auto &triangleGenerator : m_Generators) {
-    clonedGenerators.push_back(triangleGenerator->Clone());
-  }
-
-  return std::make_unique<Composer>(std::move(clonedGenerators));
+  return std::make_unique<Composer>(
+      m_Generators,
+      SecretInternalsDoNotUseOrYouWillBeFired::Instance
+  );
 }
 
 void Composer::Reset() {
-  for (auto& generator : m_Generators) {
+  for (auto& generator : *m_Generators) {
     generator->Reset();
   }
-  m_CurrentGenerator = m_Generators.begin();
+  m_CurrentGenerator = m_Generators->begin();
 }
 
 FanGenerator::FanGenerator(const Vector &centerPoint,

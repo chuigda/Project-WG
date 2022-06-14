@@ -17,7 +17,10 @@ set(CMAKE_C_FLAGS
     "-Wall -Wextra -pedantic -Wno-unknown-pragmas ${CMAKE_C_FLAGS}")
 
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets OpenGLWidgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
+             Core
+             Widgets
+             OpenGLWidgets)
 
 set(PROJECT_SOURCES
     main.cc
@@ -67,8 +70,8 @@ set(PROJECT_SOURCES
     include/cwglx/drawable/Fan.h
     include/cwglx/drawable/Composition.h
 
-    src/wgc0310/Head.cc
-    include/wgc0310/Head.h
+    src/wgc0310/head/Intake.cc
+    include/wgc0310/head/Intake.h
     include/wgc0310/Components.h
 
     src/pl2/pl2q.cc
@@ -88,6 +91,7 @@ else()
 endif()
 
 target_link_libraries(Project-WG PRIVATE
+                      Qt${QT_VERSION_MAJOR}::Core
                       Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
 

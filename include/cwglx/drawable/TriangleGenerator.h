@@ -117,6 +117,9 @@ public:
   explicit
   Composer(std::vector<std::unique_ptr<TriangleGenerator>> &&generators);
 
+  Composer(std::shared_ptr<std::vector<std::unique_ptr<TriangleGenerator>>> ptr,
+           const SecretInternalsDoNotUseOrYouWillBeFired &);
+
   ~Composer() final;
 
   [[nodiscard]] bool HasNextTriangle() final;
@@ -128,7 +131,7 @@ public:
   void Reset() final;
 
 private:
-  std::vector<std::unique_ptr<TriangleGenerator>> m_Generators;
+  std::shared_ptr<std::vector<std::unique_ptr<TriangleGenerator>>> m_Generators;
   std::vector<std::unique_ptr<TriangleGenerator>>::iterator m_CurrentGenerator;
 };
 

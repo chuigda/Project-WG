@@ -1,4 +1,4 @@
-#include "wgc0310/Head.h"
+#include "include/wgc0310/head/Intake.h"
 
 #include <vector>
 #include "cwglx/Drawable.h"
@@ -11,7 +11,7 @@ namespace wgc0310 {
 
 static std::unique_ptr<cw::TriangleGenerator> CreateThickCylinder();
 
-cw::Drawable const* SideThermalController(cw::DrawableArena *arena) {
+std::unique_ptr<cw::TriangleGenerator> IntakeRight() {
   std::unique_ptr<cw::TriangleGenerator> thickCylinder = CreateThickCylinder();
 
   std::unique_ptr<cw::TriangleGenerator> thickCylinder1 =
@@ -50,20 +50,15 @@ cw::Drawable const* SideThermalController(cw::DrawableArena *arena) {
   std::unique_ptr<cw::Composer> composer =
       std::make_unique<cw::Composer>(std::move(generators));
 
-  cw::Rotator rotator {
-      std::move(composer),
-      cw::Vertex(0.0, 0.0, 0.0),
-      cw::CircleAxis::XAxis,
-      90.0
-  };
+  std::unique_ptr<cw::Rotator> rotator =
+      std::make_unique<cw::Rotator>(
+          std::move(composer),
+          cw::Vertex(0.0, 0.0, 0.0),
+          cw::CircleAxis::XAxis,
+          90.0
+      );
 
-  std::unique_ptr<cw::PlainTriangles> triangles =
-      std::make_unique<cw::PlainTriangles>();
-  triangles->AddTriangles(&rotator);
-
-  const auto [_, ptr] = arena->Put(std::move(triangles),
-                                   wgc0310::Components::SideThermalController);
-  return ptr;
+  return rotator;
 }
 
 const cw::FanGenerator g_Fan1 = cw::FanGenerator(

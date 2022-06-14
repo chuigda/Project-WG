@@ -9,7 +9,7 @@
 #include "cwglx/drawable/Composition.h"
 #include "cwglx/drawable/PlainTriangles.h"
 #include "cwglx/drawable/TriangleGenerator.h"
-#include "wgc0310/Head.h"
+#include "include/wgc0310/head/Intake.h"
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
@@ -42,6 +42,7 @@ GLWidget::~GLWidget() {
   makeCurrent();
 
   m_Arena.Delete(this);
+  qDebug() << "GLWidget::~GLWidget(): arena released successfully";
 
   doneCurrent();
 }
@@ -66,6 +67,7 @@ void GLWidget::initializeGL() {
                                     cw::Vertex(25.0, 0.0, 0.0),
                                     this));
 
+  /*
   cw::Drawable const* sideThermalController =
       wgc0310::SideThermalController(&m_Arena);
   const auto [materializedId, materialized] = m_Arena.Put(
@@ -75,6 +77,7 @@ void GLWidget::initializeGL() {
       )
   );
   m_MaterializedId = materializedId;
+  */
 }
 
 void GLWidget::paintGL() {
@@ -86,10 +89,10 @@ void GLWidget::paintGL() {
 
   glLoadIdentity();
   glTranslatef(0.0f, 0.0f, -30.0f);
-  glRotatef(15, 1.0f, 0.0f, 0.0f);
+  glRotatef(-15, 1.0f, 0.0f, 0.0f);
   glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
 
-  m_Arena.Get(m_MaterializedId)->Draw(this);
+  // m_Arena.Get(m_MaterializedId)->Draw(this);
 }
 
 void GLWidget::resizeGL(int w, int h) {

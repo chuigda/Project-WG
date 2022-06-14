@@ -69,6 +69,12 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   }
 
   if (!m_VBOInitialized) {
+    qDebug() << "PlainTriangles::Draw():"
+             << "VBO not initialized, initializing";
+    qDebug() << "PlainTriangles::Draw():"
+             << m_Vertices.size() / 3
+             << "triangles ready to draw";
+
     f->glGenBuffers(3, m_VBO.data());
 
     f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
