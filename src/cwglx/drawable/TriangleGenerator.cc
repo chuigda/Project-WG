@@ -83,8 +83,8 @@ bool Positioner::HasNextTriangle() {
 }
 
 std::array<Vertex, 3> Positioner::NextTriangle() {
-  auto triangle = m_Generator->NextTriangle();
-  for (auto& vertex : triangle) {
+  std::array<Vertex, 3> triangle = m_Generator->NextTriangle();
+  for (Vertex& vertex : triangle) {
     vertex += m_Position;
   }
   return triangle;
@@ -159,6 +159,7 @@ Composer::~Composer() = default;
 bool Composer::HasNextTriangle() {
   while (m_CurrentGenerator != m_Generators->cend()
          && !m_CurrentGenerator->get()->HasNextTriangle()) {
+    m_CurrentGenerator->get()->Reset();
     ++m_CurrentGenerator;
   }
 
@@ -167,6 +168,7 @@ bool Composer::HasNextTriangle() {
 
 std::array<Vertex, 3> Composer::NextTriangle() {
   while (!m_CurrentGenerator->get()->HasNextTriangle()) {
+    m_CurrentGenerator->get()->Reset();
     ++m_CurrentGenerator;
   }
 

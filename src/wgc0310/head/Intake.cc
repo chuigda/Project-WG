@@ -14,17 +14,18 @@ static std::unique_ptr<cw::TriangleGenerator> CreateThickCylinder();
 static std::unique_ptr<cw::TriangleGenerator> CreateAirway();
 
 std::unique_ptr<cw::TriangleGenerator> IntakeRight() {
+  std::unique_ptr<cw::TriangleGenerator> thickCylinder = CreateThickCylinder();
   std::unique_ptr<cw::TriangleGenerator> thickCylinder1 =
-      std::make_unique<cw::Positioner>(CreateThickCylinder(),
+      std::make_unique<cw::Positioner>(thickCylinder->Clone(),
                                        cw::Vector(0.0, 0.0, 2.0));
   std::unique_ptr<cw::TriangleGenerator> thickCylinder2 =
-      std::make_unique<cw::Positioner>(CreateThickCylinder(),
+      std::make_unique<cw::Positioner>(thickCylinder->Clone(),
                                        cw::Vector(0.0, 0.0, -2.0));
   std::unique_ptr<cw::TriangleGenerator> thickCylinder3 =
-      std::make_unique<cw::Positioner>(CreateThickCylinder(),
+      std::make_unique<cw::Positioner>(thickCylinder->Clone(),
                                        cw::Vector(0.0, 0.0, 4.0));
   std::unique_ptr<cw::TriangleGenerator> thickCylinder4 =
-      std::make_unique<cw::Positioner>(CreateThickCylinder(),
+      std::make_unique<cw::Positioner>(thickCylinder->Clone(),
                                        cw::Vector(0.0, 0.0, -4.0));
   std::unique_ptr<cw::TriangleGenerator> airway = CreateAirway();
   std::unique_ptr<cw::TriangleGenerator> airway1 =
@@ -52,7 +53,7 @@ std::unique_ptr<cw::TriangleGenerator> IntakeRight() {
                                          9.0);
 
   std::vector<std::unique_ptr<cw::TriangleGenerator>> generators;
-  generators.push_back(std::move(CreateThickCylinder()));
+  generators.push_back(std::move(thickCylinder));
   generators.push_back(std::move(thickCylinder1));
   generators.push_back(std::move(thickCylinder2));
   generators.push_back(std::move(thickCylinder3));
