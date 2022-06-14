@@ -159,16 +159,19 @@ Composer::~Composer() = default;
 bool Composer::HasNextTriangle() {
   while (m_CurrentGenerator != m_Generators->cend()
          && !m_CurrentGenerator->get()->HasNextTriangle()) {
-    m_CurrentGenerator->get()->Reset();
     ++m_CurrentGenerator;
   }
 
-  return m_CurrentGenerator != m_Generators->cend();
+  if (m_CurrentGenerator != m_Generators->cend()) {
+    return true;
+  } else {
+    Reset();
+    return false;
+  }
 }
 
 std::array<Vertex, 3> Composer::NextTriangle() {
   while (!m_CurrentGenerator->get()->HasNextTriangle()) {
-    m_CurrentGenerator->get()->Reset();
     ++m_CurrentGenerator;
   }
 
