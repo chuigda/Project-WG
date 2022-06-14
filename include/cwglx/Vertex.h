@@ -14,7 +14,9 @@ class Vector;
 
 class Vertex2D final {
 public:
-  explicit Vertex2D(GLdouble x, GLdouble y) noexcept;
+  explicit constexpr inline Vertex2D(GLdouble x, GLdouble y) noexcept
+    : m_Repr({x, y})
+  {}
 
   [[nodiscard]]
   constexpr inline GLdouble GetX() const noexcept {
@@ -40,7 +42,11 @@ static_assert(sizeof(Vertex2D) == sizeof(GLdouble) * 2,
 
 class Vertex final {
 public:
-  explicit Vertex(GLdouble x, GLdouble y, GLdouble z = 0.0) noexcept;
+  explicit constexpr inline Vertex(GLdouble x,
+                                   GLdouble y,
+                                   GLdouble z = 0.0) noexcept
+    : m_Repr({x, y, z})
+  {}
 
   [[nodiscard]]
   constexpr inline GLdouble GetX() const noexcept {
@@ -87,9 +93,16 @@ static_assert(sizeof(Vertex) == sizeof(std::array<GLdouble, 3>),
 
 class Vector final {
 public:
-  explicit Vector(GLdouble x, GLdouble y, GLdouble z = 0.0) noexcept;
+  explicit constexpr inline Vector(GLdouble x,
+                                   GLdouble y,
+                                   GLdouble z = 0.0) noexcept
+    : m_Repr({x, y, z})
+  {}
 
-  static Vector FromVertex(const Vertex& vertex) noexcept;
+  [[nodiscard]]
+  constexpr inline Vector FromVertex(const Vertex& vertex) noexcept {
+    return Vector(vertex.GetX(), vertex.GetY(), vertex.GetZ());
+  }
 
   [[nodiscard]]
   constexpr inline GLdouble GetX() const noexcept {
@@ -121,7 +134,10 @@ public:
 
   [[nodiscard]] Vector ABS() const noexcept;
 
-  [[nodiscard]] Vertex AsVertex() const noexcept;
+  [[nodiscard]]
+  constexpr inline Vertex AsVertex() const noexcept {
+    return Vertex(GetX(), GetY(), GetZ());
+  }
 
 private:
   std::array<GLdouble, 3> m_Repr;
@@ -264,11 +280,11 @@ Vertex RotateVertex(const Vertex &vertex,
 
 namespace constants {
 
-extern Vertex g_ZeroVertex;
-extern Vector g_ZeroVector;
-extern Vector g_UnitVectorX;
-extern Vector g_UnitVectorY;
-extern Vector g_UnitVectorZ;
+constexpr Vertex g_ZeroVertex { 0.0, 0.0, 0.0 };
+constexpr Vector g_ZeroVector { 0.0, 0.0, 0.0 };
+constexpr Vector g_UnitVectorX { 1.0, 0.0, 0.0 };
+constexpr Vector g_UnitVectorY { 0.0, 1.0, 0.0 };
+constexpr Vector g_UnitVectorZ { 0.0, 0.0, 1.0 };
 
 } // namespace constants
 

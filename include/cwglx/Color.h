@@ -12,14 +12,14 @@ namespace cw {
 
 class RGBAColor {
 public:
-  explicit constexpr RGBAColor(std::array<std::uint8_t, 4> repr) noexcept
+  explicit constexpr inline RGBAColor(std::array<std::uint8_t, 4> repr) noexcept
     : m_Repr(repr)
   {}
 
-  explicit constexpr RGBAColor(std::uint8_t red,
-                               std::uint8_t green,
-                               std::uint8_t blue,
-                               std::uint8_t alpha = 255) noexcept
+  explicit constexpr inline RGBAColor(std::uint8_t red,
+                                      std::uint8_t green,
+                                      std::uint8_t blue,
+                                      std::uint8_t alpha = 255) noexcept
     : m_Repr({ red, green, blue, alpha })
   {}
 

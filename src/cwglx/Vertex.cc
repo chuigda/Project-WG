@@ -4,18 +4,6 @@
 
 namespace cw {
 
-Vertex2D::Vertex2D(GLdouble x, GLdouble y) noexcept
-  : m_Repr({x, y})
-{}
-
-Vertex::Vertex(GLdouble x, GLdouble y, GLdouble z) noexcept
-  : m_Repr({x, y, z})
-{}
-
-Vector Vector::FromVertex(const Vertex &vertex) noexcept {
-  return Vector { vertex.GetX(), vertex.GetY(), vertex.GetZ() };
-}
-
 Vertex &Vertex::operator+=(const Vector &rhs) noexcept {
   m_Repr[0] += rhs.GetX();
   m_Repr[1] += rhs.GetY();
@@ -29,10 +17,6 @@ Vertex &Vertex::operator-=(const Vector &rhs) noexcept {
   m_Repr[2] -= rhs.GetZ();
   return *this;
 }
-
-Vector::Vector(GLdouble x, GLdouble y, GLdouble z) noexcept
-  : m_Repr({x, y, z})
-{}
 
 Vector &Vector::operator+=(const Vector &rhs) noexcept {
   m_Repr[0] += rhs.GetX();
@@ -64,10 +48,6 @@ Vector Vector::Normalize() const noexcept {
 
 Vector Vector::ABS() const noexcept {
   return Vector(std::abs(GetX()), std::abs(GetY()), std::abs(GetZ()));
-}
-
-Vertex Vector::AsVertex() const noexcept {
-  return Vertex { GetX(), GetY(), GetZ() };
 }
 
 Vector operator+(const Vector& lhs, const Vector& rhs) noexcept {
@@ -195,17 +175,6 @@ Vertex RotateVertex(const Vertex &vertex,
 
   Q_UNREACHABLE();
 }
-
-namespace constants {
-
-Vertex g_ZeroVertex {0.0, 0.0, 0.0};
-
-Vector g_ZeroVector {0.0, 0.0, 0.0};
-Vector g_UnitVectorX {1.0, 0.0, 0.0};
-Vector g_UnitVectorY {0.0, 1.0, 0.0};
-Vector g_UnitVectorZ {0.0, 0.0, 1.0};
-
-} // namespace constants
 
 } // namespace cw
 
