@@ -67,17 +67,21 @@ void GLWidget::initializeGL() {
                                     cw::Vertex(25.0, 0.0, 0.0),
                                     this));
 
-  /*
-  cw::Drawable const* sideThermalController =
-      wgc0310::SideThermalController(&m_Arena);
+  std::unique_ptr<cw::TriangleGenerator> intakeGenerator =
+      wgc0310::IntakeRight();
+  std::unique_ptr<cw::PlainTriangles> intakeTriangles =
+      std::make_unique<cw::PlainTriangles>();
+  intakeTriangles->AddTriangles(intakeGenerator.get());
+
+  const auto [_, intake] =
+      m_Arena.Put(std::move(intakeTriangles));
   const auto [materializedId, materialized] = m_Arena.Put(
       std::make_unique<cw::MaterializedDrawable>(
           cw::GetBrassMaterial(),
-          std::vector { sideThermalController }
+          std::vector { intake }
       )
   );
   m_MaterializedId = materializedId;
-  */
 }
 
 void GLWidget::paintGL() {
@@ -92,7 +96,7 @@ void GLWidget::paintGL() {
   glRotatef(-15, 1.0f, 0.0f, 0.0f);
   glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
 
-  // m_Arena.Get(m_MaterializedId)->Draw(this);
+  m_Arena.Get(m_MaterializedId)->Draw(this);
 }
 
 void GLWidget::resizeGL(int w, int h) {

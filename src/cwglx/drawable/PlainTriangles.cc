@@ -216,7 +216,7 @@ ConvexPolyGenerator::ConvexPolyGenerator(std::vector<Vertex> &&vertices)
 ConvexPolyGenerator::
 ConvexPolyGenerator(std::shared_ptr<std::vector<Vertex>> vertices,
                     const SecretInternalsDoNotUseOrYouWillBeFired &)
-  : m_Vertices(vertices),
+  : m_Vertices(std::move(vertices)),
     m_CurrentCount(1)
 {}
 
