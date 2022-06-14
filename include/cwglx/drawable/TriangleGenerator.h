@@ -383,7 +383,7 @@ private:
 
 class Inverter final : public TriangleGenerator {
 public:
-  Inverter(std::unique_ptr<TriangleGenerator> &&generator);
+  explicit Inverter(std::unique_ptr<TriangleGenerator> &&generator);
 
   ~Inverter() final;
 
