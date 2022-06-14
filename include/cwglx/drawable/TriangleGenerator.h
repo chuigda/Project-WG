@@ -340,6 +340,28 @@ private:
   std::size_t m_CurrentCount;
 };
 
+class ConvexPolyGenerator final : public TriangleGenerator {
+public:
+  explicit ConvexPolyGenerator(std::vector<Vertex> &&vertices);
+
+  ConvexPolyGenerator(std::shared_ptr<std::vector<Vertex>> vertices,
+                      const SecretInternalsDoNotUseOrYouWillBeFired&);
+
+  ~ConvexPolyGenerator() final;
+
+  [[nodiscard]] bool HasNextTriangle() final;
+
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
+
+private:
+  std::shared_ptr<std::vector<Vertex>> m_Vertices;
+  std::size_t m_CurrentCount;
+};
+
 } // namespace cw
 
 #endif // PROJECT_WG_TRIANGLE_GENERATOR_H

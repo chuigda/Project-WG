@@ -18,7 +18,6 @@ set(CMAKE_C_FLAGS
 
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
-             Core
              Widgets
              OpenGLWidgets)
 
@@ -81,17 +80,14 @@ include_directories(include)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Project-WG
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-    )
+                      MANUAL_FINALIZATION
+                      ${PROJECT_SOURCES})
 else()
     add_executable(Project-WG
-        ${PROJECT_SOURCES}
-    )
+                   ${PROJECT_SOURCES})
 endif()
 
 target_link_libraries(Project-WG PRIVATE
-                      Qt${QT_VERSION_MAJOR}::Core
                       Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
 

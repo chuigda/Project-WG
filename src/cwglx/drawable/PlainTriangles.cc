@@ -206,4 +206,49 @@ void PlainTriangles::SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
 
 #pragma clang diagnostic pop
 
+ConvexPolyGenerator::ConvexPolyGenerator(std::vector<Vertex> &&vertices)
+  : ConvexPolyGenerator(
+      std::make_shared<std::vector<Vertex>>(std::move(vertices)),
+      SecretInternalsDoNotUseOrYouWillBeFired::Instance
+    )
+{}
+
+ConvexPolyGenerator::
+ConvexPolyGenerator(std::shared_ptr<std::vector<Vertex>> vertices,
+                    const SecretInternalsDoNotUseOrYouWillBeFired &)
+  : m_Vertices(vertices),
+    m_CurrentCount(1)
+{}
+
+ConvexPolyGenerator::~ConvexPolyGenerator() = default;
+
+bool ConvexPolyGenerator::HasNextTriangle() {
+  return m_CurrentCount < m_Vertices->size() - 1;
+}
+
+std::array<Vertex, 3> ConvexPolyGenerator::NextTriangle() {
+  Q_ASSERT(HasNextTriangle());
+
+  const std::size_t i0 = m_CurrentCount;
+  const std::size_t i1 = i0 + 1;
+  m_CurrentCount++;
+
+  Vertex origin = m_Vertices->operator[](0);
+  Vertex v0 = m_Vertices->operator[](i0);
+  Vertex v1 = m_Vertices->operator[](i1);
+
+  return { origin, v0, v1 };
+}
+
+std::unique_ptr<TriangleGenerator> ConvexPolyGenerator::Clone() const {
+  return std::make_unique<ConvexPolyGenerator>(
+      std::make_shared<std::vector<Vertex>>(*m_Vertices),
+      SecretInternalsDoNotUseOrYouWillBeFired::Instance
+  );
+}
+
+void ConvexPolyGenerator::Reset() {
+  m_CurrentCount = 1;
+}
+
 } // namespace cws
