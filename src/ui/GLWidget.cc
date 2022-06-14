@@ -93,8 +93,8 @@ void GLWidget::paintGL() {
 
   glLoadIdentity();
   glTranslatef(0.0f, 0.0f, -30.0f);
-  glRotatef(-15, 1.0f, 0.0f, 0.0f);
-  glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
+  // glRotatef(15, 1.0f, 0.0f, 0.0f);
+  glRotatef(-30, 0.0f, 1.0f, 0.0f);
 
   m_Arena.Get(m_MaterializedId)->Draw(this);
 }
