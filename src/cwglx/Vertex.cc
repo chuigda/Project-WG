@@ -171,7 +171,7 @@ void DrawVertexArray(QOpenGLFunctions_2_0 *f,
 
 Vertex RotateVertex(const Vertex &vertex,
                     const Vertex &centerPoint,
-                    CircleAxis axis,
+                    Axis axis,
                     GLdouble degree)
 {
   Vector diff = vertex - centerPoint;
@@ -179,19 +179,21 @@ Vertex RotateVertex(const Vertex &vertex,
   double cos = std::cos(degree);
   double sin = std::sin(degree);
   switch (axis) {
-    case CircleAxis::XAxis:
+    case Axis::XAxis:
       return Vertex(x,
                     y * cos - z * sin,
                     y * sin + z * cos);
-    case CircleAxis::YAxis:
+    case Axis::YAxis:
       return Vertex(x * cos + z * sin,
                     y,
                     -x * sin + z * cos);
-    case CircleAxis::ZAxis:
+    case Axis::ZAxis:
       return Vertex(x * cos - y * sin,
                     x * sin + y * cos,
                     z);
   }
+
+  Q_UNREACHABLE();
 }
 
 namespace constants {

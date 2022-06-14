@@ -92,7 +92,7 @@ class Rotator final : public TriangleGenerator {
 public:
   Rotator(std::unique_ptr<TriangleGenerator> &&base,
           const Vertex &centerPoint,
-          CircleAxis m_Axis,
+          Axis m_Axis,
           GLdouble m_Degree);
 
   ~Rotator() final;
@@ -108,7 +108,7 @@ public:
 private:
   std::unique_ptr<TriangleGenerator> m_Base;
   Vertex m_CenterPoint;
-  CircleAxis m_Axis;
+  Axis m_Axis;
   GLdouble m_Degree;
 };
 
@@ -360,6 +360,43 @@ public:
 private:
   std::shared_ptr<std::vector<Vertex>> m_Vertices;
   std::size_t m_CurrentCount;
+};
+
+class Flipper final : public TriangleGenerator {
+public:
+  Flipper(std::unique_ptr<TriangleGenerator> &&generator, Plane plane);
+
+  ~Flipper() final;
+
+  [[nodiscard]] bool HasNextTriangle() final;
+
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
+
+private:
+  std::unique_ptr<TriangleGenerator> m_Generator;
+  Plane m_Plane;
+};
+
+class Inverter final : public TriangleGenerator {
+public:
+  Inverter(std::unique_ptr<TriangleGenerator> &&generator);
+
+  ~Inverter() final;
+
+  [[nodiscard]] bool HasNextTriangle() final;
+
+  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+
+  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+
+  void Reset() final;
+
+private:
+  std::unique_ptr<TriangleGenerator> m_Generator;
 };
 
 } // namespace cw

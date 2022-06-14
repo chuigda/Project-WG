@@ -105,7 +105,7 @@ void Positioner::ResetPosition(const Vector &position) {
 
 Rotator::Rotator(std::unique_ptr<TriangleGenerator> &&base,
                  const Vertex &centerPoint,
-                 CircleAxis m_Axis,
+                 Axis m_Axis,
                  GLdouble m_Degree)
   : m_Base(std::move(base)),
     m_CenterPoint(centerPoint),
@@ -594,19 +594,19 @@ std::array<Vertex, 3> DonutGenerator::NextTriangle() {
 
   Vertex v01 = RotateVertex(v0,
                             constants::g_ZeroVertex,
-                            CircleAxis::ZAxis,
+                            Axis::ZAxis,
                             yStartAngle);
   Vertex v11 = RotateVertex(v1,
                             constants::g_ZeroVertex,
-                            CircleAxis::ZAxis,
+                            Axis::ZAxis,
                             yStartAngle);
   Vertex v02 = RotateVertex(v0,
                             constants::g_ZeroVertex,
-                            CircleAxis::ZAxis,
+                            Axis::ZAxis,
                             yEndAngle);
   Vertex v12 = RotateVertex(v1,
                             constants::g_ZeroVertex,
-                            CircleAxis::ZAxis,
+                            Axis::ZAxis,
                             yEndAngle);
 
   if (m_UpTriangle) {
@@ -771,6 +771,77 @@ std::unique_ptr<TriangleGenerator> BoxGenerator::Clone() const {
 
 void BoxGenerator::Reset() {
   m_CurrentCount = 0;
+}
+
+Flipper::Flipper(std::unique_ptr<TriangleGenerator> &&generator, Plane plane)
+  : m_Generator(std::move(generator)),
+    m_Plane(plane)
+{}
+
+Flipper::~Flipper() = default;
+
+bool Flipper::HasNextTriangle() {
+  return m_Generator->HasNextTriangle();
+}
+
+std::array<Vertex, 3> Flipper::NextTriangle() {
+  auto [v1, v2, v3] = m_Generator->NextTriangle();
+  switch (m_Plane) {
+    case Plane::XYPlane:
+      v1.SetZ(-v1.GetZ());
+      v2.SetZ(-v2.GetZ());
+      v3.SetZ(-v3.GetZ());
+      break;
+
+    case Plane::XZPlane:
+      v1.SetY(-v1.GetY());
+      v2.SetY(-v2.GetY());
+      v3.SetY(-v3.GetY());
+      break;
+
+    case Plane::YZPlane:
+      v1.SetX(-v1.GetX());
+      v2.SetX(-v2.GetX());
+      v3.SetX(-v3.GetX());
+      break;
+
+    default:
+      Q_UNREACHABLE();
+  }
+
+  return { v1, v3, v2 };
+}
+
+std::unique_ptr<TriangleGenerator> Flipper::Clone() const {
+  return std::make_unique<Flipper>(m_Generator->Clone(),
+                                   m_Plane);
+}
+
+void Flipper::Reset() {
+  m_Generator->Reset();
+}
+
+Inverter::Inverter(std::unique_ptr<TriangleGenerator> &&generator)
+  : m_Generator(std::move(generator))
+{}
+
+Inverter::~Inverter() = default;
+
+bool Inverter::HasNextTriangle() {
+  return m_Generator->HasNextTriangle();
+}
+
+std::array<Vertex, 3> Inverter::NextTriangle() {
+  auto [v1, v2, v3] = m_Generator->NextTriangle();
+  return { v1, v3, v2 };
+}
+
+std::unique_ptr<TriangleGenerator> Inverter::Clone() const {
+  return std::make_unique<Inverter>(m_Generator->Clone());
+}
+
+void Inverter::Reset() {
+  m_Generator->Reset();
 }
 
 } // namespace cw

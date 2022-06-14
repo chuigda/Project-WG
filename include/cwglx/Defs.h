@@ -5,7 +5,9 @@ namespace cw {
 
 enum class PlaneFace { FrontFace, BackFace };
 
-enum class CircleAxis { XAxis, YAxis, ZAxis };
+enum class Axis { XAxis, YAxis, ZAxis };
+
+enum class Plane { XYPlane, YZPlane, XZPlane };
 
 } // namespace cw
 

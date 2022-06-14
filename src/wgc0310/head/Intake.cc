@@ -72,7 +72,7 @@ std::unique_ptr<cw::TriangleGenerator> IntakeRight() {
       std::make_unique<cw::Rotator>(
           std::move(composer),
           cw::Vertex(0.0, 0.0, 0.0),
-          cw::CircleAxis::XAxis,
+          cw::Axis::XAxis,
           90.0
       );
 

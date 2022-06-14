@@ -57,6 +57,18 @@ public:
     return m_Repr[2];
   }
 
+  constexpr inline void SetX(GLdouble x) noexcept {
+    m_Repr[0] = x;
+  }
+
+  constexpr inline void SetY(GLdouble y) noexcept {
+    m_Repr[1] = y;
+  }
+
+  constexpr inline void SetZ(GLdouble z) noexcept {
+    m_Repr[2] = z;
+  }
+
   [[nodiscard]]
   constexpr inline const std::array<GLdouble, 3>& GetRepr() const noexcept {
     return m_Repr;
@@ -247,7 +259,7 @@ void DrawVertexArray(QOpenGLFunctions_2_0 *f,
 
 Vertex RotateVertex(const Vertex &vertex,
                     const Vertex &centerPoint,
-                    CircleAxis axis,
+                    Axis axis,
                     GLdouble degree);
 
 namespace constants {
