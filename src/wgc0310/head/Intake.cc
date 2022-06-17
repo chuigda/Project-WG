@@ -2,10 +2,8 @@
 
 #include <vector>
 #include "cwglx/Drawable.h"
-#include "cwglx/DrawableArena.h"
 #include "cwglx/drawable/PlainTriangles.h"
 #include "cwglx/drawable/TriangleGenerator.h"
-#include "wgc0310/Components.h"
 
 namespace wgc0310 {
 
@@ -17,40 +15,40 @@ std::unique_ptr<cw::TriangleGenerator> IntakeRight() {
   std::unique_ptr<cw::TriangleGenerator> thickCylinder = CreateThickCylinder();
   std::unique_ptr<cw::TriangleGenerator> thickCylinder1 =
       std::make_unique<cw::Positioner>(thickCylinder->Clone(),
-                                       cw::Vector(0.0, 0.0, 2.0));
+                                       cw::Vector(0.0, 0.0, 1.5));
   std::unique_ptr<cw::TriangleGenerator> thickCylinder2 =
       std::make_unique<cw::Positioner>(thickCylinder->Clone(),
-                                       cw::Vector(0.0, 0.0, -2.0));
+                                       cw::Vector(0.0, 0.0, -1.5));
   std::unique_ptr<cw::TriangleGenerator> thickCylinder3 =
       std::make_unique<cw::Positioner>(thickCylinder->Clone(),
-                                       cw::Vector(0.0, 0.0, 4.0));
+                                       cw::Vector(0.0, 0.0, 3.0));
   std::unique_ptr<cw::TriangleGenerator> thickCylinder4 =
       std::make_unique<cw::Positioner>(thickCylinder->Clone(),
-                                       cw::Vector(0.0, 0.0, -4.0));
+                                       cw::Vector(0.0, 0.0, -3.0));
   std::unique_ptr<cw::TriangleGenerator> airway = CreateAirway();
   std::unique_ptr<cw::TriangleGenerator> airway1 =
       std::make_unique<cw::Positioner>(airway->Clone(),
-                                       cw::Vector(0.0, 0.0, 1.0));
+                                       cw::Vector(0.0, 0.0, 0.75));
   std::unique_ptr<cw::TriangleGenerator> airway2 =
       std::make_unique<cw::Positioner>(airway->Clone(),
-                                       cw::Vector(0.0, 0.0, -1.0));
+                                       cw::Vector(0.0, 0.0, -0.75));
   std::unique_ptr<cw::TriangleGenerator> airway3 =
       std::make_unique<cw::Positioner>(airway->Clone(),
-                                       cw::Vector(0.0, 0.0, 3.0));
+                                       cw::Vector(0.0, 0.0, 2.25));
   std::unique_ptr<cw::TriangleGenerator> airway4 =
       std::make_unique<cw::Positioner>(airway->Clone(),
-                                       cw::Vector(0.0, 0.0, -3.0));
+                                       cw::Vector(0.0, 0.0, -2.25));
 
   std::unique_ptr<cw::TriangleGenerator> frontBox =
-      std::make_unique<cw::BoxGenerator>(cw::Vector(-1.0, 1.5, 0.0),
-                                         2.0,
-                                         3.0,
-                                         9.0);
+      std::make_unique<cw::BoxGenerator>(cw::Vector(-0.125, 0.75, 0.0),
+                                         0.25,
+                                         1.5,
+                                         6.75);
   std::unique_ptr<cw::TriangleGenerator> sideBox =
-      std::make_unique<cw::BoxGenerator>(cw::Vector(2.5, -3, -0.0),
-                                         1.0,
-                                         6.0,
-                                         9.0);
+      std::make_unique<cw::BoxGenerator>(cw::Vector(1.375, -2.5, -0.0),
+                                         0.25,
+                                         5.0,
+                                         6.75);
 
   std::vector<std::unique_ptr<cw::TriangleGenerator>> generators;
   generators.push_back(std::move(thickCylinder));
@@ -82,30 +80,30 @@ std::unique_ptr<cw::TriangleGenerator> IntakeRight() {
 static std::unique_ptr<cw::TriangleGenerator> CreateThickCylinder() {
   std::unique_ptr<cw::FanGenerator> fan1 =
       std::make_unique<cw::FanGenerator>(
-          cw::Vector(0.0, 0.0, -0.5),
-          3.0,
+          cw::Vector(0.0, 0.0, -0.375),
+          1.5,
           90.0,
           0.0,
-          64
+          32
       );
 
   std::unique_ptr<cw::FanGenerator> fan2 =
       std::make_unique<cw::FanGenerator>(
-          cw::Vector(0.0, 0.0, 0.5),
-          3.0,
+          cw::Vector(0.0, 0.0, 0.375),
+          1.5,
           0.0,
           90.0,
-          64
+          32
       );
 
   std::unique_ptr<cw::TriangleGenerator> thickCylinder =
       std::make_unique<cw::CylinderGenerator>(
           cw::constants::g_ZeroVector,
-          3.0,
-          1.0,
+          1.5,
+          0.75,
           0.0,
           90.0,
-          64
+          32
       );
 
   std::vector<std::unique_ptr<cw::TriangleGenerator>> generators;
@@ -120,64 +118,99 @@ static std::unique_ptr<cw::TriangleGenerator> CreateAirway() {
   std::unique_ptr<cw::ConvexPolyGenerator> topSurface =
       std::make_unique<cw::ConvexPolyGenerator>(
           std::vector<cw::Vertex> {
-              cw::Vertex(2.0, 0.0, -0.5),
-              cw::Vertex(0.0, 0.0, -0.5),
-              cw::Vertex(-2.0, -4.0, -0.5),
-              cw::Vertex(-2.0, -8.0, -0.5)
+              cw::Vertex(1.25, 0.0, -0.375),
+              cw::Vertex(0.0, 0.0, -0.375),
+              cw::Vertex(-1.25, -2.5, -0.375),
+              cw::Vertex(-1.25, -5.0, -0.375)
           }
       );
 
   std::unique_ptr<cw::ConvexPolyGenerator> bottomSurface =
       std::make_unique<cw::ConvexPolyGenerator>(
           std::vector<cw::Vertex> {
-              cw::Vertex(2.0, 0.0, 0.5),
-              cw::Vertex(-2.0, -8.0, 0.5),
-              cw::Vertex(-2.0, -4.0, 0.5),
-              cw::Vertex(0.0, 0.0, 0.5)
+              cw::Vertex(1.25, 0.0, 0.375),
+              cw::Vertex(-1.25, -5.0, 0.375),
+              cw::Vertex(-1.25, -2.5, 0.375),
+              cw::Vertex(0.0, 0.0, 0.375)
           }
       );
 
   std::unique_ptr<cw::ConvexPolyGenerator> leftSurface =
       std::make_unique<cw::ConvexPolyGenerator>(
           std::vector<cw::Vertex> {
-              cw::Vertex(0.0, 0.0, -0.5),
-              cw::Vertex(0.0, 0.0, 0.5),
-              cw::Vertex(-2.0, -4.0, 0.5),
-              cw::Vertex(-2.0, -4.0, -0.5)
+              cw::Vertex(0.0, 0.0, -0.375),
+              cw::Vertex(0.0, 0.0, 0.375),
+              cw::Vertex(-1.25, -2.5, 0.375),
+              cw::Vertex(-1.25, -2.5, -0.375)
           }
       );
   std::unique_ptr<cw::ConvexPolyGenerator> rightSurface =
       std::make_unique<cw::ConvexPolyGenerator>(
           std::vector<cw::Vertex> {
-              cw::Vertex(2.0, 0.0, -0.5),
-              cw::Vertex(-2.0, -8.0, -0.5),
-              cw::Vertex(-2.0, -8.0, 0.5),
-              cw::Vertex(2.0, 0.0, 0.5),
+              cw::Vertex(1.25, 0.0, -0.375),
+              cw::Vertex(-1.25, -5.0, -0.375),
+              cw::Vertex(-1.25, -5.0, 0.375),
+              cw::Vertex(1.25, 0.0, 0.375),
           }
       );
 
   std::unique_ptr<cw::StoredTriangles> blocker =
       std::make_unique<cw::StoredTriangles>(
           std::vector<std::array<cw::Vertex, 3>> {
+              // first
               {
-                  cw::Vertex(-2.0, -4.0, -0.5),
-                  cw::Vertex(-2.0, -4.0, 0.5),
-                  cw::Vertex(-2.0, -5.0, 0.5),
+                  cw::Vertex { -1.25, -2.5, 0.375 },
+                  cw::Vertex { -1.375, -3.0, 0.375 },
+                  cw::Vertex { -1.375, -3.0, -0.375 },
               },
               {
-                  cw::Vertex(-2.0, -5.0, -0.5),
-                  cw::Vertex(-2.0, -6.0, 0.5),
-                  cw::Vertex(-2.0, -6.0, -0.5),
+                  cw::Vertex { -1.25, -2.5, 0.375 },
+                  cw::Vertex { -1.375, -3.0, -0.375 },
+                  cw::Vertex { -1.25, -2.5, -0.375 }
+              },
+              // second
+              {
+                  cw::Vertex { -1.25, -3.0, 0.375 },
+                  cw::Vertex { -1.375, -3.5, 0.375 },
+                  cw::Vertex { -1.375, -3.5, -0.375 },
               },
               {
-                  cw::Vertex(-2.0, -6.0, -0.5),
-                  cw::Vertex(-2.0, -6.0, 0.5),
-                  cw::Vertex(-2.0, -7.0, 0.5),
+                  cw::Vertex { -1.25, -3.0, 0.375 },
+                  cw::Vertex { -1.375, -3.5, -0.375 },
+                  cw::Vertex { -1.25, -3.0, -0.375 }
+              },
+              // third
+              {
+                  cw::Vertex { -1.25, -3.5, 0.375 },
+                  cw::Vertex { -1.375, -4.0, 0.375 },
+                  cw::Vertex { -1.375, -4.0, -0.375 },
               },
               {
-                  cw::Vertex(-2.0, -7.0, -0.5),
-                  cw::Vertex(-2.0, -8.0, 0.5),
-                  cw::Vertex(-2.0, -8.0, -0.5),
+                  cw::Vertex { -1.25, -3.5, 0.375 },
+                  cw::Vertex { -1.375, -4.0, -0.375 },
+                  cw::Vertex { -1.25, -3.5, -0.375 }
+              },
+              // fourth
+              {
+                  cw::Vertex { -1.25, -4.0, 0.375 },
+                  cw::Vertex { -1.375, -4.5, 0.375 },
+                  cw::Vertex { -1.375, -4.5, -0.375 },
+              },
+              {
+                  cw::Vertex { -1.25, -4.0, 0.375 },
+                  cw::Vertex { -1.375, -4.5, -0.375 },
+                  cw::Vertex { -1.25, -4.0, -0.375 }
+              },
+              // fifth
+              {
+                  cw::Vertex { -1.25, -4.5, 0.375 },
+                  cw::Vertex { -1.375, -5.0, 0.375 },
+                  cw::Vertex { -1.375, -5.0, -0.375 },
+              },
+              {
+                  cw::Vertex { -1.25, -4.5, 0.375 },
+                  cw::Vertex { -1.375, -5.0, -0.375 },
+                  cw::Vertex { -1.25, -4.5, -0.375 }
               }
           }
       );
