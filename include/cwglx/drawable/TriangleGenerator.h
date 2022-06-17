@@ -92,8 +92,14 @@ class Rotator final : public TriangleGenerator {
 public:
   Rotator(std::unique_ptr<TriangleGenerator> &&base,
           const Vertex &centerPoint,
-          Axis m_Axis,
-          GLdouble m_Degree);
+          Axis axis,
+          GLdouble degree);
+
+  Rotator(std::unique_ptr<TriangleGenerator> &&base,
+          const Vertex &centerPoint,
+          Axis axis,
+          GLdouble rad,
+          const SecretInternalsDoNotUseOrYouWillBeFired&);
 
   ~Rotator() final;
 

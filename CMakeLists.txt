@@ -70,7 +70,11 @@ set(PROJECT_SOURCES
     include/cwglx/drawable/Composition.h
 
     src/wgc0310/head/Intake.cc
+    src/wgc0310/head/HeadFrame.cc
+    src/wgc0310/head/Head.cc
     include/wgc0310/head/Intake.h
+    include/wgc0310/head/HeadFrame.h
+    include/wgc0310/head/Head.h
     include/wgc0310/Components.h
 
     src/pl2/pl2q.cc

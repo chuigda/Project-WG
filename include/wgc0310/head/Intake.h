@@ -1,8 +1,7 @@
-#ifndef PROJECT_WG_WGC0310_HEAD_H
-#define PROJECT_WG_WGC0310_HEAD_H
+#ifndef PROJECT_WG_WGC0310_INTAKE_H
+#define PROJECT_WG_WGC0310_INTAKE_H
 
 #include <memory>
-#include <utility>
 
 #include "cwglx/drawable/TriangleGenerator.h"
 
@@ -12,4 +11,4 @@ std::unique_ptr<cw::TriangleGenerator> IntakeRight();
 
 } // namespace wgc0310
 
-#endif // PROJECT_WG_WGC0310_HEAD_H
+#endif // PROJECT_WG_WGC0310_INTAKE_H

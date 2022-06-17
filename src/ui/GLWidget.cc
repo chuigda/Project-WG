@@ -9,7 +9,8 @@
 #include "cwglx/drawable/Composition.h"
 #include "cwglx/drawable/PlainTriangles.h"
 #include "cwglx/drawable/TriangleGenerator.h"
-#include "include/wgc0310/head/Intake.h"
+#include "include/wgc0310/head/Head.h"
+#include "wgc0310/head/HeadFrame.h"
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
@@ -67,8 +68,7 @@ void GLWidget::initializeGL() {
                                     cw::Vertex(25.0, 0.0, 0.0),
                                     this));
 
-  std::unique_ptr<cw::TriangleGenerator> intakeGenerator =
-      wgc0310::IntakeRight();
+  std::unique_ptr<cw::TriangleGenerator> intakeGenerator = wgc0310::Head();
   std::unique_ptr<cw::PlainTriangles> intakeTriangles =
       std::make_unique<cw::PlainTriangles>();
   intakeTriangles->AddTriangles(intakeGenerator.get());
@@ -93,7 +93,7 @@ void GLWidget::paintGL() {
 
   glLoadIdentity();
   glTranslatef(0.0f, 0.0f, -30.0f);
-  glRotatef(-30, 0.0f, 1.0f, 0.0f);
+  // glRotatef(0, 0.0f, 1.0f, 0.0f);
 
   m_Arena.Get(m_MaterializedId)->Draw(this);
 }

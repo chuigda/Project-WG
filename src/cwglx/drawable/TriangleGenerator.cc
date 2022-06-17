@@ -105,12 +105,23 @@ void Positioner::ResetPosition(const Vector &position) {
 
 Rotator::Rotator(std::unique_ptr<TriangleGenerator> &&base,
                  const Vertex &centerPoint,
-                 Axis m_Axis,
-                 GLdouble m_Degree)
+                 Axis axis,
+                 GLdouble degree)
   : m_Base(std::move(base)),
     m_CenterPoint(centerPoint),
-    m_Axis(m_Axis),
-    m_Degree(DegToRad(m_Degree))
+    m_Axis(axis),
+    m_Degree(DegToRad(degree))
+{}
+
+Rotator::Rotator(std::unique_ptr<TriangleGenerator> &&base,
+                 const Vertex &centerPoint,
+                 Axis axis,
+                 GLdouble rad,
+                 const SecretInternalsDoNotUseOrYouWillBeFired&)
+  : m_Base(std::move(base)),
+    m_CenterPoint(centerPoint),
+    m_Axis(axis),
+    m_Degree(rad)
 {}
 
 Rotator::~Rotator() = default;
@@ -120,10 +131,13 @@ bool Rotator::HasNextTriangle() {
 }
 
 std::unique_ptr<TriangleGenerator> Rotator::Clone() const {
-  return std::make_unique<Rotator>(m_Base->Clone(),
-                                   m_CenterPoint,
-                                   m_Axis,
-                                   m_Degree);
+  return std::make_unique<Rotator>(
+      m_Base->Clone(),
+      m_CenterPoint,
+      m_Axis,
+      m_Degree,
+      SecretInternalsDoNotUseOrYouWillBeFired::Instance
+  );
 }
 
 std::array<Vertex, 3> Rotator::NextTriangle() {
