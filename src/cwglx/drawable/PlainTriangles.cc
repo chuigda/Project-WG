@@ -142,7 +142,8 @@ void PlainTriangles::AddTriangle(const std::array<Vertex, 3> &triangle) {
     return;
   }
 
-  SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(triangle);
+  AddTriangleInner(triangle,
+                   SecretInternalsDoNotUseOrYouWillBeFired::Instance);
 }
 
 void PlainTriangles::AddTriangles(const std::array<Vertex, 3> *triangles,
@@ -162,7 +163,8 @@ void PlainTriangles::AddTriangles(const std::array<Vertex, 3> *triangles,
 
   for (std::size_t i = 0; i < count; i++) {
     const std::array<Vertex, 3>& triangle = triangles[i];
-    SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(triangle);
+    AddTriangleInner(triangle,
+                     SecretInternalsDoNotUseOrYouWillBeFired::Instance);
   }
 }
 
@@ -182,13 +184,15 @@ void PlainTriangles::AddTriangles(TriangleGenerator *generator) {
 
   while (generator->HasNextTriangle()) {
     const auto triangle = generator->NextTriangle();
-    SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(triangle);
+    AddTriangleInner(triangle,
+                     SecretInternalsDoNotUseOrYouWillBeFired::Instance);
   }
 }
 
-void PlainTriangles::SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
-    const std::array<Vertex, 3> &triangle
-) {
+void
+PlainTriangles::
+AddTriangleInner(const std::array<Vertex, 3> &triangle,
+                 const SecretInternalsDoNotUseOrYouWillBeFired&) {
   const auto &[v0, v1, v2] = triangle;
 
   const Vector v0v1 = v1 - v0;

@@ -5,6 +5,7 @@
 #include "cwglx/Drawable.h"
 #include "cwglx/Vertex.h"
 #include "util/Derive.h"
+#include "util/Sinkrate.h"
 
 namespace cw {
 
@@ -31,9 +32,8 @@ public:
   void AddTriangles(TriangleGenerator *generator);
 
 private:
-  void SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED(
-      const std::array<Vertex, 3> &triangle
-  );
+  void AddTriangleInner(const std::array<Vertex, 3> &triangle,
+                        const SecretInternalsDoNotUseOrYouWillBeFired&);
 
   bool m_ComputeNormal;
   std::vector<VertexF> m_Vertices;
