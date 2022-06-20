@@ -74,12 +74,12 @@ std::unique_ptr<cw::TriangleGen> HeadFrame() {
       );
   std::unique_ptr<cw::TriangleGen> leftBlock =
       std::make_unique<cw::BoxGenerator>(
-          cw::Vector(-10.75, 0.625, 0.0),
+          cw::Vector(-10.7495, 0.625, 0.0),
           0.5, 1.25, 13.0
       );
   std::unique_ptr<cw::TriangleGen> rightBlock =
       std::make_unique<cw::BoxGenerator>(
-          cw::Vector(10.75, 0.625, 0.0),
+          cw::Vector(10.7495, 0.625, 0.0),
           0.5, 1.25, 13.0
       );
 

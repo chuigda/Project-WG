@@ -805,7 +805,7 @@ bool ConvexPolyGenerator::HasNextTriangle() {
   return m_CurrentCount < m_Vertices->size() - 1;
 }
 
-std::array<Vertex, 3> ConvexPolyGenerator::NextTriangle() {
+Triangle ConvexPolyGenerator::NextTriangle() {
   Q_ASSERT(HasNextTriangle());
 
   const std::size_t i0 = m_CurrentCount;

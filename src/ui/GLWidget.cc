@@ -82,6 +82,20 @@ void GLWidget::initializeGL() {
       )
   );
   m_MaterializedId = materializedId;
+
+  const char *version =
+      reinterpret_cast<const char*>(glGetString(GL_VERSION));
+  const char *vendor =
+      reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+  const char *renderer =
+      reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+  const char *extensions =
+      reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
+
+  qDebug() << "GL_VERSION:" << version;
+  qDebug() << "GL_VENDOR:" << vendor;
+  qDebug() << "GL_RENDERER:" << renderer;
+  qDebug() << "GL_EXTENSIONS" << extensions;
 }
 
 void GLWidget::paintGL() {

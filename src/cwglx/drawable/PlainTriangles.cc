@@ -129,7 +129,7 @@ void PlainTriangles::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
   }
 }
 
-void PlainTriangles::AddTriangle(const std::array<Vertex, 3> &triangle) {
+void PlainTriangles::AddTriangle(const Triangle &triangle) {
   if (m_VBOInitialized) {
     qWarning() << "PlainTriangles::AddTriangle():"
                << "VBO already initialized, any newly added triangles simply"
@@ -147,7 +147,7 @@ void PlainTriangles::AddTriangle(const std::array<Vertex, 3> &triangle) {
                    SecretInternalsDoNotUseOrYouWillBeFired::Instance);
 }
 
-void PlainTriangles::AddTriangles(const std::array<Vertex, 3> *triangles,
+void PlainTriangles::AddTriangles(const Triangle *triangles,
                                   std::size_t count) {
   if (m_VBOInitialized) {
     qWarning() << "PlainTriangles::AddTriangles():"
@@ -163,7 +163,7 @@ void PlainTriangles::AddTriangles(const std::array<Vertex, 3> *triangles,
   }
 
   for (std::size_t i = 0; i < count; i++) {
-    const std::array<Vertex, 3>& triangle = triangles[i];
+    const Triangle& triangle = triangles[i];
     AddTriangleInner(triangle,
                      SecretInternalsDoNotUseOrYouWillBeFired::Instance);
   }
@@ -192,7 +192,7 @@ void PlainTriangles::AddTriangles(TriangleGen *generator) {
 
 void
 PlainTriangles::
-AddTriangleInner(const std::array<Vertex, 3> &triangle,
+AddTriangleInner(const Triangle &triangle,
                  const SecretInternalsDoNotUseOrYouWillBeFired&) {
   const auto &[v0, v1, v2] = triangle;
 
