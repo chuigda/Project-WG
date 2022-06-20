@@ -56,13 +56,11 @@ set(PROJECT_SOURCES
     include/cwglx/Defs.h
     include/cwglx/DefaultMaterials.inc
 
-    src/cwglx/drawable/Triangle.cc
     src/cwglx/drawable/PlainTriangles.cc
     src/cwglx/drawable/TriangleGenerator.cc
     src/cwglx/drawable/Rectangle.cc
     src/cwglx/drawable/Fan.cc
     src/cwglx/drawable/Composition.cc
-    include/cwglx/drawable/Triangle.h
     include/cwglx/drawable/PlainTriangles.h
     include/cwglx/drawable/TriangleGenerator.h
     include/cwglx/drawable/Rectangle.h

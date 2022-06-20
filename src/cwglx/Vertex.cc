@@ -116,39 +116,6 @@ Vertex2DF Vertex2DF::Downscale(const Vertex2D &v) noexcept {
                      static_cast<GLfloat>(v.GetY()) };
 }
 
-VertexF::VertexF(GLfloat x, GLfloat y, GLfloat z) noexcept
-  : m_Repr({x, y, z})
-{}
-
-VertexF VertexF::Downscale(const Vertex &v) noexcept {
-  return VertexF {
-    static_cast<GLfloat>(v.GetX()),
-    static_cast<GLfloat>(v.GetY()),
-    static_cast<GLfloat>(v.GetZ())
-  };
-}
-
-VectorF::VectorF(GLfloat x, GLfloat y, GLfloat z) noexcept
-  : m_Repr({x, y, z})
-{}
-
-VectorF VectorF::Downscale(const Vector &v) noexcept {
-  return VectorF {
-    static_cast<GLfloat>(v.GetX()),
-    static_cast<GLfloat>(v.GetY()),
-    static_cast<GLfloat>(v.GetZ())
-  };
-}
-
-void DrawVertexArray(QOpenGLFunctions_2_0 *f,
-                     const VertexF *vertices,
-                     GLsizei count) noexcept
-{
-  f->glEnableClientState(GL_VERTEX_ARRAY);
-  f->glVertexPointer(3, GL_FLOAT, 0, vertices);
-  f->glDrawArrays(GL_TRIANGLES, 0, count);
-}
-
 Vertex RotateVertex(const Vertex &vertex,
                     const Vertex &centerPoint,
                     Axis axis,

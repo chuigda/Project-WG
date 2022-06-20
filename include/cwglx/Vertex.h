@@ -197,10 +197,19 @@ static_assert(sizeof(Vertex2DF) == sizeof(std::array<GLfloat, 2>),
 
 class VertexF final {
 public:
-  explicit VertexF(GLfloat x, GLfloat y, GLfloat z = 0.0f) noexcept;
+  constexpr inline
+  VertexF(GLfloat x, GLfloat y, GLfloat z = 0.0f) noexcept
+    : m_Repr({x, y, z})
+  {}
 
   [[nodiscard]]
-  static VertexF Downscale(const Vertex& v) noexcept;
+  constexpr inline static VertexF Downscale(const Vertex& v) noexcept {
+    return VertexF {
+      static_cast<GLfloat>(v.GetX()),
+      static_cast<GLfloat>(v.GetY()),
+      static_cast<GLfloat>(v.GetZ())
+    };
+  }
 
   [[nodiscard]]
   constexpr inline GLfloat GetX() const noexcept {
@@ -231,10 +240,19 @@ static_assert(sizeof(VertexF) == sizeof(std::array<GLfloat, 3>),
 
 class VectorF final {
 public:
-  explicit VectorF(GLfloat x, GLfloat y, GLfloat z = 0.0f) noexcept;
+  explicit constexpr
+  VectorF(GLfloat x, GLfloat y, GLfloat z = 0.0f) noexcept
+    : m_Repr({x, y, z})
+  {}
 
   [[nodiscard]]
-  static VectorF Downscale(const Vector& v) noexcept;
+  constexpr inline static VectorF Downscale(const Vector& v) noexcept {
+    return VectorF {
+      static_cast<GLfloat>(v.GetX()),
+      static_cast<GLfloat>(v.GetY()),
+      static_cast<GLfloat>(v.GetZ())
+    };
+  }
 
   [[nodiscard]]
   constexpr inline GLfloat GetX() const noexcept {
@@ -263,16 +281,6 @@ private:
 static_assert(sizeof(VectorF) == sizeof(std::array<GLfloat, 3>),
               "VectorF must be the same size as std::array<GLfloat, 3>");
 
-void DrawVertexArray(QOpenGLFunctions_2_0 *f,
-                     const VertexF *vertices,
-                     GLsizei count) noexcept;
-
-template <std::size_t N>
-void DrawVertexArray(QOpenGLFunctions_2_0 *f,
-                     const std::array<VertexF, N>& vertices) noexcept {
-  DrawVertexArray(f, vertices.data(), static_cast<GLsizei>(vertices.size()));
-}
-
 Vertex RotateVertex(const Vertex &vertex,
                     const Vertex &centerPoint,
                     Axis axis,
@@ -287,6 +295,30 @@ constexpr Vector g_UnitVectorY { 0.0, 1.0, 0.0 };
 constexpr Vector g_UnitVectorZ { 0.0, 0.0, 1.0 };
 
 } // namespace constants
+
+using Triangle = std::array<Vertex, 3>;
+using TriangleNormal = std::array<Vector, 3>;
+
+using TriangleF = std::array<VertexF, 3>;
+using TriangleNormalF = std::array<VectorF, 3>;
+
+constexpr inline TriangleF
+DownscaleTriangle(const Triangle &triangle) noexcept {
+  return {
+    VertexF::Downscale(triangle[0]),
+    VertexF::Downscale(triangle[1]),
+    VertexF::Downscale(triangle[2])
+  };
+}
+
+constexpr inline TriangleNormalF
+DownscaleTriangleNormal(const TriangleNormal &triangle) noexcept {
+  return {
+    VectorF::Downscale(triangle[0]),
+    VectorF::Downscale(triangle[1]),
+    VectorF::Downscale(triangle[2])
+  };
+}
 
 } // namespace cw
 

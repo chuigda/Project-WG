@@ -21,6 +21,8 @@ void SetupPreferredSettings(QOpenGLFunctions_2_0 *f) noexcept {
   f->glShadeModel(GL_SMOOTH);
 
   f->glEnable(GL_LIGHTING);
+  f->glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+  f->glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
   f->glEnable(GL_NORMALIZE);
   f->glEnable(GL_COLOR_MATERIAL);
 

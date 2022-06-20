@@ -11,6 +11,8 @@ namespace cw {
 
 class TriangleGenerator;
 
+class FineTriangleGen;
+
 class PlainTriangles final : public Drawable {
 public:
   explicit PlainTriangles(bool computeNormal = true);
@@ -30,10 +32,14 @@ public:
   void AddTriangle(const std::array<Vertex, 3>& triangle);
   void AddTriangles(const std::array<Vertex, 3> *triangles, std::size_t count);
   void AddTriangles(TriangleGenerator *generator);
+  void AddTriangles(FineTriangleGen *generator);
 
 private:
   void AddTriangleInner(const std::array<Vertex, 3> &triangle,
                         const SecretInternalsDoNotUseOrYouWillBeFired&);
+  void AddTrianglesInner(const std::array<Vertex, 3> &triangle,
+                         const std::array<Vector, 3> &normals,
+                         const SecretInternalsDoNotUseOrYouWillBeFired&);
 
   bool m_ComputeNormal;
   std::vector<VertexF> m_Vertices;
