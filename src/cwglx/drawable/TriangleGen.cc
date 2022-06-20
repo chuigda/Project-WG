@@ -870,8 +870,7 @@ Triangle Flipper::NextTriangle() {
 }
 
 std::unique_ptr<TriangleGen> Flipper::Clone() const {
-  return std::make_unique<Flipper>(m_Generator->Clone(),
-                                   m_Plane);
+  return std::make_unique<Flipper>(m_Generator->Clone(), m_Plane);
 }
 
 void Flipper::Reset() {

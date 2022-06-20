@@ -59,10 +59,12 @@ set(PROJECT_SOURCES
     src/cwglx/drawable/PlainTriangles.cc
     src/cwglx/drawable/TriangleGen.cc
     src/cwglx/drawable/FineTriangleGen.cc
+    src/cwglx/drawable/FineRectGen.cc
     src/cwglx/drawable/Composition.cc
     include/cwglx/drawable/PlainTriangles.h
     include/cwglx/drawable/TriangleGen.h
     include/cwglx/drawable/FineTriangleGen.h
+    include/cwglx/drawable/FineRectGen.h
     include/cwglx/drawable/Composition.h
 
     src/wgc0310/head/Intake.cc

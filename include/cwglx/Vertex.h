@@ -73,7 +73,11 @@ public:
   [[nodiscard]]
   constexpr inline static
   Vector FromVertex(const Vertex& vertex) noexcept {
-    return Vector(vertex.GetX(), vertex.GetY(), vertex.GetZ());
+    return {
+        vertex.GetX(),
+        vertex.GetY(),
+        vertex.GetZ()
+    };
   }
 
   [[nodiscard]]
@@ -107,17 +111,15 @@ public:
     const double length = std::sqrt(GetX() * GetX()
                                     + GetY() * GetY()
                                     + GetZ() * GetZ());
-    return {
-      GetX() / length, GetY() / length, GetZ() / length
-    };
+    return { GetX() / length, GetY() / length, GetZ() / length };
   }
 
   [[nodiscard]]
   constexpr inline Vector ABS() const noexcept {
     return {
-      std::abs(GetX()),
-      std::abs(GetY()),
-      std::abs(GetZ())
+        std::abs(GetX()),
+        std::abs(GetY()),
+        std::abs(GetZ())
     };
   }
 
@@ -172,9 +174,9 @@ constexpr inline Vector& Vector::operator*=(GLdouble rhs) noexcept {
 constexpr inline
 Vector operator+(const Vector& lhs, const Vector& rhs) noexcept {
   return {
-    lhs.GetX() + rhs.GetX(),
-    lhs.GetY() + rhs.GetY(),
-    lhs.GetZ() + rhs.GetZ()
+      lhs.GetX() + rhs.GetX(),
+      lhs.GetY() + rhs.GetY(),
+      lhs.GetZ() + rhs.GetZ()
   };
 }
 
@@ -182,9 +184,9 @@ Vector operator+(const Vector& lhs, const Vector& rhs) noexcept {
 constexpr inline
 Vector operator-(const Vector& lhs, const Vector& rhs) noexcept {
   return {
-    lhs.GetX() - rhs.GetX(),
-    lhs.GetY() - rhs.GetY(),
-    lhs.GetZ() - rhs.GetZ()
+      lhs.GetX() - rhs.GetX(),
+      lhs.GetY() - rhs.GetY(),
+      lhs.GetZ() - rhs.GetZ()
   };
 }
 
@@ -263,9 +265,9 @@ public:
   [[nodiscard]]
   constexpr inline static VertexF Downscale(const Vertex& v) noexcept {
     return VertexF {
-      static_cast<GLfloat>(v.GetX()),
-      static_cast<GLfloat>(v.GetY()),
-      static_cast<GLfloat>(v.GetZ())
+        static_cast<GLfloat>(v.GetX()),
+        static_cast<GLfloat>(v.GetY()),
+        static_cast<GLfloat>(v.GetZ())
     };
   }
 
@@ -306,9 +308,9 @@ public:
   [[nodiscard]]
   constexpr inline static VectorF Downscale(const Vector& v) noexcept {
     return {
-      static_cast<GLfloat>(v.GetX()),
-      static_cast<GLfloat>(v.GetY()),
-      static_cast<GLfloat>(v.GetZ())
+        static_cast<GLfloat>(v.GetX()),
+        static_cast<GLfloat>(v.GetY()),
+        static_cast<GLfloat>(v.GetZ())
     };
   }
 
@@ -360,21 +362,50 @@ using TriangleNormal = std::array<Vector, 3>;
 using TriangleF = std::array<VertexF, 3>;
 using TriangleNormalF = std::array<VectorF, 3>;
 
+using Rect = std::array<Vertex, 4>;
+using RectNormal = std::array<Vector, 4>;
+
+using RectF = std::array<VertexF, 4>;
+using RectNormalF = std::array<VectorF, 4>;
+
+[[nodiscard]]
 constexpr inline TriangleF
 DownscaleTriangle(const Triangle &triangle) noexcept {
   return {
-    VertexF::Downscale(triangle[0]),
-    VertexF::Downscale(triangle[1]),
-    VertexF::Downscale(triangle[2])
+      VertexF::Downscale(triangle[0]),
+      VertexF::Downscale(triangle[1]),
+      VertexF::Downscale(triangle[2])
   };
 }
 
+[[nodiscard]]
 constexpr inline TriangleNormalF
 DownscaleTriangleNormal(const TriangleNormal &triangle) noexcept {
   return {
-    VectorF::Downscale(triangle[0]),
-    VectorF::Downscale(triangle[1]),
-    VectorF::Downscale(triangle[2])
+      VectorF::Downscale(triangle[0]),
+      VectorF::Downscale(triangle[1]),
+      VectorF::Downscale(triangle[2])
+  };
+}
+
+[[nodiscard]]
+constexpr inline RectF DownscaleRect(const Rect &rect) noexcept {
+  return {
+      VertexF::Downscale(rect[0]),
+      VertexF::Downscale(rect[1]),
+      VertexF::Downscale(rect[2]),
+      VertexF::Downscale(rect[3])
+  };
+}
+
+[[nodiscard]]
+constexpr inline RectNormalF
+DownscaleRectNormal(const RectNormal &rect) noexcept {
+  return {
+      VectorF::Downscale(rect[0]),
+      VectorF::Downscale(rect[1]),
+      VectorF::Downscale(rect[2]),
+      VectorF::Downscale(rect[3])
   };
 }
 

@@ -15,10 +15,9 @@ public:
   virtual ~FineTriangleGen() = 0;
 
   [[nodiscard]] virtual bool HasNextTriangle() = 0;
-  [[nodiscard]]
-  virtual std::pair<Triangle, TriangleNormal> NextTriangle() = 0;
-  [[nodiscard]]
-  virtual std::unique_ptr<FineTriangleGen> Clone() const = 0;
+  [[nodiscard]] virtual std::pair<Triangle, TriangleNormal> NextTriangle() = 0;
+  [[nodiscard]] virtual std::unique_ptr<FineTriangleGen> Clone() const = 0;
+  virtual void Reset() = 0;
 
   CW_DERIVE_UNCOPYABLE(FineTriangleGen)
 };
