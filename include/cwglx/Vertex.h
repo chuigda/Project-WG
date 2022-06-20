@@ -2,6 +2,7 @@
 #define PROJECT_WG_VERTEX_H
 
 #include <array>
+#include <cmath>
 #include <QtGui/qopengl.h>
 
 #include "cwglx/Defs.h"
@@ -11,34 +12,6 @@ class QOpenGLFunctions_2_0;
 namespace cw {
 
 class Vector;
-
-class Vertex2D final {
-public:
-  explicit constexpr inline Vertex2D(GLdouble x, GLdouble y) noexcept
-    : m_Repr({x, y})
-  {}
-
-  [[nodiscard]]
-  constexpr inline GLdouble GetX() const noexcept {
-    return m_Repr[0];
-  }
-
-  [[nodiscard]]
-  constexpr inline GLdouble GetY() const noexcept {
-    return m_Repr[1];
-  }
-
-  [[nodiscard]]
-  constexpr inline const std::array<GLdouble, 2> &GetRepr() const noexcept {
-    return m_Repr;
-  }
-
-private:
-  std::array<GLdouble, 2> m_Repr;
-};
-
-static_assert(sizeof(Vertex2D) == sizeof(GLdouble) * 2,
-              "Vertex2D must be exactly 2 GLdouble's in size");
 
 class Vertex final {
 public:
@@ -79,9 +52,9 @@ public:
     return m_Repr;
   }
 
-  Vertex& operator+=(const Vector& rhs) noexcept;
+  constexpr inline Vertex& operator+=(const Vector& rhs) noexcept;
 
-  Vertex& operator-=(const Vector& rhs) noexcept;
+  constexpr inline Vertex& operator-=(const Vector& rhs) noexcept;
 
 private:
   std::array<GLdouble, 3> m_Repr;
@@ -92,7 +65,7 @@ static_assert(sizeof(Vertex) == sizeof(std::array<GLdouble, 3>),
 
 class Vector final {
 public:
-  explicit constexpr inline
+  constexpr inline
   Vector(GLdouble x, GLdouble y, GLdouble z = 0.0) noexcept
     : m_Repr({x, y, z})
   {}
@@ -123,23 +96,34 @@ public:
     return m_Repr;
   }
 
-  Vector& operator+=(const Vector& rhs) noexcept;
+  constexpr inline Vector& operator+=(const Vector& rhs) noexcept;
 
-  Vector& operator-=(const Vector& rhs) noexcept;
+  constexpr inline Vector& operator-=(const Vector& rhs) noexcept;
 
-  Vector& operator*=(GLdouble rhs) noexcept;
+  constexpr inline Vector& operator*=(GLdouble rhs) noexcept;
 
-  [[nodiscard]] Vector Normalize() const noexcept;
+  [[nodiscard]]
+  constexpr inline Vector Normalize() const noexcept {
+    const double length = std::sqrt(GetX() * GetX()
+                                    + GetY() * GetY()
+                                    + GetZ() * GetZ());
+    return {
+      GetX() / length, GetY() / length, GetZ() / length
+    };
+  }
 
-  [[nodiscard]] Vector ABS() const noexcept;
+  [[nodiscard]]
+  constexpr inline Vector ABS() const noexcept {
+    return {
+      std::abs(GetX()),
+      std::abs(GetY()),
+      std::abs(GetZ())
+    };
+  }
 
   [[nodiscard]]
   constexpr inline Vertex AsVertex() const noexcept {
-    return {
-      GetX(),
-      GetY(),
-      GetZ()
-    };
+    return { GetX(), GetY(), GetZ() };
   }
 
 private:
@@ -149,25 +133,125 @@ private:
 static_assert(sizeof(Vector) == sizeof(std::array<GLdouble, 3>),
               "Vector must be the same size as std::array<GLdouble, 3>");
 
-[[nodiscard]] Vector operator+(const Vector& lhs, const Vector& rhs) noexcept;
+constexpr inline Vertex& Vertex::operator+=(const Vector& rhs) noexcept {
+  m_Repr[0] += rhs.GetX();
+  m_Repr[1] += rhs.GetY();
+  m_Repr[2] += rhs.GetZ();
+  return *this;
+}
 
-[[nodiscard]] Vector operator-(const Vector& lhs, const Vector& rhs) noexcept;
+constexpr inline Vertex& Vertex::operator-=(const Vector& rhs) noexcept {
+  m_Repr[0] -= rhs.GetX();
+  m_Repr[1] -= rhs.GetY();
+  m_Repr[2] -= rhs.GetZ();
+  return *this;
+}
 
-[[nodiscard]] Vector operator*(const Vector& lhs, GLdouble rhs) noexcept;
+constexpr inline Vector& Vector::operator+=(const Vector& rhs) noexcept {
+  m_Repr[0] += rhs.GetX();
+  m_Repr[1] += rhs.GetY();
+  m_Repr[2] += rhs.GetZ();
+  return *this;
+}
 
-[[nodiscard]] Vector operator*(GLdouble lhs, const Vector& rhs) noexcept;
+constexpr inline Vector& Vector::operator-=(const Vector& rhs) noexcept {
+  m_Repr[0] -= rhs.GetX();
+  m_Repr[1] -= rhs.GetY();
+  m_Repr[2] -= rhs.GetZ();
+  return *this;
+}
 
-[[nodiscard]] Vector operator*(const Vector& lhs, const Vector& rhs) noexcept;
+constexpr inline Vector& Vector::operator*=(GLdouble rhs) noexcept {
+  m_Repr[0] *= rhs;
+  m_Repr[1] *= rhs;
+  m_Repr[2] *= rhs;
+  return *this;
+}
 
-[[nodiscard]] Vertex operator+(const Vertex& lhs, const Vector& rhs) noexcept;
+[[nodiscard]]
+constexpr inline
+Vector operator+(const Vector& lhs, const Vector& rhs) noexcept {
+  return {
+    lhs.GetX() + rhs.GetX(),
+    lhs.GetY() + rhs.GetY(),
+    lhs.GetZ() + rhs.GetZ()
+  };
+}
 
-[[nodiscard]] Vertex operator-(const Vertex& lhs, const Vector& rhs) noexcept;
+[[nodiscard]]
+constexpr inline
+Vector operator-(const Vector& lhs, const Vector& rhs) noexcept {
+  return {
+    lhs.GetX() - rhs.GetX(),
+    lhs.GetY() - rhs.GetY(),
+    lhs.GetZ() - rhs.GetZ()
+  };
+}
 
-[[nodiscard]] Vertex operator+(const Vector& lhs, const Vertex& rhs) noexcept;
+[[nodiscard]]
+constexpr inline
+Vector operator*(const Vector& lhs, GLdouble rhs) noexcept {
+  Vector ret = lhs;
+  ret *= rhs;
+  return ret;
+}
 
-[[nodiscard]] Vertex operator-(const Vector& lhs, const Vertex& rhs) noexcept;
+[[nodiscard]]
+constexpr inline
+Vector operator*(GLdouble lhs, const Vector& rhs) noexcept {
+  return rhs * lhs;
+}
 
-[[nodiscard]] Vector operator-(const Vertex& lhs, const Vertex& rhs) noexcept;
+[[nodiscard]]
+constexpr inline
+Vector operator*(const Vector& lhs, const Vector& rhs) noexcept {
+  const auto& [l, m, n] = lhs.GetRepr();
+  const auto& [o, p, q] = rhs.GetRepr();
+
+  return {
+      m * q - n * p,
+      n * o - l * q,
+      l * p - m * o
+  };
+}
+
+[[nodiscard]]
+constexpr inline
+Vertex operator+(const Vertex& lhs, const Vector& rhs) noexcept {
+  Vertex ret = lhs;
+  ret += rhs;
+  return ret;
+}
+
+[[nodiscard]]
+constexpr inline
+Vertex operator-(const Vertex& lhs, const Vector& rhs) noexcept {
+  Vertex ret = lhs;
+  ret -= rhs;
+  return ret;
+}
+
+[[nodiscard]]
+constexpr inline
+Vertex operator+(const Vector& lhs, const Vertex& rhs) noexcept {
+  return rhs + lhs;
+}
+
+[[nodiscard]]
+constexpr inline
+Vertex operator-(const Vector& lhs, const Vertex& rhs) noexcept {
+  return rhs - lhs;
+}
+
+[[nodiscard]]
+constexpr inline
+Vector operator-(const Vertex& lhs, const Vertex& rhs) noexcept {
+  return {
+      lhs.GetX() - rhs.GetX(),
+      lhs.GetY() - rhs.GetY(),
+      lhs.GetZ() - rhs.GetZ()
+  };
+}
 
 class VertexF final {
 public:
@@ -214,14 +298,14 @@ static_assert(sizeof(VertexF) == sizeof(std::array<GLfloat, 3>),
 
 class VectorF final {
 public:
-  explicit constexpr
+  constexpr inline
   VectorF(GLfloat x, GLfloat y, GLfloat z = 0.0f) noexcept
     : m_Repr({x, y, z})
   {}
 
   [[nodiscard]]
   constexpr inline static VectorF Downscale(const Vector& v) noexcept {
-    return VectorF {
+    return {
       static_cast<GLfloat>(v.GetX()),
       static_cast<GLfloat>(v.GetY()),
       static_cast<GLfloat>(v.GetZ())
