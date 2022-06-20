@@ -1,7 +1,8 @@
 #include "cwglx/drawable/PlainTriangles.h"
 
 #include <QOpenGLFunctions_2_0>
-#include "cwglx/drawable/TriangleGenerator.h"
+#include "cwglx/drawable/TriangleGen.h"
+#include "cwglx/drawable/FineTriangleGen.h"
 
 namespace cw {
 
@@ -168,7 +169,7 @@ void PlainTriangles::AddTriangles(const std::array<Vertex, 3> *triangles,
   }
 }
 
-void PlainTriangles::AddTriangles(TriangleGenerator *generator) {
+void PlainTriangles::AddTriangles(TriangleGen *generator) {
   if (m_VBOInitialized) {
     qWarning() << "PlainTriangles::AddTriangles():"
                << "VBO already initialized, any newly added triangles simply"
@@ -208,51 +209,10 @@ AddTriangleInner(const std::array<Vertex, 3> &triangle,
   }
 }
 
+void PlainTriangles::AddTriangles(FineTriangleGen*) {
+
+}
+
 #pragma clang diagnostic pop
-
-ConvexPolyGenerator::ConvexPolyGenerator(std::vector<Vertex> &&vertices)
-  : ConvexPolyGenerator(
-      std::make_shared<std::vector<Vertex>>(std::move(vertices)),
-      SecretInternalsDoNotUseOrYouWillBeFired::Instance
-    )
-{}
-
-ConvexPolyGenerator::
-ConvexPolyGenerator(std::shared_ptr<std::vector<Vertex>> vertices,
-                    const SecretInternalsDoNotUseOrYouWillBeFired &)
-  : m_Vertices(std::move(vertices)),
-    m_CurrentCount(1)
-{}
-
-ConvexPolyGenerator::~ConvexPolyGenerator() = default;
-
-bool ConvexPolyGenerator::HasNextTriangle() {
-  return m_CurrentCount < m_Vertices->size() - 1;
-}
-
-std::array<Vertex, 3> ConvexPolyGenerator::NextTriangle() {
-  Q_ASSERT(HasNextTriangle());
-
-  const std::size_t i0 = m_CurrentCount;
-  const std::size_t i1 = i0 + 1;
-  m_CurrentCount++;
-
-  Vertex origin = m_Vertices->operator[](0);
-  Vertex v0 = m_Vertices->operator[](i0);
-  Vertex v1 = m_Vertices->operator[](i1);
-
-  return { origin, v0, v1 };
-}
-
-std::unique_ptr<TriangleGenerator> ConvexPolyGenerator::Clone() const {
-  return std::make_unique<ConvexPolyGenerator>(
-      std::make_shared<std::vector<Vertex>>(*m_Vertices),
-      SecretInternalsDoNotUseOrYouWillBeFired::Instance
-  );
-}
-
-void ConvexPolyGenerator::Reset() {
-  m_CurrentCount = 1;
-}
 
 } // namespace cws

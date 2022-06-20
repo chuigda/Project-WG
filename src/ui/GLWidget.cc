@@ -8,7 +8,7 @@
 #include "cwglx/Material.h"
 #include "cwglx/drawable/Composition.h"
 #include "cwglx/drawable/PlainTriangles.h"
-#include "cwglx/drawable/TriangleGenerator.h"
+#include "cwglx/drawable/TriangleGen.h"
 #include "include/wgc0310/head/Head.h"
 #include "wgc0310/head/HeadFrame.h"
 
@@ -68,7 +68,7 @@ void GLWidget::initializeGL() {
                                     cw::Vertex(25.0, 0.0, 0.0),
                                     this));
 
-  std::unique_ptr<cw::TriangleGenerator> intakeGenerator = wgc0310::Head();
+  std::unique_ptr<cw::TriangleGen> intakeGenerator = wgc0310::Head();
   std::unique_ptr<cw::PlainTriangles> intakeTriangles =
       std::make_unique<cw::PlainTriangles>();
   intakeTriangles->AddTriangles(intakeGenerator.get());

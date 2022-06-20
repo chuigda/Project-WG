@@ -1,15 +1,13 @@
-#include "cwglx/drawable/TriangleGenerator.h"
+#include "cwglx/drawable/TriangleGen.h"
 
 #include "cwglx/drawable/PlainTriangles.h"
 #include "util/Constants.h"
 
 namespace cw {
 
-TriangleGenerator::TriangleGenerator() = default;
+TriangleGen::~TriangleGen() = default;
 
-TriangleGenerator::~TriangleGenerator() = default;
-
-SimpleTriangle::SimpleTriangle(const std::array<Vertex, 3>& vertices)
+SimpleTriangle::SimpleTriangle(const Triangle& vertices)
   : m_Vertices(vertices),
     m_Generated(false)
 {}
@@ -20,12 +18,12 @@ bool SimpleTriangle::HasNextTriangle() {
   return !m_Generated;
 }
 
-std::array<Vertex, 3> SimpleTriangle::NextTriangle() {
+Triangle SimpleTriangle::NextTriangle() {
   m_Generated = true;
   return m_Vertices;
 }
 
-std::unique_ptr<TriangleGenerator> SimpleTriangle::Clone() const {
+std::unique_ptr<TriangleGen> SimpleTriangle::Clone() const {
   return std::make_unique<SimpleTriangle>(m_Vertices);
 }
 
@@ -33,15 +31,15 @@ void SimpleTriangle::Reset() {
   m_Generated = false;
 }
 
-StoredTriangles::StoredTriangles(std::vector<std::array<Vertex, 3>> &&triangles)
-  : m_Triangles(std::make_shared<std::vector<std::array<Vertex, 3>>>(
+StoredTriangles::StoredTriangles(std::vector<Triangle> &&triangles)
+  : m_Triangles(std::make_shared<std::vector<Triangle>>(
       std::move(triangles)
     )),
     m_CurrentTriangle(m_Triangles->begin())
 {}
 
 StoredTriangles::
-StoredTriangles(std::shared_ptr<std::vector<std::array<Vertex, 3>>> triangles,
+StoredTriangles(std::shared_ptr<std::vector<Triangle>> triangles,
                 const SecretInternalsDoNotUseOrYouWillBeFired &)
   : m_Triangles(std::move(triangles)),
     m_CurrentTriangle(m_Triangles->begin())
@@ -53,13 +51,13 @@ bool StoredTriangles::HasNextTriangle() {
   return m_CurrentTriangle < m_Triangles->end();
 }
 
-std::array<Vertex, 3> StoredTriangles::NextTriangle() {
-  std::array<Vertex, 3> triangle = *m_CurrentTriangle;
+Triangle StoredTriangles::NextTriangle() {
+  Triangle triangle = *m_CurrentTriangle;
   m_CurrentTriangle++;
   return triangle;
 }
 
-std::unique_ptr<TriangleGenerator> StoredTriangles::Clone() const {
+std::unique_ptr<TriangleGen> StoredTriangles::Clone() const {
   return std::make_unique<StoredTriangles>(
       m_Triangles,
       SecretInternalsDoNotUseOrYouWillBeFired::Instance
@@ -70,7 +68,7 @@ void StoredTriangles::Reset() {
   m_CurrentTriangle = m_Triangles->begin();
 }
 
-Positioner::Positioner(std::unique_ptr<TriangleGenerator> &&generator,
+Positioner::Positioner(std::unique_ptr<TriangleGen> &&generator,
                        const Vector& position)
   : m_Generator(std::move(generator)),
     m_Position(position)
@@ -82,15 +80,15 @@ bool Positioner::HasNextTriangle() {
   return m_Generator->HasNextTriangle();
 }
 
-std::array<Vertex, 3> Positioner::NextTriangle() {
-  std::array<Vertex, 3> triangle = m_Generator->NextTriangle();
+Triangle Positioner::NextTriangle() {
+  Triangle triangle = m_Generator->NextTriangle();
   for (Vertex& vertex : triangle) {
     vertex += m_Position;
   }
   return triangle;
 }
 
-std::unique_ptr<TriangleGenerator> Positioner::Clone() const {
+std::unique_ptr<TriangleGen> Positioner::Clone() const {
   return std::make_unique<Positioner>(m_Generator->Clone(), m_Position);
 }
 
@@ -103,7 +101,7 @@ void Positioner::ResetPosition(const Vector &position) {
   Reset();
 }
 
-Rotator::Rotator(std::unique_ptr<TriangleGenerator> &&base,
+Rotator::Rotator(std::unique_ptr<TriangleGen> &&base,
                  const Vertex &centerPoint,
                  Axis axis,
                  GLdouble degree)
@@ -113,7 +111,7 @@ Rotator::Rotator(std::unique_ptr<TriangleGenerator> &&base,
     m_Degree(DegToRad(degree))
 {}
 
-Rotator::Rotator(std::unique_ptr<TriangleGenerator> &&base,
+Rotator::Rotator(std::unique_ptr<TriangleGen> &&base,
                  const Vertex &centerPoint,
                  Axis axis,
                  GLdouble rad,
@@ -130,7 +128,7 @@ bool Rotator::HasNextTriangle() {
   return m_Base->HasNextTriangle();
 }
 
-std::unique_ptr<TriangleGenerator> Rotator::Clone() const {
+std::unique_ptr<TriangleGen> Rotator::Clone() const {
   return std::make_unique<Rotator>(
       m_Base->Clone(),
       m_CenterPoint,
@@ -140,8 +138,8 @@ std::unique_ptr<TriangleGenerator> Rotator::Clone() const {
   );
 }
 
-std::array<Vertex, 3> Rotator::NextTriangle() {
-  std::array<Vertex, 3> triangle = m_Base->NextTriangle();
+Triangle Rotator::NextTriangle() {
+  Triangle triangle = m_Base->NextTriangle();
   for (Vertex &vertex : triangle) {
     vertex = RotateVertex(vertex, m_CenterPoint, m_Axis, m_Degree);
   }
@@ -152,9 +150,9 @@ void Rotator::Reset() {
   m_Base->Reset();
 }
 
-Composer::Composer(std::vector<std::unique_ptr<TriangleGenerator>> &&generators)
+Composer::Composer(std::vector<std::unique_ptr<TriangleGen>> &&generators)
   : Composer(
-      std::make_shared<std::vector<std::unique_ptr<TriangleGenerator>>>(
+      std::make_shared<std::vector<std::unique_ptr<TriangleGen>>>(
           std::move(generators)
       ),
       SecretInternalsDoNotUseOrYouWillBeFired::Instance
@@ -162,7 +160,7 @@ Composer::Composer(std::vector<std::unique_ptr<TriangleGenerator>> &&generators)
 {}
 
 Composer::
-Composer(std::shared_ptr<std::vector<std::unique_ptr<TriangleGenerator>>> ptr,
+Composer(std::shared_ptr<std::vector<std::unique_ptr<TriangleGen>>> ptr,
          const SecretInternalsDoNotUseOrYouWillBeFired&)
   : m_Generators(std::move(ptr)),
     m_CurrentGenerator(m_Generators->begin())
@@ -184,7 +182,7 @@ bool Composer::HasNextTriangle() {
   }
 }
 
-std::array<Vertex, 3> Composer::NextTriangle() {
+Triangle Composer::NextTriangle() {
   while (!m_CurrentGenerator->get()->HasNextTriangle()) {
     ++m_CurrentGenerator;
   }
@@ -192,7 +190,7 @@ std::array<Vertex, 3> Composer::NextTriangle() {
   return m_CurrentGenerator->get()->NextTriangle();
 }
 
-std::unique_ptr<TriangleGenerator> Composer::Clone() const {
+std::unique_ptr<TriangleGen> Composer::Clone() const {
   return std::make_unique<Composer>(
       m_Generators,
       SecretInternalsDoNotUseOrYouWillBeFired::Instance
@@ -239,7 +237,7 @@ bool FanGenerator::HasNextTriangle() {
   return m_CurrentCount < m_Count;
 }
 
-std::array<Vertex, 3> FanGenerator::NextTriangle() {
+Triangle FanGenerator::NextTriangle() {
   Q_ASSERT(HasNextTriangle());
 
   GLdouble pieceStartAngle =
@@ -263,7 +261,7 @@ std::array<Vertex, 3> FanGenerator::NextTriangle() {
   };
 }
 
-std::unique_ptr<TriangleGenerator> FanGenerator::Clone() const {
+std::unique_ptr<TriangleGen> FanGenerator::Clone() const {
   return std::make_unique<FanGenerator>(
       m_CenterPoint,
       m_Radius,
@@ -319,7 +317,7 @@ bool CylinderGenerator::HasNextTriangle() {
   return m_CurrentCount < m_Count;
 }
 
-std::array<Vertex, 3> CylinderGenerator::NextTriangle() {
+Triangle CylinderGenerator::NextTriangle() {
   Q_ASSERT(HasNextTriangle());
 
   GLdouble pieceStartAngle =
@@ -351,7 +349,7 @@ std::array<Vertex, 3> CylinderGenerator::NextTriangle() {
   }
 }
 
-std::unique_ptr<TriangleGenerator> CylinderGenerator::Clone() const {
+std::unique_ptr<TriangleGen> CylinderGenerator::Clone() const {
   return std::make_unique<CylinderGenerator>(
       m_CenterPoint,
       m_Radius,
@@ -370,7 +368,7 @@ void CylinderGenerator::Reset() {
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "ArgumentSelectionDefects"
-std::unique_ptr<TriangleGenerator>
+std::unique_ptr<TriangleGen>
 CreateClosedCylinder(const Vector &centerPoint,
                      GLdouble radius,
                      GLdouble height,
@@ -395,12 +393,12 @@ CreateClosedCylinder(const Vector &centerPoint,
                                                  startAngle,
                                                  count);
 
-  std::vector<std::unique_ptr<TriangleGenerator>> triangleGenerators;
-  triangleGenerators.push_back(std::unique_ptr<TriangleGenerator>(base));
-  triangleGenerators.push_back(std::unique_ptr<TriangleGenerator>(topSurface));
-  triangleGenerators.push_back(std::unique_ptr<TriangleGenerator>(bottomSurface));
+  std::vector<std::unique_ptr<TriangleGen>> triangleGenerators;
+  triangleGenerators.push_back(std::unique_ptr<TriangleGen>(base));
+  triangleGenerators.push_back(std::unique_ptr<TriangleGen>(topSurface));
+  triangleGenerators.push_back(std::unique_ptr<TriangleGen>(bottomSurface));
 
-  return std::unique_ptr<TriangleGenerator>(
+  return std::unique_ptr<TriangleGen>(
       new Composer(std::move(triangleGenerators))
   );
 }
@@ -461,7 +459,7 @@ bool SphereGenerator::HasNextTriangle() {
   return m_CurrentXYCount < m_XYCount && m_CurrentZCount < m_ZCount;
 }
 
-std::array<Vertex, 3> SphereGenerator::NextTriangle() {
+Triangle SphereGenerator::NextTriangle() {
   Q_ASSERT(HasNextTriangle());
 
   GLdouble zStartAngle =
@@ -512,7 +510,7 @@ std::array<Vertex, 3> SphereGenerator::NextTriangle() {
   }
 }
 
-std::unique_ptr<TriangleGenerator> SphereGenerator::Clone() const {
+std::unique_ptr<TriangleGen> SphereGenerator::Clone() const {
   return std::make_unique<SphereGenerator>(
       m_CenterPoint,
       m_Radius,
@@ -581,7 +579,7 @@ bool DonutGenerator::HasNextTriangle() {
          && m_CurrentPipePolyCount < m_PipePolyCount;
 }
 
-std::array<Vertex, 3> DonutGenerator::NextTriangle() {
+Triangle DonutGenerator::NextTriangle() {
   Q_ASSERT(HasNextTriangle());
 
   GLdouble yStartAngle =
@@ -647,7 +645,7 @@ std::array<Vertex, 3> DonutGenerator::NextTriangle() {
   }
 }
 
-std::unique_ptr<TriangleGenerator> DonutGenerator::Clone() const {
+std::unique_ptr<TriangleGen> DonutGenerator::Clone() const {
   return std::make_unique<DonutGenerator>(
       m_CenterPoint,
       m_Radius,
@@ -696,7 +694,7 @@ BoxGenerator::~BoxGenerator() = default;
   return m_CurrentCount < 12;
 }
 
-[[nodiscard]] std::array<Vertex, 3> BoxGenerator::NextTriangle() {
+[[nodiscard]] Triangle BoxGenerator::NextTriangle() {
   Q_ASSERT(HasNextTriangle());
 
   m_CurrentCount += 1;
@@ -773,7 +771,7 @@ BoxGenerator::~BoxGenerator() = default;
   }
 }
 
-std::unique_ptr<TriangleGenerator> BoxGenerator::Clone() const {
+std::unique_ptr<TriangleGen> BoxGenerator::Clone() const {
   return std::make_unique<BoxGenerator>(
       m_CenterPoint,
       m_XScale,
@@ -787,7 +785,52 @@ void BoxGenerator::Reset() {
   m_CurrentCount = 0;
 }
 
-Flipper::Flipper(std::unique_ptr<TriangleGenerator> &&generator, Plane plane)
+ConvexPolyGenerator::ConvexPolyGenerator(std::vector<Vertex> &&vertices)
+    : ConvexPolyGenerator(
+    std::make_shared<std::vector<Vertex>>(std::move(vertices)),
+    SecretInternalsDoNotUseOrYouWillBeFired::Instance
+)
+{}
+
+ConvexPolyGenerator::
+ConvexPolyGenerator(std::shared_ptr<std::vector<Vertex>> vertices,
+                    const SecretInternalsDoNotUseOrYouWillBeFired &)
+    : m_Vertices(std::move(vertices)),
+      m_CurrentCount(1)
+{}
+
+ConvexPolyGenerator::~ConvexPolyGenerator() = default;
+
+bool ConvexPolyGenerator::HasNextTriangle() {
+  return m_CurrentCount < m_Vertices->size() - 1;
+}
+
+std::array<Vertex, 3> ConvexPolyGenerator::NextTriangle() {
+  Q_ASSERT(HasNextTriangle());
+
+  const std::size_t i0 = m_CurrentCount;
+  const std::size_t i1 = i0 + 1;
+  m_CurrentCount++;
+
+  Vertex origin = m_Vertices->operator[](0);
+  Vertex v0 = m_Vertices->operator[](i0);
+  Vertex v1 = m_Vertices->operator[](i1);
+
+  return { origin, v0, v1 };
+}
+
+std::unique_ptr<TriangleGen> ConvexPolyGenerator::Clone() const {
+  return std::make_unique<ConvexPolyGenerator>(
+      std::make_shared<std::vector<Vertex>>(*m_Vertices),
+      SecretInternalsDoNotUseOrYouWillBeFired::Instance
+  );
+}
+
+void ConvexPolyGenerator::Reset() {
+  m_CurrentCount = 1;
+}
+
+Flipper::Flipper(std::unique_ptr<TriangleGen> &&generator, Plane plane)
   : m_Generator(std::move(generator)),
     m_Plane(plane)
 {}
@@ -798,7 +841,7 @@ bool Flipper::HasNextTriangle() {
   return m_Generator->HasNextTriangle();
 }
 
-std::array<Vertex, 3> Flipper::NextTriangle() {
+Triangle Flipper::NextTriangle() {
   auto [v1, v2, v3] = m_Generator->NextTriangle();
   switch (m_Plane) {
     case Plane::XYPlane:
@@ -826,7 +869,7 @@ std::array<Vertex, 3> Flipper::NextTriangle() {
   return { v1, v3, v2 };
 }
 
-std::unique_ptr<TriangleGenerator> Flipper::Clone() const {
+std::unique_ptr<TriangleGen> Flipper::Clone() const {
   return std::make_unique<Flipper>(m_Generator->Clone(),
                                    m_Plane);
 }
@@ -835,7 +878,7 @@ void Flipper::Reset() {
   m_Generator->Reset();
 }
 
-Inverter::Inverter(std::unique_ptr<TriangleGenerator> &&generator)
+Inverter::Inverter(std::unique_ptr<TriangleGen> &&generator)
   : m_Generator(std::move(generator))
 {}
 
@@ -845,12 +888,12 @@ bool Inverter::HasNextTriangle() {
   return m_Generator->HasNextTriangle();
 }
 
-std::array<Vertex, 3> Inverter::NextTriangle() {
+Triangle Inverter::NextTriangle() {
   auto [v1, v2, v3] = m_Generator->NextTriangle();
   return { v1, v3, v2 };
 }
 
-std::unique_ptr<TriangleGenerator> Inverter::Clone() const {
+std::unique_ptr<TriangleGen> Inverter::Clone() const {
   return std::make_unique<Inverter>(m_Generator->Clone());
 }
 

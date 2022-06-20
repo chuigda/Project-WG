@@ -11,91 +11,91 @@
 
 namespace cw {
 
-class TriangleGenerator {
+class TriangleGen {
 public:
-  TriangleGenerator();
-  virtual ~TriangleGenerator() = 0;
+  constexpr inline TriangleGen() = default;
+  virtual ~TriangleGen() = 0;
 
   [[nodiscard]] virtual bool HasNextTriangle() = 0;
-  [[nodiscard]] virtual std::array<Vertex, 3> NextTriangle() = 0;
-  [[nodiscard]] virtual std::unique_ptr<TriangleGenerator> Clone() const = 0;
+  [[nodiscard]] virtual Triangle NextTriangle() = 0;
+  [[nodiscard]] virtual std::unique_ptr<TriangleGen> Clone() const = 0;
   virtual void Reset() = 0;
 
-  CW_DERIVE_UNCOPYABLE(TriangleGenerator)
+  CW_DERIVE_UNCOPYABLE(TriangleGen)
 };
 
-class SimpleTriangle final : public TriangleGenerator {
+class SimpleTriangle final : public TriangleGen {
 public:
-  explicit SimpleTriangle(const std::array<Vertex, 3>& vertices);
+  explicit SimpleTriangle(const Triangle& vertices);
 
   ~SimpleTriangle() final;
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
 private:
-  std::array<Vertex, 3> m_Vertices;
+  Triangle m_Vertices;
   bool m_Generated;
 };
 
-class StoredTriangles final : public TriangleGenerator {
+class StoredTriangles final : public TriangleGen {
 public:
-  explicit StoredTriangles(std::vector<std::array<Vertex, 3>>&& triangles);
+  explicit StoredTriangles(std::vector<Triangle>&& triangles);
 
   explicit
-  StoredTriangles(std::shared_ptr<std::vector<std::array<Vertex, 3>>> triangles,
+  StoredTriangles(std::shared_ptr<std::vector<Triangle>> triangles,
                   const SecretInternalsDoNotUseOrYouWillBeFired&);
 
   ~StoredTriangles() final;
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
 private:
-  std::shared_ptr<std::vector<std::array<Vertex, 3>>> m_Triangles;
-  typename std::vector<std::array<Vertex, 3>>::iterator m_CurrentTriangle;
+  std::shared_ptr<std::vector<Triangle>> m_Triangles;
+  typename std::vector<Triangle>::iterator m_CurrentTriangle;
 };
 
-class Positioner final : public TriangleGenerator {
+class Positioner final : public TriangleGen {
 public:
-  Positioner(std::unique_ptr<TriangleGenerator> &&generator,
+  Positioner(std::unique_ptr<TriangleGen> &&generator,
              const Vector& position);
 
   ~Positioner() final;
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
   void ResetPosition(const Vector& position);
 
 private:
-  std::unique_ptr<TriangleGenerator> m_Generator;
+  std::unique_ptr<TriangleGen> m_Generator;
   Vector m_Position;
 };
 
-class Rotator final : public TriangleGenerator {
+class Rotator final : public TriangleGen {
 public:
-  Rotator(std::unique_ptr<TriangleGenerator> &&base,
+  Rotator(std::unique_ptr<TriangleGen> &&base,
           const Vertex &centerPoint,
           Axis axis,
           GLdouble degree);
 
-  Rotator(std::unique_ptr<TriangleGenerator> &&base,
+  Rotator(std::unique_ptr<TriangleGen> &&base,
           const Vertex &centerPoint,
           Axis axis,
           GLdouble rad,
@@ -105,43 +105,43 @@ public:
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
 private:
-  std::unique_ptr<TriangleGenerator> m_Base;
+  std::unique_ptr<TriangleGen> m_Base;
   Vertex m_CenterPoint;
   Axis m_Axis;
   GLdouble m_Degree;
 };
 
-class Composer final : public TriangleGenerator {
+class Composer final : public TriangleGen {
 public:
   explicit
-  Composer(std::vector<std::unique_ptr<TriangleGenerator>> &&generators);
+  Composer(std::vector<std::unique_ptr<TriangleGen>> &&generators);
 
-  Composer(std::shared_ptr<std::vector<std::unique_ptr<TriangleGenerator>>> ptr,
+  Composer(std::shared_ptr<std::vector<std::unique_ptr<TriangleGen>>> ptr,
            const SecretInternalsDoNotUseOrYouWillBeFired &);
 
   ~Composer() final;
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
 private:
-  std::shared_ptr<std::vector<std::unique_ptr<TriangleGenerator>>> m_Generators;
-  std::vector<std::unique_ptr<TriangleGenerator>>::iterator m_CurrentGenerator;
+  std::shared_ptr<std::vector<std::unique_ptr<TriangleGen>>> m_Generators;
+  std::vector<std::unique_ptr<TriangleGen>>::iterator m_CurrentGenerator;
 };
 
-class FanGenerator final : public TriangleGenerator {
+class FanGenerator final : public TriangleGen {
 public:
   FanGenerator(const Vector& centerPoint,
                GLdouble radius,
@@ -160,9 +160,9 @@ public:
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
@@ -176,7 +176,7 @@ private:
   std::size_t m_CurrentCount;
 };
 
-class CylinderGenerator final : public TriangleGenerator {
+class CylinderGenerator final : public TriangleGen {
 public:
   CylinderGenerator(const Vector &centerPoint,
                     GLdouble radius,
@@ -197,9 +197,9 @@ public:
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
@@ -215,7 +215,7 @@ private:
   bool m_UpTriangle;
 };
 
-std::unique_ptr<TriangleGenerator>
+std::unique_ptr<TriangleGen>
 CreateClosedCylinder(const Vector &centerPoint,
                      GLdouble radius,
                      GLdouble height,
@@ -223,7 +223,7 @@ CreateClosedCylinder(const Vector &centerPoint,
                      GLdouble endAngle,
                      std::size_t count);
 
-class SphereGenerator final : public TriangleGenerator {
+class SphereGenerator final : public TriangleGen {
 public:
   SphereGenerator(const Vector &centerPoint,
                   GLdouble radius,
@@ -248,9 +248,9 @@ public:
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
@@ -269,7 +269,7 @@ private:
   bool m_UpTriangle;
 };
 
-class DonutGenerator final : public TriangleGenerator {
+class DonutGenerator final : public TriangleGen {
 public:
   DonutGenerator(const Vector &centerPosition,
                  GLdouble radius,
@@ -293,9 +293,9 @@ public:
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
@@ -314,7 +314,7 @@ private:
   bool m_UpTriangle;
 };
 
-class BoxGenerator final : public TriangleGenerator {
+class BoxGenerator final : public TriangleGen {
 public:
   BoxGenerator(const Vector &centerPoint,
                GLdouble xScale,
@@ -331,9 +331,9 @@ public:
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
@@ -346,7 +346,7 @@ private:
   std::size_t m_CurrentCount;
 };
 
-class ConvexPolyGenerator final : public TriangleGenerator {
+class ConvexPolyGenerator final : public TriangleGen {
 public:
   explicit ConvexPolyGenerator(std::vector<Vertex> &&vertices);
 
@@ -357,9 +357,9 @@ public:
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
@@ -368,41 +368,41 @@ private:
   std::size_t m_CurrentCount;
 };
 
-class Flipper final : public TriangleGenerator {
+class Flipper final : public TriangleGen {
 public:
-  Flipper(std::unique_ptr<TriangleGenerator> &&generator, Plane plane);
+  Flipper(std::unique_ptr<TriangleGen> &&generator, Plane plane);
 
   ~Flipper() final;
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
 private:
-  std::unique_ptr<TriangleGenerator> m_Generator;
+  std::unique_ptr<TriangleGen> m_Generator;
   Plane m_Plane;
 };
 
-class Inverter final : public TriangleGenerator {
+class Inverter final : public TriangleGen {
 public:
-  explicit Inverter(std::unique_ptr<TriangleGenerator> &&generator);
+  explicit Inverter(std::unique_ptr<TriangleGen> &&generator);
 
   ~Inverter() final;
 
   [[nodiscard]] bool HasNextTriangle() final;
 
-  [[nodiscard]] std::array<Vertex, 3> NextTriangle() final;
+  [[nodiscard]] Triangle NextTriangle() final;
 
-  [[nodiscard]] std::unique_ptr<TriangleGenerator> Clone() const final;
+  [[nodiscard]] std::unique_ptr<TriangleGen> Clone() const final;
 
   void Reset() final;
 
 private:
-  std::unique_ptr<TriangleGenerator> m_Generator;
+  std::unique_ptr<TriangleGen> m_Generator;
 };
 
 } // namespace cw

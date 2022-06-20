@@ -3,11 +3,11 @@
 
 #include <memory>
 
-#include "cwglx/drawable/TriangleGenerator.h"
+#include "cwglx/drawable/TriangleGen.h"
 
 namespace wgc0310 {
 
-std::unique_ptr<cw::TriangleGenerator> IntakeRight();
+std::unique_ptr<cw::TriangleGen> IntakeRight();
 
 } // namespace wgc0310
 

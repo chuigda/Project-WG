@@ -9,7 +9,7 @@
 
 namespace cw {
 
-class TriangleGenerator;
+class TriangleGen;
 
 class FineTriangleGen;
 
@@ -29,16 +29,16 @@ public:
   CW_DERIVE_UNCOPYABLE(PlainTriangles)
   CW_DERIVE_UNMOVABLE(PlainTriangles)
 
-  void AddTriangle(const std::array<Vertex, 3>& triangle);
-  void AddTriangles(const std::array<Vertex, 3> *triangles, std::size_t count);
-  void AddTriangles(TriangleGenerator *generator);
+  void AddTriangle(const Triangle& triangle);
+  void AddTriangles(const Triangle *triangles, std::size_t count);
+  void AddTriangles(TriangleGen *generator);
   void AddTriangles(FineTriangleGen *generator);
 
 private:
-  void AddTriangleInner(const std::array<Vertex, 3> &triangle,
+  void AddTriangleInner(const Triangle &triangle,
                         const SecretInternalsDoNotUseOrYouWillBeFired&);
-  void AddTrianglesInner(const std::array<Vertex, 3> &triangle,
-                         const std::array<Vector, 3> &normals,
+  void AddTrianglesInner(const Triangle &triangle,
+                         const TriangleNormal &normals,
                          const SecretInternalsDoNotUseOrYouWillBeFired&);
 
   bool m_ComputeNormal;
