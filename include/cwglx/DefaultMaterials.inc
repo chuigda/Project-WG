@@ -2,6 +2,9 @@
 #define CW_DEFINE_MATERIAL(NAME, AR, AG, AB, AA, DR, DG, DB, DA, SR, SG, SB, SA, SHINE)
 #endif
 
+// These materials come from
+// http://www.it.hiof.no/~borres/j3d/explain/light/p-materials.html
+
 CW_DEFINE_MATERIAL(Brass,
                    0.329412f, 0.223529f, 0.027451f, 1.0f,
                    0.780392f, 0.568627f, 0.113725f, 1.0f,
@@ -52,5 +55,14 @@ CW_DEFINE_MATERIAL(Plastic,
                    0.55f, 0.55f, 0.55f, 1.0f,
                    0.7f, 0.7f, 0.7f, 1.0f,
                    32.0f)
+
+// the glass material comes from
+// http://www.it.hiof.no/~borres/j3d/explain/blending/p-blend.html
+
+CW_DEFINE_MATERIAL(Glass,
+                   0.20f, 0.50f, 1.0f, 0.1f,
+                   0.20f, 0.50f, 1.0f, 0.1f,
+                   1.0f, 1.0f, 1.0f, 1.0f,
+                   102.4f)
 
 #undef CW_DEFINE_MATERIAL

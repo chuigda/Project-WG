@@ -58,13 +58,9 @@ set(PROJECT_SOURCES
 
     src/cwglx/drawable/PlainTriangles.cc
     src/cwglx/drawable/TriangleGenerator.cc
-    src/cwglx/drawable/Rectangle.cc
-    src/cwglx/drawable/Fan.cc
     src/cwglx/drawable/Composition.cc
     include/cwglx/drawable/PlainTriangles.h
     include/cwglx/drawable/TriangleGenerator.h
-    include/cwglx/drawable/Rectangle.h
-    include/cwglx/drawable/Fan.h
     include/cwglx/drawable/Composition.h
 
     src/wgc0310/head/Intake.cc

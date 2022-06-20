@@ -1,7 +1,5 @@
 #include "cwglx/Vertex.h"
 
-#include <QOpenGLFunctions_2_0>
-
 namespace cw {
 
 Vertex &Vertex::operator+=(const Vector &rhs) noexcept {
@@ -107,15 +105,6 @@ Vector operator-(const Vertex& lhs, const Vertex& rhs) noexcept {
                 lhs.GetZ() - rhs.GetZ());
 }
 
-Vertex2DF::Vertex2DF(GLfloat x, GLfloat y) noexcept
-  : m_Repr({x, y})
-{}
-
-Vertex2DF Vertex2DF::Downscale(const Vertex2D &v) noexcept {
-  return Vertex2DF { static_cast<GLfloat>(v.GetX()),
-                     static_cast<GLfloat>(v.GetY()) };
-}
-
 Vertex RotateVertex(const Vertex &vertex,
                     const Vertex &centerPoint,
                     Axis axis,
@@ -127,17 +116,23 @@ Vertex RotateVertex(const Vertex &vertex,
   double sin = std::sin(degree);
   switch (axis) {
     case Axis::XAxis:
-      return Vertex(x,
-                    y * cos - z * sin,
-                    y * sin + z * cos);
+      return {
+        x,
+        y * cos - z * sin,
+        y * sin + z * cos
+      };
     case Axis::YAxis:
-      return Vertex(x * cos + z * sin,
-                    y,
-                    -x * sin + z * cos);
+      return {
+        x * cos + z * sin,
+        y,
+        -x * sin + z * cos
+      };
     case Axis::ZAxis:
-      return Vertex(x * cos - y * sin,
-                    x * sin + y * cos,
-                    z);
+      return {
+        x * cos - y * sin,
+        x * sin + y * cos,
+        z
+      };
   }
 
   Q_UNREACHABLE();

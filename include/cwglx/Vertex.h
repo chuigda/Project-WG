@@ -42,9 +42,8 @@ static_assert(sizeof(Vertex2D) == sizeof(GLdouble) * 2,
 
 class Vertex final {
 public:
-  explicit constexpr inline Vertex(GLdouble x,
-                                   GLdouble y,
-                                   GLdouble z = 0.0) noexcept
+  constexpr inline
+  Vertex(GLdouble x, GLdouble y, GLdouble z = 0.0) noexcept
     : m_Repr({x, y, z})
   {}
 
@@ -93,14 +92,14 @@ static_assert(sizeof(Vertex) == sizeof(std::array<GLdouble, 3>),
 
 class Vector final {
 public:
-  explicit constexpr inline Vector(GLdouble x,
-                                   GLdouble y,
-                                   GLdouble z = 0.0) noexcept
+  explicit constexpr inline
+  Vector(GLdouble x, GLdouble y, GLdouble z = 0.0) noexcept
     : m_Repr({x, y, z})
   {}
 
   [[nodiscard]]
-  constexpr inline Vector FromVertex(const Vertex& vertex) noexcept {
+  constexpr inline static
+  Vector FromVertex(const Vertex& vertex) noexcept {
     return Vector(vertex.GetX(), vertex.GetY(), vertex.GetZ());
   }
 
@@ -136,7 +135,11 @@ public:
 
   [[nodiscard]]
   constexpr inline Vertex AsVertex() const noexcept {
-    return Vertex(GetX(), GetY(), GetZ());
+    return {
+      GetX(),
+      GetY(),
+      GetZ()
+    };
   }
 
 private:
@@ -165,35 +168,6 @@ static_assert(sizeof(Vector) == sizeof(std::array<GLdouble, 3>),
 [[nodiscard]] Vertex operator-(const Vector& lhs, const Vertex& rhs) noexcept;
 
 [[nodiscard]] Vector operator-(const Vertex& lhs, const Vertex& rhs) noexcept;
-
-class Vertex2DF final {
-public:
-  explicit Vertex2DF(GLfloat x, GLfloat y) noexcept;
-
-  [[nodiscard]]
-  static Vertex2DF Downscale(const Vertex2D& v) noexcept;
-
-  [[nodiscard]]
-  constexpr inline GLfloat GetX() const noexcept {
-    return m_Repr[0];
-  }
-
-  [[nodiscard]]
-  constexpr inline GLfloat GetY() const noexcept {
-    return m_Repr[1];
-  }
-
-  [[nodiscard]]
-  constexpr inline const std::array<GLfloat, 2>& GetRepr() const noexcept {
-    return m_Repr;
-  }
-
-private:
-  std::array<GLfloat, 2> m_Repr;
-};
-
-static_assert(sizeof(Vertex2DF) == sizeof(std::array<GLfloat, 2>),
-              "Vertex2DF must be the same size as std::array<GLfloat, 2>");
 
 class VertexF final {
 public:
