@@ -10,8 +10,8 @@ std::vector<std::vector<cw::Vertex>>
 ComputeScreenVertices(double screenWidth,
                       double screenHeight,
                       double bulb,
-                      std::size_t horizontalSegments,
-                      std::size_t verticalSegments);
+                      int horizontalSegments,
+                      int verticalSegments);
 
 } // namespace wgc0310
 
