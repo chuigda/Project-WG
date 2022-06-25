@@ -117,7 +117,8 @@ void PlainTriangles::Draw(GLFunctions *f) const noexcept {
     f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
     f->glDrawElements(GL_TRIANGLES,
                       static_cast<GLsizei>(m_Indices.size()),
-                      GL_UNSIGNED_INT, nullptr);
+                      GL_UNSIGNED_INT,
+                      nullptr);
   }
   f->glPopClientAttrib();
 }

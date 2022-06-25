@@ -13,6 +13,8 @@ public:
   Screen(GLFunctions *f);
   ~Screen() final;
 
+  void PrepareTexture(GLFunctions *f) const noexcept;
+
   void Draw(GLFunctions *f) const noexcept final;
 
   void Delete(GLFunctions *f) const noexcept final;

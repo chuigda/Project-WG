@@ -1,6 +1,7 @@
 #include "wgc0310/head/Screen.h"
 
 #include <QDebug>
+#include <QImage>
 #include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
 #include "wgc0310/head/ScreenCurveHelper.h"
@@ -49,6 +50,8 @@ private:
   void InitializeFBO(GLFunctions *f);
 };
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
 ScreenImpl::ScreenImpl(GLFunctions *f, const QImage &volumeBarImage)
     : volumeBarTexture(volumeBarImage, f),
       volumeLevels { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -57,6 +60,7 @@ ScreenImpl::ScreenImpl(GLFunctions *f, const QImage &volumeBarImage)
   Initialize2D();
   InitializeFBO(f);
 }
+#pragma clang diagnostic pop
 
 ScreenImpl::~ScreenImpl() {
   if (!deleted) {
@@ -104,6 +108,7 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
   // initialize VBO for 3D things
   f->glGenBuffers(3, vbo.data());
 
+  // 0 for vertices
   f->glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
   f->glBufferData(
       GL_ARRAY_BUFFER,
@@ -112,6 +117,7 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
       GL_STATIC_DRAW
   );
 
+  // 1 for indices
   f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1]);
   f->glBufferData(
       GL_ELEMENT_ARRAY_BUFFER,
@@ -120,7 +126,7 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
       GL_STATIC_DRAW
   );
 
-  // texture buffer
+  // 2 for texture coordinates
   f->glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
   f->glBufferData(
       GL_ARRAY_BUFFER,
@@ -212,22 +218,138 @@ void ScreenImpl::Initialize2D() {
 }
 
 void ScreenImpl::InitializeFBO(GLFunctions *f) {
+  // initialize the fbo
   f->glGenFramebuffers(1, &fbo);
   f->glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-  f->glFramebufferTexture2D(
-      GL_FRAMEBUFFER,
-      GL_COLOR_ATTACHMENT0,
-      GL_TEXTURE_2D,
-      screenTextureId,
-      0
-  );
-  // we dont need depth buffer here
+
+  // initialize the texture
+  f->glGenTextures(1, &screenTextureId);
+  f->glBindTexture(GL_TEXTURE_2D, screenTextureId);
+  f->glTexImage2D(GL_TEXTURE_2D,
+                  0,
+                  GL_RGBA,
+                  640,
+                  480,
+                  0,
+                  GL_RGBA,
+                  GL_UNSIGNED_BYTE,
+                  nullptr);
+  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+  // configure texture into the fbo
+  f->glFramebufferTexture(GL_FRAMEBUFFER,
+                          GL_COLOR_ATTACHMENT0,
+                          screenTextureId, 0);
+  GLenum drawBuffer[1] = {GL_COLOR_ATTACHMENT0};
+  f->glDrawBuffers(1, drawBuffer);
+
 
   GLenum status = f->glCheckFramebufferStatus(GL_FRAMEBUFFER);
   if (status != GL_FRAMEBUFFER_COMPLETE) {
     qDebug() << "ScreenImpl::InitializeFBO: Framebuffer not complete!";
     std::abort();
   }
+}
+
+Screen::Screen(GLFunctions *f) {
+  QImage image("./resc/volume-bar-composed.bmp");
+  if (image.isNull()) {
+    qDebug() << "Screen::Screen: Failed to load image!";
+    std::abort();
+  }
+
+  m_Impl = new ScreenImpl(f, image);
+}
+
+Screen::~Screen() {
+  delete m_Impl;
+}
+
+void Screen::PrepareTexture(GLFunctions *f) const noexcept {
+  // save rendering state
+  f->glPushAttrib(GL_ALL_ATTRIB_BITS);
+  f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+
+  // bind to framebuffer
+  f->glBindFramebuffer(GL_FRAMEBUFFER, m_Impl->fbo);
+
+  // setup viewport
+  f->glViewport(0, 0, 640, 480);
+
+  // ortho projection, don't care about previous state here, we'll restore it
+  // later, outside of this function
+  f->glMatrixMode(GL_PROJECTION);
+  f->glLoadIdentity();
+  // -320 ~ 320, -240 ~ 240
+  f->glOrtho(-320, 320, -240, 240, -1, 1);
+  f->glMatrixMode(GL_MODELVIEW);
+  f->glLoadIdentity();
+  // look at (0, 0, 0) from (0, 0, 1), just one simple translatef would be ok
+  f->glTranslatef(0, 0, -1);
+
+  // clear the screen
+  f->glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  f->glClear(GL_COLOR_BUFFER_BIT);
+
+  // draw the volume bars
+
+  f->glEnable(GL_TEXTURE_2D);
+  f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
+  f->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  f->glTexCoordPointer(2, GL_FLOAT, 0, m_Impl->volumeBarTexCoords.data());
+
+  f->glEnableClientState(GL_VERTEX_ARRAY);
+  f->glVertexPointer(2, GL_FLOAT, 0, m_Impl->volumeBarVertices.data());
+
+  f->glDrawElements(GL_TRIANGLES,
+                    static_cast<GLsizei>(m_Impl->volumeBarIndices.size()),
+                    GL_UNSIGNED_SHORT,
+                    m_Impl->volumeBarIndices.data());
+
+  // restore rendering state
+  f->glPopClientAttrib();
+  f->glPopAttrib();
+
+  // reset to default framebuffer
+  f->glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Screen::Draw(GLFunctions *f) const noexcept {
+  // texture should have been prepared before this call
+
+  // save color and texture state
+  f->glPushAttrib(GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT);
+  // save all client state
+  f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+
+  // now use our texture
+  f->glEnable(GL_TEXTURE_2D);
+  f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
+
+  // bind our vbo
+  f->glEnableClientState(GL_VERTEX_ARRAY);
+  f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo[0]);
+  f->glVertexPointer(2, GL_FLOAT, 0, nullptr);
+
+  f->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo[2]);
+  f->glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
+
+  // draw the screen
+  f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Impl->vbo[1]);
+  f->glDrawElements(GL_TRIANGLES,
+                    static_cast<GLsizei>(m_Impl->screenIndices.size()),
+                    GL_UNSIGNED_INT,
+                    nullptr);
+
+  // restore states
+  f->glPopClientAttrib();
+  f->glPopAttrib();
+}
+
+void Screen::Delete(GLFunctions *f) const noexcept {
+  m_Impl->Delete(f);
 }
 
 } // namespace wgc0310

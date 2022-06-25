@@ -9,8 +9,8 @@
 #include "cwglx/drawable/Composition.h"
 #include "cwglx/drawable/PlainTriangles.h"
 #include "cwglx/drawable/TriangleGen.h"
-#include "include/wgc0310/head/Head.h"
-#include "include/wgc0310/head/ScreenGlass.h"
+#include "wgc0310/head/Head.h"
+#include "wgc0310/head/ScreenGlass.h"
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),

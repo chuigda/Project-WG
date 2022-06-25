@@ -1,7 +1,6 @@
-#include "include/wgc0310/head/Intake.h"
+#include "wgc0310/head/Intake.h"
 
 #include <vector>
-#include "cwglx/Drawable.h"
 #include "cwglx/drawable/PlainTriangles.h"
 #include "cwglx/drawable/TriangleGen.h"
 
