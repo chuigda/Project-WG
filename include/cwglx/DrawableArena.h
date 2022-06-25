@@ -5,10 +5,9 @@
 #include <unordered_set>
 #include <unordered_map>
 
+#include "cwglx/GL.h"
 #include "cwglx/Drawable.h"
 #include "util/Derive.h"
-
-class QOpenGLFunctions_2_0;
 
 namespace cw {
 
@@ -27,7 +26,7 @@ public:
 
   [[nodiscard]] Drawable const* Get(std::size_t id) const;
 
-  void Delete(QOpenGLFunctions_2_0 *f) const noexcept;
+  void Delete(GLFunctions *f) const noexcept;
 
 private:
   std::size_t m_CurrentId;

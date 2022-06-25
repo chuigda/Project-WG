@@ -3,11 +3,11 @@
 
 #include <QtGui/qopengl.h>
 
-class QOpenGLFunctions_2_0;
+#include "cwglx/GL.h"
 
 namespace glu {
 
-void Perspective(QOpenGLFunctions_2_0 *f,
+void Perspective(GLFunctions *f,
                  GLdouble fovY,
                  GLdouble aspect,
                  GLdouble zNear,

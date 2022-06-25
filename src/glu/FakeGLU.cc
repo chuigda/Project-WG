@@ -1,11 +1,11 @@
 #include "glu/FakeGLU.h"
 
-#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_3_Compatibility>
 #include "util/Constants.h"
 
 namespace glu {
 
-void Perspective(QOpenGLFunctions_2_0 *f,
+void Perspective(GLFunctions *f,
                  GLdouble fovY,
                  GLdouble aspect,
                  GLdouble zNear,

@@ -20,7 +20,7 @@ public:
 
   TranslationStep(const Vector& rotationVector, GLfloat angle) noexcept;
 
-  void ApplyTranslation(QOpenGLFunctions_2_0 *f) const noexcept;
+  void ApplyTranslation(GLFunctions *f) const noexcept;
 
 private:
   StepKind m_StepKind;
@@ -35,9 +35,9 @@ public:
 
   ~PositionedDrawable() final;
 
-  void Draw(QOpenGLFunctions_2_0 *f) const noexcept final;
+  void Draw(GLFunctions *f) const noexcept final;
 
-  void Delete(QOpenGLFunctions_2_0 *f) const noexcept final;
+  void Delete(GLFunctions *f) const noexcept final;
 
   CW_DERIVE_UNCOPYABLE(PositionedDrawable)
   CW_DERIVE_UNMOVABLE(PositionedDrawable)
@@ -54,9 +54,9 @@ public:
 
   ~MaterializedDrawable() final;
 
-  void Draw(QOpenGLFunctions_2_0 *f) const noexcept final;
+  void Draw(GLFunctions *f) const noexcept final;
 
-  void Delete(QOpenGLFunctions_2_0 *f) const noexcept final;
+  void Delete(GLFunctions *f) const noexcept final;
 
   CW_DERIVE_UNCOPYABLE(MaterializedDrawable)
   CW_DERIVE_UNMOVABLE(MaterializedDrawable)
@@ -73,9 +73,9 @@ public:
 
   ~Composition() final;
 
-  void Draw(QOpenGLFunctions_2_0 *f) const noexcept final;
+  void Draw(GLFunctions *f) const noexcept final;
 
-  void Delete(QOpenGLFunctions_2_0 *f) const noexcept final;
+  void Delete(GLFunctions *f) const noexcept final;
 
   CW_DERIVE_UNCOPYABLE(Composition)
   CW_DERIVE_UNMOVABLE(Composition)

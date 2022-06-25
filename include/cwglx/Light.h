@@ -3,10 +3,9 @@
 
 #include <array>
 
+#include "cwglx/GL.h"
 #include "cwglx/Color.h"
 #include "cwglx/Vertex.h"
-
-class QOpenGLFunctions_2_0;
 
 namespace cw {
 
@@ -16,12 +15,12 @@ public:
                  RGBAColor ambient,
                  RGBAColor diffuse,
                  RGBAColor specular,
-                 QOpenGLFunctions_2_0 *f) noexcept;
+                 GLFunctions *f) noexcept;
 
   virtual ~Light() = 0;
 
-  virtual void Enable(QOpenGLFunctions_2_0 *f) const noexcept = 0;
-  void Disable(QOpenGLFunctions_2_0 *f) const noexcept;
+  virtual void Enable(GLFunctions *f) const noexcept = 0;
+  void Disable(GLFunctions *f) const noexcept;
 
   [[nodiscard]]
   constexpr inline GLenum GetLightId() const noexcept {
@@ -57,11 +56,11 @@ public:
                          RGBAColor diffuse,
                          RGBAColor specular,
                          const Vector &direction,
-                         QOpenGLFunctions_2_0 *f) noexcept;
+                         GLFunctions *f) noexcept;
 
   ~ParallelLight() override = default;
 
-  void Enable(QOpenGLFunctions_2_0 *f) const noexcept override;
+  void Enable(GLFunctions *f) const noexcept override;
 
 private:
   std::array<GLfloat, 4> m_DirectionRepr;
@@ -74,11 +73,11 @@ public:
                       RGBAColor diffuse,
                       RGBAColor specular,
                       const Vertex &position,
-                      QOpenGLFunctions_2_0 *f) noexcept;
+                      GLFunctions *f) noexcept;
 
   ~PointLight() override = default;
 
-  void Enable(QOpenGLFunctions_2_0 *f) const noexcept override;
+  void Enable(GLFunctions *f) const noexcept override;
 
 private:
   std::array<GLfloat, 4> m_PositionRepr;

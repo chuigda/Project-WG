@@ -1,6 +1,6 @@
 #include "cwglx/Material.h"
 
-#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_3_Compatibility>
 
 namespace cw {
 
@@ -38,7 +38,7 @@ bool StandardMaterial::IsTransparent() const noexcept {
          || m_Specular.IsTransparent();
 }
 
-void StandardMaterial::Apply(QOpenGLFunctions_2_0 *f) const noexcept {
+void StandardMaterial::Apply(GLFunctions *f) const noexcept {
   f->glColorMaterial(GL_FRONT, m_ColorDimension);
   f->glMaterialfv(GL_FRONT, GL_AMBIENT, m_Ambient.GetRepr().data());
   f->glMaterialfv(GL_FRONT, GL_DIFFUSE, m_Diffuse.GetRepr().data());

@@ -1,6 +1,6 @@
 #include "cwglx/drawable/Composition.h"
 
-#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_3_Compatibility>
 
 namespace cw {
 
@@ -19,7 +19,7 @@ TranslationStep::TranslationStep(const Vector &rotationVector,
     m_RotationValue(angle)
 {}
 
-void TranslationStep::ApplyTranslation(QOpenGLFunctions_2_0 *f) const noexcept {
+void TranslationStep::ApplyTranslation(GLFunctions *f) const noexcept {
   const auto &[x, y, z] = m_Vector.GetRepr();
   if (m_StepKind == Translation) {
     f->glTranslatef(x, y, z);
@@ -37,7 +37,7 @@ PositionedDrawable(std::vector<TranslationStep> &&translationSteps,
 
 PositionedDrawable::~PositionedDrawable() = default;
 
-void PositionedDrawable::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
+void PositionedDrawable::Draw(GLFunctions *f) const noexcept {
   f->glPushMatrix();
   for (const auto &step : m_TranslationSteps) {
     step.ApplyTranslation(f);
@@ -46,7 +46,7 @@ void PositionedDrawable::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPopMatrix();
 }
 
-void PositionedDrawable::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
+void PositionedDrawable::Delete(GLFunctions *f) const noexcept {
   Q_UNUSED(f)
 }
 
@@ -59,7 +59,7 @@ MaterializedDrawable(const Material *material,
 
 MaterializedDrawable::~MaterializedDrawable() = default;
 
-void MaterializedDrawable::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
+void MaterializedDrawable::Draw(GLFunctions *f) const noexcept {
   f->glPushAttrib(GL_CURRENT_BIT);
   m_Material->Apply(f);
   for (const auto &drawable : m_Drawables) {
@@ -68,7 +68,7 @@ void MaterializedDrawable::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPopAttrib();
 }
 
-void MaterializedDrawable::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
+void MaterializedDrawable::Delete(GLFunctions *f) const noexcept {
   Q_UNUSED(f)
 }
 
@@ -80,7 +80,7 @@ Composition::Composition(std::vector<TranslationStep> &&translationSteps,
 
 Composition::~Composition() = default;
 
-void Composition::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
+void Composition::Draw(GLFunctions *f) const noexcept {
   f->glPushMatrix();
   for (const TranslationStep &step : m_TranslationSteps) {
     step.ApplyTranslation(f);
@@ -92,7 +92,7 @@ void Composition::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPopMatrix();
 }
 
-void Composition::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
+void Composition::Delete(GLFunctions *f) const noexcept {
   Q_UNUSED(f)
 }
 

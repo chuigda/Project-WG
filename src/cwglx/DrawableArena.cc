@@ -40,7 +40,7 @@ const Drawable *DrawableArena::Get(std::size_t id) const {
   return it->second.get();
 }
 
-void DrawableArena::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
+void DrawableArena::Delete(GLFunctions *f) const noexcept {
   for (const auto &[_, drawable] : m_Drawables) {
     drawable->Delete(f);
   }

@@ -2,9 +2,9 @@
 #define PROJECT_WG_MATERIAL_H
 
 #include <QtGui/qopengl.h>
-#include "cwglx/Color.h"
 
-class QOpenGLFunctions_2_0;
+#include "cwglx/GL.h"
+#include "cwglx/Color.h"
 
 namespace cw {
 
@@ -13,7 +13,7 @@ public:
   virtual ~Material() = 0;
 
   [[nodiscard]] virtual bool IsTransparent() const noexcept = 0;
-  virtual void Apply(QOpenGLFunctions_2_0 *f) const noexcept = 0;
+  virtual void Apply(GLFunctions *f) const noexcept = 0;
 };
 
 class StandardMaterial final : public Material {
@@ -33,7 +33,7 @@ public:
   ~StandardMaterial() final;
 
   [[nodiscard]] bool IsTransparent() const noexcept final;
-  void Apply(QOpenGLFunctions_2_0 *f) const noexcept final;
+  void Apply(GLFunctions *f) const noexcept final;
 
 private:
   RGBAColorF m_Ambient;

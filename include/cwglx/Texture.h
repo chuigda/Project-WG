@@ -4,33 +4,33 @@
 #include <vector>
 #include <QtGui/qopengl.h>
 
+#include "cwglx/GL.h"
 #include "cwglx/Vertex.h"
 
 class QImage;
-class QOpenGLFunctions_2_0;
 
 namespace cw {
 
 class Texture2D {
 public:
-  Texture2D(const QImage &image, QOpenGLFunctions_2_0 *f);
+  Texture2D(const QImage &image, GLFunctions *f);
 
   [[nodiscard]] GLuint GetTextureId() const noexcept;
 
-  void BeginTexture(QOpenGLFunctions_2_0 *f) const noexcept;
-  void ApplyTexture(QOpenGLFunctions_2_0 *f,
+  void BeginTexture(GLFunctions *f) const noexcept;
+  void ApplyTexture(GLFunctions *f,
                     GLfloat x,
                     GLfloat y) const noexcept;
 
-  void ApplyTexture(QOpenGLFunctions_2_0 *f,
+  void ApplyTexture(GLFunctions *f,
                     const std::array<GLfloat, 2>* points,
                     std::size_t numPoints) const noexcept;
 
-  void ApplyTexture(QOpenGLFunctions_2_0 *f,
+  void ApplyTexture(GLFunctions *f,
                     const std::pair<GLfloat, GLfloat>* points,
                     std::size_t numPoints) const noexcept;
 
-  void DeleteTexture(QOpenGLFunctions_2_0 *f) noexcept;
+  void DeleteTexture(GLFunctions *f) noexcept;
 
   ~Texture2D() noexcept;
 

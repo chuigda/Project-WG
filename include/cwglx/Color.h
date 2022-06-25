@@ -3,10 +3,9 @@
 
 #include <array>
 #include <cstdint>
-
 #include <QtGui/qopengl.h>
 
-class QOpenGLFunctions_2_0;
+#include "cwglx/GL.h"
 
 namespace cw {
 
@@ -53,7 +52,7 @@ public:
     return m_Repr[3] != 255;
   }
 
-  void Apply(QOpenGLFunctions_2_0 *f) noexcept;
+  void Apply(GLFunctions *f) noexcept;
 
 private:
   std::array<std::uint8_t, 4> m_Repr;
@@ -103,13 +102,13 @@ public:
     return m_Repr[3] <= 0.99;
   }
 
-  void Apply(QOpenGLFunctions_2_0 *f) const noexcept;
+  void Apply(GLFunctions *f) const noexcept;
 
 private:
   std::array<GLfloat, 4> m_Repr;
 };
 
-void ApplyColorArray(QOpenGLFunctions_2_0 *f,
+void ApplyColorArray(GLFunctions *f,
                      const RGBAColorF* colors,
                      std::size_t numColor) noexcept;
 

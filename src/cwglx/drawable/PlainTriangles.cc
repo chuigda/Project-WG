@@ -1,6 +1,6 @@
 #include "cwglx/drawable/PlainTriangles.h"
 
-#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_3_Compatibility>
 #include "cwglx/drawable/TriangleGen.h"
 #include "cwglx/drawable/FineTriangleGen.h"
 
@@ -62,7 +62,7 @@ PlainTriangles::~PlainTriangles() {
   }
 }
 
-void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
+void PlainTriangles::Draw(GLFunctions *f) const noexcept {
   if (m_VBODeleted) {
     qWarning() << "PlainTriangles::Draw():"
                << "VBO deleted, skipping draw";
@@ -122,7 +122,7 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
   f->glPopClientAttrib();
 }
 
-void PlainTriangles::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
+void PlainTriangles::Delete(GLFunctions *f) const noexcept {
   if (!m_VBODeleted) {
     f->glDeleteBuffers(3, m_VBO.data());
     m_VBODeleted = true;

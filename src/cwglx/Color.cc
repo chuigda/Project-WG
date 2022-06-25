@@ -1,10 +1,10 @@
 #include "cwglx/Color.h"
 
-#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_3_Compatibility>
 
 namespace cw {
 
-void RGBAColor::Apply(QOpenGLFunctions_2_0 *f) noexcept {
+void RGBAColor::Apply(GLFunctions *f) noexcept {
   f->glColor4ubv(m_Repr.data());
 }
 
@@ -26,11 +26,11 @@ RGBAColorF::RGBAColorF(RGBAColor color) noexcept
              static_cast<GLfloat>(color.GetAlpha()) / 255.0f })
 {}
 
-void RGBAColorF::Apply(QOpenGLFunctions_2_0 *f) const noexcept {
+void RGBAColorF::Apply(GLFunctions *f) const noexcept {
   f->glColor4fv(m_Repr.data());
 }
 
-void ApplyColorArray(QOpenGLFunctions_2_0 *f,
+void ApplyColorArray(GLFunctions *f,
                      const RGBAColorF *colors,
                      std::size_t numColor) noexcept
 {

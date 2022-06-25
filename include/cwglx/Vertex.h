@@ -5,9 +5,8 @@
 #include <cmath>
 #include <QtGui/qopengl.h>
 
+#include "cwglx/GL.h"
 #include "cwglx/Defs.h"
-
-class QOpenGLFunctions_2_0;
 
 namespace cw {
 

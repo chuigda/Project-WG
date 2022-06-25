@@ -22,9 +22,9 @@ public:
 
   ~PlainTriangles() final;
 
-  void Draw(QOpenGLFunctions_2_0 *f) const noexcept final;
+  void Draw(GLFunctions *f) const noexcept final;
 
-  void Delete(QOpenGLFunctions_2_0 *f) const noexcept final;
+  void Delete(GLFunctions *f) const noexcept final;
 
   CW_DERIVE_UNCOPYABLE(PlainTriangles)
   CW_DERIVE_UNMOVABLE(PlainTriangles)

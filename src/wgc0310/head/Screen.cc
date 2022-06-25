@@ -1,6 +1,6 @@
 #include "wgc0310/head/Screen.h"
 
-#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_3_Compatibility>
 #include "cwglx/Texture.h"
 #include "wgc0310/head/ScreenCurveHelper.h"
 #include "util/Derive.h"
@@ -9,7 +9,7 @@ namespace wgc0310 {
 
 class ScreenImpl {
 public:
-  ScreenImpl(QOpenGLFunctions_2_0 *f, const QImage &volumeBarImage);
+  ScreenImpl(GLFunctions *f, const QImage &volumeBarImage);
   ~ScreenImpl();
 
   cw::Texture2D volumeBarTexture;
@@ -32,7 +32,7 @@ public:
   CW_DERIVE_UNCOPYABLE(ScreenImpl)
   CW_DERIVE_UNMOVABLE(ScreenImpl)
 
-  void DeleteVBO(QOpenGLFunctions_2_0 *f) {
+  void DeleteVBO(GLFunctions *f) {
     if (!vboDeleted) {
       f->glDeleteBuffers(3, vbo.data());
       vboDeleted = true;
@@ -40,11 +40,11 @@ public:
   }
 
 private:
-  void Initialize3D(QOpenGLFunctions_2_0 *f);
+  void Initialize3D(GLFunctions *f);
   void Initialize2D();
 };
 
-ScreenImpl::ScreenImpl(QOpenGLFunctions_2_0 *f, const QImage &volumeBarImage)
+ScreenImpl::ScreenImpl(GLFunctions *f, const QImage &volumeBarImage)
     : volumeBarTexture(volumeBarImage, f),
       volumeLevels { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 {
@@ -59,7 +59,7 @@ ScreenImpl::~ScreenImpl() {
   }
 }
 
-void ScreenImpl::Initialize3D(QOpenGLFunctions_2_0 *f) {
+void ScreenImpl::Initialize3D(GLFunctions *f) {
   std::vector<std::vector<cw::Vertex>> screenVertices_ =
       ComputeScreenVertices(22.0, 14.0, 1.5, 160, 120);
   for (std::size_t x = 0; x < 160; x++) {

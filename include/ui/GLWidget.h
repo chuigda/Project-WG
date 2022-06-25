@@ -2,14 +2,15 @@
 #define PROJECT_WG_GLWIDGET_H
 
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_3_Compatibility>
 #include <QScopedPointer>
 
+#include "cwglx/GL.h"
 #include "cwglx/Light.h"
 #include "cwglx/Drawable.h"
 #include "cwglx/DrawableArena.h"
 
-class GLWidget final : public QOpenGLWidget, public QOpenGLFunctions_2_0 {
+class GLWidget final : public QOpenGLWidget, public GLFunctions {
   Q_OBJECT
 
 public:

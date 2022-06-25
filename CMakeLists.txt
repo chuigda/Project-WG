@@ -55,6 +55,7 @@ set(PROJECT_SOURCES
     include/cwglx/Light.h
     include/cwglx/Defs.h
     include/cwglx/DefaultMaterials.inc
+    include/cwglx/GL.h
 
     src/cwglx/drawable/PlainTriangles.cc
     src/cwglx/drawable/TriangleGen.cc
@@ -79,10 +80,7 @@ set(PROJECT_SOURCES
     include/wgc0310/head/ScreenGlass.h
     include/wgc0310/head/Screen.h
     include/wgc0310/head/ScreenCurveHelper.h
-    include/wgc0310/Components.h
-
-    src/pl2/pl2q.cc
-    include/pl2/pl2q.h)
+    include/wgc0310/Components.h)
 
 include_directories(include)
 

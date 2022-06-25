@@ -1,6 +1,6 @@
 #include "include/cwglx/Light.h"
 
-#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_3_Compatibility>
 
 namespace cw {
 
@@ -8,7 +8,7 @@ Light::Light(GLenum lightId,
              RGBAColor ambient,
              RGBAColor diffuse,
              RGBAColor specular,
-             QOpenGLFunctions_2_0 *f) noexcept
+             GLFunctions *f) noexcept
   : m_LightId(lightId),
     m_Ambient(ambient),
     m_Diffuse(diffuse),
@@ -19,11 +19,11 @@ Light::Light(GLenum lightId,
   f->glLightfv(m_LightId, GL_SPECULAR, m_Specular.GetRepr().data());
 }
 
-void Light::Enable(QOpenGLFunctions_2_0 *f) const noexcept {
+void Light::Enable(GLFunctions *f) const noexcept {
   f->glEnable(m_LightId);
 }
 
-void Light::Disable(QOpenGLFunctions_2_0 *f) const noexcept {
+void Light::Disable(GLFunctions *f) const noexcept {
   f->glDisable(m_LightId);
 }
 
@@ -34,7 +34,7 @@ ParallelLight::ParallelLight(GLenum lightId,
                              RGBAColor diffuse,
                              RGBAColor specular,
                              const Vector &direction,
-                             QOpenGLFunctions_2_0 *f) noexcept
+                             GLFunctions *f) noexcept
   : Light(lightId, ambient, diffuse, specular, f),
     m_DirectionRepr {
         static_cast<GLfloat>(-direction.GetX()),
@@ -44,7 +44,7 @@ ParallelLight::ParallelLight(GLenum lightId,
     }
 {}
 
-void ParallelLight::Enable(QOpenGLFunctions_2_0 *f) const noexcept {
+void ParallelLight::Enable(GLFunctions *f) const noexcept {
   f->glPushMatrix();
   f->glLoadIdentity();
   f->glLightfv(GetLightId(), GL_POSITION, m_DirectionRepr.data());
@@ -57,7 +57,7 @@ PointLight::PointLight(GLenum lightId,
                        RGBAColor diffuse,
                        RGBAColor specular,
                        const Vertex &position,
-                       QOpenGLFunctions_2_0 *f) noexcept
+                       GLFunctions *f) noexcept
   : Light(lightId, ambient, diffuse, specular, f),
     m_PositionRepr {
         static_cast<GLfloat>(position.GetX()),
@@ -67,7 +67,7 @@ PointLight::PointLight(GLenum lightId,
     }
 {}
 
-void PointLight::Enable(QOpenGLFunctions_2_0 *f) const noexcept {
+void PointLight::Enable(GLFunctions *f) const noexcept {
   f->glLightfv(GetLightId(), GL_POSITION, m_PositionRepr.data());
   f->glEnable(GetLightId());
 }

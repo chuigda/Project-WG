@@ -14,7 +14,7 @@
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
-    QOpenGLFunctions_2_0(),
+    GLFunctions(),
     m_Light(nullptr),
     m_Light2(nullptr),
     m_Rotation(0.0f),

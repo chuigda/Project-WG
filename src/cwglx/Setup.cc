@@ -1,10 +1,10 @@
 #include "cwglx/Setup.h"
 
-#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_3_Compatibility>
 
 namespace cw {
 
-void SetupPreferredSettings(QOpenGLFunctions_2_0 *f) noexcept {
+void SetupPreferredSettings(GLFunctions *f) noexcept {
   f->initializeOpenGLFunctions();
 
   f->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

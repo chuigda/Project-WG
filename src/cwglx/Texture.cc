@@ -1,13 +1,13 @@
 #include "cwglx/Texture.h"
 
 #include <QImage>
-#include <QOpenGLFunctions_2_0>
+#include <QOpenGLFunctions_3_3_Compatibility>
 
 namespace cw {
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
-Texture2D::Texture2D(const QImage &image, QOpenGLFunctions_2_0 *f)
+Texture2D::Texture2D(const QImage &image, GLFunctions *f)
   : m_IsDeleted(false)
 {
   Q_ASSERT(image.width() == image.height()
@@ -43,14 +43,14 @@ GLuint Texture2D::GetTextureId() const noexcept {
   return 0;
 }
 
-void Texture2D::BeginTexture(QOpenGLFunctions_2_0 *f) const noexcept {
+void Texture2D::BeginTexture(GLFunctions *f) const noexcept {
   Q_ASSERT(!m_IsDeleted && "Texture2D has been deleted");
   f->glBindTexture(GL_TEXTURE_2D, m_TextureId);
 }
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "readability-convert-member-functions-to-static"
-void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
+void Texture2D::ApplyTexture(GLFunctions *f,
                              GLfloat x,
                              GLfloat y) const noexcept
 {
@@ -58,7 +58,7 @@ void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
 }
 #pragma clang diagnostic pop
 
-void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
+void Texture2D::ApplyTexture(GLFunctions *f,
                              const std::array<GLfloat, 2> *points,
                              std::size_t numPoints) const noexcept
 {
@@ -69,7 +69,7 @@ void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
   f->glTexCoordPointer(2, GL_FLOAT, 0, points);
 }
 
-void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
+void Texture2D::ApplyTexture(GLFunctions *f,
                              const std::pair<GLfloat, GLfloat> *points,
                              std::size_t numPoints) const noexcept
 {
@@ -80,7 +80,7 @@ void Texture2D::ApplyTexture(QOpenGLFunctions_2_0 *f,
   f->glTexCoordPointer(2, GL_FLOAT, 0, points);
 }
 
-void Texture2D::DeleteTexture(QOpenGLFunctions_2_0 *f) noexcept {
+void Texture2D::DeleteTexture(GLFunctions *f) noexcept {
   Q_ASSERT(!m_IsDeleted && "Texture2D has been deleted");
 
   f->glDeleteTextures(1, &m_TextureId);
