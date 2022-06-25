@@ -38,12 +38,12 @@ ComputeScreenVertices(double screenWidth,
         lineVertices.emplace_back(segmentX, segmentY, 0.0);
       }
     } else {
-      double radius2 = (z1 / 2) + (screenWidth * screenHeight / (8 * z1));
+      double radius2 = (z1 / 2) + (screenWidth * screenWidth / (8 * z1));
       for (int xSegment = 0; xSegment < horizontalSegments; xSegment++) {
         double segmentX = segmentWidth *
             static_cast<GLdouble>(xSegment - (horizontalSegments / 2));
         double z2 = std::sqrt(radius2 * radius2 - segmentX * segmentX);
-        double z3 = std::abs(z2 + z1 - radius2);
+        double z3 = z2 + z1 - radius2;
 
         lineVertices.emplace_back(segmentX, segmentY, z3);
       }

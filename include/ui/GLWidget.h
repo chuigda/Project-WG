@@ -29,7 +29,9 @@ private:
   GLfloat m_Rotation;
 
   cw::DrawableArena m_Arena;
-  std::size_t m_MaterializedId;
+  std::size_t m_HeadId;
+  std::size_t m_ScreenGlassId;
+  std::size_t m_ScreenId;
 };
 
 #endif // PROJECT_WG_GLWIDGET_H

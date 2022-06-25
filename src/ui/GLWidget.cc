@@ -10,6 +10,7 @@
 #include "cwglx/drawable/PlainTriangles.h"
 #include "cwglx/drawable/TriangleGen.h"
 #include "include/wgc0310/head/Head.h"
+#include "include/wgc0310/head/ScreenGlass.h"
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
@@ -18,7 +19,9 @@ GLWidget::GLWidget(QWidget *parent)
     m_Light2(nullptr),
     m_Rotation(0.0f),
     m_Arena(),
-    m_MaterializedId(0)
+    m_HeadId(0),
+    m_ScreenGlassId(0),
+    m_ScreenId(0)
 {
   QSurfaceFormat format;
   format.setSamples(8);
@@ -67,20 +70,33 @@ void GLWidget::initializeGL() {
                                     cw::Vertex(25.0, 0.0, 0.0),
                                     this));
 
-  std::unique_ptr<cw::TriangleGen> intakeGenerator = wgc0310::Head();
-  std::unique_ptr<cw::PlainTriangles> intakeTriangles =
+  std::unique_ptr<cw::TriangleGen> headGenerator = wgc0310::Head();
+  std::unique_ptr<cw::PlainTriangles> headTriangles =
       std::make_unique<cw::PlainTriangles>();
-  intakeTriangles->AddTriangles(intakeGenerator.get());
+  headTriangles->AddTriangles(headGenerator.get());
 
-  const auto [_, intake] =
-      m_Arena.Put(std::move(intakeTriangles));
-  const auto [materializedId, materialized] = m_Arena.Put(
+  const auto [_, head] = m_Arena.Put(std::move(headTriangles));
+  const auto [headId, _2] = m_Arena.Put(
       std::make_unique<cw::MaterializedDrawable>(
           cw::GetBrassMaterial(),
-          std::vector { intake }
+          std::vector { head }
       )
   );
-  m_MaterializedId = materializedId;
+  m_HeadId = headId;
+
+  std::unique_ptr<cw::TriangleGen> glassGenerator = wgc0310::ScreenGlass();
+  std::unique_ptr<cw::PlainTriangles> glassTriangles =
+      std::make_unique<cw::PlainTriangles>();
+  glassTriangles->AddTriangles(glassGenerator.get());
+
+  const auto [_3, glass] = m_Arena.Put(std::move(glassTriangles));
+  const auto [glassId, _4] = m_Arena.Put(
+      std::make_unique<cw::MaterializedDrawable>(
+          cw::GetGlassMaterial(),
+          std::vector { glass }
+      )
+  );
+  m_ScreenGlassId = glassId;
 
   const char *version =
       reinterpret_cast<const char*>(glGetString(GL_VERSION));
@@ -94,7 +110,7 @@ void GLWidget::initializeGL() {
   qDebug() << "GL_VERSION:" << version;
   qDebug() << "GL_VENDOR:" << vendor;
   qDebug() << "GL_RENDERER:" << renderer;
-  qDebug() << "GL_EXTENSIONS" << extensions;
+  qDebug() << "GL_EXTENSIONS:" << extensions;
 }
 
 void GLWidget::paintGL() {
@@ -106,9 +122,11 @@ void GLWidget::paintGL() {
 
   glLoadIdentity();
   glTranslatef(0.0f, 0.0f, -30.0f);
-  glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
+  glRotatef(30.0f, 0.0f, 1.0f, 0.0f);
 
-  m_Arena.Get(m_MaterializedId)->Draw(this);
+  m_Arena.Get(m_HeadId)->Draw(this);
+  glTranslatef(0.0f, 0.0f, 1.0f);
+  m_Arena.Get(m_ScreenGlassId)->Draw(this);
 }
 
 void GLWidget::resizeGL(int w, int h) {

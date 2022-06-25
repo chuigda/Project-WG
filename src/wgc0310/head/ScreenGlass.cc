@@ -5,12 +5,12 @@ namespace wgc0310 {
 
 std::unique_ptr<cw::TriangleGen> ScreenGlass() {
   std::vector<std::vector<cw::Vertex>> vertices =
-      ComputeScreenVertices(22.0, 14.0, 1.0, 320, 240);
+      ComputeScreenVertices(22.0, 14.0, 1.5, 160, 120);
   std::vector<cw::Triangle> storedTriangles;
-  storedTriangles.reserve(320 * 240 * 2);
+  storedTriangles.reserve(160 * 120 * 2);
 
-  for (std::size_t x = 0; x < 319; x++) {
-    for (std::size_t y = 0; y < 239; y++) {
+  for (std::size_t x = 0; x < 159; x++) {
+    for (std::size_t y = 0; y < 119; y++) {
       cw::Vertex pointA = vertices[y][x];
       cw::Vertex pointB = vertices[y + 1][x];
       cw::Vertex pointC = vertices[y + 1][x + 1];
