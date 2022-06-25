@@ -1,6 +1,6 @@
 #include "glu/FakeGLU.h"
 
-#include <QOpenGLFunctions_3_3_Compatibility>
+#include "cwglx/GLImpl.h"
 #include "util/Constants.h"
 
 namespace glu {

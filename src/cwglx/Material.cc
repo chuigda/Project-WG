@@ -1,6 +1,6 @@
 #include "cwglx/Material.h"
 
-#include <QOpenGLFunctions_3_3_Compatibility>
+#include "cwglx/GLImpl.h"
 
 namespace cw {
 

@@ -56,6 +56,7 @@ set(PROJECT_SOURCES
     include/cwglx/Defs.h
     include/cwglx/DefaultMaterials.inc
     include/cwglx/GL.h
+    include/cwglx/GLImpl.h
 
     src/cwglx/drawable/PlainTriangles.cc
     src/cwglx/drawable/TriangleGen.cc

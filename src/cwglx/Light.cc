@@ -1,6 +1,6 @@
-#include "include/cwglx/Light.h"
+#include "cwglx/Light.h"
 
-#include <QOpenGLFunctions_3_3_Compatibility>
+#include "cwglx/GLImpl.h"
 
 namespace cw {
 

@@ -1,7 +1,7 @@
 #include "cwglx/Texture.h"
 
 #include <QImage>
-#include <QOpenGLFunctions_3_3_Compatibility>
+#include "cwglx/GLImpl.h"
 
 namespace cw {
 

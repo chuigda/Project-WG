@@ -1,6 +1,7 @@
 #include "wgc0310/head/Screen.h"
 
-#include <QOpenGLFunctions_3_3_Compatibility>
+#include <QDebug>
+#include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
 #include "wgc0310/head/ScreenCurveHelper.h"
 #include "util/Derive.h"
@@ -26,22 +27,26 @@ public:
   std::vector<cw::Vertex2DF> screenTexCoords;
   std::vector<GLuint> screenIndices;
 
-  bool vboDeleted;
+  bool deleted;
   std::array<GLuint, 3> vbo;
+  GLuint fbo;
 
   CW_DERIVE_UNCOPYABLE(ScreenImpl)
   CW_DERIVE_UNMOVABLE(ScreenImpl)
 
-  void DeleteVBO(GLFunctions *f) {
-    if (!vboDeleted) {
+  void Delete(GLFunctions *f) {
+    if (!deleted) {
       f->glDeleteBuffers(3, vbo.data());
-      vboDeleted = true;
+      f->glDeleteFramebuffers(1, &fbo);
+      f->glDeleteTextures(1, &screenTextureId);
+      deleted = true;
     }
   }
 
 private:
   void Initialize3D(GLFunctions *f);
   void Initialize2D();
+  void InitializeFBO(GLFunctions *f);
 };
 
 ScreenImpl::ScreenImpl(GLFunctions *f, const QImage &volumeBarImage)
@@ -50,10 +55,11 @@ ScreenImpl::ScreenImpl(GLFunctions *f, const QImage &volumeBarImage)
 {
   Initialize3D(f);
   Initialize2D();
+  InitializeFBO(f);
 }
 
 ScreenImpl::~ScreenImpl() {
-  if (!vboDeleted) {
+  if (!deleted) {
     qWarning() << "ScreenImpl::~ScreenImpl():"
                << "VBO not deleted";
   }
@@ -122,7 +128,7 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
       screenTexCoords.data(),
       GL_STATIC_DRAW
   );
-  vboDeleted = false;
+  deleted = false;
 }
 
 void ScreenImpl::Initialize2D() {
@@ -202,6 +208,25 @@ void ScreenImpl::Initialize2D() {
     volumeBarIndices.push_back(i * 8 + 4);
     volumeBarIndices.push_back(i * 8 + 6);
     volumeBarIndices.push_back(i * 8 + 7);
+  }
+}
+
+void ScreenImpl::InitializeFBO(GLFunctions *f) {
+  f->glGenFramebuffers(1, &fbo);
+  f->glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+  f->glFramebufferTexture2D(
+      GL_FRAMEBUFFER,
+      GL_COLOR_ATTACHMENT0,
+      GL_TEXTURE_2D,
+      screenTextureId,
+      0
+  );
+  // we dont need depth buffer here
+
+  GLenum status = f->glCheckFramebufferStatus(GL_FRAMEBUFFER);
+  if (status != GL_FRAMEBUFFER_COMPLETE) {
+    qDebug() << "ScreenImpl::InitializeFBO: Framebuffer not complete!";
+    std::abort();
   }
 }
 

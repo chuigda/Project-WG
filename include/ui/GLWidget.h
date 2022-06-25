@@ -2,10 +2,9 @@
 #define PROJECT_WG_GLWIDGET_H
 
 #include <QOpenGLWidget>
-#include <QOpenGLFunctions_3_3_Compatibility>
 #include <QScopedPointer>
 
-#include "cwglx/GL.h"
+#include "cwglx/GLImpl.h"
 #include "cwglx/Light.h"
 #include "cwglx/Drawable.h"
 #include "cwglx/DrawableArena.h"

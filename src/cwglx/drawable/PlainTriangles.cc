@@ -1,6 +1,6 @@
 #include "cwglx/drawable/PlainTriangles.h"
 
-#include <QOpenGLFunctions_3_3_Compatibility>
+#include "cwglx/GLImpl.h"
 #include "cwglx/drawable/TriangleGen.h"
 #include "cwglx/drawable/FineTriangleGen.h"
 
