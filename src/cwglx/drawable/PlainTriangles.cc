@@ -124,7 +124,7 @@ void PlainTriangles::Draw(QOpenGLFunctions_2_0 *f) const noexcept {
 
 void PlainTriangles::Delete(QOpenGLFunctions_2_0 *f) const noexcept {
   if (!m_VBODeleted) {
-    f->glDeleteBuffers(2, m_VBO.data());
+    f->glDeleteBuffers(3, m_VBO.data());
     m_VBODeleted = true;
   }
 }

@@ -298,6 +298,32 @@ private:
 static_assert(sizeof(VertexF) == sizeof(std::array<GLfloat, 3>),
               "VertexF must be the same size as std::array<GLfloat, 3>");
 
+class Vertex2DF final {
+public:
+  constexpr inline Vertex2DF(GLfloat x, GLfloat y) noexcept
+    : m_Repr({ x, y })
+  {}
+
+  [[nodiscard]] constexpr inline GLfloat GetX() const noexcept {
+    return m_Repr[0];
+  }
+
+  [[nodiscard]] constexpr inline GLfloat GetY() const noexcept {
+    return m_Repr[1];
+  }
+
+  constexpr inline void SetX(GLfloat x) noexcept {
+    m_Repr[0] = x;
+  }
+
+  constexpr inline void SetY(GLfloat y) noexcept {
+    m_Repr[1] = y;
+  }
+
+private:
+  std::array<GLfloat, 2> m_Repr;
+};
+
 class VectorF final {
 public:
   constexpr inline
