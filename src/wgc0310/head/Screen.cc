@@ -278,7 +278,7 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
   f->glMatrixMode(GL_MODELVIEW);
   f->glLoadIdentity();
 
-  f->glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
+  f->glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   f->glClear(GL_COLOR_BUFFER_BIT);
 
   f->glPopMatrix();
@@ -296,12 +296,12 @@ void Screen::Draw(GLFunctions *f) const noexcept {
   f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
   // now use our texture
-  // f->glEnable(GL_TEXTURE_2D);
-  // f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
+  f->glEnable(GL_TEXTURE_2D);
+  f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
 
   // test with another texture
-  f->glEnable(GL_TEXTURE_2D);
-  m_Impl->volumeBarTexture.BeginTexture(f);
+  // f->glEnable(GL_TEXTURE_2D);
+  // m_Impl->volumeBarTexture.BeginTexture(f);
 
   // bind our vbo
   f->glEnableClientState(GL_VERTEX_ARRAY);

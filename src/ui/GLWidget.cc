@@ -122,22 +122,23 @@ void GLWidget::initializeGL() {
 }
 
 void GLWidget::paintGL() {
+  // store FBO
+  GLint previousFBO;
+  glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFBO);
+
   // preparation stage
   wgc0310::Screen const* screen =
       static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
   screen->PrepareTexture(this);
 
-
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
   // painting stage
+  glBindFramebuffer(GL_FRAMEBUFFER, static_cast<GLuint>(previousFBO));
   GLsizei w = static_cast<GLsizei>(width());
   GLsizei h = static_cast<GLsizei>(height());
   GLdouble wd = static_cast<GLdouble>(w);
   GLdouble hd = static_cast<GLdouble>(h);
 
   glViewport(0.0f, 0.0f, w, h);
-  qDebug() << "137: glGetError() =" << glGetError();
-
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glu::Perspective(this, 45.0, wd / hd, 0.1, 100.0);
