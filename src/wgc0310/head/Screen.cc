@@ -64,9 +64,13 @@ ScreenImpl::~ScreenImpl() {
 void ScreenImpl::Initialize3D(GLFunctions *f) {
   std::vector<std::vector<cw::Vertex>> screenVertices_ =
       ComputeScreenVertices(22.0, 14.0, 1.5, 160, 120);
-  for (std::size_t y = 0; y < 120; y++) {
-    for (std::size_t x = 0; x < 160; x++) {
+  for (int y = 0; y < 120; y++) {
+    for (int x = 0; x < 160; x++) {
       screenVertices.push_back(cw::VertexF::Downscale(screenVertices_[y][x]));
+
+      GLfloat texX = static_cast<GLfloat>(x) / 160.0f;
+      GLfloat texY = static_cast<GLfloat>(y) / 120.0f;
+      screenTexCoords.emplace_back(texX, texY);
     }
   }
 
@@ -84,16 +88,6 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
       screenIndices.push_back(static_cast<GLuint>(pointA));
       screenIndices.push_back(static_cast<GLuint>(pointC));
       screenIndices.push_back(static_cast<GLuint>(pointD));
-
-      GLfloat texX1 = static_cast<GLfloat>(x - 80) / 160.0f;
-      GLfloat texY1 = static_cast<GLfloat>(y - 60) / 120.0f;
-      GLfloat texX2 = static_cast<GLfloat>(x + 1 - 80) / 160.0f;
-      GLfloat texY2 = static_cast<GLfloat>(y + 1 - 60) / 120.0f;
-
-      screenTexCoords.emplace_back(texX1, texY1);
-      screenTexCoords.emplace_back(texX1, texY2);
-      screenTexCoords.emplace_back(texX2, texY2);
-      screenTexCoords.emplace_back(texX2, texY1);
     }
   }
 
@@ -122,7 +116,7 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
   f->glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
   f->glBufferData(
       GL_ARRAY_BUFFER,
-      static_cast<GLsizei>(sizeof(GLfloat) * screenTexCoords.size()),
+      static_cast<GLsizei>(sizeof(cw::VertexF) * screenTexCoords.size()),
       screenTexCoords.data(),
       GL_STATIC_DRAW
   );
@@ -298,7 +292,7 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
   // copy the framebuffer to the texture
   f->glEnable(GL_TEXTURE_2D);
   f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
-  f->glCopyTexSubImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 0, 0, 0, 640, 480);
+  f->glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, 640, 480, GL_FALSE);
 
   // restore all states
   f->glPopMatrix();
@@ -310,9 +304,11 @@ void Screen::Draw(GLFunctions *f) const noexcept {
   // texture should have been prepared before this call
 
   // save color and texture state
-  f->glPushAttrib(GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT);
+  f->glPushAttrib(GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT | GL_LIGHTING_BIT);
   // save all client state
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+  // disable material
+  f->glDisable(GL_LIGHTING);
 
   // set color to pure white
   f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -321,7 +317,10 @@ void Screen::Draw(GLFunctions *f) const noexcept {
   // f->glEnable(GL_TEXTURE_2D);
   // f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
 
-  /*
+  // test with another texture
+  f->glEnable(GL_TEXTURE_2D);
+  m_Impl->volumeBarTexture.BeginTexture(f);
+
   // bind our vbo
   f->glEnableClientState(GL_VERTEX_ARRAY);
   f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo[0]);
@@ -329,7 +328,7 @@ void Screen::Draw(GLFunctions *f) const noexcept {
 
   f->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo[2]);
-  f->glTexCoordPointer(3, GL_FLOAT, 0, nullptr);
+  f->glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
 
   // draw the screen
   f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Impl->vbo[1]);
@@ -337,23 +336,7 @@ void Screen::Draw(GLFunctions *f) const noexcept {
                     static_cast<GLsizei>(m_Impl->screenIndices.size()),
                     GL_UNSIGNED_INT,
                     nullptr);
-                    */
-  // draw a very simple quad for testing purpose
-  f->glBegin(GL_QUADS);
-  {
-    f->glTexCoord2f(0.0f, 0.0f);
-    f->glVertex3f(-20.0f, -20.0f, 0.0f);
 
-    f->glTexCoord2f(1.0f, 0.0f);
-    f->glVertex3f(20.0f, -20.0f, 0.0f);
-
-    f->glTexCoord2f(1.0f, 1.0f);
-    f->glVertex3f(20.0f, 20.0f, 0.0f);
-
-    f->glTexCoord2f(0.0f, 1.0f);
-    f->glVertex3f(-20.0f, 20.0f, 0.0f);
-  }
-  f->glEnd();
 
   // restore states
   f->glPopClientAttrib();

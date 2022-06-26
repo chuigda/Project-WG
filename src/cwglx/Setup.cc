@@ -18,6 +18,8 @@ void GLAPIENTRY OpenGLErrorCallback(GLenum source,
   Q_UNUSED(length)
   Q_UNUSED(userParam)
 
+  qDebug() << "shit!";
+
   std::fprintf(stderr,
                "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
                (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),

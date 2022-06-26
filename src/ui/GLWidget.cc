@@ -123,13 +123,13 @@ void GLWidget::paintGL() {
   // preparation stage
   wgc0310::Screen const* screen =
       static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
-  screen->PrepareTexture(this);
+  // screen->PrepareTexture(this);
 
   // painting stage
   GLsizei w = static_cast<GLsizei>(width());
   GLsizei h = static_cast<GLsizei>(height());
-  GLdouble wd = static_cast<GLdouble>(width());
-  GLdouble hd = static_cast<GLdouble>(height());
+  GLdouble wd = static_cast<GLdouble>(w);
+  GLdouble hd = static_cast<GLdouble>(h);
 
   glViewport(0.0f, 0.0f, w, h);
 
@@ -147,13 +147,12 @@ void GLWidget::paintGL() {
   m_Light2->Enable(this);
 
   glTranslatef(0.0f, 0.0f, -30.0f);
-  glRotatef(30.0f, 0.0f, 1.0f, 0.0f);
+  // glRotatef(30.0f, 0.0f, 1.0f, 0.0f);
 
+  m_Arena.Get(m_HeadId)->Draw(this);
   m_Arena.Get(m_ScreenId)->Draw(this);
-
-  // m_Arena.Get(m_HeadId)->Draw(this);
-  // glTranslatef(0.0f, 0.0f, 1.0f);
-  // m_Arena.Get(m_ScreenGlassId)->Draw(this);
+  glTranslatef(0.0f, 0.0f, 0.5f);
+  m_Arena.Get(m_ScreenGlassId)->Draw(this);
 }
 
 void GLWidget::resizeGL(int w, int h) {
