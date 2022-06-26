@@ -120,6 +120,27 @@ void GLWidget::initializeGL() {
 }
 
 void GLWidget::paintGL() {
+  // preparation stage
+  wgc0310::Screen const* screen =
+      static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
+  screen->PrepareTexture(this);
+
+  // painting stage
+  GLsizei w = static_cast<GLsizei>(width());
+  GLsizei h = static_cast<GLsizei>(height());
+  GLdouble wd = static_cast<GLdouble>(width());
+  GLdouble hd = static_cast<GLdouble>(height());
+
+  glViewport(0.0f, 0.0f, w, h);
+
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glu::Perspective(this, 45.0, wd / hd, 0.1, 100.0);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glScalef(0.01f, 0.01f, 0.01f);
+
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glLoadIdentity();
@@ -137,18 +158,4 @@ void GLWidget::paintGL() {
   // m_Arena.Get(m_ScreenGlassId)->Draw(this);
 }
 
-void GLWidget::resizeGL(int w, int h) {
-  glViewport(0.0f, 0.0f, w, h);
-
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glu::Perspective(this,
-                   45.0,
-                   (static_cast<GLdouble>(w) / static_cast<GLdouble>(h)),
-                   0.1,
-                   100.0);
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  glScalef(0.01f, 0.01f, 0.01f);
-}
+void GLWidget::resizeGL(int w, int h) {}

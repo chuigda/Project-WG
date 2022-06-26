@@ -40,6 +40,7 @@ public:
       f->glDeleteBuffers(3, vbo.data());
       f->glDeleteFramebuffers(1, &fbo);
       f->glDeleteTextures(1, &screenTextureId);
+      volumeBarTexture.DeleteTexture(f);
       deleted = true;
     }
   }
@@ -72,14 +73,14 @@ ScreenImpl::~ScreenImpl() {
 void ScreenImpl::Initialize3D(GLFunctions *f) {
   std::vector<std::vector<cw::Vertex>> screenVertices_ =
       ComputeScreenVertices(22.0, 14.0, 1.5, 160, 120);
-  for (std::size_t x = 0; x < 160; x++) {
-    for (std::size_t y = 0; y < 120; y++) {
+  for (std::size_t y = 0; y < 120; y++) {
+    for (std::size_t x = 0; x < 160; x++) {
       screenVertices.push_back(cw::VertexF::Downscale(screenVertices_[y][x]));
     }
   }
 
-  for (int x = 0; x < 160; x += 2) {
-    for (int y = 0; y < 120; y += 2) {
+  for (int x = 0; x < 159; x ++) {
+    for (int y = 0; y < 119; y ++) {
       int pointA = x + y * 160;
       int pointB = x + (y + 1) * 160;
       int pointC = (x + 1) + (y + 1) * 160;
@@ -267,6 +268,7 @@ Screen::~Screen() {
 }
 
 void Screen::PrepareTexture(GLFunctions *f) const noexcept {
+  /*
   // save rendering state
   f->glPushAttrib(GL_ALL_ATTRIB_BITS);
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -313,6 +315,7 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
 
   // reset to default framebuffer
   f->glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  */
 }
 
 void Screen::Draw(GLFunctions *f) const noexcept {
@@ -327,17 +330,19 @@ void Screen::Draw(GLFunctions *f) const noexcept {
   f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
   // now use our texture
-  f->glEnable(GL_TEXTURE_2D);
-  f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
+  // f->glEnable(GL_TEXTURE_2D);
+  // f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
 
   // bind our vbo
   f->glEnableClientState(GL_VERTEX_ARRAY);
   f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo[0]);
-  f->glVertexPointer(2, GL_FLOAT, 0, nullptr);
+  f->glVertexPointer(3, GL_FLOAT, 0, nullptr);
 
+  /*
   f->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo[2]);
-  f->glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
+  f->glTexCoordPointer(3, GL_FLOAT, 0, nullptr);
+  */
 
   // draw the screen
   f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Impl->vbo[1]);
