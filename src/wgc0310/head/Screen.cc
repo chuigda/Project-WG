@@ -212,7 +212,7 @@ void ScreenImpl::InitializeTexture(GLFunctions *f) {
 
   f->glTexImage2D(GL_TEXTURE_2D,
                   0,
-                  4,
+                  GL_RGBA8,
                   640,
                   480,
                   0,
@@ -274,27 +274,21 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
   f->glLoadIdentity();
 
   // clear screen
-  f->glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  f->glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
   f->glClear(GL_COLOR_BUFFER_BIT);
 
-  // draw a simple triangle for test use
-  f->glBegin(GL_TRIANGLES);
-  {
-    f->glColor3f(1.0f, 0.0f, 0.0f);
-    f->glVertex2f(0.0f, 120.0f);
-
-    f->glColor3f(0.0f, 1.0f, 0.0f);
-    f->glVertex2f(-160.0f, -120.0f);
-
-    f->glColor3f(0.0f, 0.0f, 1.0f);
-    f->glVertex2f(160.0f, -120.0f);
-  }
-  f->glEnd();
-
   // copy the framebuffer to the texture
+  f->glEnable(GL_TEXTURE_2D);
   f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
   f->glReadBuffer(GL_COLOR_ATTACHMENT0);
-  f->glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, 512, 512);
+  f->glCopyTexImage2D(GL_TEXTURE_2D,
+                      0,
+                      GL_RGBA8,
+                      0,
+                      0,
+                      640,
+                      480,
+                      GL_FALSE);
   qDebug() << "glGetError() =" << f->glGetError();
 
   // restore all states
