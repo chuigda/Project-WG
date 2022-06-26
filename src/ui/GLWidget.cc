@@ -131,6 +131,8 @@ void GLWidget::paintGL() {
       static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
   screen->PrepareTexture(this);
 
+  return;
+
   // painting stage
   glBindFramebuffer(GL_FRAMEBUFFER, static_cast<GLuint>(previousFBO));
   GLsizei w = static_cast<GLsizei>(width());
