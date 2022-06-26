@@ -212,7 +212,7 @@ void ScreenImpl::InitializeTexture(GLFunctions *f) {
 
   f->glTexImage2D(GL_TEXTURE_2D,
                   0,
-                  GL_RGBA32F,
+                  4,
                   640,
                   480,
                   0,
@@ -293,7 +293,9 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
 
   // copy the framebuffer to the texture
   f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
-  f->glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, 640, 480);
+  f->glReadBuffer(GL_COLOR_ATTACHMENT0);
+  f->glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, 512, 512);
+  qDebug() << "glGetError() =" << f->glGetError();
 
   // restore all states
   f->glPopMatrix();

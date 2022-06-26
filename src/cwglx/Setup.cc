@@ -6,33 +6,8 @@
 
 namespace cw {
 
-void GLAPIENTRY OpenGLErrorCallback(GLenum source,
-                                    GLenum type,
-                                    GLuint id,
-                                    GLenum severity,
-                                    GLsizei length,
-                                    const GLchar *message,
-                                    const void *userParam) {
-  Q_UNUSED(source)
-  Q_UNUSED(id)
-  Q_UNUSED(length)
-  Q_UNUSED(userParam)
-
-  qDebug() << "shit!";
-
-  std::fprintf(stderr,
-               "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-               (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-               type,
-               severity,
-               message);
-  std::abort();
-}
-
 void SetupPreferredSettings(GLFunctions *f) noexcept {
   f->initializeOpenGLFunctions();
-
-  f->glDebugMessageCallback(OpenGLErrorCallback, nullptr);
 
   f->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   f->glFrontFace(GL_CCW);

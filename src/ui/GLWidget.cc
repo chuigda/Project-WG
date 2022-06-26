@@ -30,6 +30,8 @@ GLWidget::GLWidget(QWidget *parent)
   format.setBlueBufferSize(0);
   format.setGreenBufferSize(0);
   format.setRedBufferSize(0);
+  format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+
   this->setFormat(format);
 
   this->setAttribute(Qt::WA_TranslucentBackground);
