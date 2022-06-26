@@ -4,7 +4,7 @@
 #ifndef NDEBUG
 #include <QOpenGLFunctions_4_5_Compatibility>
 #else
-#include <QOpenGLFunctions_3_3_Compatibility>
+#include <QOpenGLFunctions_2_0>
 #endif
 
 #endif // PROJECT_WG_GL_IMPL_H

@@ -30,25 +30,16 @@ public:
 
   bool deleted;
   std::array<GLuint, 3> vbo;
-  GLuint fbo;
 
   CW_DERIVE_UNCOPYABLE(ScreenImpl)
   CW_DERIVE_UNMOVABLE(ScreenImpl)
 
-  void Delete(GLFunctions *f) {
-    if (!deleted) {
-      f->glDeleteBuffers(3, vbo.data());
-      f->glDeleteFramebuffers(1, &fbo);
-      f->glDeleteTextures(1, &screenTextureId);
-      volumeBarTexture.DeleteTexture(f);
-      deleted = true;
-    }
-  }
+  void Delete(GLFunctions *f);
 
 private:
   void Initialize3D(GLFunctions *f);
   void Initialize2D();
-  void InitializeFBO(GLFunctions *f);
+  void InitializeTexture(GLFunctions *f);
 };
 
 #pragma clang diagnostic push
@@ -59,7 +50,7 @@ ScreenImpl::ScreenImpl(GLFunctions *f, const QImage &volumeBarImage)
 {
   Initialize3D(f);
   Initialize2D();
-  InitializeFBO(f);
+  InitializeTexture(f);
 }
 #pragma clang diagnostic pop
 
@@ -218,12 +209,10 @@ void ScreenImpl::Initialize2D() {
   }
 }
 
-void ScreenImpl::InitializeFBO(GLFunctions *f) {
-  // initialize the fbo
-  f->glGenFramebuffers(1, &fbo);
-  f->glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
-  // initialize the texture
+void ScreenImpl::InitializeTexture(GLFunctions *f) {
+  f->glPushAttrib(GL_TEXTURE_BIT);
+  f->glEnable(GL_TEXTURE_2D);
+  f->glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
   f->glGenTextures(1, &screenTextureId);
   f->glBindTexture(GL_TEXTURE_2D, screenTextureId);
   f->glTexImage2D(GL_TEXTURE_2D,
@@ -235,21 +224,18 @@ void ScreenImpl::InitializeFBO(GLFunctions *f) {
                   GL_RGBA,
                   GL_UNSIGNED_BYTE,
                   nullptr);
-  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  // configure texture into the fbo
-  f->glFramebufferTexture(GL_FRAMEBUFFER,
-                          GL_COLOR_ATTACHMENT0,
-                          screenTextureId, 0);
-  GLenum drawBuffer[1] = {GL_COLOR_ATTACHMENT0};
-  f->glDrawBuffers(1, drawBuffer);
+  f->glPopAttrib();
+}
 
-
-  GLenum status = f->glCheckFramebufferStatus(GL_FRAMEBUFFER);
-  if (status != GL_FRAMEBUFFER_COMPLETE) {
-    qDebug() << "ScreenImpl::InitializeFBO: Framebuffer not complete!";
-    std::abort();
+void ScreenImpl::Delete(GLFunctions *f) {
+  if (!deleted) {
+    f->glDeleteBuffers(3, vbo.data());
+    f->glDeleteTextures(1, &screenTextureId);
+    volumeBarTexture.DeleteTexture(f);
+    deleted = true;
   }
 }
 
@@ -268,54 +254,56 @@ Screen::~Screen() {
 }
 
 void Screen::PrepareTexture(GLFunctions *f) const noexcept {
-  /*
-  // save rendering state
+  // save all rendering state before we continue
   f->glPushAttrib(GL_ALL_ATTRIB_BITS);
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+  f->glPushMatrix();
 
-  // bind to framebuffer
-  f->glBindFramebuffer(GL_FRAMEBUFFER, m_Impl->fbo);
+  // disable lighting
+  f->glDisable(GL_LIGHTING);
+  // disable depth testing
+  f->glDisable(GL_DEPTH_TEST);
+  // disable multisampling
+  f->glDisable(GL_MULTISAMPLE);
 
-  // setup viewport
+  // set up the viewport
   f->glViewport(0, 0, 640, 480);
-
-  // ortho projection, don't care about previous state here, we'll restore it
-  // later, outside of this function
+  // set up ortho projection: -320 ~ 320, -240 ~ 240
   f->glMatrixMode(GL_PROJECTION);
   f->glLoadIdentity();
-  // -320 ~ 320, -240 ~ 240
   f->glOrtho(-320, 320, -240, 240, -1, 1);
+
+  // set up the modelview matrix
   f->glMatrixMode(GL_MODELVIEW);
   f->glLoadIdentity();
-  // look at (0, 0, 0) from (0, 0, 1), just one simple translatef would be ok
-  f->glTranslatef(0, 0, -1);
 
-  // clear the screen
+  // clear screen
   f->glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   f->glClear(GL_COLOR_BUFFER_BIT);
 
-  // draw the volume bars
+  // draw a simple triangle for test use
+  f->glBegin(GL_TRIANGLES);
+  {
+    f->glColor3f(1.0f, 0.0f, 0.0f);
+    f->glVertex2f(0.0f, 120.0f);
 
+    f->glColor3f(0.0f, 1.0f, 0.0f);
+    f->glVertex2f(-160.0f, -120.0f);
+
+    f->glColor3f(0.0f, 0.0f, 1.0f);
+    f->glVertex2f(160.0f, -120.0f);
+  }
+  f->glEnd();
+
+  // copy the framebuffer to the texture
   f->glEnable(GL_TEXTURE_2D);
   f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
-  f->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-  f->glTexCoordPointer(2, GL_FLOAT, 0, m_Impl->volumeBarTexCoords.data());
+  f->glCopyTexSubImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 0, 0, 0, 640, 480);
 
-  f->glEnableClientState(GL_VERTEX_ARRAY);
-  f->glVertexPointer(2, GL_FLOAT, 0, m_Impl->volumeBarVertices.data());
-
-  f->glDrawElements(GL_TRIANGLES,
-                    static_cast<GLsizei>(m_Impl->volumeBarIndices.size()),
-                    GL_UNSIGNED_SHORT,
-                    m_Impl->volumeBarIndices.data());
-
-  // restore rendering state
+  // restore all states
+  f->glPopMatrix();
   f->glPopClientAttrib();
   f->glPopAttrib();
-
-  // reset to default framebuffer
-  f->glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  */
 }
 
 void Screen::Draw(GLFunctions *f) const noexcept {
@@ -333,16 +321,15 @@ void Screen::Draw(GLFunctions *f) const noexcept {
   // f->glEnable(GL_TEXTURE_2D);
   // f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
 
+  /*
   // bind our vbo
   f->glEnableClientState(GL_VERTEX_ARRAY);
   f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo[0]);
   f->glVertexPointer(3, GL_FLOAT, 0, nullptr);
 
-  /*
   f->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo[2]);
   f->glTexCoordPointer(3, GL_FLOAT, 0, nullptr);
-  */
 
   // draw the screen
   f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Impl->vbo[1]);
@@ -350,6 +337,23 @@ void Screen::Draw(GLFunctions *f) const noexcept {
                     static_cast<GLsizei>(m_Impl->screenIndices.size()),
                     GL_UNSIGNED_INT,
                     nullptr);
+                    */
+  // draw a very simple quad for testing purpose
+  f->glBegin(GL_QUADS);
+  {
+    f->glTexCoord2f(0.0f, 0.0f);
+    f->glVertex3f(-20.0f, -20.0f, 0.0f);
+
+    f->glTexCoord2f(1.0f, 0.0f);
+    f->glVertex3f(20.0f, -20.0f, 0.0f);
+
+    f->glTexCoord2f(1.0f, 1.0f);
+    f->glVertex3f(20.0f, 20.0f, 0.0f);
+
+    f->glTexCoord2f(0.0f, 1.0f);
+    f->glVertex3f(-20.0f, 20.0f, 0.0f);
+  }
+  f->glEnd();
 
   // restore states
   f->glPopClientAttrib();

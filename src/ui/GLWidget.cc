@@ -143,11 +143,9 @@ void GLWidget::paintGL() {
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glLoadIdentity();
   m_Light->Enable(this);
   m_Light2->Enable(this);
 
-  glLoadIdentity();
   glTranslatef(0.0f, 0.0f, -30.0f);
   glRotatef(30.0f, 0.0f, 1.0f, 0.0f);
 
@@ -158,4 +156,7 @@ void GLWidget::paintGL() {
   // m_Arena.Get(m_ScreenGlassId)->Draw(this);
 }
 
-void GLWidget::resizeGL(int w, int h) {}
+void GLWidget::resizeGL(int w, int h) {
+  Q_UNUSED(w)
+  Q_UNUSED(h)
+}
