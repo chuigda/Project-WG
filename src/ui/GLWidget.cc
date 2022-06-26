@@ -127,6 +127,8 @@ void GLWidget::paintGL() {
       static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
   screen->PrepareTexture(this);
 
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
   // painting stage
   GLsizei w = static_cast<GLsizei>(width());
   GLsizei h = static_cast<GLsizei>(height());
@@ -134,6 +136,7 @@ void GLWidget::paintGL() {
   GLdouble hd = static_cast<GLdouble>(h);
 
   glViewport(0.0f, 0.0f, w, h);
+  qDebug() << "137: glGetError() =" << glGetError();
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();

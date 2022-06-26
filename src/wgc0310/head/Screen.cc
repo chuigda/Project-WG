@@ -30,6 +30,7 @@ public:
 
   bool deleted;
   std::array<GLuint, 3> vbo;
+  GLuint fbo;
 
   CW_DERIVE_UNCOPYABLE(ScreenImpl)
   CW_DERIVE_UNMOVABLE(ScreenImpl)
@@ -204,32 +205,41 @@ void ScreenImpl::Initialize2D() {
 }
 
 void ScreenImpl::InitializeTexture(GLFunctions *f) {
-  f->glPushAttrib(GL_TEXTURE_BIT);
-  f->glEnable(GL_TEXTURE_2D);
-  f->glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
+  // initialize FBO first
+  f->glGenFramebuffers(1, &fbo);
+  f->glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+
   f->glGenTextures(1, &screenTextureId);
   f->glBindTexture(GL_TEXTURE_2D, screenTextureId);
-
   f->glTexImage2D(GL_TEXTURE_2D,
                   0,
-                  GL_RGBA8,
+                  GL_RGB,
                   640,
                   480,
                   0,
-                  GL_RGBA,
+                  GL_RGB,
                   GL_UNSIGNED_BYTE,
-                  nullptr);
-  qDebug() << "glGetError() =" << f->glGetError();
-  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                  GL_FALSE);
+  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-  f->glPopAttrib();
+  f->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, screenTextureId, 0);
+  GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+  f->glDrawBuffers(1, DrawBuffers);
+
+  if(f->glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    qCritical() << "ScreenImpl::InitializeTexture:"
+                << "failed initializing frame buffer object, glGetError() ="
+                << f->glGetError();
+    std::abort();
+  }
 }
 
 void ScreenImpl::Delete(GLFunctions *f) {
   if (!deleted) {
     f->glDeleteBuffers(3, vbo.data());
     f->glDeleteTextures(1, &screenTextureId);
+    f->glDeleteFramebuffers(1, &fbo);
     volumeBarTexture.DeleteTexture(f);
     deleted = true;
   }
@@ -250,73 +260,48 @@ Screen::~Screen() {
 }
 
 void Screen::PrepareTexture(GLFunctions *f) const noexcept {
-  // save all rendering state before we continue
+  f->glBindFramebuffer(GL_FRAMEBUFFER, m_Impl->fbo);
+
   f->glPushAttrib(GL_ALL_ATTRIB_BITS);
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
   f->glPushMatrix();
 
-  // disable lighting
   f->glDisable(GL_LIGHTING);
-  // disable depth testing
   f->glDisable(GL_DEPTH_TEST);
-  // disable multisampling
   f->glDisable(GL_MULTISAMPLE);
 
-  // set up the viewport
   f->glViewport(0, 0, 640, 480);
-  // set up ortho projection: -320 ~ 320, -240 ~ 240
   f->glMatrixMode(GL_PROJECTION);
   f->glLoadIdentity();
   f->glOrtho(-320, 320, -240, 240, -1, 1);
 
-  // set up the modelview matrix
   f->glMatrixMode(GL_MODELVIEW);
   f->glLoadIdentity();
 
-  // clear screen
   f->glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
   f->glClear(GL_COLOR_BUFFER_BIT);
 
-  // copy the framebuffer to the texture
-  f->glEnable(GL_TEXTURE_2D);
-  f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
-  f->glReadBuffer(GL_COLOR_ATTACHMENT0);
-  f->glCopyTexImage2D(GL_TEXTURE_2D,
-                      0,
-                      GL_RGBA8,
-                      0,
-                      0,
-                      640,
-                      480,
-                      GL_FALSE);
-  qDebug() << "glGetError() =" << f->glGetError();
-
-  // restore all states
   f->glPopMatrix();
   f->glPopClientAttrib();
   f->glPopAttrib();
 }
 
 void Screen::Draw(GLFunctions *f) const noexcept {
-  // texture should have been prepared before this call
-
-  // save color and texture state
   f->glPushAttrib(GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT | GL_LIGHTING_BIT);
-  // save all client state
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
-  // disable material
+
   f->glDisable(GL_LIGHTING);
 
   // set color to pure white
   f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
   // now use our texture
-  f->glEnable(GL_TEXTURE_2D);
-  f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
+  // f->glEnable(GL_TEXTURE_2D);
+  // f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
 
   // test with another texture
-  // f->glEnable(GL_TEXTURE_2D);
-  // m_Impl->volumeBarTexture.BeginTexture(f);
+  f->glEnable(GL_TEXTURE_2D);
+  m_Impl->volumeBarTexture.BeginTexture(f);
 
   // bind our vbo
   f->glEnableClientState(GL_VERTEX_ARRAY);
