@@ -123,7 +123,7 @@ void GLWidget::paintGL() {
   // preparation stage
   wgc0310::Screen const* screen =
       static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
-  // screen->PrepareTexture(this);
+  screen->PrepareTexture(this);
 
   // painting stage
   GLsizei w = static_cast<GLsizei>(width());

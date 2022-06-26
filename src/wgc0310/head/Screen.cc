@@ -209,15 +209,17 @@ void ScreenImpl::InitializeTexture(GLFunctions *f) {
   f->glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
   f->glGenTextures(1, &screenTextureId);
   f->glBindTexture(GL_TEXTURE_2D, screenTextureId);
+
   f->glTexImage2D(GL_TEXTURE_2D,
                   0,
-                  GL_RGBA,
+                  GL_RGBA32F,
                   640,
                   480,
                   0,
                   GL_RGBA,
                   GL_UNSIGNED_BYTE,
                   nullptr);
+  qDebug() << "glGetError() =" << f->glGetError();
   f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -290,9 +292,8 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
   f->glEnd();
 
   // copy the framebuffer to the texture
-  f->glEnable(GL_TEXTURE_2D);
   f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
-  f->glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, 640, 480, GL_FALSE);
+  f->glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, 640, 480);
 
   // restore all states
   f->glPopMatrix();
@@ -314,12 +315,12 @@ void Screen::Draw(GLFunctions *f) const noexcept {
   f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
   // now use our texture
-  // f->glEnable(GL_TEXTURE_2D);
-  // f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
+  f->glEnable(GL_TEXTURE_2D);
+  f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
 
   // test with another texture
-  f->glEnable(GL_TEXTURE_2D);
-  m_Impl->volumeBarTexture.BeginTexture(f);
+  // f->glEnable(GL_TEXTURE_2D);
+  // m_Impl->volumeBarTexture.BeginTexture(f);
 
   // bind our vbo
   f->glEnableClientState(GL_VERTEX_ARRAY);
@@ -336,7 +337,6 @@ void Screen::Draw(GLFunctions *f) const noexcept {
                     static_cast<GLsizei>(m_Impl->screenIndices.size()),
                     GL_UNSIGNED_INT,
                     nullptr);
-
 
   // restore states
   f->glPopClientAttrib();
