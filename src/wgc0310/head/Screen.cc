@@ -323,6 +323,9 @@ void Screen::Draw(GLFunctions *f) const noexcept {
   // save all client state
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
 
+  // set color to pure white
+  f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
   // now use our texture
   f->glEnable(GL_TEXTURE_2D);
   f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);

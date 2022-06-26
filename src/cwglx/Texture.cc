@@ -10,9 +10,6 @@ namespace cw {
 Texture2D::Texture2D(const QImage &image, GLFunctions *f)
   : m_IsDeleted(false)
 {
-  Q_ASSERT(image.width() == image.height()
-           && "Input image of Texture2D must be square");
-
   QImage rgbaImage = image.convertToFormat(QImage::Format_RGBA8888);
 
   f->glGenTextures(1, &m_TextureId);

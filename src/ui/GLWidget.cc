@@ -11,6 +11,7 @@
 #include "cwglx/drawable/TriangleGen.h"
 #include "wgc0310/head/Head.h"
 #include "wgc0310/head/ScreenGlass.h"
+#include "wgc0310/head/Screen.h"
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
@@ -98,6 +99,11 @@ void GLWidget::initializeGL() {
   );
   m_ScreenGlassId = glassId;
 
+  const auto [screenId, _5] = m_Arena.Put(
+      std::make_unique<wgc0310::Screen>(this)
+  );
+  m_ScreenId = screenId;
+
   const char *version =
       reinterpret_cast<const char*>(glGetString(GL_VERSION));
   const char *vendor =
@@ -124,9 +130,11 @@ void GLWidget::paintGL() {
   glTranslatef(0.0f, 0.0f, -30.0f);
   glRotatef(30.0f, 0.0f, 1.0f, 0.0f);
 
-  m_Arena.Get(m_HeadId)->Draw(this);
-  glTranslatef(0.0f, 0.0f, 1.0f);
-  m_Arena.Get(m_ScreenGlassId)->Draw(this);
+  m_Arena.Get(m_ScreenId)->Draw(this);
+
+  // m_Arena.Get(m_HeadId)->Draw(this);
+  // glTranslatef(0.0f, 0.0f, 1.0f);
+  // m_Arena.Get(m_ScreenGlassId)->Draw(this);
 }
 
 void GLWidget::resizeGL(int w, int h) {
