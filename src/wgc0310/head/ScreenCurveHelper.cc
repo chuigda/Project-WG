@@ -22,7 +22,7 @@ ComputeScreenVertices(double screenWidth,
 
   double radius = (bulb / 2) + (screenHeight * screenHeight / (8 * bulb));
 
-  for (int ySegment = 0; ySegment < verticalSegments; ySegment++) {
+  for (int ySegment = 0; ySegment <= verticalSegments; ySegment++) {
     double segmentY = segmentHeight *
         static_cast<GLdouble>((verticalSegments / 2) - ySegment);
     double z = std::sqrt(radius * radius - segmentY * segmentY);
@@ -32,14 +32,14 @@ ComputeScreenVertices(double screenWidth,
     lineVertices.reserve(horizontalSegments);
 
     if (std::abs(z1) <= 0.0000001) {
-      for (int xSegment = 0; xSegment < horizontalSegments; xSegment++) {
+      for (int xSegment = 0; xSegment <= horizontalSegments; xSegment++) {
         double segmentX = segmentWidth *
                           static_cast<GLdouble>(xSegment - (horizontalSegments / 2));
         lineVertices.emplace_back(segmentX, segmentY, 0.0);
       }
     } else {
       double radius2 = (z1 / 2) + (screenWidth * screenWidth / (8 * z1));
-      for (int xSegment = 0; xSegment < horizontalSegments; xSegment++) {
+      for (int xSegment = 0; xSegment <= horizontalSegments; xSegment++) {
         double segmentX = segmentWidth *
             static_cast<GLdouble>(xSegment - (horizontalSegments / 2));
         double z2 = std::sqrt(radius2 * radius2 - segmentX * segmentX);

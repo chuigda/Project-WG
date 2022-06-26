@@ -131,8 +131,6 @@ void GLWidget::paintGL() {
       static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
   screen->PrepareTexture(this);
 
-  return;
-
   // painting stage
   glBindFramebuffer(GL_FRAMEBUFFER, static_cast<GLuint>(previousFBO));
   GLsizei w = static_cast<GLsizei>(width());
@@ -149,15 +147,17 @@ void GLWidget::paintGL() {
   glLoadIdentity();
   glScalef(0.01f, 0.01f, 0.01f);
 
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   m_Light->Enable(this);
   m_Light2->Enable(this);
 
   glTranslatef(0.0f, 0.0f, -30.0f);
-  glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
+  // glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
 
   m_Arena.Get(m_HeadId)->Draw(this);
+  glTranslatef(0.0f, 0.0f, 0.5f);
   m_Arena.Get(m_ScreenId)->Draw(this);
   glTranslatef(0.0f, 0.0f, 0.5f);
   m_Arena.Get(m_ScreenGlassId)->Draw(this);

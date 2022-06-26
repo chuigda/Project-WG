@@ -65,19 +65,19 @@ ScreenImpl::~ScreenImpl() {
 
 void ScreenImpl::Initialize3D(GLFunctions *f) {
   std::vector<std::vector<cw::Vertex>> screenVertices_ =
-      ComputeScreenVertices(22.0, 14.0, 2.0, 160, 120);
-  for (int y = 0; y < 120; y++) {
-    for (int x = 0; x < 160; x++) {
+      ComputeScreenVertices(22.0, 14.0, 1.25, 160, 120);
+  for (int y = 0; y <= 120; y++) {
+    for (int x = 0; x <= 160; x++) {
       screenVertices.push_back(cw::VertexF::Downscale(screenVertices_[y][x]));
 
       GLfloat texX = static_cast<GLfloat>(x) / 160.0f;
-      GLfloat texY = static_cast<GLfloat>(y) / 120.0f;
+      GLfloat texY = 1.0f - (static_cast<GLfloat>(y) / 120.0f);
       screenTexCoords.emplace_back(texX, texY);
     }
   }
 
-  for (int x = 0; x < 159; x ++) {
-    for (int y = 0; y < 119; y ++) {
+  for (int x = 0; x <= 160; x ++) {
+    for (int y = 0; y <= 120; y ++) {
       int pointA = x + y * 160;
       int pointB = x + (y + 1) * 160;
       int pointC = (x + 1) + (y + 1) * 160;
@@ -261,7 +261,7 @@ Screen::~Screen() {
 }
 
 void Screen::PrepareTexture(GLFunctions *f) const noexcept {
-  // f->glBindFramebuffer(GL_FRAMEBUFFER, m_Impl->fbo);
+  f->glBindFramebuffer(GL_FRAMEBUFFER, m_Impl->fbo);
 
   f->glPushAttrib(GL_ALL_ATTRIB_BITS);
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -279,16 +279,14 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
   f->glMatrixMode(GL_MODELVIEW);
   f->glLoadIdentity();
 
-  f->glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+  f->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   f->glClear(GL_COLOR_BUFFER_BIT);
   f->glTranslatef(0.0f, 0.0f, -0.5f);
-
-  // draw our 2D content
-  f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
   // vertices in m_Impl->volumeBarVertices
   // indices in m_Impl->volumeBarIndices
 
+  /*
   f->glEnableClientState(GL_VERTEX_ARRAY);
   // f->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
   f->glVertexPointer(2, GL_FLOAT, 0, m_Impl->volumeBarVertices.data());
@@ -297,6 +295,21 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
                     1,
                     GL_UNSIGNED_INT,
                     m_Impl->volumeBarIndices.data());
+                    */
+
+  // test with a simple triangle
+  f->glBegin(GL_TRIANGLES);
+  {
+    f->glColor3f(1.0f, 0.0f, 0.0f);
+    f->glVertex2f(-320, -240);
+
+    f->glColor3f(0.0f, 1.0f, 0.0f);
+    f->glVertex2f(320, -240);
+
+    f->glColor3f(0.0f, 0.0f, 1.0f);
+    f->glVertex2f(0, 240);
+  }
+  f->glEnd();
 
   f->glPopMatrix();
   f->glPopClientAttrib();
@@ -331,7 +344,6 @@ void Screen::Draw(GLFunctions *f) const noexcept {
                     static_cast<GLsizei>(m_Impl->screenIndices.size()),
                     GL_UNSIGNED_INT,
                     nullptr);
-  qDebug() << "glGetError():" << f->glGetError();
 
   // restore states
   f->glPopClientAttrib();

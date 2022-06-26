@@ -11,7 +11,7 @@ std::unique_ptr<cw::TriangleGen> Head() {
   std::unique_ptr<cw::TriangleGen> intake = IntakeRight();
   std::unique_ptr<cw::TriangleGen> intakeRight =
       std::make_unique<cw::Positioner>(std::move(intake),
-                                       cw::Vector(11.0, 0.0, 0.0));
+                                       cw::Vector(11.5, 0.0, 0.0));
   std::unique_ptr<cw::TriangleGen> intakeLeft =
       std::make_unique<cw::Flipper>(intakeRight->Clone(),
                                     cw::Plane::YZPlane);

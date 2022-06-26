@@ -5,25 +5,25 @@ namespace wgc0310 {
 std::unique_ptr<cw::TriangleGen> HeadFrame() {
   std::unique_ptr<cw::TriangleGen> verticalCylinder =
       std::make_unique<cw::CylinderGenerator>(
-          cw::Vector(11.0, 0.0, 5.0),
+          cw::Vector(11.5, 0.0, 5.25),
           1.25,
-          4.0,
+          4.5,
           0.0,
           90.0,
           32
       );
   std::unique_ptr<cw::TriangleGen> horizontalCylinder =
       std::make_unique<cw::CylinderGenerator>(
-          cw::Vector(7, 0.0, -5.5),
+          cw::Vector(7.5, 0.0, -5.75),
           1.25,
-          11.0,
+          11.5,
           0.0,
           90.0,
           32
       );
   std::unique_ptr<cw::TriangleGen> sphere =
       std::make_unique<cw::SphereGenerator>(
-          cw::Vector(11.0, 0.0, 7.0),
+          cw::Vector(11.5, 0.0, 7.5),
           1.25,
           0.0,
           90.0,
@@ -64,23 +64,23 @@ std::unique_ptr<cw::TriangleGen> HeadFrame() {
       );
   std::unique_ptr<cw::TriangleGen> topBlock =
       std::make_unique<cw::BoxGenerator>(
-          cw::Vector(0.0, 0.625, -6.75),
+          cw::Vector(0.0, 0.625, -7.25),
           22.0, 1.25, 0.5
       );
   std::unique_ptr<cw::TriangleGen> bottomBlock =
       std::make_unique<cw::BoxGenerator>(
-          cw::Vector(0.0, 0.625, 6.75),
+          cw::Vector(0.0, 0.625, 7.25),
           22.0, 1.25, 0.5
       );
   std::unique_ptr<cw::TriangleGen> leftBlock =
       std::make_unique<cw::BoxGenerator>(
-          cw::Vector(-10.7495, 0.625, 0.0),
-          0.5, 1.25, 13.0
+          cw::Vector(-11.2495, 0.625, 0.0),
+          0.5, 1.25, 15.0
       );
   std::unique_ptr<cw::TriangleGen> rightBlock =
       std::make_unique<cw::BoxGenerator>(
-          cw::Vector(10.7495, 0.625, 0.0),
-          0.5, 1.25, 13.0
+          cw::Vector(11.2495, 0.625, 0.0),
+          0.5, 1.25, 15.0
       );
 
   std::vector<std::unique_ptr<cw::TriangleGen>> generators2;

@@ -10,7 +10,7 @@ class ScreenImpl;
 
 class Screen final : public cw::Drawable {
 public:
-  Screen(GLFunctions *f);
+  explicit Screen(GLFunctions *f);
   ~Screen() final;
 
   void PrepareTexture(GLFunctions *f) const noexcept;
