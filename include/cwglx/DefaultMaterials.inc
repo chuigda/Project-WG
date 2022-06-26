@@ -62,7 +62,7 @@ CW_DEFINE_MATERIAL(Plastic,
 CW_DEFINE_MATERIAL(Glass,
                    0.20f, 0.25f, 0.30f, 0.1f,
                    0.20f, 0.25f, 0.30f, 0.1f,
-                   1.0f, 1.0f, 1.0f, 1.0f,
+                   1.0f, 1.0f, 1.0f, 0.4f,
                    102.4f)
 
 #undef CW_DEFINE_MATERIAL

@@ -1,5 +1,6 @@
 #include "wgc0310/head/Screen.h"
 
+#include <QThread>
 #include <QDebug>
 #include <QImage>
 #include "cwglx/GLImpl.h"
@@ -64,7 +65,7 @@ ScreenImpl::~ScreenImpl() {
 
 void ScreenImpl::Initialize3D(GLFunctions *f) {
   std::vector<std::vector<cw::Vertex>> screenVertices_ =
-      ComputeScreenVertices(22.0, 14.0, 1.5, 160, 120);
+      ComputeScreenVertices(22.0, 14.0, 2.0, 160, 120);
   for (int y = 0; y < 120; y++) {
     for (int x = 0; x < 160; x++) {
       screenVertices.push_back(cw::VertexF::Downscale(screenVertices_[y][x]));
@@ -142,7 +143,7 @@ void ScreenImpl::Initialize2D() {
   for (int i = 0; i < 10; i++) {
     GLfloat fi = static_cast<GLfloat>(i);
     GLfloat x0 = 22.0f + 4.0f * fi - 320.0f;
-    GLfloat x1 = 22.0f + 4.0f * fi + 56.0f * fi - 320.0f;
+    GLfloat x1 = 22.0f + 4.0f * fi + 56.0f * (fi + 1) - 320.0f;
 
     // vertices
     cw::Vertex2DF pointA { x0, y0 };
@@ -260,7 +261,7 @@ Screen::~Screen() {
 }
 
 void Screen::PrepareTexture(GLFunctions *f) const noexcept {
-  f->glBindFramebuffer(GL_FRAMEBUFFER, m_Impl->fbo);
+  // f->glBindFramebuffer(GL_FRAMEBUFFER, m_Impl->fbo);
 
   f->glPushAttrib(GL_ALL_ATTRIB_BITS);
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -280,6 +281,22 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
 
   f->glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   f->glClear(GL_COLOR_BUFFER_BIT);
+  f->glTranslatef(0.0f, 0.0f, -0.5f);
+
+  // draw our 2D content
+  f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+  // vertices in m_Impl->volumeBarVertices
+  // indices in m_Impl->volumeBarIndices
+
+  f->glEnableClientState(GL_VERTEX_ARRAY);
+  // f->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  f->glVertexPointer(2, GL_FLOAT, 0, m_Impl->volumeBarVertices.data());
+  // f->glTexCoordPointer(2, GL_FLOAT, 0, m_Impl->volumeBarTexCoords.data());
+  f->glDrawElements(GL_TRIANGLES,
+                    1,
+                    GL_UNSIGNED_INT,
+                    m_Impl->volumeBarIndices.data());
 
   f->glPopMatrix();
   f->glPopClientAttrib();
@@ -299,10 +316,6 @@ void Screen::Draw(GLFunctions *f) const noexcept {
   f->glEnable(GL_TEXTURE_2D);
   f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
 
-  // test with another texture
-  // f->glEnable(GL_TEXTURE_2D);
-  // m_Impl->volumeBarTexture.BeginTexture(f);
-
   // bind our vbo
   f->glEnableClientState(GL_VERTEX_ARRAY);
   f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo[0]);
@@ -318,6 +331,7 @@ void Screen::Draw(GLFunctions *f) const noexcept {
                     static_cast<GLsizei>(m_Impl->screenIndices.size()),
                     GL_UNSIGNED_INT,
                     nullptr);
+  qDebug() << "glGetError():" << f->glGetError();
 
   // restore states
   f->glPopClientAttrib();
