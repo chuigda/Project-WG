@@ -261,7 +261,7 @@ Screen::~Screen() {
 }
 
 void Screen::PrepareTexture(GLFunctions *f) const noexcept {
-  // f->glBindFramebuffer(GL_FRAMEBUFFER, m_Impl->fbo);
+  f->glBindFramebuffer(GL_FRAMEBUFFER, m_Impl->fbo);
 
   f->glPushAttrib(GL_ALL_ATTRIB_BITS);
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -283,22 +283,7 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
   f->glClear(GL_COLOR_BUFFER_BIT);
   f->glTranslatef(0.0f, 0.0f, -0.5f);
 
-  // vertices in m_Impl->volumeBarVertices
-  // indices in m_Impl->volumeBarIndices
-
-  /*
-  f->glEnableClientState(GL_VERTEX_ARRAY);
-  // f->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-  f->glVertexPointer(2, GL_FLOAT, 0, m_Impl->volumeBarVertices.data());
-  // f->glTexCoordPointer(2, GL_FLOAT, 0, m_Impl->volumeBarTexCoords.data());
-  f->glDrawElements(GL_TRIANGLES,
-                    1,
-                    GL_UNSIGNED_INT,
-                    m_Impl->volumeBarIndices.data());
-                    */
-
   // test with a simple triangle
-  /*
   f->glBegin(GL_TRIANGLES);
   {
     f->glColor3f(1.0f, 0.0f, 0.0f);
@@ -311,22 +296,6 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
     f->glVertex2f(0, 240);
   }
   f->glEnd();
-  */
-
-  // also triangle, but this time we use draw array
-  GLfloat vertices[] = {
-    -320, -240,
-    320, -240,
-    0, 240
-  };
-  GLuint indices[] = { 0, 1, 2 };
-
-  f->glColor3f(1.0f, 1.0f, 1.0f);
-  f->glEnableClientState(GL_VERTEX_ARRAY);
-  f->glVertexPointer(2, GL_FLOAT, 0, vertices);
-  f->glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, indices);
-
-  qDebug() << "glGetError():" << f->glGetError();
 
   f->glPopMatrix();
   f->glPopClientAttrib();

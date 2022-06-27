@@ -1,7 +1,5 @@
 #include "cwglx/Setup.h"
 
-#include <cstdio>
-#include <cstdlib>
 #include "cwglx/GLImpl.h"
 
 namespace cw {

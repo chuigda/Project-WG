@@ -122,7 +122,9 @@ void GLWidget::initializeGL() {
 }
 
 void GLWidget::paintGL() {
-  // store FBO
+  // start timer
+  const auto start = std::chrono::high_resolution_clock::now();
+
   GLint previousFBO;
   glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFBO);
 
@@ -130,8 +132,6 @@ void GLWidget::paintGL() {
   wgc0310::Screen const* screen =
       static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
   screen->PrepareTexture(this);
-
-  return;
 
   // painting stage
   glBindFramebuffer(GL_FRAMEBUFFER, static_cast<GLuint>(previousFBO));
@@ -156,13 +156,26 @@ void GLWidget::paintGL() {
   m_Light2->Enable(this);
 
   glTranslatef(0.0f, 0.0f, -30.0f);
-  // glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
+  glRotatef(m_Rotation, 0.0f, 1.0f, 0.0f);
 
+  // m_Arena.Get(m_HeadId)->Draw(this);
+  // glTranslatef(0.0f, 0.0f, 0.5f);
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   m_Arena.Get(m_HeadId)->Draw(this);
-  glTranslatef(0.0f, 0.0f, 0.5f);
+
   m_Arena.Get(m_ScreenId)->Draw(this);
-  glTranslatef(0.0f, 0.0f, 0.5f);
+
+  glTranslatef(0.0f, 0.0f, 1.0f);
+  glPushAttrib(GL_CURRENT_COLOR);
+  glColor4f(0.2f, 0.25f, 0.3f, 0.1f);
   m_Arena.Get(m_ScreenGlassId)->Draw(this);
+  glPopAttrib();
+
+  // calculate execution time
+  const auto end = std::chrono::high_resolution_clock::now();
+  const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
+      end - start);
+  qDebug() << "paintGL took" << duration.count() << "us";
 }
 
 void GLWidget::resizeGL(int w, int h) {
