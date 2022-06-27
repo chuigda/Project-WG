@@ -76,12 +76,12 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
     }
   }
 
-  for (int x = 0; x <= 160; x ++) {
-    for (int y = 0; y <= 120; y ++) {
-      int pointA = x + y * 160;
-      int pointB = x + (y + 1) * 160;
-      int pointC = (x + 1) + (y + 1) * 160;
-      int pointD = (x + 1) + y * 160;
+  for (int y = 0; y < 120; y ++) {
+    for (int x = 0; x < 160; x ++) {
+      int pointA = x + y * 161;
+      int pointB = x + (y + 1) * 161;
+      int pointC = (x + 1) + (y + 1) * 161;
+      int pointD = (x + 1) + y * 161;
 
       screenIndices.push_back(static_cast<GLuint>(pointA));
       screenIndices.push_back(static_cast<GLuint>(pointB));
