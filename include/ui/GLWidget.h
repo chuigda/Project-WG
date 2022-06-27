@@ -17,11 +17,12 @@ public:
   ~GLWidget() final;
 
 protected:
-  void timerEvent(QTimerEvent *event) final;
-
   void initializeGL() final;
   void paintGL() final;
   void resizeGL(int w, int h) final;
+
+private slots:
+  void updateRotation();
 
 private:
   QScopedPointer<cw::Light> m_Light;
