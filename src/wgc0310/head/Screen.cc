@@ -12,10 +12,13 @@ namespace wgc0310 {
 
 class ScreenImpl {
 public:
-  ScreenImpl(GLFunctions *f, const QImage &volumeBarImage);
+  ScreenImpl(GLFunctions *f,
+             const QImage &volumeBarImage,
+             const QImage &loadingScreenImage);
   ~ScreenImpl();
 
   cw::Texture2D volumeBarTexture;
+  cw::Texture2D loadingScreenTexture;
 
   GLuint screenTextureId;
 
@@ -46,8 +49,11 @@ private:
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
-ScreenImpl::ScreenImpl(GLFunctions *f, const QImage &volumeBarImage)
+ScreenImpl::ScreenImpl(GLFunctions *f,
+                       const QImage &volumeBarImage,
+                       const QImage &loadingScreenImage)
     : volumeBarTexture(volumeBarImage, f),
+      loadingScreenTexture(loadingScreenImage, f),
       volumeLevels { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 {
   Initialize3D(f);
@@ -71,7 +77,7 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
       screenVertices.push_back(cw::VertexF::Downscale(screenVertices_[y][x]));
 
       GLfloat texX = static_cast<GLfloat>(x) / 160.0f;
-      GLfloat texY = 1.0f - (static_cast<GLfloat>(y) / 120.0f);
+      GLfloat texY = static_cast<GLfloat>(y) / 120.0f;
       screenTexCoords.emplace_back(texX, texY);
     }
   }
@@ -253,7 +259,13 @@ Screen::Screen(GLFunctions *f) {
     std::abort();
   }
 
-  m_Impl = new ScreenImpl(f, image);
+  QImage image2("./resc/loading-face.bmp");
+  if (image2.isNull()) {
+    qDebug() << "Screen::Screen: Failed to load image!";
+    std::abort();
+  }
+
+  m_Impl = new ScreenImpl(f, image, image2);
 }
 
 Screen::~Screen() {
@@ -312,8 +324,11 @@ void Screen::Draw(GLFunctions *f) const noexcept {
   f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
   // now use our texture
-  f->glEnable(GL_TEXTURE_2D);
-  f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
+  // f->glEnable(GL_TEXTURE_2D);
+  // f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
+
+  // special delivery!
+  m_Impl->loadingScreenTexture.BeginTexture(f);
 
   // bind our vbo
   f->glEnableClientState(GL_VERTEX_ARRAY);

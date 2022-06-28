@@ -65,7 +65,7 @@ GLWidget::~GLWidget() {
 }
 
 void GLWidget::updateRotation() {
-  this->m_Rotation += 0.5f;
+  // this->m_Rotation += 0.5f;
   this->update();
 }
 
@@ -75,13 +75,13 @@ void GLWidget::initializeGL() {
                                    cw::RGBAColor(32, 32, 32),
                                    cw::RGBAColor(127, 127, 127),
                                    cw::RGBAColor(255, 255, 255),
-                                   cw::Vertex(-25.0, 0.0, 0.0),
+                                   cw::Vertex(-25.0, 0.0, 0),
                                    this));
   m_Light2.reset(new cw::PointLight(GL_LIGHT1,
                                     cw::RGBAColor(32, 32, 32),
                                     cw::RGBAColor(127, 127, 127),
                                     cw::RGBAColor(255, 255, 255),
-                                    cw::Vertex(25.0, 0.0, 0.0),
+                                    cw::Vertex(25.0, 0.0, 0),
                                     this));
 
   std::unique_ptr<cw::TriangleGen> headGenerator = wgc0310::Head();
