@@ -3,7 +3,6 @@
 #include <experimental/array>
 #include <QTimer>
 #include <QTimerEvent>
-#include <QThread>
 
 #include "glu/FakeGLU.h"
 #include "cwglx/Setup.h"
@@ -40,14 +39,10 @@ GLWidget::GLWidget(QWidget *parent)
   this->setAttribute(Qt::WA_TransparentForMouseEvents);
   this->setAttribute(Qt::WA_AlwaysStackOnTop);
 
-  QThread *thread = new QThread(this);
-  QTimer *timer = new QTimer(thread);
+  QTimer *timer = new QTimer(this);
   connect(timer, &QTimer::timeout, this, &GLWidget::updateRotation);
-
   timer->setInterval(10);
   timer->start();
-  timer->moveToThread(thread);
-  thread->start();
 
   int timerId = this->startTimer(10);
   if (timerId == 0) {

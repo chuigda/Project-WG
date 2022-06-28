@@ -124,7 +124,7 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
   f->glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
   f->glBufferData(
       GL_ARRAY_BUFFER,
-      static_cast<GLsizei>(sizeof(cw::VertexF) * screenTexCoords.size()),
+      static_cast<GLsizei>(sizeof(cw::Vertex2DF) * screenTexCoords.size()),
       screenTexCoords.data(),
       GL_STATIC_DRAW
   );
