@@ -3,7 +3,6 @@
 #include <experimental/array>
 #include <QTimer>
 #include <QTimerEvent>
-#include <QPainter>
 
 #include "glu/FakeGLU.h"
 #include "cwglx/Setup.h"
