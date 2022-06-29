@@ -5,6 +5,7 @@
 #include <QImage>
 #include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
+#include "cwglx/Material.h"
 #include "wgc0310/head/ScreenCurveHelper.h"
 #include "util/Derive.h"
 
@@ -259,7 +260,7 @@ Screen::Screen(GLFunctions *f) {
     std::abort();
   }
 
-  QImage image2("./resc/loading-face.bmp");
+  QImage image2("./resc/blue-screen.bmp");
   if (image2.isNull()) {
     qDebug() << "Screen::Screen: Failed to load image!";
     std::abort();

@@ -60,7 +60,7 @@ CW_DEFINE_MATERIAL(Plastic,
 // http://www.it.hiof.no/~borres/j3d/explain/blending/p-blend.html
 
 CW_DEFINE_MATERIAL(Glass,
-                   0.10f, 0.15f, 0.2f, 0.05f,
+                   0.10f, 0.125f, 0.15f, 0.1f,
                    0.10f, 0.15f, 0.2f, 0.05f,
                    0.0f, 0.0f, 0.0f, 0.0f,
                    128.0f)

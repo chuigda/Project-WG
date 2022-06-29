@@ -173,7 +173,7 @@ void GLWidget::paintGL() {
 
   glTranslatef(0.0f, 0.0f, 0.5f);
   glPushAttrib(GL_CURRENT_COLOR);
-  glColor4f(0.2f, 0.25f, 0.3f, 0.1f);
+  glColor4f(0.05f, 0.075f, 0.1f, 0.1f);
   m_Arena.Get(m_ScreenGlassId)->Draw(this);
   glPopAttrib();
 
