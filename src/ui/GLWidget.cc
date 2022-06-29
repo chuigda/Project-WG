@@ -3,6 +3,7 @@
 #include <experimental/array>
 #include <QTimer>
 #include <QTimerEvent>
+#include <QPainter>
 
 #include "glu/FakeGLU.h"
 #include "cwglx/Setup.h"
@@ -83,6 +84,7 @@ void GLWidget::initializeGL() {
   std::unique_ptr<cw::PlainTriangles> headTriangles =
       std::make_unique<cw::PlainTriangles>();
   headTriangles->AddTriangles(headGenerator.get());
+  headTriangles->PreInitialize(this);
 
   const auto [_, head] = m_Arena.Put(std::move(headTriangles));
   const auto [headId, _2] = m_Arena.Put(
@@ -97,6 +99,7 @@ void GLWidget::initializeGL() {
   std::unique_ptr<cw::PlainTriangles> glassTriangles =
       std::make_unique<cw::PlainTriangles>();
   glassTriangles->AddTriangles(glassGenerator.get());
+  glassTriangles->PreInitialize(this);
 
   const auto [_3, glass] = m_Arena.Put(std::move(glassTriangles));
   const auto [glassId, _4] = m_Arena.Put(
@@ -131,16 +134,13 @@ void GLWidget::paintGL() {
   // start timer
   const auto start = std::chrono::high_resolution_clock::now();
 
-  GLint previousFBO;
-  glGetIntegerv(GL_FRAMEBUFFER_BINDING, &previousFBO);
-
   // preparation stage
   wgc0310::Screen const* screen =
       static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
   screen->PrepareTexture(this);
 
   // painting stage
-  glBindFramebuffer(GL_FRAMEBUFFER, static_cast<GLuint>(previousFBO));
+  glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebufferObject());
   GLsizei w = static_cast<GLsizei>(width());
   GLsizei h = static_cast<GLsizei>(height());
   GLdouble wd = static_cast<GLdouble>(w);
@@ -179,8 +179,8 @@ void GLWidget::paintGL() {
 
   // calculate execution time
   const auto end = std::chrono::high_resolution_clock::now();
-  const auto duration = std::chrono::duration_cast<std::chrono::microseconds>(
-      end - start);
+  const auto duration =
+      std::chrono::duration_cast<std::chrono::microseconds>(end - start);
   qDebug() << "paintGL took" << duration.count() << "us";
 }
 

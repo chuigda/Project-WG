@@ -69,38 +69,7 @@ void PlainTriangles::Draw(GLFunctions *f) const noexcept {
     return;
   }
 
-  if (!m_VBOInitialized) {
-    qDebug() << "PlainTriangles::Draw():"
-             << "VBO not initialized, initializing";
-    qDebug() << "PlainTriangles::Draw():"
-             << m_Vertices.size() / 3
-             << "triangles ready to draw";
-
-    f->glGenBuffers(3, m_VBO.data());
-
-    f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
-    f->glBufferData(GL_ARRAY_BUFFER,
-                    static_cast<GLsizei>(m_Vertices.size() * sizeof(VertexF)),
-                    m_Vertices.data(),
-                    GL_STATIC_DRAW);
-
-    if (m_ComputeNormal) {
-      f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
-      f->glBufferData(GL_ARRAY_BUFFER,
-                      static_cast<GLsizei>(m_NormalVectors.size()
-                                           * sizeof(VectorF)),
-                      m_NormalVectors.data(),
-                      GL_STATIC_DRAW);
-    }
-
-    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
-    f->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                    static_cast<GLsizei>(m_Indices.size() * sizeof(GLuint)),
-                    m_Indices.data(),
-                    GL_STATIC_DRAW);
-
-    m_VBOInitialized = true;
-  }
+  PreInitialize(f);
 
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
   {
@@ -211,7 +180,41 @@ AddTriangleInner(const Triangle &triangle,
 }
 
 void PlainTriangles::AddTriangles(FineTriangleGen*) {
+}
 
+void PlainTriangles::PreInitialize(GLFunctions *f) const {
+  if (!m_VBOInitialized) {
+    qDebug() << "PlainTriangles::PreInitialize():"
+             << "VBO not initialized, initializing";
+    qDebug() << "PlainTriangles::PreInitialize():"
+             << m_Vertices.size() / 3
+             << "triangles ready to draw";
+
+    f->glGenBuffers(3, m_VBO.data());
+
+    f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
+    f->glBufferData(GL_ARRAY_BUFFER,
+                    static_cast<GLsizei>(m_Vertices.size() * sizeof(VertexF)),
+                    m_Vertices.data(),
+                    GL_STATIC_DRAW);
+
+    if (m_ComputeNormal) {
+      f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
+      f->glBufferData(GL_ARRAY_BUFFER,
+                      static_cast<GLsizei>(m_NormalVectors.size()
+                                           * sizeof(VectorF)),
+                      m_NormalVectors.data(),
+                      GL_STATIC_DRAW);
+    }
+
+    f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[2]);
+    f->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                    static_cast<GLsizei>(m_Indices.size() * sizeof(GLuint)),
+                    m_Indices.data(),
+                    GL_STATIC_DRAW);
+
+    m_VBOInitialized = true;
+  }
 }
 
 #pragma clang diagnostic pop

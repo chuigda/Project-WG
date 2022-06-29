@@ -34,6 +34,8 @@ public:
   void AddTriangles(TriangleGen *generator);
   void AddTriangles(FineTriangleGen *generator);
 
+  void PreInitialize(GLFunctions *f) const;
+
 private:
   void AddTriangleInner(const Triangle &triangle,
                         const SecretInternalsDoNotUseOrYouWillBeFired&);
