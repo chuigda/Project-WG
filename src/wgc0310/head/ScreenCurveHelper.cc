@@ -1,58 +1,85 @@
 #include "wgc0310/head/ScreenCurveHelper.h"
 
+#include <cmath>
+#include <QDebug>
+#include "util/Constants.h"
+
 namespace wgc0310 {
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "bugprone-integer-division"
+/// computes the X-Z mapping of vertical cylinder
+static std::vector<std::pair<double, double>>
+ComputeVCylinder(double surfaceWidth,
+                 double bulb,
+                 std::size_t segments) {
+  double radius = (bulb / 2) + (surfaceWidth * surfaceWidth / (8 * bulb));
+  double base = radius - bulb;
+  double startAngleRad = std::asin(surfaceWidth / (2 * radius));
+  double startAngle = -cw::RadToDeg(startAngleRad);
+  double endAngle = -startAngle;
+
+  double angleStep = (endAngle - startAngle) / static_cast<double>(segments);
+
+  std::vector<std::pair<double, double>> result;
+  result.reserve(segments + 1);
+  for (std::size_t i = 0; i <= segments; i++) {
+    double angle = startAngle + static_cast<double>(i) * angleStep;
+    double x = std::sin(cw::DegToRad(angle)) * radius;
+    double z = std::cos(cw::DegToRad(angle)) * radius - base;
+
+    result.emplace_back(x, z);
+  }
+
+  return result;
+}
+
+/// computes the Y-Z mapping of horizontal cylinder
+static std::vector<std::pair<double, double>>
+ComputeHCylinder(double surfaceHeight,
+                 double bulb,
+                 std::size_t segments) {
+  // actually there's no implementation difference between vSegments and
+  // hSegments, just forward to the vSegments version
+
+  return ComputeVCylinder(surfaceHeight, bulb, segments);
+}
+
 std::vector<std::vector<cw::Vertex>>
 ComputeScreenVertices(double screenWidth,
                       double screenHeight,
                       double bulb,
-                      int horizontalSegments,
-                      int verticalSegments) {
-  Q_ASSERT(horizontalSegments % 2 == 0
-           && verticalSegments % 2 == 0
+                      std::size_t hSegments,
+                      std::size_t vSegments) {
+  Q_ASSERT(hSegments % 2 == 0
+           && vSegments % 2 == 0
            && "non-even segments could be inaccurate and is thus prohibited");
 
-  std::vector<std::vector<cw::Vertex>> vertices;
-  vertices.reserve(verticalSegments);
+  std::vector<std::pair<double, double>> vCylinder =
+      ComputeVCylinder(screenWidth, bulb / 2.0, hSegments);
+  std::vector<std::pair<double, double>> hCylinder =
+      ComputeHCylinder(screenHeight, bulb / 2.0, vSegments);
 
-  double segmentWidth = screenWidth / static_cast<double>(horizontalSegments);
-  double segmentHeight = screenHeight / static_cast<double>(verticalSegments);
+  // compute the vertices
+  std::vector<std::vector<cw::Vertex>> result;
+  result.reserve(vSegments + 1);
 
-  double radius = (bulb / 2) + (screenHeight * screenHeight / (8 * bulb));
+  for (std::size_t i = 0; i <= vSegments; i++) {
+    const auto& [y, z1] = hCylinder[vSegments - i];
+    qDebug() << "y =" << y << "z1 =" << z1;
 
-  for (int ySegment = 0; ySegment <= verticalSegments; ySegment++) {
-    double segmentY = segmentHeight *
-        static_cast<GLdouble>((verticalSegments / 2) - ySegment);
-    double z = std::sqrt(radius * radius - segmentY * segmentY);
-    double z1 = z - radius + bulb;
+    std::vector<cw::Vertex> line;
+    line.reserve(hSegments + 1);
 
-    std::vector<cw::Vertex> lineVertices;
-    lineVertices.reserve(horizontalSegments);
+    for (std::size_t j = 0; j <= hSegments; j++) {
+      const auto& [x, z2] = vCylinder[j];
+      qDebug() << "x =" << x << "z2 =" << z2;
 
-    if (std::abs(z1) <= 0.0000001) {
-      for (int xSegment = 0; xSegment <= horizontalSegments; xSegment++) {
-        double segmentX = segmentWidth *
-                          static_cast<GLdouble>(xSegment - (horizontalSegments / 2));
-        lineVertices.emplace_back(segmentX, segmentY, 0.0);
-      }
-    } else {
-      double radius2 = (z1 / 2) + (screenWidth * screenWidth / (8 * z1));
-      for (int xSegment = 0; xSegment <= horizontalSegments; xSegment++) {
-        double segmentX = segmentWidth *
-            static_cast<GLdouble>(xSegment - (horizontalSegments / 2));
-        double z2 = std::sqrt(radius2 * radius2 - segmentX * segmentX);
-        double z3 = z2 + z1 - radius2;
-
-        lineVertices.emplace_back(segmentX, segmentY, z3);
-      }
+      line.emplace_back(x, y, z1 + z2);
     }
-    vertices.push_back(std::move(lineVertices));
+
+    result.push_back(std::move(line));
   }
 
-  return vertices;
+  return result;
 }
-#pragma clang diagnostic pop
 
 } // namespace wgc0310

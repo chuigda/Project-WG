@@ -71,7 +71,7 @@ ScreenImpl::~ScreenImpl() {
 
 void ScreenImpl::Initialize3D(GLFunctions *f) {
   std::vector<std::vector<cw::Vertex>> screenVertices_ =
-      ComputeScreenVertices(20.0, 15.0, 1.5, 160, 120);
+      ComputeScreenVertices(20.0, 15.0, 1.25, 160, 120);
   for (int y = 0; y <= 120; y++) {
     for (int x = 0; x <= 160; x++) {
       screenVertices.push_back(cw::VertexF::Downscale(screenVertices_[y][x]));

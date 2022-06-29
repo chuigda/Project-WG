@@ -171,7 +171,7 @@ void GLWidget::paintGL() {
 
   m_Arena.Get(m_ScreenId)->Draw(this);
 
-  glTranslatef(0.0f, 0.0f, 1.0f);
+  glTranslatef(0.0f, 0.0f, 0.5f);
   glPushAttrib(GL_CURRENT_COLOR);
   glColor4f(0.2f, 0.25f, 0.3f, 0.1f);
   m_Arena.Get(m_ScreenGlassId)->Draw(this);
