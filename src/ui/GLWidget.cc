@@ -138,8 +138,11 @@ void GLWidget::paintGL() {
       static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
   screen->PrepareTexture(this);
 
-  // painting stage
+  // switch back to default framebuffer. not using `0` since
+  // Qt doesn't use it as the default one.
   glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebufferObject());
+
+  // painting stage
   GLsizei w = static_cast<GLsizei>(width());
   GLsizei h = static_cast<GLsizei>(height());
   GLdouble wd = static_cast<GLdouble>(w);
@@ -173,7 +176,7 @@ void GLWidget::paintGL() {
   glTranslatef(0.0f, 0.0f, 0.5f);
   glPushAttrib(GL_CURRENT_COLOR);
   glColor4f(0.05f, 0.075f, 0.1f, 0.1f);
-  m_Arena.Get(m_ScreenGlassId)->Draw(this);
+  // m_Arena.Get(m_ScreenGlassId)->Draw(this);
   glPopAttrib();
 
   // calculate execution time

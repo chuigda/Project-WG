@@ -64,14 +64,12 @@ ComputeScreenVertices(double screenWidth,
 
   for (std::size_t i = 0; i <= vSegments; i++) {
     const auto& [y, z1] = hCylinder[vSegments - i];
-    qDebug() << "y =" << y << "z1 =" << z1;
 
     std::vector<cw::Vertex> line;
     line.reserve(hSegments + 1);
 
     for (std::size_t j = 0; j <= hSegments; j++) {
       const auto& [x, z2] = vCylinder[j];
-      qDebug() << "x =" << x << "z2 =" << z2;
 
       line.emplace_back(x, y, z1 + z2);
     }

@@ -35,6 +35,7 @@ public:
 
   bool deleted;
   std::array<GLuint, 3> vbo;
+  std::array<GLuint, 3> vbo2D;
   GLuint fbo;
 
   CW_DERIVE_UNCOPYABLE(ScreenImpl)
@@ -44,7 +45,7 @@ public:
 
 private:
   void Initialize3D(GLFunctions *f);
-  void Initialize2D();
+  void Initialize2D(GLFunctions *f);
   void InitializeTexture(GLFunctions *f);
 };
 
@@ -58,8 +59,10 @@ ScreenImpl::ScreenImpl(GLFunctions *f,
       volumeLevels { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 {
   Initialize3D(f);
-  Initialize2D();
+  Initialize2D(f);
   InitializeTexture(f);
+
+  deleted = false;
 }
 #pragma clang diagnostic pop
 
@@ -129,10 +132,9 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
       screenTexCoords.data(),
       GL_STATIC_DRAW
   );
-  deleted = false;
 }
 
-void ScreenImpl::Initialize2D() {
+void ScreenImpl::Initialize2D(GLFunctions *f) {
   GLfloat y0 = 16.0f - 240.0f;
   GLfloat y1 = 24.0f - 240.0f;
   GLfloat y2 = 24.0f + 432.0f - 240.0f;
@@ -149,8 +151,8 @@ void ScreenImpl::Initialize2D() {
 
   for (int i = 0; i < 10; i++) {
     GLfloat fi = static_cast<GLfloat>(i);
-    GLfloat x0 = 22.0f + 4.0f * fi - 320.0f;
-    GLfloat x1 = 22.0f + 4.0f * fi + 56.0f * (fi + 1) - 320.0f;
+    GLfloat x0 = 22.0f + (4.0f * fi) + 56.0f * fi - 320.0f;
+    GLfloat x1 = 22.0f + (4.0f * fi) + 56.0f * (fi + 1) - 320.0f;
 
     // vertices
     cw::Vertex2DF pointA { x0, y0 };
@@ -210,6 +212,37 @@ void ScreenImpl::Initialize2D() {
     volumeBarIndices.push_back(i * 8 + 6);
     volumeBarIndices.push_back(i * 8 + 7);
   }
+
+  // initialize VBO for 2D vertices
+  f->glGenBuffers(3, &vbo2D[0]);
+
+  // 0 for vertices, we don't provide data immediately, since
+  // vertices changes frequently. We will provide data when we need it.
+  f->glBindBuffer(GL_ARRAY_BUFFER, vbo2D[0]);
+  f->glBufferData(
+      GL_ARRAY_BUFFER,
+      static_cast<GLsizei>(sizeof(cw::Vertex2DF) * volumeBarVertices.size()),
+      nullptr,
+      GL_STREAM_DRAW
+  );
+
+  // 1 for indices
+  f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo2D[1]);
+  f->glBufferData(
+      GL_ELEMENT_ARRAY_BUFFER,
+      static_cast<GLsizei>(sizeof(GLuint) * volumeBarIndices.size()),
+      volumeBarIndices.data(),
+      GL_STATIC_DRAW
+  );
+
+  // 2 for texture coordinates
+  f->glBindBuffer(GL_ARRAY_BUFFER, vbo2D[2]);
+  f->glBufferData(
+      GL_ARRAY_BUFFER,
+      static_cast<GLsizei>(sizeof(cw::Vertex2DF) * volumeBarTexCoords.size()),
+      volumeBarTexCoords.data(),
+      GL_STATIC_DRAW
+  );
 }
 
 void ScreenImpl::InitializeTexture(GLFunctions *f) {
@@ -280,10 +313,6 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
   f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
   f->glPushMatrix();
 
-  f->glDisable(GL_LIGHTING);
-  f->glDisable(GL_DEPTH_TEST);
-  f->glDisable(GL_MULTISAMPLE);
-
   f->glViewport(0, 0, 640, 480);
   f->glMatrixMode(GL_PROJECTION);
   f->glLoadIdentity();
@@ -296,19 +325,32 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
   f->glClear(GL_COLOR_BUFFER_BIT);
   f->glTranslatef(0.0f, 0.0f, -0.5f);
 
-  // test with a simple triangle
-  f->glBegin(GL_TRIANGLES);
-  {
-    f->glColor3f(1.0f, 0.0f, 0.0f);
-    f->glVertex2f(-320, -240);
+  f->glDisable(GL_LIGHTING);
+  f->glDisable(GL_DEPTH_TEST);
+  f->glDisable(GL_MULTISAMPLE);
+  f->glEnable(GL_TEXTURE_2D);
+  m_Impl->volumeBarTexture.BeginTexture(f);
 
-    f->glColor3f(0.0f, 1.0f, 0.0f);
-    f->glVertex2f(320, -240);
+  // draw our 2D vertices
+  f->glEnableClientState(GL_VERTEX_ARRAY);
+  f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo2D[0]);
+  // provide actual data, it should have been updated
+  f->glBufferData(GL_ARRAY_BUFFER,
+                  static_cast<GLsizei>(
+                      sizeof(cw::Vertex2DF) * m_Impl->volumeBarVertices.size()),
+                  m_Impl->volumeBarVertices.data(),
+                  GL_STREAM_DRAW);
+  f->glVertexPointer(2, GL_FLOAT, sizeof(cw::Vertex2DF), nullptr);
 
-    f->glColor3f(0.0f, 0.0f, 1.0f);
-    f->glVertex2f(0, 240);
-  }
-  f->glEnd();
+  f->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo2D[2]);
+  f->glTexCoordPointer(2, GL_FLOAT, sizeof(cw::Vertex2DF), nullptr);
+
+  f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Impl->vbo2D[1]);
+  f->glDrawElements(GL_TRIANGLES,
+                    static_cast<GLsizei>(m_Impl->volumeBarIndices.size()),
+                    GL_UNSIGNED_INT,
+                    nullptr);
 
   f->glPopMatrix();
   f->glPopClientAttrib();
@@ -325,11 +367,8 @@ void Screen::Draw(GLFunctions *f) const noexcept {
   f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
   // now use our texture
-  // f->glEnable(GL_TEXTURE_2D);
-  // f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
-
-  // special delivery!
-  m_Impl->loadingScreenTexture.BeginTexture(f);
+  f->glEnable(GL_TEXTURE_2D);
+  f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
 
   // bind our vbo
   f->glEnableClientState(GL_VERTEX_ARRAY);
