@@ -155,7 +155,7 @@ void ScreenImpl::Initialize2D(GLFunctions *f) {
     GLfloat x0 = 22.0f + (4.0f * fi) + 56.0f * fi - 320.0f;
     GLfloat x1 = 22.0f + (4.0f * fi) + 56.0f * (fi + 1) - 320.0f;
 
-    GLfloat length = static_cast<GLfloat>(std::rand() % 431) + 1.0f;
+    GLfloat length = static_cast<GLfloat>(std::rand() % 425) + 8.0f;
     GLfloat y2 = 24.0f + length - 240.0f;
     GLfloat y3 = 24.0f + length + 8.0f - 240.0f;
 
