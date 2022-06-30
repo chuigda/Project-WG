@@ -1,11 +1,12 @@
 #include "wgc0310/head/Screen.h"
 
+#include <cstdlib>
+#include <ctime>
 #include <QThread>
 #include <QDebug>
 #include <QImage>
 #include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
-#include "cwglx/Material.h"
 #include "wgc0310/head/ScreenCurveHelper.h"
 #include "util/Derive.h"
 
@@ -135,10 +136,10 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
 }
 
 void ScreenImpl::Initialize2D(GLFunctions *f) {
+  std::srand(std::time(NULL));
+
   GLfloat y0 = 16.0f - 240.0f;
   GLfloat y1 = 24.0f - 240.0f;
-  GLfloat y2 = 24.0f + 432.0f - 240.0f;
-  GLfloat y3 = 24.0f + 432.0f + 8.0f - 240.0f;
 
   cw::Vertex2DF texPointA { 0.0f, 0.0f };
   cw::Vertex2DF texPointB { 1.0f, 0.0f };
@@ -153,6 +154,10 @@ void ScreenImpl::Initialize2D(GLFunctions *f) {
     GLfloat fi = static_cast<GLfloat>(i);
     GLfloat x0 = 22.0f + (4.0f * fi) + 56.0f * fi - 320.0f;
     GLfloat x1 = 22.0f + (4.0f * fi) + 56.0f * (fi + 1) - 320.0f;
+
+    GLfloat length = static_cast<GLfloat>(std::rand() % 431) + 1.0f;
+    GLfloat y2 = 24.0f + length - 240.0f;
+    GLfloat y3 = 24.0f + length + 8.0f - 240.0f;
 
     // vertices
     cw::Vertex2DF pointA { x0, y0 };
@@ -261,8 +266,8 @@ void ScreenImpl::InitializeTexture(GLFunctions *f) {
                   GL_RGB,
                   GL_UNSIGNED_BYTE,
                   GL_FALSE);
-  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   f->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, screenTextureId, 0);
   GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
@@ -282,6 +287,7 @@ void ScreenImpl::Delete(GLFunctions *f) {
     f->glDeleteTextures(1, &screenTextureId);
     f->glDeleteFramebuffers(1, &fbo);
     volumeBarTexture.DeleteTexture(f);
+    loadingScreenTexture.DeleteTexture(f);
     deleted = true;
   }
 }
@@ -323,13 +329,17 @@ void Screen::PrepareTexture(GLFunctions *f) const noexcept {
 
   f->glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   f->glClear(GL_COLOR_BUFFER_BIT);
+  f->glScalef(1.0f, -1.0f, 1.0f);
+  f->glFrontFace(GL_CW);
   f->glTranslatef(0.0f, 0.0f, -0.5f);
 
   f->glDisable(GL_LIGHTING);
   f->glDisable(GL_DEPTH_TEST);
   f->glDisable(GL_MULTISAMPLE);
-  f->glEnable(GL_TEXTURE_2D);
+  f->glDisable(GL_CULL_FACE);
   m_Impl->volumeBarTexture.BeginTexture(f);
+
+  f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
   // draw our 2D vertices
   f->glEnableClientState(GL_VERTEX_ARRAY);
@@ -369,6 +379,7 @@ void Screen::Draw(GLFunctions *f) const noexcept {
   // now use our texture
   f->glEnable(GL_TEXTURE_2D);
   f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
+  // m_Impl->loadingScreenTexture.BeginTexture(f);
 
   // bind our vbo
   f->glEnableClientState(GL_VERTEX_ARRAY);

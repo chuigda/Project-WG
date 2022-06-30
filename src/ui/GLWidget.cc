@@ -171,12 +171,12 @@ void GLWidget::paintGL() {
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   m_Arena.Get(m_HeadId)->Draw(this);
 
-  m_Arena.Get(m_ScreenId)->Draw(this);
+  screen->Draw(this);
 
   glTranslatef(0.0f, 0.0f, 0.5f);
   glPushAttrib(GL_CURRENT_COLOR);
   glColor4f(0.05f, 0.075f, 0.1f, 0.1f);
-  // m_Arena.Get(m_ScreenGlassId)->Draw(this);
+  m_Arena.Get(m_ScreenGlassId)->Draw(this);
   glPopAttrib();
 
   // calculate execution time
