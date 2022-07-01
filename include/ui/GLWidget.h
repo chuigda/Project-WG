@@ -27,7 +27,10 @@ protected:
   void mouseDoubleClickEvent(QMouseEvent *event) final;
 
 private slots:
-  void updateRotation();
+  void UpdateRotation();
+
+private:
+
 
 private:
   QScopedPointer<cw::Light> m_Light;

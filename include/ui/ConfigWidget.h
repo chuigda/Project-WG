@@ -16,12 +16,15 @@ class ConfigWidget final : public QWidget
 
 public:
   explicit ConfigWidget(CameraEntityStatus *cameraEntityStatus,
+                        QWidget *glWidget,
                         QWidget *parent = nullptr);
   ~ConfigWidget() final;
 
   void FillGLInfo(const cw::GLInfo &info);
 
 private slots:
+  void reOpenGLWidget();
+
   void updateCameraX(int value);
   void updateCameraY(int value);
   void updateCameraZ(int value);
@@ -40,6 +43,8 @@ private slots:
 
 private:
   Ui::ConfigWidget *ui;
+
+  QWidget *m_GLWidget;
   CameraEntityStatus *m_CameraEntityStatus;
 };
 

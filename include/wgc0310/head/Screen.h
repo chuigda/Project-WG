@@ -1,6 +1,8 @@
 #ifndef PROJECT_WG_WGC0310_SCREEN_H
 #define PROJECT_WG_WGC0310_SCREEN_H
 
+#include <functional>
+
 #include "cwglx/GL.h"
 #include "cwglx/Drawable.h"
 
@@ -13,7 +15,9 @@ public:
   explicit Screen(GLFunctions *f);
   ~Screen() final;
 
-  void PrepareTexture(GLFunctions *f) const noexcept;
+  void BeginScreenContext(GLFunctions *f) const noexcept;
+
+  void DoneScreenContext(GLFunctions *f) const noexcept;
 
   void Draw(GLFunctions *f) const noexcept final;
 

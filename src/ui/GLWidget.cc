@@ -40,7 +40,7 @@ GLWidget::GLWidget(QWidget *parent)
   this->setAttribute(Qt::WA_AlwaysStackOnTop);
 
   QTimer *timer = new QTimer(this);
-  connect(timer, &QTimer::timeout, this, &GLWidget::updateRotation);
+  connect(timer, &QTimer::timeout, this, &GLWidget::UpdateRotation);
   timer->setInterval(10);
   timer->start();
 
@@ -49,7 +49,7 @@ GLWidget::GLWidget(QWidget *parent)
     qDebug() << "could not start timer correctly";
   }
 
-  m_ConfigWidget = new ConfigWidget(&this->m_CameraEntityStatus);
+  m_ConfigWidget = new ConfigWidget(&this->m_CameraEntityStatus, this);
 
   setBaseSize(1024, 768);
   resize(1024,768);
@@ -64,7 +64,7 @@ GLWidget::~GLWidget() {
   doneCurrent();
 }
 
-void GLWidget::updateRotation() {
+void GLWidget::UpdateRotation() {
   this->update();
 }
 
@@ -123,13 +123,15 @@ void GLWidget::initializeGL() {
 }
 
 void GLWidget::paintGL() {
-  // start timer
-  const auto start = std::chrono::high_resolution_clock::now();
-
   // preparation stage
   wgc0310::Screen const* screen =
       static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
-  screen->PrepareTexture(this);
+  screen->BeginScreenContext(this);
+
+  // screen size: -320 ~ 320, -240 ~ 240
+
+
+  screen->DoneScreenContext(this);
 
   // switch back to default framebuffer. not using `0` since
   // Qt doesn't use it as the default one.
@@ -204,12 +206,6 @@ void GLWidget::paintGL() {
   glColor4f(0.05f, 0.075f, 0.1f, 0.1f);
   m_Arena.Get(m_ScreenGlassId)->Draw(this);
   glPopAttrib();
-
-  // calculate execution time
-  const auto end = std::chrono::high_resolution_clock::now();
-  const auto duration =
-      std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-  qDebug() << "paintGL took" << duration.count() << "us";
 }
 
 void GLWidget::resizeGL(int w, int h) {

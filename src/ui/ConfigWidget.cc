@@ -3,9 +3,11 @@
 #include "ui_ConfigWidget.h"
 
 ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
+                           QWidget *glWidget,
                            QWidget *parent) :
   QWidget(parent),
   ui(new Ui::ConfigWidget),
+  m_GLWidget(glWidget),
   m_CameraEntityStatus(cameraEntityStatus)
 {
   ui->setupUi(this);
@@ -28,6 +30,9 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
   ui->entityYAngleSlider->setValue(m_CameraEntityStatus->entityRotateY / 10);
   ui->entityZAngleSlider->setValue(m_CameraEntityStatus->entityRotateZ / 10);
 #pragma clang diagnostic pop
+
+  connect(ui->reOpenButton, &QPushButton::clicked,
+          this, &ConfigWidget::reOpenGLWidget);
 
   connect(ui->cameraXSlider, &QSlider::valueChanged,
           this, &ConfigWidget::updateCameraX);
@@ -70,6 +75,10 @@ void ConfigWidget::FillGLInfo(const cw::GLInfo &info) {
   ui->glVersionText->setText(info.version);
   ui->glRendererText->setText(info.renderer);
   ui->glExtensionsText->setPlainText(info.extensions);
+}
+
+void ConfigWidget::reOpenGLWidget() {
+  m_GLWidget->show();
 }
 
 void ConfigWidget::updateCameraX(int value) {
