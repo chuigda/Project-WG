@@ -25,7 +25,9 @@ set(PROJECT_SOURCES
     main.cc
 
     src/ui/GLWidget.cc
+    src/ui/ConfigWidget.cc
     include/ui/GLWidget.h
+    include/ui/ConfigWidget.h
 
     src/util/Constants.cc
     src/util/Sinkrate.cc
@@ -82,6 +84,7 @@ set(PROJECT_SOURCES
     include/wgc0310/head/Screen.h
     include/wgc0310/head/ScreenCurveHelper.h
     include/wgc0310/Components.h)
+qt_wrap_ui(PROJECT_SOURCES src/ui/ConfigWidget.ui)
 
 include_directories(include)
 
