@@ -127,6 +127,11 @@ public:
     return { GetX(), GetY(), GetZ() };
   }
 
+  [[nodiscard]]
+  constexpr inline GLdouble Length() const noexcept {
+    return std::sqrt(GetX() * GetX() + GetY() * GetY() + GetZ() * GetZ());
+  }
+
 private:
   std::array<GLdouble, 3> m_Repr;
 };

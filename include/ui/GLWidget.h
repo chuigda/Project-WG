@@ -8,6 +8,7 @@
 #include "cwglx/Light.h"
 #include "cwglx/Drawable.h"
 #include "cwglx/DrawableArena.h"
+#include "ui/CameraEntityStatus.h"
 
 class ConfigWidget;
 
@@ -38,6 +39,7 @@ private:
   std::size_t m_ScreenGlassId;
   std::size_t m_ScreenId;
 
+  CameraEntityStatus m_CameraEntityStatus;
   ConfigWidget *m_ConfigWidget;
 };
 

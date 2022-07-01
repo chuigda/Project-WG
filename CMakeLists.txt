@@ -26,6 +26,7 @@ set(PROJECT_SOURCES
 
     src/ui/GLWidget.cc
     src/ui/ConfigWidget.cc
+    include/ui/CameraEntityStatus.h
     include/ui/GLWidget.h
     include/ui/ConfigWidget.h
 
