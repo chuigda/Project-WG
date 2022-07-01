@@ -50,6 +50,9 @@ GLWidget::GLWidget(QWidget *parent)
   }
 
   m_ConfigWidget = new ConfigWidget(&this->m_CameraEntityStatus);
+
+  setBaseSize(1024, 768);
+  resize(1024,768);
 }
 
 GLWidget::~GLWidget() {
