@@ -20,7 +20,6 @@ GLWidget::GLWidget(QWidget *parent)
     GLFunctions(),
     m_Light(nullptr),
     m_Light2(nullptr),
-    m_Rotation(0.0f),
     m_Arena(),
     m_HeadId(0),
     m_ScreenGlassId(0),
@@ -63,7 +62,6 @@ GLWidget::~GLWidget() {
 }
 
 void GLWidget::updateRotation() {
-  // this->m_Rotation += 0.5f;
   this->update();
 }
 

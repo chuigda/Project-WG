@@ -32,7 +32,6 @@ private slots:
 private:
   QScopedPointer<cw::Light> m_Light;
   QScopedPointer<cw::Light> m_Light2;
-  GLfloat m_Rotation;
 
   cw::DrawableArena m_Arena;
   std::size_t m_HeadId;
