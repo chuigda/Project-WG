@@ -12,21 +12,21 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-narrowing-conversions"
-  ui->cameraXSlider->setValue(m_CameraEntityStatus->cameraX);
-  ui->cameraYSlider->setValue(m_CameraEntityStatus->cameraY);
-  ui->cameraZSlider->setValue(m_CameraEntityStatus->cameraZ);
+  ui->cameraXSlider->setValue(m_CameraEntityStatus->cameraX / 5);
+  ui->cameraYSlider->setValue(m_CameraEntityStatus->cameraY / 5);
+  ui->cameraZSlider->setValue(m_CameraEntityStatus->cameraZ / 5);
 
-  ui->cameraXAngleSlider->setValue(m_CameraEntityStatus->cameraRotateX);
-  ui->cameraYAngleSlider->setValue(m_CameraEntityStatus->cameraRotateY);
-  ui->cameraZAngleSlider->setValue(m_CameraEntityStatus->cameraRotateZ);
+  ui->cameraXAngleSlider->setValue(m_CameraEntityStatus->cameraRotateX/ 10);
+  ui->cameraYAngleSlider->setValue(m_CameraEntityStatus->cameraRotateY/ 10);
+  ui->cameraZAngleSlider->setValue(m_CameraEntityStatus->cameraRotateZ/ 10);
 
-  ui->entityXSlider->setValue(m_CameraEntityStatus->entityX);
-  ui->entityYSlider->setValue(m_CameraEntityStatus->entityY);
-  ui->entityZSlider->setValue(m_CameraEntityStatus->entityZ);
+  ui->entityXSlider->setValue(m_CameraEntityStatus->entityX / 5);
+  ui->entityYSlider->setValue(m_CameraEntityStatus->entityY / 5);
+  ui->entityZSlider->setValue(m_CameraEntityStatus->entityZ / 5);
 
-  ui->entityXAngleSlider->setValue(m_CameraEntityStatus->entityRotateX);
-  ui->entityYAngleSlider->setValue(m_CameraEntityStatus->entityRotateY);
-  ui->entityZAngleSlider->setValue(m_CameraEntityStatus->entityRotateZ);
+  ui->entityXAngleSlider->setValue(m_CameraEntityStatus->entityRotateX / 10);
+  ui->entityYAngleSlider->setValue(m_CameraEntityStatus->entityRotateY / 10);
+  ui->entityZAngleSlider->setValue(m_CameraEntityStatus->entityRotateZ / 10);
 #pragma clang diagnostic pop
 
   connect(ui->cameraXSlider, &QSlider::valueChanged,
@@ -73,52 +73,52 @@ void ConfigWidget::FillGLInfo(const cw::GLInfo &info) {
 }
 
 void ConfigWidget::updateCameraX(int value) {
-  m_CameraEntityStatus->cameraX = static_cast<GLfloat>(value);
+  m_CameraEntityStatus->cameraX = static_cast<GLfloat>(value * 5);
 }
 
 void ConfigWidget::updateCameraY(int value) {
-  m_CameraEntityStatus->cameraY = static_cast<GLfloat>(value);
+  m_CameraEntityStatus->cameraY = static_cast<GLfloat>(value * 5);
 }
 
 void ConfigWidget::updateCameraZ(int value) {
-  m_CameraEntityStatus->cameraZ = static_cast<GLfloat>(value);
+  m_CameraEntityStatus->cameraZ = static_cast<GLfloat>(value * 5);
 }
 
 void ConfigWidget::updateCameraRotationX(int value) {
-  m_CameraEntityStatus->cameraRotateX = static_cast<GLdouble>(value);
+  m_CameraEntityStatus->cameraRotateX = static_cast<GLdouble>(value * 10);
 }
 
 void ConfigWidget::updateCameraRotationY(int value) {
-  m_CameraEntityStatus->cameraRotateY = static_cast<GLdouble>(value);
+  m_CameraEntityStatus->cameraRotateY = static_cast<GLdouble>(value * 10);
 }
 
 void ConfigWidget::updateCameraRotationZ(int value) {
-  m_CameraEntityStatus->cameraRotateZ = static_cast<GLdouble>(value);
+  m_CameraEntityStatus->cameraRotateZ = static_cast<GLdouble>(value * 10);
 }
 
 
 void ConfigWidget::updateEntityX(int value) {
-  m_CameraEntityStatus->entityX = static_cast<GLfloat>(value);
+  m_CameraEntityStatus->entityX = static_cast<GLfloat>(value * 5);
 }
 
 void ConfigWidget::updateEntityY(int value) {
-  m_CameraEntityStatus->entityY = static_cast<GLfloat>(value);
+  m_CameraEntityStatus->entityY = static_cast<GLfloat>(value * 5);
 }
 
 void ConfigWidget::updateEntityZ(int value) {
-  m_CameraEntityStatus->entityZ = static_cast<GLfloat>(value);
+  m_CameraEntityStatus->entityZ = static_cast<GLfloat>(value * 5);
 }
 
 void ConfigWidget::updateEntityRotationX(int value) {
-  m_CameraEntityStatus->entityRotateX = static_cast<GLdouble>(value);
+  m_CameraEntityStatus->entityRotateX = static_cast<GLdouble>(value * 10);
 }
 
 void ConfigWidget::updateEntityRotationY(int value) {
-  m_CameraEntityStatus->entityRotateY = static_cast<GLdouble>(value);
+  m_CameraEntityStatus->entityRotateY = static_cast<GLdouble>(value * 10);
 }
 
 void ConfigWidget::updateEntityRotationZ(int value) {
-  m_CameraEntityStatus->entityRotateZ = static_cast<GLdouble>(value);
+  m_CameraEntityStatus->entityRotateZ = static_cast<GLdouble>(value * 10);
 }
 
 void ConfigWidget::resetAll() {
@@ -132,7 +132,7 @@ void ConfigWidget::resetAll() {
 
   ui->entityXSlider->setValue(0);
   ui->entityYSlider->setValue(0);
-  ui->entityZSlider->setValue(-30);
+  ui->entityZSlider->setValue(-30 / 5);
 
   ui->entityXAngleSlider->setValue(0);
   ui->entityYAngleSlider->setValue(0);

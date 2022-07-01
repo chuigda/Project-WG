@@ -11,13 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>设置</string>
+   <string>控制台</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QTabWidget" name="configTab">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="openglTab">
       <attribute name="title">
@@ -388,10 +388,10 @@
             <item>
              <widget class="QSlider" name="cameraXSlider">
               <property name="minimum">
-               <number>-100</number>
+               <number>-20</number>
               </property>
               <property name="maximum">
-               <number>100</number>
+               <number>20</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -412,10 +412,10 @@
             <item>
              <widget class="QSlider" name="cameraYSlider">
               <property name="minimum">
-               <number>-100</number>
+               <number>-20</number>
               </property>
               <property name="maximum">
-               <number>100</number>
+               <number>20</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -436,10 +436,10 @@
             <item>
              <widget class="QSlider" name="cameraZSlider">
               <property name="minimum">
-               <number>-100</number>
+               <number>-20</number>
               </property>
               <property name="maximum">
-               <number>100</number>
+               <number>20</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -469,10 +469,10 @@
             <item>
              <widget class="QSlider" name="entityXSlider">
               <property name="minimum">
-               <number>-100</number>
+               <number>-20</number>
               </property>
               <property name="maximum">
-               <number>100</number>
+               <number>20</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -493,10 +493,10 @@
             <item>
              <widget class="QSlider" name="entityYSlider">
               <property name="minimum">
-               <number>-100</number>
+               <number>-20</number>
               </property>
               <property name="maximum">
-               <number>100</number>
+               <number>20</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -517,10 +517,10 @@
             <item>
              <widget class="QSlider" name="entityZSlider">
               <property name="minimum">
-               <number>-100</number>
+               <number>-20</number>
               </property>
               <property name="maximum">
-               <number>100</number>
+               <number>20</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -550,10 +550,10 @@
             <item>
              <widget class="QSlider" name="cameraXAngleSlider">
               <property name="minimum">
-               <number>-360</number>
+               <number>-36</number>
               </property>
               <property name="maximum">
-               <number>360</number>
+               <number>36</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -574,10 +574,10 @@
             <item>
              <widget class="QSlider" name="cameraYAngleSlider">
               <property name="minimum">
-               <number>-360</number>
+               <number>-36</number>
               </property>
               <property name="maximum">
-               <number>360</number>
+               <number>36</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -598,10 +598,10 @@
             <item>
              <widget class="QSlider" name="cameraZAngleSlider">
               <property name="minimum">
-               <number>-360</number>
+               <number>-36</number>
               </property>
               <property name="maximum">
-               <number>360</number>
+               <number>36</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -651,10 +651,10 @@
             <item>
              <widget class="QSlider" name="entityXAngleSlider">
               <property name="minimum">
-               <number>-360</number>
+               <number>-36</number>
               </property>
               <property name="maximum">
-               <number>360</number>
+               <number>36</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -675,10 +675,10 @@
             <item>
              <widget class="QSlider" name="entityYAngleSlider">
               <property name="minimum">
-               <number>-360</number>
+               <number>-36</number>
               </property>
               <property name="maximum">
-               <number>360</number>
+               <number>36</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -699,10 +699,10 @@
             <item>
              <widget class="QSlider" name="entityZAngleSlider">
               <property name="minimum">
-               <number>-360</number>
+               <number>-36</number>
               </property>
               <property name="maximum">
-               <number>360</number>
+               <number>36</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -754,8 +754,8 @@
  </slots>
  <buttongroups>
   <buttongroup name="imgTexFiltButtonGroup"/>
-  <buttongroup name="scrRenderModeButtonGroup"/>
   <buttongroup name="culLFaceButtonGroup"/>
+  <buttongroup name="scrRenderModeButtonGroup"/>
   <buttongroup name="scrTexFiltButtonGroup"/>
  </buttongroups>
 </ui>
