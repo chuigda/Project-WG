@@ -155,10 +155,10 @@ void GLWidget::paintGL() {
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  m_CameraEntityStatus.ApplyCameraTransformation(this);
   m_Light->Enable(this);
   m_Light2->Enable(this);
-
-  m_CameraEntityStatus.ApplyTransformation(this);
+  m_CameraEntityStatus.ApplyEntityTransformation(this);
 
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   m_Arena.Get(m_HeadId)->Draw(this);

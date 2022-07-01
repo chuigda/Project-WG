@@ -38,7 +38,8 @@ public:
       entityRotateZ(0.0)
   {}
 
-  void ApplyTransformation(GLFunctions *f) const;
+  void ApplyCameraTransformation(GLFunctions *f) const;
+  void ApplyEntityTransformation(GLFunctions *f) const;
 };
 
 #endif // PROJECT_WG_CAMERA_ENTITY_STATUS_H
