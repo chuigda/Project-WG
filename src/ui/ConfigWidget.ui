@@ -140,6 +140,9 @@
             </item>
             <item>
              <widget class="QRadioButton" name="radioCullCW">
+              <property name="toolTip">
+               <string>设定逆时针绘制方向（GL_CCW）为正面</string>
+              </property>
               <property name="text">
                <string>逆时针</string>
               </property>
@@ -153,6 +156,9 @@
             </item>
             <item>
              <widget class="QRadioButton" name="radioCullCCW">
+              <property name="toolTip">
+               <string>设定顺时针绘制方向（GL_CW）为正面</string>
+              </property>
               <property name="text">
                <string>顺时针</string>
               </property>
@@ -166,6 +172,9 @@
             </item>
             <item>
              <widget class="QRadioButton" name="radioNoCull">
+              <property name="toolTip">
+               <string>不使用表面剔除</string>
+              </property>
               <property name="text">
                <string>无</string>
               </property>
