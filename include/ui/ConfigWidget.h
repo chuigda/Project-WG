@@ -2,18 +2,21 @@
 #define CONFIGWIDGET_H
 
 #include <QWidget>
+#include "cwglx/GLInfo.h"
 
 namespace Ui {
 class ConfigWidget;
-}
+} // namespace Ui
 
-class ConfigWidget : public QWidget
+class ConfigWidget final : public QWidget
 {
   Q_OBJECT
 
 public:
   explicit ConfigWidget(QWidget *parent = nullptr);
-  ~ConfigWidget();
+  ~ConfigWidget() final;
+
+  void FillGLInfo(const cw::GLInfo &info);
 
 private:
   Ui::ConfigWidget *ui;

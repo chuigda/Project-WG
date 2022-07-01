@@ -47,6 +47,7 @@ set(PROJECT_SOURCES
     src/cwglx/Vertex.cc
     src/cwglx/Setup.cc
     src/cwglx/Light.cc
+    src/cwglx/GLInfo.cc
     include/cwglx/Color.h
     include/cwglx/Material.h
     include/cwglx/Texture.h
@@ -59,6 +60,7 @@ set(PROJECT_SOURCES
     include/cwglx/DefaultMaterials.inc
     include/cwglx/GL.h
     include/cwglx/GLImpl.h
+    include/cwglx/GLInfo.h
 
     src/cwglx/drawable/PlainTriangles.cc
     src/cwglx/drawable/TriangleGen.cc

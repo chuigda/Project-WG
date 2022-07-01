@@ -13,6 +13,7 @@
 #include "wgc0310/head/Head.h"
 #include "wgc0310/head/ScreenGlass.h"
 #include "wgc0310/head/Screen.h"
+#include "ui/ConfigWidget.h"
 
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
@@ -48,6 +49,8 @@ GLWidget::GLWidget(QWidget *parent)
   if (timerId == 0) {
     qDebug() << "could not start timer correctly";
   }
+
+  m_ConfigWidget = new ConfigWidget();
 }
 
 GLWidget::~GLWidget() {
@@ -114,19 +117,8 @@ void GLWidget::initializeGL() {
   );
   m_ScreenId = screenId;
 
-  const char *version =
-      reinterpret_cast<const char*>(glGetString(GL_VERSION));
-  const char *vendor =
-      reinterpret_cast<const char*>(glGetString(GL_VENDOR));
-  const char *renderer =
-      reinterpret_cast<const char*>(glGetString(GL_RENDERER));
-  const char *extensions =
-      reinterpret_cast<const char*>(glGetString(GL_EXTENSIONS));
-
-  qDebug() << "GL_VERSION:" << version;
-  qDebug() << "GL_VENDOR:" << vendor;
-  qDebug() << "GL_RENDERER:" << renderer;
-  qDebug() << "GL_EXTENSIONS:" << extensions;
+  cw::GLInfo glInfo = cw::GLInfo::AutoDetect(this);
+  m_ConfigWidget->FillGLInfo(glInfo);
 }
 
 void GLWidget::paintGL() {
@@ -189,4 +181,10 @@ void GLWidget::paintGL() {
 void GLWidget::resizeGL(int w, int h) {
   Q_UNUSED(w)
   Q_UNUSED(h)
+}
+
+void GLWidget::mouseDoubleClickEvent(QMouseEvent *event) {
+  Q_UNUSED(event)
+
+  m_ConfigWidget->show();
 }

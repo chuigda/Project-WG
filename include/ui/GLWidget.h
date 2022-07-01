@@ -9,6 +9,8 @@
 #include "cwglx/Drawable.h"
 #include "cwglx/DrawableArena.h"
 
+class ConfigWidget;
+
 class GLWidget final : public QOpenGLWidget, public GLFunctions {
   Q_OBJECT
 
@@ -20,6 +22,8 @@ protected:
   void initializeGL() final;
   void paintGL() final;
   void resizeGL(int w, int h) final;
+
+  void mouseDoubleClickEvent(QMouseEvent *event) final;
 
 private slots:
   void updateRotation();
@@ -33,6 +37,8 @@ private:
   std::size_t m_HeadId;
   std::size_t m_ScreenGlassId;
   std::size_t m_ScreenId;
+
+  ConfigWidget *m_ConfigWidget;
 };
 
 #endif // PROJECT_WG_GLWIDGET_H

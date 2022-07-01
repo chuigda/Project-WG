@@ -8,7 +8,13 @@ ConfigWidget::ConfigWidget(QWidget *parent) :
   ui->setupUi(this);
 }
 
-ConfigWidget::~ConfigWidget()
-{
+ConfigWidget::~ConfigWidget() {
   delete ui;
+}
+
+void ConfigWidget::FillGLInfo(const cw::GLInfo &info) {
+  ui->glVendorText->setText(info.vendor);
+  ui->glVersionText->setText(info.version);
+  ui->glRendererText->setText(info.renderer);
+  ui->glExtensionsText->setPlainText(info.extensions);
 }
