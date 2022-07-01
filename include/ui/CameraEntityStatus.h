@@ -3,6 +3,8 @@
 
 #include <QtGui/qopengl.h>
 
+#include "cwglx/GL.h"
+
 class CameraEntityStatus {
 public:
   GLfloat cameraX;
@@ -35,6 +37,8 @@ public:
       entityRotateY(0.0),
       entityRotateZ(0.0)
   {}
+
+  void ApplyTransformation(GLFunctions *f) const;
 };
 
 #endif // PROJECT_WG_CAMERA_ENTITY_STATUS_H

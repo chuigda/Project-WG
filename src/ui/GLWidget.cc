@@ -158,43 +158,7 @@ void GLWidget::paintGL() {
   m_Light->Enable(this);
   m_Light2->Enable(this);
 
-  {
-    glTranslatef(-m_CameraEntityStatus.cameraX,
-                 -m_CameraEntityStatus.cameraY,
-                 -m_CameraEntityStatus.cameraZ);
-    cw::Vector cameraRotation {
-        -m_CameraEntityStatus.cameraRotateX,
-        -m_CameraEntityStatus.cameraRotateY,
-        -m_CameraEntityStatus.cameraRotateZ
-    };
-    cw::Vector normalizedCRotationVec = cameraRotation.Normalize();
-    GLdouble rotationCVecLen = cameraRotation.Length();
-    if (rotationCVecLen >= 0.0005) {
-      glRotatef(static_cast<GLfloat>(rotationCVecLen),
-                static_cast<GLfloat>(normalizedCRotationVec.GetX()),
-                static_cast<GLfloat>(normalizedCRotationVec.GetY()),
-                static_cast<GLfloat>(normalizedCRotationVec.GetZ()));
-    }
-  }
-
-  {
-    glTranslatef(m_CameraEntityStatus.entityX,
-                 m_CameraEntityStatus.entityY,
-                 m_CameraEntityStatus.entityZ);
-    cw::Vector entityRotation {
-        m_CameraEntityStatus.entityRotateX,
-        m_CameraEntityStatus.entityRotateY,
-        m_CameraEntityStatus.entityRotateZ
-    };
-    cw::Vector normalizedRotationVec = entityRotation.Normalize();
-    GLdouble rotationVecLen = entityRotation.Length();
-    if (rotationVecLen >= 0.0005) {
-      glRotatef(static_cast<GLfloat>(rotationVecLen),
-                static_cast<GLfloat>(normalizedRotationVec.GetX()),
-                static_cast<GLfloat>(normalizedRotationVec.GetY()),
-                static_cast<GLfloat>(normalizedRotationVec.GetZ()));
-    }
-  }
+  m_CameraEntityStatus.ApplyTransformation(this);
 
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   m_Arena.Get(m_HeadId)->Draw(this);

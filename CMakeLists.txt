@@ -24,6 +24,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
 set(PROJECT_SOURCES
     main.cc
 
+    src/ui/CameraEntityStatus.cc
     src/ui/GLWidget.cc
     src/ui/ConfigWidget.cc
     include/ui/CameraEntityStatus.h
