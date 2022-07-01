@@ -299,7 +299,7 @@ Screen::Screen(GLFunctions *f) {
     std::abort();
   }
 
-  QImage image2("./resc/blue-screen.bmp");
+  QImage image2("./resc/static-face.bmp");
   if (image2.isNull()) {
     qDebug() << "Screen::Screen: Failed to load image!";
     std::abort();
@@ -378,8 +378,8 @@ void Screen::Draw(GLFunctions *f) const noexcept {
 
   // now use our texture
   f->glEnable(GL_TEXTURE_2D);
-  f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
-  // m_Impl->loadingScreenTexture.BeginTexture(f);
+  // f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
+  m_Impl->loadingScreenTexture.BeginTexture(f);
 
   // bind our vbo
   f->glEnableClientState(GL_VERTEX_ARRAY);
