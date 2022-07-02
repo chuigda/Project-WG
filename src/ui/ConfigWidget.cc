@@ -1,20 +1,42 @@
 #include "ui/ConfigWidget.h"
 #include "ui_ConfigWidget.h"
 
+#include <QFile>
+#include <QMessageBox>
 #include "ui/CameraEntityStatus.h"
 #include "ui/ScreenStatus.h"
+#include "ui/MessageBoxAlter.h"
 
 ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
                            ScreenStatus *screenStatus,
-                           QWidget *glWidget,
-                           QWidget *parent) :
-  QWidget(parent),
+                           QWidget *glWidget) :
+  QWidget(glWidget, Qt::Window),
   ui(new Ui::ConfigWidget),
   m_GLWidget(glWidget),
   m_CameraEntityStatus(cameraEntityStatus),
   m_ScreenStatus(screenStatus)
 {
   ui->setupUi(this);
+
+  // load AGPL text from resource file
+  QFile file(":/LICENSE");
+  if (file.open(QIODevice::ReadOnly)) {
+    m_AGPLText = file.readAll();
+    file.close();
+  } else {
+    qCritical() << "Failed to open AGPL text file";
+    std::abort();
+  }
+
+  // load CC text from resource file
+  file.setFileName(":/LICENSE-CC-BY-NC-SA");
+  if (file.open(QIODevice::ReadOnly)) {
+    m_CCText = file.readAll();
+    file.close();
+  } else {
+    qCritical() << "Failed to open CC-BY-NC-SA text file";
+    std::abort();
+  }
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-narrowing-conversions"
@@ -43,35 +65,42 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
           this, &ConfigWidget::ReOpenWidget);
 
   connect(ui->cameraXSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateCameraX);
+          this, &ConfigWidget::UpdateCameraX);
   connect(ui->cameraYSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateCameraY);
+          this, &ConfigWidget::UpdateCameraY);
   connect(ui->cameraZSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateCameraZ);
+          this, &ConfigWidget::UpdateCameraZ);
 
   connect(ui->cameraXAngleSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateCameraRotationX);
+          this, &ConfigWidget::UpdateCameraRotationX);
   connect(ui->cameraYAngleSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateCameraRotationY);
+          this, &ConfigWidget::UpdateCameraRotationY);
   connect(ui->cameraZAngleSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateCameraRotationZ);
+          this, &ConfigWidget::UpdateCameraRotationZ);
 
   connect(ui->entityXSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateEntityX);
+          this, &ConfigWidget::UpdateEntityX);
   connect(ui->entityYSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateEntityY);
+          this, &ConfigWidget::UpdateEntityY);
   connect(ui->entityZSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateEntityZ);
+          this, &ConfigWidget::UpdateEntityZ);
 
   connect(ui->entityXAngleSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateEntityRotationX);
+          this, &ConfigWidget::UpdateEntityRotationX);
   connect(ui->entityYAngleSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateEntityRotationY);
+          this, &ConfigWidget::UpdateEntityRotationY);
   connect(ui->entityZAngleSlider, &QSlider::valueChanged,
-          this, &ConfigWidget::updateEntityRotationZ);
+          this, &ConfigWidget::UpdateEntityRotationZ);
 
   connect(ui->resetTransButton, &QPushButton::clicked,
-          this, &ConfigWidget::resetAll);
+          this, &ConfigWidget::ResetAll);
+
+  connect(ui->viewAGPLLicenseButton, &QPushButton::clicked,
+          this, &ConfigWidget::ShowAGPLLicense);
+  connect(ui->viewCCLicenseButton, &QPushButton::clicked,
+          this, &ConfigWidget::ShowCCLicense);
+  connect(ui->aboutQtButton, &QPushButton::clicked,
+          this, &ConfigWidget::ShowAboutQt);
 }
 
 ConfigWidget::~ConfigWidget() {
@@ -92,6 +121,10 @@ ConfigWidget::OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens) {
   }
 }
 
+void ConfigWidget::ReOpenWidget() {
+  m_GLWidget->show();
+}
+
 void ConfigWidget::OnStaticScreenChosen(QListWidgetItem *item) {
   StaticScreenItem *staticScreenItem = static_cast<StaticScreenItem*>(item);
   m_ScreenStatus->PlayStaticAnimation(staticScreenItem);
@@ -99,61 +132,59 @@ void ConfigWidget::OnStaticScreenChosen(QListWidgetItem *item) {
 
 void ConfigWidget::OnScreenAnimationReset() {
   m_ScreenStatus->Reset();
+  ui->staticAnimList->clearSelection();
+  ui->dynamicAnimList->clearSelection();
 }
 
-void ConfigWidget::ReOpenWidget() {
-  m_GLWidget->show();
-}
-
-void ConfigWidget::updateCameraX(int value) {
+void ConfigWidget::UpdateCameraX(int value) {
   m_CameraEntityStatus->cameraX = static_cast<GLfloat>(value * 5);
 }
 
-void ConfigWidget::updateCameraY(int value) {
+void ConfigWidget::UpdateCameraY(int value) {
   m_CameraEntityStatus->cameraY = static_cast<GLfloat>(value * 5);
 }
 
-void ConfigWidget::updateCameraZ(int value) {
+void ConfigWidget::UpdateCameraZ(int value) {
   m_CameraEntityStatus->cameraZ = static_cast<GLfloat>(value * 5);
 }
 
-void ConfigWidget::updateCameraRotationX(int value) {
+void ConfigWidget::UpdateCameraRotationX(int value) {
   m_CameraEntityStatus->cameraRotateX = static_cast<GLdouble>(value * 10);
 }
 
-void ConfigWidget::updateCameraRotationY(int value) {
+void ConfigWidget::UpdateCameraRotationY(int value) {
   m_CameraEntityStatus->cameraRotateY = static_cast<GLdouble>(value * 10);
 }
 
-void ConfigWidget::updateCameraRotationZ(int value) {
+void ConfigWidget::UpdateCameraRotationZ(int value) {
   m_CameraEntityStatus->cameraRotateZ = static_cast<GLdouble>(value * 10);
 }
 
-void ConfigWidget::updateEntityX(int value) {
+void ConfigWidget::UpdateEntityX(int value) {
   m_CameraEntityStatus->entityX = static_cast<GLfloat>(value * 5);
 }
 
-void ConfigWidget::updateEntityY(int value) {
+void ConfigWidget::UpdateEntityY(int value) {
   m_CameraEntityStatus->entityY = static_cast<GLfloat>(value * 5);
 }
 
-void ConfigWidget::updateEntityZ(int value) {
+void ConfigWidget::UpdateEntityZ(int value) {
   m_CameraEntityStatus->entityZ = static_cast<GLfloat>(value * 5);
 }
 
-void ConfigWidget::updateEntityRotationX(int value) {
+void ConfigWidget::UpdateEntityRotationX(int value) {
   m_CameraEntityStatus->entityRotateX = static_cast<GLdouble>(value * 10);
 }
 
-void ConfigWidget::updateEntityRotationY(int value) {
+void ConfigWidget::UpdateEntityRotationY(int value) {
   m_CameraEntityStatus->entityRotateY = static_cast<GLdouble>(value * 10);
 }
 
-void ConfigWidget::updateEntityRotationZ(int value) {
+void ConfigWidget::UpdateEntityRotationZ(int value) {
   m_CameraEntityStatus->entityRotateZ = static_cast<GLdouble>(value * 10);
 }
 
-void ConfigWidget::resetAll() {
+void ConfigWidget::ResetAll() {
   ui->cameraXSlider->setValue(0);
   ui->cameraYSlider->setValue(0);
   ui->cameraZSlider->setValue(0);
@@ -185,4 +216,20 @@ void ConfigWidget::resetAll() {
   m_CameraEntityStatus->entityRotateX = 0.0;
   m_CameraEntityStatus->entityRotateY = 0.0;
   m_CameraEntityStatus->entityRotateZ = 0.0;
+}
+
+void ConfigWidget::ShowAGPLLicense() {
+  MessageBoxAlter::Show("AGPL v3 License",
+                        m_AGPLText,
+                        this);
+}
+
+void ConfigWidget::ShowCCLicense() {
+  MessageBoxAlter::Show("CC License",
+                        m_CCText,
+                        this);
+}
+
+void ConfigWidget::ShowAboutQt() {
+  QMessageBox::aboutQt(this);
 }

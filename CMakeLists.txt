@@ -16,6 +16,8 @@ set(CMAKE_CXX_FLAGS
 set(CMAKE_C_FLAGS
     "-Wall -Wextra -pedantic -Wno-unknown-pragmas ${CMAKE_C_FLAGS}")
 
+set(CMAKE_AUTORCC ON)
+
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
              Widgets
@@ -29,10 +31,12 @@ set(PROJECT_SOURCES
     src/ui/GLWidgetX.cc
     src/ui/GLWidget.cc
     src/ui/ConfigWidget.cc
+    src/ui/MessageBoxAlter.cc
     include/ui/ScreenStatus.h
     include/ui/CameraEntityStatus.h
     include/ui/GLWidget.h
     include/ui/ConfigWidget.h
+    include/ui/MessageBoxAlter.h
 
     src/util/Constants.cc
     src/util/Sinkrate.cc
@@ -90,8 +94,12 @@ set(PROJECT_SOURCES
     include/wgc0310/head/ScreenGlass.h
     include/wgc0310/head/Screen.h
     include/wgc0310/head/ScreenCurveHelper.h
-    include/wgc0310/Components.h)
+    include/wgc0310/Components.h
+
+    resc/main.qrc)
+
 qt_wrap_ui(PROJECT_SOURCES src/ui/ConfigWidget.ui)
+qt_wrap_ui(PROJECT_SOURCES src/ui/MessageBoxAlter.ui)
 
 include_directories(include)
 

@@ -1,7 +1,6 @@
 #include "wgc0310/head/Screen.h"
 
 #include <cstdlib>
-#include <ctime>
 #include <QThread>
 #include <QDebug>
 #include <QImage>
@@ -14,7 +13,7 @@ namespace wgc0310 {
 
 class ScreenImpl {
 public:
-  ScreenImpl(GLFunctions *f);
+  explicit ScreenImpl(GLFunctions *f);
   ~ScreenImpl();
 
   std::vector<cw::VertexF> screenVertices;

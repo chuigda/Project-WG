@@ -1,5 +1,5 @@
-#ifndef CONFIGWIDGET_H
-#define CONFIGWIDGET_H
+#ifndef PROJECT_WG_CONFIG_WIDGET_H
+#define PROJECT_WG_CONFIG_WIDGET_H
 
 #include <QWidget>
 
@@ -20,35 +20,37 @@ class ConfigWidget final : public QWidget
 public:
   explicit ConfigWidget(CameraEntityStatus *cameraEntityStatus,
                         ScreenStatus *screenStatus,
-                        QWidget *glWidget,
-                        QWidget *parent = nullptr);
+                        QWidget *glWidget);
   ~ConfigWidget() final;
 
   void FillGLInfo(const cw::GLInfo &info);
 
 public slots:
   void OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens);
-  void OnStaticScreenChosen(QListWidgetItem *item);
-  void OnScreenAnimationReset();
 
 private slots:
   void ReOpenWidget();
 
-  void updateCameraX(int value);
-  void updateCameraY(int value);
-  void updateCameraZ(int value);
-  void updateCameraRotationX(int value);
-  void updateCameraRotationY(int value);
-  void updateCameraRotationZ(int value);
+  void OnStaticScreenChosen(QListWidgetItem *item);
+  void OnScreenAnimationReset();
 
-  void updateEntityX(int value);
-  void updateEntityY(int value);
-  void updateEntityZ(int value);
-  void updateEntityRotationX(int value);
-  void updateEntityRotationY(int value);
-  void updateEntityRotationZ(int value);
+  void UpdateCameraX(int value);
+  void UpdateCameraY(int value);
+  void UpdateCameraZ(int value);
+  void UpdateCameraRotationX(int value);
+  void UpdateCameraRotationY(int value);
+  void UpdateCameraRotationZ(int value);
+  void UpdateEntityX(int value);
+  void UpdateEntityY(int value);
+  void UpdateEntityZ(int value);
+  void UpdateEntityRotationX(int value);
+  void UpdateEntityRotationY(int value);
+  void UpdateEntityRotationZ(int value);
+  void ResetAll();
 
-  void resetAll();
+  void ShowAGPLLicense();
+  void ShowCCLicense();
+  void ShowAboutQt();
 
 private:
   Ui::ConfigWidget *ui;
@@ -56,6 +58,9 @@ private:
   QWidget *m_GLWidget;
   CameraEntityStatus *m_CameraEntityStatus;
   ScreenStatus *m_ScreenStatus;
+
+  QString m_AGPLText;
+  QString m_CCText;
 };
 
-#endif // CONFIGWIDGET_H
+#endif // PROJECT_WG_CONFIG_WIDGET_H

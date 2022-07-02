@@ -1,9 +1,7 @@
 <RCC>
     <qresource prefix="/">
-        <file>volume-bar-bottom-rect.bmp</file>
         <file>volume-bar-composed.bmp</file>
-        <file>volume-bar-top-rect.bmp</file>
         <file>LICENSE</file>
-        <file>LICENSE-CC-NC-BY-SA</file>
+        <file>LICENSE-CC-BY-NC-SA</file>
     </qresource>
 </RCC>
