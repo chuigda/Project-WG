@@ -26,7 +26,6 @@ public:
   std::array<GLuint, 3> vbo2D;
 
   GLuint fbo;
-  GLuint depthBufferId;
   GLuint screenTextureId;
 
   CW_DERIVE_UNCOPYABLE(ScreenImpl)
@@ -36,14 +35,14 @@ public:
 
 private:
   void Initialize3D(GLFunctions *f);
-  void InitializeRTT(GLFunctions *f);
+  void InitializeTexture(GLFunctions *f);
 };
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
 ScreenImpl::ScreenImpl(GLFunctions *f) {
   Initialize3D(f);
-  InitializeRTT(f);
+  InitializeTexture(f);
 
   deleted = false;
 }
@@ -117,7 +116,7 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
   );
 }
 
-void ScreenImpl::InitializeRTT(GLFunctions *f) {
+void ScreenImpl::InitializeTexture(GLFunctions *f) {
   // initialize FBO first
   f->glGenFramebuffers(1, &fbo);
   f->glBindFramebuffer(GL_FRAMEBUFFER, fbo);
@@ -136,20 +135,12 @@ void ScreenImpl::InitializeRTT(GLFunctions *f) {
   f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  f->glGenRenderbuffers(1, &depthBufferId);
-  f->glBindRenderbuffer(GL_RENDERBUFFER, depthBufferId);
-  f->glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 640, 480);
-  f->glFramebufferRenderbuffer(GL_FRAMEBUFFER,
-                               GL_DEPTH_ATTACHMENT,
-                               GL_RENDERBUFFER,
-                               depthBufferId);
-
   f->glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, screenTextureId, 0);
   GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
   f->glDrawBuffers(1, DrawBuffers);
 
   if(f->glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-    qCritical() << "ScreenImpl::InitializeRTT:"
+    qCritical() << "ScreenImpl::InitializeTexture:"
                 << "failed initializing frame buffer object, glGetError() ="
                 << f->glGetError();
     std::abort();
@@ -161,7 +152,6 @@ void ScreenImpl::Delete(GLFunctions *f) {
     f->glDeleteBuffers(3, vbo.data());
     f->glDeleteTextures(1, &screenTextureId);
     f->glDeleteFramebuffers(1, &fbo);
-    f->glDeleteRenderbuffers(1, &depthBufferId);
     deleted = true;
   }
 }
