@@ -180,7 +180,6 @@ void Screen::BeginScreenContext(GLFunctions *f) const noexcept {
 
   f->glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   f->glClear(GL_COLOR_BUFFER_BIT);
-  f->glScalef(1.0f, -1.0f, 1.0f);
   f->glFrontFace(GL_CW);
   f->glTranslatef(0.0f, 0.0f, -0.5f);
 

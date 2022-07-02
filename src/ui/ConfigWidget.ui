@@ -792,7 +792,7 @@
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_21">
             <item>
-             <widget class="QListView" name="staticAnimList"/>
+             <widget class="QListWidget" name="staticAnimList"/>
             </item>
            </layout>
           </widget>
@@ -810,7 +810,7 @@
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_22">
             <item>
-             <widget class="QListView" name="dynamicAnimList"/>
+             <widget class="QListWidget" name="dynamicAnimList"/>
             </item>
            </layout>
           </widget>
@@ -875,10 +875,9 @@
   <slot>setCameraMoveZ(int)</slot>
  </slots>
  <buttongroups>
-  <buttongroup name="imgTexFiltButtonGroup"/>
-  <buttongroup name="scrRenderModeButtonGroup"/>
   <buttongroup name="culLFaceButtonGroup"/>
+  <buttongroup name="scrRenderModeButtonGroup"/>
+  <buttongroup name="imgTexFiltButtonGroup"/>
   <buttongroup name="scrTexFiltButtonGroup"/>
-  <buttongroup name="scrStatusButtonGroup"/>
  </buttongroups>
 </ui>

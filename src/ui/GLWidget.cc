@@ -49,10 +49,15 @@ GLWidget::GLWidget(QWidget *parent)
     qDebug() << "could not start timer correctly";
   }
 
-  m_ConfigWidget = new ConfigWidget(&this->m_CameraEntityStatus, this);
+  m_ConfigWidget = new ConfigWidget(&m_CameraEntityStatus,
+                                    &m_ScreenStatus,
+                                    this);
 
   setBaseSize(1024, 768);
   resize(1024,768);
+
+  connect(this, &GLWidget::StaticScreensLoaded,
+          m_ConfigWidget, &ConfigWidget::OnStaticScreensLoaded);
 }
 
 GLWidget::~GLWidget() {
@@ -60,6 +65,11 @@ GLWidget::~GLWidget() {
 
   m_Arena.Delete(this);
   qDebug() << "GLWidget::~GLWidget(): arena released successfully";
+
+  for (const std::unique_ptr<cw::Texture2D>& item : m_StaticScreens) {
+    item->DeleteTexture(this);
+  }
+  qDebug() << "GLWidget::~GLWidget(): static screen textures released successfully";
 
   doneCurrent();
 }
@@ -120,6 +130,8 @@ void GLWidget::initializeGL() {
 
   cw::GLInfo glInfo = cw::GLInfo::AutoDetect(this);
   m_ConfigWidget->FillGLInfo(glInfo);
+
+  LoadStaticScreens();
 }
 
 void GLWidget::paintGL() {
@@ -127,10 +139,7 @@ void GLWidget::paintGL() {
   wgc0310::Screen const* screen =
       static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
   screen->BeginScreenContext(this);
-
-  // screen size: -320 ~ 320, -240 ~ 240
-
-
+  m_ScreenStatus.DrawOnScreen(this);
   screen->DoneScreenContext(this);
 
   // switch back to default framebuffer. not using `0` since

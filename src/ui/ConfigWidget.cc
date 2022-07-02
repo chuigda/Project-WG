@@ -1,14 +1,18 @@
 #include "ui/ConfigWidget.h"
-#include "ui/CameraEntityStatus.h"
 #include "ui_ConfigWidget.h"
 
+#include "ui/CameraEntityStatus.h"
+#include "ui/ScreenStatus.h"
+
 ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
+                           ScreenStatus *screenStatus,
                            QWidget *glWidget,
                            QWidget *parent) :
   QWidget(parent),
   ui(new Ui::ConfigWidget),
   m_GLWidget(glWidget),
-  m_CameraEntityStatus(cameraEntityStatus)
+  m_CameraEntityStatus(cameraEntityStatus),
+  m_ScreenStatus(screenStatus)
 {
   ui->setupUi(this);
 
@@ -30,9 +34,13 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
   ui->entityYAngleSlider->setValue(m_CameraEntityStatus->entityRotateY / 10);
   ui->entityZAngleSlider->setValue(m_CameraEntityStatus->entityRotateZ / 10);
 #pragma clang diagnostic pop
+  connect(ui->staticAnimList, &QListWidget::itemDoubleClicked,
+          this, &ConfigWidget::OnStaticScreenChosen);
+  connect(ui->resetScrAnimButton, &QPushButton::clicked,
+          this, &ConfigWidget::OnScreenAnimationReset);
 
   connect(ui->reOpenButton, &QPushButton::clicked,
-          this, &ConfigWidget::reOpenGLWidget);
+          this, &ConfigWidget::ReOpenWidget);
 
   connect(ui->cameraXSlider, &QSlider::valueChanged,
           this, &ConfigWidget::updateCameraX);
@@ -77,7 +85,23 @@ void ConfigWidget::FillGLInfo(const cw::GLInfo &info) {
   ui->glExtensionsText->setPlainText(info.extensions);
 }
 
-void ConfigWidget::reOpenGLWidget() {
+void
+ConfigWidget::OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens) {
+  for (auto staticScreen : *staticScreens) {
+    ui->staticAnimList->addItem(staticScreen);
+  }
+}
+
+void ConfigWidget::OnStaticScreenChosen(QListWidgetItem *item) {
+  StaticScreenItem *staticScreenItem = static_cast<StaticScreenItem*>(item);
+  m_ScreenStatus->PlayStaticAnimation(staticScreenItem);
+}
+
+void ConfigWidget::OnScreenAnimationReset() {
+  m_ScreenStatus->Reset();
+}
+
+void ConfigWidget::ReOpenWidget() {
   m_GLWidget->show();
 }
 
@@ -104,7 +128,6 @@ void ConfigWidget::updateCameraRotationY(int value) {
 void ConfigWidget::updateCameraRotationZ(int value) {
   m_CameraEntityStatus->cameraRotateZ = static_cast<GLdouble>(value * 10);
 }
-
 
 void ConfigWidget::updateEntityX(int value) {
   m_CameraEntityStatus->entityX = static_cast<GLfloat>(value * 5);

@@ -2,9 +2,12 @@
 #define CONFIGWIDGET_H
 
 #include <QWidget>
+
 #include "cwglx/GLInfo.h"
 
+class QListWidgetItem;
 class CameraEntityStatus;
+class ScreenStatus;
 
 namespace Ui {
 class ConfigWidget;
@@ -16,14 +19,20 @@ class ConfigWidget final : public QWidget
 
 public:
   explicit ConfigWidget(CameraEntityStatus *cameraEntityStatus,
+                        ScreenStatus *screenStatus,
                         QWidget *glWidget,
                         QWidget *parent = nullptr);
   ~ConfigWidget() final;
 
   void FillGLInfo(const cw::GLInfo &info);
 
+public slots:
+  void OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens);
+  void OnStaticScreenChosen(QListWidgetItem *item);
+  void OnScreenAnimationReset();
+
 private slots:
-  void reOpenGLWidget();
+  void ReOpenWidget();
 
   void updateCameraX(int value);
   void updateCameraY(int value);
@@ -46,6 +55,7 @@ private:
 
   QWidget *m_GLWidget;
   CameraEntityStatus *m_CameraEntityStatus;
+  ScreenStatus *m_ScreenStatus;
 };
 
 #endif // CONFIGWIDGET_H

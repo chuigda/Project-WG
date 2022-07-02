@@ -32,6 +32,12 @@ Texture2D::Texture2D(const QImage &image, GLFunctions *f)
                   GL_RGBA,
                   GL_UNSIGNED_BYTE,
                   rgbaImage.bits());
+
+  GLenum error = f->glGetError();
+  if (error != GL_NO_ERROR) {
+    qCritical() << "Texture2D::Texture2D: failed loading texture:" << error;
+    std::abort();
+  }
 }
 #pragma clang diagnostic pop
 
