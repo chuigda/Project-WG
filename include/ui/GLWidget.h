@@ -35,9 +35,6 @@ signals:
   void StaticScreensLoaded(QList<QListWidgetItem*>*);
 #pragma clang diagnostic pop
 
-private slots:
-  void UpdateRotation();
-
 private:
   void LoadStaticScreens();
 

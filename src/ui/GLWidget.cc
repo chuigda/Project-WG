@@ -39,11 +39,6 @@ GLWidget::GLWidget(QWidget *parent)
   this->setAttribute(Qt::WA_TransparentForMouseEvents);
   this->setAttribute(Qt::WA_AlwaysStackOnTop);
 
-  QTimer *timer = new QTimer(this);
-  connect(timer, &QTimer::timeout, this, &GLWidget::UpdateRotation);
-  timer->setInterval(10);
-  timer->start();
-
   int timerId = this->startTimer(10);
   if (timerId == 0) {
     qDebug() << "could not start timer correctly";
@@ -72,10 +67,6 @@ GLWidget::~GLWidget() {
   qDebug() << "GLWidget::~GLWidget(): static screen textures released successfully";
 
   doneCurrent();
-}
-
-void GLWidget::UpdateRotation() {
-  this->update();
 }
 
 void GLWidget::initializeGL() {
@@ -179,6 +170,9 @@ void GLWidget::paintGL() {
   glColor4f(0.05f, 0.075f, 0.1f, 0.1f);
   m_Arena.Get(m_ScreenGlassId)->Draw(this);
   glPopAttrib();
+
+  // immediately schedule next update
+  update();
 }
 
 void GLWidget::resizeGL(int w, int h) {
