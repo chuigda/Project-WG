@@ -29,8 +29,6 @@ public slots:
   void OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens);
 
 private slots:
-  void ReOpenWidget();
-
   void OnStaticScreenChosen(QListWidgetItem *item);
   void OnScreenAnimationReset();
 
@@ -48,6 +46,7 @@ private slots:
   void UpdateEntityRotationZ(int value);
   void ResetAll();
 
+  void ShowThirdParties();
   void ShowAGPLLicense();
   void ShowCCLicense();
   void ShowAboutQt();
@@ -59,6 +58,7 @@ private:
   CameraEntityStatus *m_CameraEntityStatus;
   ScreenStatus *m_ScreenStatus;
 
+  QString m_3rdPartiesText;
   QString m_AGPLText;
   QString m_CCText;
 };

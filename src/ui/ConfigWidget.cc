@@ -18,8 +18,18 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
 {
   ui->setupUi(this);
 
+  // load thrid parties license text from resource file
+  QFile file(":/3RD_PARTIES");
+  if (file.open(QIODevice::ReadOnly)) {
+    m_3rdPartiesText = file.readAll();
+    file.close();
+  } else {
+    qCritical() << "could not open 3RD_PARTIES resource file";
+    std::abort();
+  }
+
   // load AGPL text from resource file
-  QFile file(":/LICENSE");
+  file.setFileName(":/LICENSE");
   if (file.open(QIODevice::ReadOnly)) {
     m_AGPLText = file.readAll();
     file.close();
@@ -61,9 +71,6 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
   connect(ui->resetScrAnimButton, &QPushButton::clicked,
           this, &ConfigWidget::OnScreenAnimationReset);
 
-  connect(ui->reOpenButton, &QPushButton::clicked,
-          this, &ConfigWidget::ReOpenWidget);
-
   connect(ui->cameraXSlider, &QSlider::valueChanged,
           this, &ConfigWidget::UpdateCameraX);
   connect(ui->cameraYSlider, &QSlider::valueChanged,
@@ -95,6 +102,8 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
   connect(ui->resetTransButton, &QPushButton::clicked,
           this, &ConfigWidget::ResetAll);
 
+  connect(ui->thridPartiesButton, &QPushButton::clicked,
+          this, &ConfigWidget::ShowThirdParties);
   connect(ui->viewAGPLLicenseButton, &QPushButton::clicked,
           this, &ConfigWidget::ShowAGPLLicense);
   connect(ui->viewCCLicenseButton, &QPushButton::clicked,
@@ -119,10 +128,6 @@ ConfigWidget::OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens) {
   for (auto staticScreen : *staticScreens) {
     ui->staticAnimList->addItem(staticScreen);
   }
-}
-
-void ConfigWidget::ReOpenWidget() {
-  m_GLWidget->show();
 }
 
 void ConfigWidget::OnStaticScreenChosen(QListWidgetItem *item) {
@@ -216,6 +221,12 @@ void ConfigWidget::ResetAll() {
   m_CameraEntityStatus->entityRotateX = 0.0;
   m_CameraEntityStatus->entityRotateY = 0.0;
   m_CameraEntityStatus->entityRotateZ = 0.0;
+}
+
+void ConfigWidget::ShowThirdParties() {
+  MessageBoxAlter::Show("第三方许可",
+                        m_3rdPartiesText,
+                        this);
 }
 
 void ConfigWidget::ShowAGPLLicense() {

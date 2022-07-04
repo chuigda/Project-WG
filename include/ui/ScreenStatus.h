@@ -37,8 +37,8 @@ public:
 
   void DrawOnScreen(GLFunctions *f);
 
-  CW_DERIVE_UNCOPYABLE(ScreenStatus);
-  CW_DERIVE_UNMOVABLE(ScreenStatus);
+  CW_DERIVE_UNCOPYABLE(ScreenStatus)
+  CW_DERIVE_UNMOVABLE(ScreenStatus)
 
   void Reset();
 
