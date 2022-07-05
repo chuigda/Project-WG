@@ -18,7 +18,7 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
 {
   ui->setupUi(this);
 
-  // load thrid parties license text from resource file
+  // load third parties license text from resource file
   QFile file(":/3RD_PARTIES");
   if (file.open(QIODevice::ReadOnly)) {
     m_3rdPartiesText = file.readAll();
@@ -54,9 +54,9 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
   ui->cameraYSlider->setValue(m_CameraEntityStatus->cameraY / 5);
   ui->cameraZSlider->setValue(m_CameraEntityStatus->cameraZ / 5);
 
-  ui->cameraXAngleSlider->setValue(m_CameraEntityStatus->cameraRotateX/ 10);
-  ui->cameraYAngleSlider->setValue(m_CameraEntityStatus->cameraRotateY/ 10);
-  ui->cameraZAngleSlider->setValue(m_CameraEntityStatus->cameraRotateZ/ 10);
+  ui->cameraXAngleSlider->setValue(m_CameraEntityStatus->cameraRotateX / 10);
+  ui->cameraYAngleSlider->setValue(m_CameraEntityStatus->cameraRotateY / 10);
+  ui->cameraZAngleSlider->setValue(m_CameraEntityStatus->cameraRotateZ / 10);
 
   ui->entityXSlider->setValue(m_CameraEntityStatus->entityX / 5);
   ui->entityYSlider->setValue(m_CameraEntityStatus->entityY / 5);
@@ -224,21 +224,15 @@ void ConfigWidget::ResetAll() {
 }
 
 void ConfigWidget::ShowThirdParties() {
-  MessageBoxAlter::Show("第三方许可",
-                        m_3rdPartiesText,
-                        this);
+  MessageBoxAlter::Show("第三方许可", m_3rdPartiesText, this);
 }
 
 void ConfigWidget::ShowAGPLLicense() {
-  MessageBoxAlter::Show("AGPL v3 License",
-                        m_AGPLText,
-                        this);
+  MessageBoxAlter::Show("AGPL v3 License", m_AGPLText, this);
 }
 
 void ConfigWidget::ShowCCLicense() {
-  MessageBoxAlter::Show("CC License",
-                        m_CCText,
-                        this);
+  MessageBoxAlter::Show("CC License", m_CCText, this);
 }
 
 void ConfigWidget::ShowAboutQt() {
