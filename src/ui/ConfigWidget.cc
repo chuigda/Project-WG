@@ -66,6 +66,7 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
   ui->entityYAngleSlider->setValue(m_CameraEntityStatus->entityRotateY / 10);
   ui->entityZAngleSlider->setValue(m_CameraEntityStatus->entityRotateZ / 10);
 #pragma clang diagnostic pop
+
   connect(ui->staticAnimList, &QListWidget::itemDoubleClicked,
           this, &ConfigWidget::OnStaticScreenChosen);
   connect(ui->dynamicAnimList, &QListWidget::itemDoubleClicked,
