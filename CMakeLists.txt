@@ -11,9 +11,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_FLAGS
-    "-Wall -Wextra -pedantic -Wno-unknown-pragmas ${CMAKE_CXX_FLAGS}")
+    "-Wall -Wextra -pedantic -Wno-unknown-pragmas -Wno-cast-function-type ${CMAKE_CXX_FLAGS}")
 set(CMAKE_C_FLAGS
-    "-Wall -Wextra -pedantic -Wno-unknown-pragmas ${CMAKE_C_FLAGS}")
+    "-Wall -Wextra -pedantic -Wno-unknown-pragmas -Wno-cast-function-type ${CMAKE_C_FLAGS}")
 
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
@@ -24,12 +24,14 @@ set(PROJECT_SOURCES
     main.cc
 
     src/ui/ScreenStatus.cc
+    src/ui/Animation.cc
     src/ui/CameraEntityStatus.cc
     src/ui/GLWidgetX.cc
     src/ui/GLWidget.cc
     src/ui/ConfigWidget.cc
     src/ui/MessageBoxAlter.cc
     include/ui/ScreenStatus.h
+    include/ui/Animation.h
     include/ui/CameraEntityStatus.h
     include/ui/GLWidget.h
     include/ui/ConfigWidget.h
@@ -114,4 +116,10 @@ set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(Project-WG)
+endif()
+
+# if we are using Windows
+if (WIN32)
+    # add definition
+    add_definitions(-DCW_WIN32)
 endif()

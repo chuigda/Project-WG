@@ -9,6 +9,10 @@ std::uint32_t WGAPI GetWGAPIVersion(void) {
   return 0x00'01'0000;
 }
 
+const char* WGAPI GetAnimationName(void) {
+  return "示例动画";
+}
+
 void* WGAPI InitContext(GLFunctions *f) {
   // TODO your codes are here
 

@@ -11,6 +11,7 @@
 #include "cwglx/DrawableArena.h"
 #include "ui/CameraEntityStatus.h"
 #include "ui/ScreenStatus.h"
+#include "ui/Animation.h"
 
 class QListWidgetItem;
 class ConfigWidget;
@@ -33,10 +34,13 @@ signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
   void StaticScreensLoaded(QList<QListWidgetItem*>*);
+  void AnimationsLoaded(QList<QListWidgetItem*>*);
 #pragma clang diagnostic pop
 
 private:
-  void LoadStaticScreens();
+  void LoadAndInitScreens();
+  void LoadAnimations();
+  void InitAnimations();
 
 private:
   QScopedPointer<cw::Light> m_Light;
@@ -52,7 +56,9 @@ private:
   ConfigWidget *m_ConfigWidget;
 
   std::vector<std::unique_ptr<cw::Texture2D>> m_StaticScreens;
+  std::vector<std::unique_ptr<Animation>> m_Animations;
   QList<QListWidgetItem*> m_StaticScreenItems;
+  QList<QListWidgetItem*> m_AnimationItems;
 };
 
 #endif // PROJECT_WG_GLWIDGET_H

@@ -26,9 +26,11 @@ public:
 
 public slots:
   void OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens);
+  void OnAnimationsLoaded(QList<QListWidgetItem*> *animations);
 
 private slots:
   void OnStaticScreenChosen(QListWidgetItem *item);
+  void OnAnimationChosen(QListWidgetItem *item);
   void OnScreenAnimationReset();
 
   void UpdateCameraX(int value);

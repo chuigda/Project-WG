@@ -9,7 +9,8 @@
 
 extern "C" {
 
-std::uint32_t WGAPI GetWGAPIVersion(void);
+std::uint32_t WGAPI GetWGAPIVersion();
+const char* WGAPI GetAnimationName();
 
 void* WGAPI InitContext(GLFunctions *f);
 void WGAPI DestroyContext(void *context, GLFunctions *f);

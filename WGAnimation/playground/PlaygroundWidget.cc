@@ -38,7 +38,18 @@ PlaygroundWidget::PlaygroundWidget(QWidget *parent)
     return;
   }
 
-  // Get the init context function.
+  AnimationNameFn animationNameFn =
+      (AnimationNameFn)GetProcAddress(module, "GetAnimationName");
+  if (animationNameFn == nullptr) {
+    QMessageBox::critical(nullptr,
+                          "致命错误",
+                          "无法定位 GetAnimationName 函数\n"
+                          "请检查文件是否正确生成");
+    QApplication::quit();
+    return;
+  }
+  setWindowTitle(QString("Playground - ") + animationNameFn());
+
   InitContextFn initContextFn =
       (InitContextFn)GetProcAddress(module, "InitContext");
   if (initContextFn == nullptr) {

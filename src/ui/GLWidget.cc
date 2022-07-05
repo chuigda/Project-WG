@@ -53,6 +53,10 @@ GLWidget::GLWidget(QWidget *parent)
 
   connect(this, &GLWidget::StaticScreensLoaded,
           m_ConfigWidget, &ConfigWidget::OnStaticScreensLoaded);
+  connect(this, &GLWidget::AnimationsLoaded,
+          m_ConfigWidget, &ConfigWidget::OnAnimationsLoaded);
+
+  LoadAnimations();
 }
 
 GLWidget::~GLWidget() {
@@ -64,7 +68,14 @@ GLWidget::~GLWidget() {
   for (const std::unique_ptr<cw::Texture2D>& item : m_StaticScreens) {
     item->DeleteTexture(this);
   }
-  qDebug() << "GLWidget::~GLWidget(): static screen textures released successfully";
+  qDebug() << "GLWidget::~GLWidget():"
+           << "static screen textures released successfully";
+
+  for (const std::unique_ptr<Animation>& item : m_Animations) {
+    item->Delete(this);
+  }
+  qDebug() << "GLWidget::~GLWidget():"
+           << "animations released successfully";
 
   doneCurrent();
 }
@@ -122,7 +133,8 @@ void GLWidget::initializeGL() {
   cw::GLInfo glInfo = cw::GLInfo::AutoDetect(this);
   m_ConfigWidget->FillGLInfo(glInfo);
 
-  LoadStaticScreens();
+  LoadAndInitScreens();
+  InitAnimations();
 }
 
 void GLWidget::paintGL() {

@@ -5,7 +5,8 @@
 #include "cwglx/GL.h"
 #include "cwglx/GLImpl.h"
 
-using VersionFn = std::uint32_t (*)();
+using VersionFn = std::uint32_t (*)(void);
+using AnimationNameFn = const char* (*)(void);
 using InitContextFn = void* (*)(GLFunctions *f);
 using DestroyContextFn = void (*)(void *context, GLFunctions *f);
 using RewindContextFn = bool (*)(void *context, GLFunctions *f);

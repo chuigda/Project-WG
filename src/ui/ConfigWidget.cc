@@ -68,6 +68,8 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
 #pragma clang diagnostic pop
   connect(ui->staticAnimList, &QListWidget::itemDoubleClicked,
           this, &ConfigWidget::OnStaticScreenChosen);
+  connect(ui->dynamicAnimList, &QListWidget::itemDoubleClicked,
+          this, &ConfigWidget::OnAnimationChosen);
   connect(ui->resetScrAnimButton, &QPushButton::clicked,
           this, &ConfigWidget::OnScreenAnimationReset);
 
@@ -130,9 +132,20 @@ ConfigWidget::OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens) {
   }
 }
 
+void ConfigWidget::OnAnimationsLoaded(QList<QListWidgetItem*> *animations) {
+  for (auto animation : *animations) {
+    ui->dynamicAnimList->addItem(animation);
+  }
+}
+
 void ConfigWidget::OnStaticScreenChosen(QListWidgetItem *item) {
   StaticScreenItem *staticScreenItem = static_cast<StaticScreenItem*>(item);
   m_ScreenStatus->PlayStaticAnimation(staticScreenItem);
+}
+
+void ConfigWidget::OnAnimationChosen(QListWidgetItem *item) {
+  AnimationItem *animationItem = static_cast<AnimationItem*>(item);
+  m_ScreenStatus->PlayAnimation(animationItem);
 }
 
 void ConfigWidget::OnScreenAnimationReset() {
