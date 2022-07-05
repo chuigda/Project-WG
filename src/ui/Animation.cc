@@ -10,7 +10,12 @@
 void *LoadSharedObject(const QString& fileName) {
   QString escaped = fileName;
   escaped.replace("/", "\\", Qt::CaseInsensitive);
-  return LoadLibraryW(escaped.toStdWString().c_str());
+  HANDLE h = LoadLibraryW(escaped.toStdWString().c_str());
+  if (h == nullptr) {
+    DWORD err = GetLastError();
+    qWarning() << "GetLastError() =" << err;
+  }
+  return h;
 }
 
 template <typename T>
@@ -22,10 +27,6 @@ T TryReadSymbol(void *handle, const char *symbol) {
 
 void DetachSharedObject(void *handle) {
   FreeLibrary(reinterpret_cast<HMODULE>(handle));
-}
-
-auto GetErrorCode() {
-  return GetLastError();
 }
 
 #else
@@ -45,10 +46,6 @@ void DetachSharedObject(void *handle) {
   dlclose(handle);
 }
 
-auto GetErrorCode() {
-  return dlerror();
-}
-
 #endif // CW_WIN32
 
 Animation::Animation(const QString &fileName)
@@ -62,8 +59,6 @@ Animation::Animation(const QString &fileName)
     m_Deleted(true)
 {
   if (m_Handle == nullptr) {
-    qWarning() << "Animation::Animation(): GetErrorCode() ="
-               << GetErrorCode();
     QMessageBox::warning(
         nullptr,
         "警告",

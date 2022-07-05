@@ -57,8 +57,8 @@ void ScreenStatus::DrawOnScreen(GLFunctions *f) {
                  << "th frame of animation"
                  << animation->GetAnimationName()
                  << "(from file \"" + animation->GetFileName() + "\"";
-      m_Frame += 1;
     }
+    m_Frame += 1;
   }
 }
 

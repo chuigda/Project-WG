@@ -45,7 +45,7 @@ void GLWidget::LoadAnimations() {
   QStringList files = dir.entryList(filters, QDir::Files);
   for (const auto &file : files) {
     Animation *animation =
-        new Animation(QStringLiteral("animations/static/") + file);
+        new Animation(QStringLiteral("animations/dynamic/") + file);
     if (!animation->IsOpen()) {
       delete animation;
       continue;
@@ -71,8 +71,10 @@ void GLWidget::InitAnimations() {
         continue;
       }
 
+      QString originalFileName = anim->GetFileName();
+      originalFileName.replace("animations/dynamic/", "", Qt::CaseInsensitive);
       m_AnimationItems.push_back(new AnimationItem(
-          anim->GetFileName() + anim->GetAnimationName(),
+          anim->GetAnimationName() + " (" + originalFileName + ")",
           anim.get()
       ));
       initializedAnimations.push_back(std::move(anim));

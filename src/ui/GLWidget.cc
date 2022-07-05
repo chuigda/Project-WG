@@ -39,11 +39,7 @@ GLWidget::GLWidget(QWidget *parent)
   this->setAttribute(Qt::WA_TransparentForMouseEvents);
   this->setAttribute(Qt::WA_AlwaysStackOnTop);
 
-  int timerId = this->startTimer(10);
-  if (timerId == 0) {
-    qDebug() << "could not start timer correctly";
-  }
-
+  this->startTimer(10);
   m_ConfigWidget = new ConfigWidget(&m_CameraEntityStatus,
                                     &m_ScreenStatus,
                                     this);
