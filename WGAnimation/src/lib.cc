@@ -36,11 +36,28 @@ bool WGAPI RewindContext(void *context, GLFunctions *f) {
 bool WGAPI PlayAnimationFrame(void *context,
                               GLFunctions *f,
                               std::uint64_t frame) {
-  // TODO your codes are here
-
   Q_UNUSED(context)
-  Q_UNUSED(f)
-  Q_UNUSED(frame)
+
+  f->glPushMatrix();
+  f->glRotatef(2.0f * frame, 0.0f, 1.0f, 0.0f);
+
+  // draw a colorful triangle, save color first
+  f->glPushAttrib(GL_CURRENT_BIT);
+  f->glBegin(GL_TRIANGLES);
+  {
+    f->glColor3f(1.0f, 0.0f, 0.0f);
+    f->glVertex3f(0.0f, 240.0f, 0.0f);
+
+    f->glColor3f(0.0f, 1.0f, 0.0f);
+    f->glVertex3f(-320.0f, -240.0f, 0.0f);
+
+    f->glColor3f(0.0f, 0.0f, 1.0f);
+    f->glVertex3f(320.0f, -240.0f, 0.0f);
+  }
+  f->glEnd();
+  f->glPopAttrib();
+  f->glPopMatrix();
+
   return true;
 }
 

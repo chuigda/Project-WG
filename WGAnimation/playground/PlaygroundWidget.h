@@ -22,6 +22,7 @@ public:
 protected:
   void initializeGL() final;
   void paintGL() final;
+  void resizeGL(int w, int h) final;
 
   void mouseDoubleClickEvent(QMouseEvent *event) final;
 
