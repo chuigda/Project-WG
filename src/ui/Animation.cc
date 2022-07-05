@@ -33,7 +33,7 @@ void DetachSharedObject(void *handle) {
 
 #include <dlfcn.h>
 
-void *LoadSharedObject(QString& fileName) {
+void *LoadSharedObject(const QString& fileName) {
   return dlopen(fileName.toStdString().c_str(), RTLD_LAZY);
 }
 
