@@ -24,8 +24,6 @@ protected:
   void paintGL() final;
   void resizeGL(int w, int h) final;
 
-  void mouseDoubleClickEvent(QMouseEvent *event) final;
-
 private slots:
   void RequestNextFrame();
 

@@ -103,6 +103,7 @@ PlaygroundWidget::PlaygroundWidget(QWidget *parent)
   timer->setInterval(1000 / 90);
 
   connect(timer, &QTimer::timeout, this, &PlaygroundWidget::RequestNextFrame);
+  timer->start();
 
   setFixedSize(640, 480);
   resize(640, 480);
@@ -138,7 +139,6 @@ void PlaygroundWidget::paintGL() {
   glClear(GL_COLOR_BUFFER_BIT);
 
   m_PlayAnimationFrameFn(m_Context, this, m_FrameCount);
-  m_FrameCount += 1;
 }
 
 void PlaygroundWidget::resizeGL(int width, int height) {
@@ -151,16 +151,7 @@ void PlaygroundWidget::resizeGL(int width, int height) {
   glOrtho(-320, 320, -240, 240, -1, 1);
 }
 
-void PlaygroundWidget::mouseDoubleClickEvent(QMouseEvent *event) {
-  Q_UNUSED(event)
-
-  m_FrameCount = 0;
-
-  makeCurrent();
-  m_RewindContextFn(m_Context, this);
-  doneCurrent();
-}
-
 void PlaygroundWidget::RequestNextFrame() {
+  m_FrameCount += 1;
   update();
 }

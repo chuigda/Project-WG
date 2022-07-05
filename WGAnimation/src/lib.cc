@@ -39,9 +39,8 @@ bool WGAPI PlayAnimationFrame(void *context,
   Q_UNUSED(context)
 
   f->glPushMatrix();
-  f->glRotatef(2.0f * frame, 0.0f, 1.0f, 0.0f);
+  f->glRotatef(static_cast<GLfloat>(frame), 0.0f, 0.0f, 1.0f);
 
-  // draw a colorful triangle, save color first
   f->glPushAttrib(GL_CURRENT_BIT);
   f->glBegin(GL_TRIANGLES);
   {
