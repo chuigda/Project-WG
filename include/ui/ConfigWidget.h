@@ -13,8 +13,7 @@ namespace Ui {
 class ConfigWidget;
 } // namespace Ui
 
-class ConfigWidget final : public QWidget
-{
+class ConfigWidget final : public QWidget {
   Q_OBJECT
 
 public:
