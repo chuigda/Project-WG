@@ -101,12 +101,9 @@ qt_wrap_ui(PROJECT_SOURCES src/ui/MessageBoxAlter.ui)
 include_directories(include)
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(Project-WG
-                      MANUAL_FINALIZATION
-                      ${PROJECT_SOURCES})
+    qt_add_executable(Project-WG  MANUAL_FINALIZATION ${PROJECT_SOURCES})
 else()
-    add_executable(Project-WG
-                   ${PROJECT_SOURCES})
+    add_executable(Project-WG ${PROJECT_SOURCES})
 endif()
 
 target_link_libraries(Project-WG PRIVATE

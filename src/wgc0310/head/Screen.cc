@@ -179,12 +179,11 @@ void Screen::BeginScreenContext(GLFunctions *f) const noexcept {
 
   f->glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   f->glClear(GL_COLOR_BUFFER_BIT);
-  f->glFrontFace(GL_CW);
   f->glTranslatef(0.0f, 0.0f, -0.5f);
 
   f->glDisable(GL_LIGHTING);
   f->glDisable(GL_MULTISAMPLE);
-  f->glDisable(GL_CULL_FACE);
+  f->glDisable(GL_DEPTH_TEST);
 }
 
 void Screen::DoneScreenContext(GLFunctions *f) const noexcept {

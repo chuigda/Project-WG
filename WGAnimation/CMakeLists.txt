@@ -17,5 +17,29 @@ set(CMAKE_C_FLAGS
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets OpenGLWidgets)
 
-set(PROJECT_SOURCES
-    main.cc)
+include_directories(include)
+
+set(PROJECT_SOURCES src/lib.cc)
+add_library(WGAnimation SHARED ${PROJECT_SOURCES})
+target_link_libraries(WGAnimation PRIVATE
+                      Qt${QT_VERSION_MAJOR}::Widgets
+                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
+
+set(PLAYGROUND_SOURCES
+    playground/main.cc
+    playground/PlaygroundWidget.cc)
+
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
+    qt_add_executable(Playground MANUAL_FINALIZATION ${PLAYGROUND_SOURCES})
+else()
+    qt_add_executable(Playground ${PLAYGROUND_SOURCES})
+endif()
+
+target_link_libraries(Playground PRIVATE
+                      Qt${QT_VERSION_MAJOR}::Widgets
+                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
+set_target_properties(Playground PROPERTIES WIN32_EXECUTABLE TRUE)
+
+if(QT_VERSION_MAJOR EQUAL 6)
+    qt_finalize_executable(Playground)
+endif()

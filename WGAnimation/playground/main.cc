@@ -1,9 +1,9 @@
 #include <QApplication>
-#include "ui/GLWidget.h"
+#include "PlaygroundWidget.h"
 
 int main(int argc, char *argv[]) {
   QApplication a(argc, argv);
-  GLWidget w;
-  w.show();
+  PlaygroundWidget widget;
+  widget.show();
   return a.exec();
 }
