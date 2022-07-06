@@ -1,5 +1,6 @@
 #include "ui/ScreenStatus.h"
 
+#include <QTimer>
 #include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
 
@@ -8,8 +9,14 @@ ScreenStatus::ScreenStatus()
     m_IsPlayingDynamicAnimation(false),
     m_StaticScreenItem(nullptr),
     m_AnimationItem(nullptr),
+    m_Timer(new QTimer()),
     m_Frame(0)
-{}
+{
+  m_Timer->setTimerType(Qt::PreciseTimer);
+  m_Timer->setInterval(1000 / 60);
+
+  connect(m_Timer, &QTimer::timeout, this, &ScreenStatus::NextFrame);
+}
 
 void ScreenStatus::PlayStaticAnimation(StaticScreenItem *staticScreenItem) {
   Reset();
@@ -23,6 +30,7 @@ void ScreenStatus::PlayAnimation(AnimationItem *animationItem) {
 
   m_IsPlayingDynamicAnimation = true;
   m_AnimationItem = animationItem;
+  m_Timer->start();
 }
 
 void ScreenStatus::DrawOnScreen(GLFunctions *f) {
@@ -58,7 +66,6 @@ void ScreenStatus::DrawOnScreen(GLFunctions *f) {
                  << animation->GetAnimationName()
                  << "(from file \"" + animation->GetFileName() + "\"";
     }
-    m_Frame += 1;
   }
 }
 
@@ -66,5 +73,13 @@ void ScreenStatus::Reset() {
   m_IsPlayingStaticAnimation = false;
   m_IsPlayingDynamicAnimation = false;
   m_StaticScreenItem = nullptr;
+
+  if (m_Timer) {
+    m_Timer->stop();
+  }
   m_Frame = 0;
+}
+
+void ScreenStatus::NextFrame() {
+  m_Frame++;
 }

@@ -128,76 +128,7 @@
          <property name="title">
           <string>渲染设置（重启程序生效）</string>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QLabel" name="labelCullFace">
-              <property name="text">
-               <string>表面剔除</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="radioCullCW">
-              <property name="toolTip">
-               <string>设定逆时针绘制方向（GL_CCW）为正面</string>
-              </property>
-              <property name="text">
-               <string>逆时针</string>
-              </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">culLFaceButtonGroup</string>
-              </attribute>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="radioCullCCW">
-              <property name="toolTip">
-               <string>设定顺时针绘制方向（GL_CW）为正面</string>
-              </property>
-              <property name="text">
-               <string>顺时针</string>
-              </property>
-              <property name="checked">
-               <bool>false</bool>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">culLFaceButtonGroup</string>
-              </attribute>
-             </widget>
-            </item>
-            <item>
-             <widget class="QRadioButton" name="radioNoCull">
-              <property name="toolTip">
-               <string>不使用表面剔除</string>
-              </property>
-              <property name="text">
-               <string>无</string>
-              </property>
-              <attribute name="buttonGroup">
-               <string notr="true">culLFaceButtonGroup</string>
-              </attribute>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
@@ -365,6 +296,149 @@
                </size>
               </property>
              </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>渲染设置（即刻生效）</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_23">
+            <item>
+             <widget class="QLabel" name="labelTargetFPS">
+              <property name="text">
+               <string>目标帧率</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="targetFPS">
+              <property name="maximum">
+               <number>120</number>
+              </property>
+              <property name="value">
+               <number>90</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLabel" name="labelCullFace">
+              <property name="text">
+               <string>表面剔除</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioCullCW">
+              <property name="toolTip">
+               <string>设定逆时针绘制方向（GL_CCW）为正面</string>
+              </property>
+              <property name="text">
+               <string>逆时针</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">culLFaceButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioCullCCW">
+              <property name="toolTip">
+               <string>设定顺时针绘制方向（GL_CW）为正面</string>
+              </property>
+              <property name="text">
+               <string>顺时针</string>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">culLFaceButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioNoCull">
+              <property name="toolTip">
+               <string>不使用表面剔除</string>
+              </property>
+              <property name="text">
+               <string>无</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">culLFaceButtonGroup</string>
+              </attribute>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_24">
+            <item>
+             <spacer name="horizontalSpacer_9">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="resetRenderSettingsButton">
+              <property name="text">
+               <string>重置</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="confirmRenderSettingsButton">
+              <property name="text">
+               <string>确认</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -954,9 +1028,9 @@
   <slot>setCameraMoveZ(int)</slot>
  </slots>
  <buttongroups>
-  <buttongroup name="imgTexFiltButtonGroup"/>
-  <buttongroup name="culLFaceButtonGroup"/>
   <buttongroup name="scrTexFiltButtonGroup"/>
+  <buttongroup name="culLFaceButtonGroup"/>
+  <buttongroup name="imgTexFiltButtonGroup"/>
   <buttongroup name="scrRenderModeButtonGroup"/>
  </buttongroups>
 </ui>

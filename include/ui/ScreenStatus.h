@@ -50,7 +50,9 @@ private:
   Animation *m_Animation;
 };
 
-class ScreenStatus final {
+class ScreenStatus final : public QObject {
+  Q_OBJECT
+
 public:
   ScreenStatus();
 
@@ -65,12 +67,16 @@ public:
 
   void Reset();
 
+private slots:
+  void NextFrame();
+
 private:
   bool m_IsPlayingStaticAnimation;
   bool m_IsPlayingDynamicAnimation;
 
   StaticScreenItem *m_StaticScreenItem;
   AnimationItem *m_AnimationItem;
+  QTimer *m_Timer;
   std::uint64_t m_Frame;
 };
 
