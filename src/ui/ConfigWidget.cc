@@ -67,6 +67,11 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
   ui->entityZAngleSlider->setValue(m_CameraEntityStatus->entityRotateZ / 10);
 #pragma clang diagnostic pop
 
+  connect(ui->confirmRenderSettingsButton, &QPushButton::clicked,
+          this, &ConfigWidget::OnRenderSettingsConfirmed);
+  connect(ui->resetRenderSettingsButton, &QPushButton::clicked,
+          this, &ConfigWidget::OnRenderSettingsReset);
+
   connect(ui->staticAnimList, &QListWidget::itemDoubleClicked,
           this, &ConfigWidget::OnStaticScreenChosen);
   connect(ui->dynamicAnimList, &QListWidget::itemDoubleClicked,
@@ -124,6 +129,28 @@ void ConfigWidget::FillGLInfo(const cw::GLInfo &info) {
   ui->glVersionText->setText(info.version);
   ui->glRendererText->setText(info.renderer);
   ui->glExtensionsText->setPlainText(info.extensions);
+}
+
+void ConfigWidget::OnRenderSettingsConfirmed() {
+  GLenum cullFaceMode;
+  if (ui->radioNoCull->isChecked()) {
+    cullFaceMode = GL_NONE;
+  } else if (ui->radioCullCCW->isChecked()) {
+    cullFaceMode = GL_CCW;
+  } else if (ui->radioCullCW->isChecked()) {
+    cullFaceMode = GL_CW;
+  }
+
+  int targetFPS = ui->targetFPS->value();
+
+  emit SetRenderSettings(cullFaceMode, targetFPS);
+}
+
+void ConfigWidget::OnRenderSettingsReset() {
+  ui->radioCullCCW->setChecked(true);
+  ui->targetFPS->setValue(90);
+
+  emit SetRenderSettings(GL_CCW, 90);
 }
 
 void

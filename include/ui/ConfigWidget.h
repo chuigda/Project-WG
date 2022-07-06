@@ -2,6 +2,7 @@
 #define PROJECT_WG_CONFIG_WIDGET_H
 
 #include <QWidget>
+#include <QtGui/qopengl.h>
 
 #include "cwglx/GLInfo.h"
 
@@ -24,11 +25,20 @@ public:
 
   void FillGLInfo(const cw::GLInfo &info);
 
+signals:
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NotImplementedFunctions"
+  void SetRenderSettings(GLenum cullFaceMode, int targetFPS);
+#pragma clang diagnostic pop
+
 public slots:
   void OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens);
   void OnAnimationsLoaded(QList<QListWidgetItem*> *animations);
 
 private slots:
+  void OnRenderSettingsConfirmed();
+  void OnRenderSettingsReset();
+
   void OnStaticScreenChosen(QListWidgetItem *item);
   void OnAnimationChosen(QListWidgetItem *item);
   void OnScreenAnimationReset();

@@ -23,7 +23,8 @@ GLWidget::GLWidget(QWidget *parent)
     m_Arena(),
     m_HeadId(0),
     m_ScreenGlassId(0),
-    m_ScreenId(0)
+    m_ScreenId(0),
+    m_Timer(new QTimer(this))
 {
   QSurfaceFormat format;
   format.setSamples(8);
@@ -39,10 +40,11 @@ GLWidget::GLWidget(QWidget *parent)
   this->setAttribute(Qt::WA_TransparentForMouseEvents);
   this->setAttribute(Qt::WA_AlwaysStackOnTop);
 
-  this->startTimer(10);
   m_ConfigWidget = new ConfigWidget(&m_CameraEntityStatus,
                                     &m_ScreenStatus,
                                     this);
+  connect(m_ConfigWidget, &ConfigWidget::SetRenderSettings,
+          this, &GLWidget::OnRenderSettingsSet);
 
   setBaseSize(1024, 768);
   resize(1024,768);
@@ -51,6 +53,10 @@ GLWidget::GLWidget(QWidget *parent)
           m_ConfigWidget, &ConfigWidget::OnStaticScreensLoaded);
   connect(this, &GLWidget::AnimationsLoaded,
           m_ConfigWidget, &ConfigWidget::OnAnimationsLoaded);
+
+  m_Timer->setInterval(1000 / 90);
+  connect(m_Timer, &QTimer::timeout, this, &GLWidget::RequestNextFrame);
+  m_Timer->start();
 
   LoadAnimations();
 }
@@ -178,9 +184,6 @@ void GLWidget::paintGL() {
   glColor4f(0.05f, 0.075f, 0.1f, 0.1f);
   m_Arena.Get(m_ScreenGlassId)->Draw(this);
   glPopAttrib();
-
-  // immediately schedule next update
-  update();
 }
 
 void GLWidget::resizeGL(int w, int h) {
@@ -192,4 +195,17 @@ void GLWidget::mouseDoubleClickEvent(QMouseEvent *event) {
   Q_UNUSED(event)
 
   m_ConfigWidget->show();
+}
+
+void GLWidget::OnRenderSettingsSet(GLenum cullFaceMode, int targetFPS) {
+  makeCurrent();
+  if (cullFaceMode == GL_NONE) {
+    glDisable(GL_CULL_FACE);
+  } else {
+    glEnable(GL_CULL_FACE);
+    glFrontFace(cullFaceMode);
+  }
+  doneCurrent();
+
+  m_Timer->setInterval(1000 / targetFPS);
 }

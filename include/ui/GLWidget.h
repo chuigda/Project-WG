@@ -14,6 +14,7 @@
 #include "ui/Animation.h"
 
 class QListWidgetItem;
+class QTimer;
 class ConfigWidget;
 
 class GLWidget final : public QOpenGLWidget, public GLFunctions {
@@ -37,6 +38,12 @@ signals:
   void AnimationsLoaded(QList<QListWidgetItem*>*);
 #pragma clang diagnostic pop
 
+public slots:
+  void OnRenderSettingsSet(GLenum cullFaceMode, int targetFPS);
+
+private slots:
+  void RequestNextFrame();
+
 private:
   void LoadAndInitScreens();
   void LoadAnimations();
@@ -59,6 +66,8 @@ private:
   std::vector<std::unique_ptr<Animation>> m_Animations;
   QList<QListWidgetItem*> m_StaticScreenItems;
   QList<QListWidgetItem*> m_AnimationItems;
+
+  QTimer *m_Timer;
 };
 
 #endif // PROJECT_WG_GLWIDGET_H

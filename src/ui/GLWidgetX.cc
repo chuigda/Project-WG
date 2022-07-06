@@ -84,3 +84,7 @@ void GLWidget::InitAnimations() {
 
   emit AnimationsLoaded(&m_AnimationItems);
 }
+
+void GLWidget::RequestNextFrame() {
+  update();
+}

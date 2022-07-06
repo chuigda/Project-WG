@@ -9,7 +9,7 @@ ScreenStatus::ScreenStatus()
     m_IsPlayingDynamicAnimation(false),
     m_StaticScreenItem(nullptr),
     m_AnimationItem(nullptr),
-    m_Timer(new QTimer()),
+    m_Timer(new QTimer(this)),
     m_Frame(0)
 {
   m_Timer->setTimerType(Qt::PreciseTimer);
