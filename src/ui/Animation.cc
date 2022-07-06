@@ -33,7 +33,7 @@ void DetachSharedObject(void *handle) {
 
 #include <dlfcn.h>
 
-void *LoadSharedObject(QString& fileName) {
+void *LoadSharedObject(const QString& fileName) {
   return dlopen(fileName.toStdString().c_str(), RTLD_LAZY);
 }
 
@@ -85,7 +85,7 @@ Animation::Animation(const QString &fileName)
     QMessageBox::warning(
         nullptr,
         "致命错误",
-        QString("动画文件 %1 报告的版 WGAPI 版本与程序不兼容\n"
+        QString("动画文件 %1 报告的 WGAPI 版本与程序不兼容\n"
                 "  - 受支持的版本为: 0.1.0\n"
                 "  - 文件的版本为: %2.%3.%4\n"
                 "该动画将不可用")

@@ -43,3 +43,7 @@ set_target_properties(Playground PROPERTIES WIN32_EXECUTABLE TRUE)
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(Playground)
 endif()
+
+if(WIN32)
+  add_definitions(-DCW_WIN32)
+endif()

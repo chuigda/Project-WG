@@ -1,9 +1,26 @@
 #include "PlaygroundWidget.h"
 
-#include <windows.h>
 #include <QApplication>
 #include <QMessageBox>
 #include <QTimer>
+
+#ifdef CW_WIN32
+#include <windows.h>
+#else
+#include <dlfcn.h>
+
+using HMODULE = void*;
+using HANDLE = void*;
+
+HMODULE LoadLibraryA(const char *fileName) {
+  return dlopen(fileName, RTLD_LAZY);
+}
+
+HANDLE GetProcAddress(HMODULE module, const char *name) {
+  return dlsym(module, name);
+}
+
+#endif
 
 PlaygroundWidget::PlaygroundWidget(QWidget *parent)
   : QOpenGLWidget(parent),
