@@ -55,6 +55,9 @@ void ScreenStatus::DrawOnScreen(GLFunctions *f) {
     }
     f->glEnd();
   } else if (m_IsPlayingDynamicAnimation && m_AnimationItem) {
+    f->glScalef(1.0f, -1.0f, 1.0f);
+    f->glFrontFace(GL_CW);
+
     Animation *animation = m_AnimationItem->GetAnimation();
 
     bool playResult = animation->PlayAnimationFrame(f, m_Frame);
