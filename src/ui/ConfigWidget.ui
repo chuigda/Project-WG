@@ -352,7 +352,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="radioCullCW">
+             <widget class="QRadioButton" name="radioCullCCW">
               <property name="toolTip">
                <string>设定逆时针绘制方向（GL_CCW）为正面</string>
               </property>
@@ -368,7 +368,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="radioCullCCW">
+             <widget class="QRadioButton" name="radioCullCW">
               <property name="toolTip">
                <string>设定顺时针绘制方向（GL_CW）为正面</string>
               </property>
@@ -1028,9 +1028,9 @@
   <slot>setCameraMoveZ(int)</slot>
  </slots>
  <buttongroups>
-  <buttongroup name="scrTexFiltButtonGroup"/>
   <buttongroup name="culLFaceButtonGroup"/>
   <buttongroup name="imgTexFiltButtonGroup"/>
   <buttongroup name="scrRenderModeButtonGroup"/>
+  <buttongroup name="scrTexFiltButtonGroup"/>
  </buttongroups>
 </ui>
