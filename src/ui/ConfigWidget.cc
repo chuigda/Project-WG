@@ -137,7 +137,7 @@ void ConfigWidget::OnRenderSettingsConfirmed() {
     cullFaceMode = GL_NONE;
   } else if (ui->radioCullCCW->isChecked()) {
     cullFaceMode = GL_CCW;
-  } else if (ui->radioCullCW->isChecked()) {
+  } else /* if (ui->radioCullCW->isChecked()) */ {
     cullFaceMode = GL_CW;
   }
 
