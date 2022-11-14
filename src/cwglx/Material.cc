@@ -14,7 +14,7 @@ StandardMaterial::StandardMaterial(RGBAColor ambient,
   : m_Ambient(ambient),
     m_Diffuse(diffuse),
     m_Specular(specular),
-    m_Shine(shininess),
+    m_Shininess(shininess),
     m_ColorDimension(colorDimension)
 {}
 
@@ -26,7 +26,7 @@ StandardMaterial::StandardMaterial(const RGBAColorF &ambient,
   : m_Ambient(ambient),
     m_Diffuse(diffuse),
     m_Specular(specular),
-    m_Shine(shininess),
+    m_Shininess(shininess),
     m_ColorDimension(colorDimension)
 {}
 
@@ -43,7 +43,7 @@ void StandardMaterial::Apply(GLFunctions *f) const noexcept {
   f->glMaterialfv(GL_FRONT, GL_AMBIENT, m_Ambient.GetRepr().data());
   f->glMaterialfv(GL_FRONT, GL_DIFFUSE, m_Diffuse.GetRepr().data());
   f->glMaterialfv(GL_FRONT, GL_SPECULAR, m_Specular.GetRepr().data());
-  f->glMaterialf(GL_FRONT, GL_SHININESS, m_Shine);
+  f->glMaterialf(GL_FRONT, GL_SHININESS, m_Shininess);
 }
 
 #define CW_DEFINE_MATERIAL(NAME, \

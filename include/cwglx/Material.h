@@ -39,7 +39,7 @@ private:
   RGBAColorF m_Ambient;
   RGBAColorF m_Diffuse;
   RGBAColorF m_Specular;
-  GLfloat m_Shine;
+  GLfloat m_Shininess;
   GLenum m_ColorDimension;
 };
 

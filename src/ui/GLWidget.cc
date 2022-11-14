@@ -83,6 +83,11 @@ GLWidget::~GLWidget() {
   doneCurrent();
 }
 
+static std::unique_ptr<cw::PlainTriangles> berTriangles =
+  std::make_unique<cw::PlainTriangles>();
+
+static std::unique_ptr<cw::Drawable> berDrawable = nullptr;
+
 void GLWidget::initializeGL() {
   cw::SetupPreferredSettings(this);
   m_Light.reset(new cw::PointLight(GL_LIGHT0,
@@ -127,6 +132,22 @@ void GLWidget::initializeGL() {
     );
     m_RadarId = radarId;
   }
+
+  // TESTING CODE
+  {
+    cw::BoxGenerator generator {
+      { 0.0f, 0.0f, 0.0f },
+      10.0f, 10.0f, 10.0f
+    };
+    berTriangles->AddTriangles(&generator);
+    berTriangles->PreInitialize(this);
+
+    berDrawable = std::make_unique<cw::MaterializedDrawable>(
+      cw::GetPureRedMaterial(),
+      std::vector { static_cast<cw::Drawable const*>(berTriangles.get()) }
+    );
+  }
+  // TESTING CODE
 
   std::unique_ptr<cw::TriangleGen> glassGenerator = wgc0310::ScreenGlass();
   std::unique_ptr<cw::PlainTriangles> glassTriangles =
@@ -190,6 +211,12 @@ void GLWidget::paintGL() {
   m_Light2->Enable(this);
   m_CameraEntityStatus.ApplyEntityTransformation(this);
 
+  glDisable(GL_LIGHTING);
+  glColor3f(0.85f, 0.0f, 0.0f);
+  berDrawable->Draw(this);
+  glEnable(GL_LIGHTING);
+
+  /*
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   glTranslatef(0.0f, -9.25f, 0.0f);
   m_Arena.Get(m_HeadId)->Draw(this);
@@ -208,6 +235,7 @@ void GLWidget::paintGL() {
   glColor4f(0.05f, 0.075f, 0.1f, 0.1f);
   m_Arena.Get(m_ScreenGlassId)->Draw(this);
   glPopAttrib();
+  */
 }
 
 void GLWidget::resizeGL(int w, int h) {
