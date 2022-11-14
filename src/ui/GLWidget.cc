@@ -7,6 +7,7 @@
 #include "glu/FakeGLU.h"
 #include "cwglx/Setup.h"
 #include "cwglx/Material.h"
+#include "cwglx/MeshLoader.h"
 #include "cwglx/drawable/Composition.h"
 #include "cwglx/drawable/PlainTriangles.h"
 #include "cwglx/drawable/TriangleGen.h"
@@ -98,15 +99,13 @@ void GLWidget::initializeGL() {
                                     this));
 
   std::unique_ptr<cw::TriangleGen> headGenerator = wgc0310::Head();
-  std::unique_ptr<cw::PlainTriangles> headTriangles =
-      std::make_unique<cw::PlainTriangles>();
-  headTriangles->AddTriangles(headGenerator.get());
+  std::unique_ptr<cw::PlainTriangles> headTriangles = cw::LoadMesh("./resc/head.mesh");
   headTriangles->PreInitialize(this);
 
   const auto [_, head] = m_Arena.Put(std::move(headTriangles));
   const auto [headId, _2] = m_Arena.Put(
       std::make_unique<cw::MaterializedDrawable>(
-          cw::GetBrassMaterial(),
+          cw::GetPlasticMaterial(),
           std::vector { head }
       )
   );
@@ -175,8 +174,10 @@ void GLWidget::paintGL() {
   m_CameraEntityStatus.ApplyEntityTransformation(this);
 
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  glTranslatef(0.0f, -9.25f, 0.0f);
   m_Arena.Get(m_HeadId)->Draw(this);
 
+  glTranslatef(0.0f, 9.25f, 4.5f);
   screen->Draw(this);
 
   glTranslatef(0.0f, 0.0f, 0.5f);

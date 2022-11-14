@@ -49,6 +49,7 @@ set(PROJECT_SOURCES
 
     src/cwglx/Color.cc
     src/cwglx/Material.cc
+    src/cwglx/MeshLoader.cc
     src/cwglx/Texture.cc
     src/cwglx/Drawable.cc
     src/cwglx/DrawableArena.cc
