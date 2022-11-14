@@ -185,8 +185,6 @@ void PlainTriangles::AddTriangles(FineTriangleGen*) {
 void PlainTriangles::PreInitialize(GLFunctions *f) const {
   if (!m_VBOInitialized) {
     qDebug() << "PlainTriangles::PreInitialize():"
-             << "VBO not initialized, initializing";
-    qDebug() << "PlainTriangles::PreInitialize():"
              << m_Vertices.size() / 3
              << "triangles ready to draw";
 

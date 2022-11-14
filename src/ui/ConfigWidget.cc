@@ -241,7 +241,7 @@ void ConfigWidget::ResetAll() {
 
   ui->entityXSlider->setValue(0);
   ui->entityYSlider->setValue(0);
-  ui->entityZSlider->setValue(-60 / 5);
+  ui->entityZSlider->setValue(-75 / 5);
 
   ui->entityXAngleSlider->setValue(0);
   ui->entityYAngleSlider->setValue(0);
@@ -257,7 +257,7 @@ void ConfigWidget::ResetAll() {
 
   m_CameraEntityStatus->entityX = 0.0f;
   m_CameraEntityStatus->entityY = 0.0f;
-  m_CameraEntityStatus->entityZ = -60.0f;
+  m_CameraEntityStatus->entityZ = -75.0f;
 
   m_CameraEntityStatus->entityRotateX = 0.0;
   m_CameraEntityStatus->entityRotateY = 0.0;

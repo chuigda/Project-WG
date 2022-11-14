@@ -54,12 +54,18 @@ private:
   QScopedPointer<cw::Light> m_Light2;
 
   cw::DrawableArena m_Arena;
-  std::size_t m_HeadId;
+  std::size_t m_MonitorId;
+  std::size_t m_MonitorIntakeId;
   std::size_t m_RadarId;
-  std::size_t m_ScreenGlassId;
-  std::size_t m_ScreenId;
   std::size_t m_ChestBoxId;
   std::size_t m_ChestPlateId;
+  std::size_t m_PowerId;
+  std::size_t m_PowerPinId;
+  std::size_t m_BerId;
+  std::size_t m_BerShellId;
+
+  std::size_t m_ScreenGlassId;
+  std::size_t m_ScreenId;
 
   CameraEntityStatus m_CameraEntityStatus;
   ScreenStatus m_ScreenStatus;

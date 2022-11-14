@@ -61,8 +61,15 @@ CW_DEFINE_MATERIAL(Plastic,
 
 CW_DEFINE_MATERIAL(Glass,
                    0.10f, 0.125f, 0.15f, 0.1f,
-                   0.10f, 0.15f, 0.2f, 0.05f,
+                   0.10f, 0.1125f, 0.125f, 0.05f,
                    0.0f, 0.0f, 0.0f, 0.0f,
                    128.0f)
+
+// Materials created by Chuigda
+CW_DEFINE_MATERIAL(BlackPlastic,
+                   0.1f, 0.1f, 0.1f, 1.0f,
+                   0.25f, 0.25f, 0.25f, 1.0f,
+                   0.7f, 0.7f, 0.7f, 1.0f,
+                   32.0f)
 
 #undef CW_DEFINE_MATERIAL
