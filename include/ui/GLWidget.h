@@ -66,6 +66,7 @@ private:
   ConfigWidget *m_ConfigWidget;
 
   float m_RadarRotation = 0;
+  int m_BlinkCounter = 0;
 
   std::vector<std::unique_ptr<cw::Texture2D>> m_StaticScreens;
   std::vector<std::unique_ptr<Animation>> m_Animations;
