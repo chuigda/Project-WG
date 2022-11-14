@@ -246,7 +246,7 @@ void GLWidget::paintGL() {
     m_Mesh->monitor->Draw(this);
     m_Mesh->monitorIntake->Draw(this);
 
-    glTranslatef(0.0f, 9.25f, -0.25f);
+    glTranslatef(0.0f, 9.25f + 1.875f, -0.25f);
     glPushMatrix();
     glRotatef(m_RadarRotation, 1.0f, 0.0f, 0.0f);
     m_Mesh->radar->Draw(this);

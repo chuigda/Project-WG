@@ -5,7 +5,7 @@ namespace wgc0310 {
 
 std::unique_ptr<cw::TriangleGen> ScreenGlass() {
   std::vector<std::vector<cw::Vertex>> vertices =
-      ComputeScreenVertices(20.0, 15.0, 1.25, 160, 120);
+    ComputeScreenVertices(25.0, 18.75, 1.25, 160, 120);
   std::vector<cw::Triangle> storedTriangles;
   storedTriangles.reserve(160 * 120 * 2);
 
