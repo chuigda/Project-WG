@@ -3,13 +3,9 @@
 
 namespace cw {
 
-class SecretInternalsDoNotUseOrYouWillBeFired {
-public:
-  static const SecretInternalsDoNotUseOrYouWillBeFired Instance;
+class SecretInternalsDoNotUseOrYouWillBeFired {};
 
-private:
-  SecretInternalsDoNotUseOrYouWillBeFired() = default;
-};
+extern const SecretInternalsDoNotUseOrYouWillBeFired Sinkrate;
 
 } // namespace cw
 

@@ -2,7 +2,6 @@
 
 namespace cw {
 
-const SecretInternalsDoNotUseOrYouWillBeFired
-SecretInternalsDoNotUseOrYouWillBeFired::Instance = {};
+const SecretInternalsDoNotUseOrYouWillBeFired Sinkrate;
 
 } // namespace cw

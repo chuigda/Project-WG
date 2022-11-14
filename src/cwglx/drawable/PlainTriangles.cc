@@ -114,7 +114,7 @@ void PlainTriangles::AddTriangle(const Triangle &triangle) {
   }
 
   AddTriangleInner(triangle,
-                   SecretInternalsDoNotUseOrYouWillBeFired::Instance);
+                   Sinkrate);
 }
 
 void PlainTriangles::AddTriangles(const Triangle *triangles,
@@ -135,7 +135,7 @@ void PlainTriangles::AddTriangles(const Triangle *triangles,
   for (std::size_t i = 0; i < count; i++) {
     const Triangle& triangle = triangles[i];
     AddTriangleInner(triangle,
-                     SecretInternalsDoNotUseOrYouWillBeFired::Instance);
+                     Sinkrate);
   }
 }
 
@@ -156,7 +156,7 @@ void PlainTriangles::AddTriangles(TriangleGen *generator) {
   while (generator->HasNextTriangle()) {
     const auto triangle = generator->NextTriangle();
     AddTriangleInner(triangle,
-                     SecretInternalsDoNotUseOrYouWillBeFired::Instance);
+                     Sinkrate);
   }
 }
 
