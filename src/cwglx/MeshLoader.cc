@@ -76,6 +76,8 @@ static void ProcessMeshLine(PlainTriangles* triangles,
     PARSE_UINT(v3, parts[3], success);
 
     triangles->AddTriangle(Triangle { verticesPool[v1 - 1], verticesPool[v2 - 1], verticesPool[v3 - 1] });
+  } else if (parts[0] == "s" || parts[0] == "o") {
+    // do nothing, since we put only one object into one mesh file
   } else {
     qDebug() << "warning: when processing file:"
              << meshFile

@@ -86,8 +86,6 @@ GLWidget::~GLWidget() {
 static std::unique_ptr<cw::PlainTriangles> berTriangles =
   std::make_unique<cw::PlainTriangles>();
 
-static std::unique_ptr<cw::Drawable> berDrawable = nullptr;
-
 void GLWidget::initializeGL() {
   cw::SetupPreferredSettings(this);
   m_Light.reset(new cw::PointLight(GL_LIGHT0,
@@ -141,11 +139,6 @@ void GLWidget::initializeGL() {
     };
     berTriangles->AddTriangles(&generator);
     berTriangles->PreInitialize(this);
-
-    berDrawable = std::make_unique<cw::MaterializedDrawable>(
-      cw::GetPureRedMaterial(),
-      std::vector { static_cast<cw::Drawable const*>(berTriangles.get()) }
-    );
   }
   // TESTING CODE
 
@@ -213,7 +206,7 @@ void GLWidget::paintGL() {
 
   glDisable(GL_LIGHTING);
   glColor3f(0.85f, 0.0f, 0.0f);
-  berDrawable->Draw(this);
+  berTriangles->Draw(this);
   glEnable(GL_LIGHTING);
 
   /*
