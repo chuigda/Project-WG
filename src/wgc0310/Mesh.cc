@@ -34,7 +34,7 @@ WGCMeshCollection::WGCMeshCollection(GLFunctions *f, cw::DrawableArena &arena) {
   const auto blackPlastic = cw::GetBlackPlasticMaterial();
   const auto glass = cw::GetGlassMaterial();
 
-  LOAD_MESH_MTL("./resc/model/wheel.mesh", blackPlastic, wheel);
+  LOAD_MESH_MTL("./resc/model/wheel.mesh", blackPlastic, wheel)
   LOAD_MESH_MTL("./resc/model/monitor.mesh", plastic, monitor)
   LOAD_MESH_MTL("./resc/model/monitor-intake.mesh", chrome, monitorIntake)
   LOAD_MESH_MTL("./resc/model/radar.mesh", brass, radar)
