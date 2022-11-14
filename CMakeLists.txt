@@ -82,14 +82,16 @@ set(PROJECT_SOURCES
     include/cwglx/drawable/FineRectGen.h
     include/cwglx/drawable/Composition.h
 
-        src/wgc0310/ScreenGlass.cc
-        src/wgc0310/Screen.cc
-        src/wgc0310/ScreenCurveHelper.cc
-        include/wgc0310/ScreenGlass.h
-        include/wgc0310/Screen.h
-        include/wgc0310/ScreenCurveHelper.h
+    src/wgc0310/Mesh.cc
+    src/wgc0310/ScreenGlass.cc
+    src/wgc0310/Screen.cc
+    src/wgc0310/ScreenCurveHelper.cc
+    include/wgc0310/Mesh.h
+    include/wgc0310/ScreenGlass.h
+    include/wgc0310/Screen.h
+    include/wgc0310/ScreenCurveHelper.h
 
-        resc/main.qrc)
+    resc/main.qrc)
 
 qt_wrap_ui(PROJECT_SOURCES src/ui/ConfigWidget.ui)
 qt_wrap_ui(PROJECT_SOURCES src/ui/MessageBoxAlter.ui)

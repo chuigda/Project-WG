@@ -22,17 +22,8 @@ GLWidget::GLWidget(QWidget *parent)
     m_Light(nullptr),
     m_Light2(nullptr),
     m_Arena(),
-    m_MonitorId(0),
-    m_MonitorIntakeId(0),
-    m_RadarId(0),
-    m_ChestBoxId(0),
-    m_ChestPlateId(0),
-    m_PowerId(0),
-    m_PowerPinId(0),
-    m_BerId(0),
-    m_BerShellId(0),
-    m_ScreenGlassId(0),
-    m_ScreenId(0),
+    m_Mesh(nullptr),
+
     m_Timer(new QTimer(this))
 {
   QSurfaceFormat format;
@@ -106,52 +97,14 @@ void GLWidget::initializeGL() {
                                     cw::Vertex(30.0, 15.0, 10.0),
                                     this));
 
-  const auto plastic = cw::GetPlasticMaterial();
-  const auto chrome = cw::GetChromeMaterial();
-  const auto brass = cw::GetBrassMaterial();
-  const auto blackPlastic = cw::GetBlackPlasticMaterial();
-  const auto glass = cw::GetGlassMaterial();
 
-  #define LOAD_MESH(PATH, MTL, TGT) \
-    { \
-      std::unique_ptr<cw::PlainTriangles> triangles = cw::LoadMesh(PATH); \
-      triangles->PreInitialize(this); \
-      const auto [_, meshPtr] = m_Arena.Put(std::move(triangles)); \
-      const auto [meshId, _2] = \
-        m_Arena.Put( \
-          std::make_unique<cw::MaterializedDrawable>( \
-            MTL, std::vector { meshPtr } \
-          ) \
-        ); \
-      TGT = meshId; \
-    }
-
-  LOAD_MESH("./resc/model/monitor.mesh", plastic, m_MonitorId)
-  LOAD_MESH("./resc/model/monitor-intake.mesh", chrome, m_MonitorIntakeId)
-  LOAD_MESH("./resc/model/radar.mesh", brass, m_RadarId)
-
-  LOAD_MESH("./resc/model/chest-box.mesh", plastic, m_ChestBoxId)
-  LOAD_MESH("./resc/model/chest-plate.mesh", chrome, m_ChestPlateId)
-  LOAD_MESH("./resc/model/power.mesh", blackPlastic, m_PowerId)
-  LOAD_MESH("./resc/model/power-pin.mesh", brass, m_PowerPinId)
-  LOAD_MESH("./resc/model/ber-shell.mesh", glass, m_BerShellId)
-
-  #undef LOAD_MESH
-
-  // the 'ber', does not use material
-  {
-    std::unique_ptr<cw::PlainTriangles> berTriangles =
-      cw::LoadMesh("./resc/model/ber.mesh");
-    berTriangles->PreInitialize(this);
-    const auto [berId, _] = m_Arena.Put(std::move(berTriangles));
-    m_BerId = berId;
-  }
+  m_Mesh = std::make_unique<wgc0310::WGCMeshCollection>(this, m_Arena);
 
   // screen
   {
-    const auto [screenId, _5] =
+    const auto [_, screen] =
       m_Arena.Put(std::make_unique<wgc0310::Screen>(this));
-    m_ScreenId = screenId;
+    m_Screen = static_cast<wgc0310::Screen const*>(screen);
   }
 
   // screen glass
@@ -162,14 +115,14 @@ void GLWidget::initializeGL() {
     glassTriangles->AddTriangles(glassGenerator.get());
     glassTriangles->PreInitialize(this);
 
-    const auto [_3, glassMeshPtr] = m_Arena.Put(std::move(glassTriangles));
-    const auto [glassId, _4] = m_Arena.Put(
+    const auto [_, glassMeshPtr] = m_Arena.Put(std::move(glassTriangles));
+    const auto [_2, mtlMeshPtr] = m_Arena.Put(
       std::make_unique<cw::MaterializedDrawable>(
-        glass,
+        cw::GetGlassMaterial(),
         std::vector { glassMeshPtr }
       )
     );
-    m_ScreenGlassId = glassId;
+    m_ScreenGlass = mtlMeshPtr;
   }
 
   // detect OpenGL information
@@ -182,11 +135,9 @@ void GLWidget::initializeGL() {
 
 void GLWidget::paintGL() {
   // preparation stage
-  wgc0310::Screen const* screen =
-      static_cast<wgc0310::Screen const*>(m_Arena.Get(m_ScreenId));
-  screen->BeginScreenContext(this);
+  m_Screen->BeginScreenContext(this);
   m_ScreenStatus.DrawOnScreen(this);
-  screen->DoneScreenContext(this);
+  m_Screen->DoneScreenContext(this);
 
   // switch back to default framebuffer. not using `0` since
   // Qt doesn't use it as the default one.
@@ -215,38 +166,46 @@ void GLWidget::paintGL() {
   m_Light2->Enable(this);
   m_CameraEntityStatus.ApplyEntityTransformation(this);
 
-  glColor4f(0, 0.5f, 1.0f, 1.0f);
+  glColor4f(0, 0.75f, 1.0f, 1.0f);
   glDisable(GL_LIGHTING);
-  m_Arena.Get(m_BerId)->Draw(this);
+  m_Mesh->ber->Draw(this);
   glEnable(GL_LIGHTING);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
   glPushMatrix();
   {
-    m_Arena.Get(m_ChestBoxId)->Draw(this);
-    m_Arena.Get(m_ChestPlateId)->Draw(this);
-    m_Arena.Get(m_PowerId)->Draw(this);
-    m_Arena.Get(m_PowerPinId)->Draw(this);
+    m_Mesh->chestBox->Draw(this);
+    m_Mesh->chestPlate->Draw(this);
+    m_Mesh->power->Draw(this);
+    m_Mesh->powerPin->Draw(this);
 
-    glTranslatef(0.0f, 13.5f, 0.0f);
-    m_Arena.Get(m_MonitorId)->Draw(this);
-    m_Arena.Get(m_MonitorIntakeId)->Draw(this);
-
-    glTranslatef(0.0f, 9.25f, 0.0f);
     glPushMatrix();
-    glRotatef(m_RadarRotation, 1.0f, 0.0f, 0.0f);
-    m_Arena.Get(m_RadarId)->Draw(this);
+    {
+      glTranslatef(14.5f, 7.5f, 0.0f);
+      m_Mesh->shoulder->Draw(this);
+      m_Mesh->shoulderPlate->Draw(this);
+    }
     glPopMatrix();
 
-    glTranslatef(0.0f, 0.0f, 4.5f);
-    screen->Draw(this);
+    glTranslatef(0.0f, 13.5f, 0.0f);
+    m_Mesh->monitor->Draw(this);
+    m_Mesh->monitorIntake->Draw(this);
+
+    glTranslatef(0.0f, 9.25f, -0.25f);
+    glPushMatrix();
+    glRotatef(m_RadarRotation, 1.0f, 0.0f, 0.0f);
+    m_Mesh->radar->Draw(this);
+    glPopMatrix();
+
+    glTranslatef(0.0f, 0.0f, 4.75f);
+    m_Screen->Draw(this);
 
     glTranslatef(0.0f, 0.0f, 0.5f);
     glColor4f(0.05f, 0.075f, 0.1f, 0.1f);
-    m_Arena.Get(m_ScreenGlassId)->Draw(this);
+    m_ScreenGlass->Draw(this);
   }
   glPopMatrix();
-  m_Arena.Get(m_BerShellId)->Draw(this);
+  m_Mesh->berShell->Draw(this);
 }
 
 void GLWidget::resizeGL(int w, int h) {

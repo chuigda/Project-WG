@@ -31,7 +31,7 @@ public:
       cameraRotateY(0.0),
       cameraRotateZ(0.0),
       entityX(0.0f),
-      entityY(0.0f),
+      entityY(-15.0f),
       entityZ(-75.0f),
       entityRotateX(0.0),
       entityRotateY(0.0),
