@@ -72,4 +72,10 @@ CW_DEFINE_MATERIAL(BlackPlastic,
                    0.7f, 0.7f, 0.7f, 1.0f,
                    32.0f)
 
+CW_DEFINE_MATERIAL(Steel15N20,
+                   0.15f, 0.15f, 0.15f, 1.0f,
+                   0.25f, 0.25f, 0.25f, 1.0f,
+                   0.774597f, 0.774597f, 0.774597f, 1.0f,
+                   76.8f)
+
 #undef CW_DEFINE_MATERIAL

@@ -17,6 +17,7 @@ public:
   cw::Drawable const* monitor;
   cw::Drawable const* monitorIntake;
   cw::Drawable const* radar;
+  cw::Drawable const* wheel;
 
   // 胸部模型
   cw::Drawable const* chestBox;
@@ -31,7 +32,14 @@ public:
   cw::Drawable const* shoulderPlate;
 
   // 胳膊模型
-
+  cw::Drawable const* bigArm;
+  cw::Drawable const* bigArmCover;
+  cw::Drawable const* bigArmConnector;
+  cw::Drawable const* smallArm;
+  cw::Drawable const* smallArmCover;
+  cw::Drawable const* wheelSmall;
+  cw::Drawable const* claw;
+  cw::Drawable const* clawCover;
 };
 
 } // namespace wgc0310
