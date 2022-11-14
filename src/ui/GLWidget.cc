@@ -3,6 +3,7 @@
 #include <experimental/array>
 #include <QTimer>
 #include <QTimerEvent>
+#include <QElapsedTimer>
 
 #include "glu/FakeGLU.h"
 #include "cwglx/Setup.h"
@@ -83,9 +84,6 @@ GLWidget::~GLWidget() {
   doneCurrent();
 }
 
-static std::unique_ptr<cw::PlainTriangles> berTriangles =
-  std::make_unique<cw::PlainTriangles>();
-
 void GLWidget::initializeGL() {
   cw::SetupPreferredSettings(this);
   m_Light.reset(new cw::PointLight(GL_LIGHT0,
@@ -101,11 +99,12 @@ void GLWidget::initializeGL() {
                                     cw::Vertex(25.0, 0.0, 0),
                                     this));
 
-  std::unique_ptr<cw::PlainTriangles> headTriangles =
-    cw::LoadMesh("./resc/model/head.mesh");
-  headTriangles->PreInitialize(this);
-
+  // head
   {
+    std::unique_ptr<cw::PlainTriangles> headTriangles =
+      cw::LoadMesh("./resc/model/head.mesh");
+    headTriangles->PreInitialize(this);
+
     const auto [_, head] = m_Arena.Put(std::move(headTriangles));
     const auto [headId, _2] = m_Arena.Put(
       std::make_unique<cw::MaterializedDrawable>(
@@ -116,11 +115,12 @@ void GLWidget::initializeGL() {
     m_HeadId = headId;
   }
 
-  std::unique_ptr<cw::PlainTriangles> radarTriangles =
-    cw::LoadMesh("./resc/model/radar.mesh");
-  radarTriangles->PreInitialize(this);
-
+  // radar
   {
+    std::unique_ptr<cw::PlainTriangles> radarTriangles =
+      cw::LoadMesh("./resc/model/radar.mesh");
+    radarTriangles->PreInitialize(this);
+
     const auto [_, radar] = m_Arena.Put(std::move(radarTriangles));
     const auto [radarId, _2] = m_Arena.Put(
       std::make_unique<cw::MaterializedDrawable>(
@@ -131,36 +131,62 @@ void GLWidget::initializeGL() {
     m_RadarId = radarId;
   }
 
-  // TESTING CODE
+  // screen glass
   {
-    cw::BoxGenerator generator {
-      { 0.0f, 0.0f, 0.0f },
-      10.0f, 10.0f, 10.0f
-    };
-    berTriangles->AddTriangles(&generator);
-    berTriangles->PreInitialize(this);
-  }
-  // TESTING CODE
-
-  std::unique_ptr<cw::TriangleGen> glassGenerator = wgc0310::ScreenGlass();
-  std::unique_ptr<cw::PlainTriangles> glassTriangles =
+    std::unique_ptr<cw::TriangleGen> glassGenerator = wgc0310::ScreenGlass();
+    std::unique_ptr<cw::PlainTriangles> glassTriangles =
       std::make_unique<cw::PlainTriangles>();
-  glassTriangles->AddTriangles(glassGenerator.get());
-  glassTriangles->PreInitialize(this);
+    glassTriangles->AddTriangles(glassGenerator.get());
+    glassTriangles->PreInitialize(this);
 
-  const auto [_3, glass] = m_Arena.Put(std::move(glassTriangles));
-  const auto [glassId, _4] = m_Arena.Put(
+    const auto [_3, glass] = m_Arena.Put(std::move(glassTriangles));
+    const auto [glassId, _4] = m_Arena.Put(
       std::make_unique<cw::MaterializedDrawable>(
-          cw::GetGlassMaterial(),
-          std::vector { glass }
+        cw::GetGlassMaterial(),
+        std::vector{glass}
       )
-  );
-  m_ScreenGlassId = glassId;
+    );
+    m_ScreenGlassId = glassId;
+  }
 
-  const auto [screenId, _5] = m_Arena.Put(
-      std::make_unique<wgc0310::Screen>(this)
-  );
-  m_ScreenId = screenId;
+  // chest box
+  {
+    std::unique_ptr<cw::PlainTriangles> chestBoxTriangles =
+      cw::LoadMesh("./resc/model/chest-box.mesh");
+    chestBoxTriangles->PreInitialize(this);
+
+    const auto [_, chestBox] = m_Arena.Put(std::move(chestBoxTriangles));
+    const auto [chestBoxId, _2] = m_Arena.Put(
+      std::make_unique<cw::MaterializedDrawable>(
+        cw::GetPlasticMaterial(),
+        std::vector{chestBox}
+      )
+    );
+    m_ChestBoxId = chestBoxId;
+  }
+
+  // chest plate
+  {
+    std::unique_ptr<cw::PlainTriangles> chestPlateTriangles =
+      cw::LoadMesh("./resc/model/chest-plate.mesh");
+    chestPlateTriangles->PreInitialize(this);
+
+    const auto [_, chestPlate] = m_Arena.Put(std::move(chestPlateTriangles));
+    const auto [chestPlateId, _2] = m_Arena.Put(
+      std::make_unique<cw::MaterializedDrawable>(
+        cw::GetBrassMaterial(),
+        std::vector{chestPlate}
+      )
+    );
+    m_ChestPlateId = chestPlateId;
+  }
+
+  // screen
+  {
+    const auto [screenId, _5] =
+      m_Arena.Put(std::make_unique<wgc0310::Screen>(this));
+    m_ScreenId = screenId;
+  }
 
   cw::GLInfo glInfo = cw::GLInfo::AutoDetect(this);
   m_ConfigWidget->FillGLInfo(glInfo);
@@ -204,14 +230,12 @@ void GLWidget::paintGL() {
   m_Light2->Enable(this);
   m_CameraEntityStatus.ApplyEntityTransformation(this);
 
-  glDisable(GL_LIGHTING);
-  glColor3f(0.85f, 0.0f, 0.0f);
-  berTriangles->Draw(this);
-  glEnable(GL_LIGHTING);
-
-  /*
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-  glTranslatef(0.0f, -9.25f, 0.0f);
+
+  m_Arena.Get(m_ChestBoxId)->Draw(this);
+  m_Arena.Get(m_ChestPlateId)->Draw(this);
+
+  glTranslatef(0.0f, 13.5f, 0.0f);
   m_Arena.Get(m_HeadId)->Draw(this);
 
   glTranslatef(0.0f, 9.25f, 0.0f);
@@ -228,7 +252,6 @@ void GLWidget::paintGL() {
   glColor4f(0.05f, 0.075f, 0.1f, 0.1f);
   m_Arena.Get(m_ScreenGlassId)->Draw(this);
   glPopAttrib();
-  */
 }
 
 void GLWidget::resizeGL(int w, int h) {

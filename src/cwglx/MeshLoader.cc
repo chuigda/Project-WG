@@ -71,9 +71,9 @@ static void ProcessMeshLine(PlainTriangles* triangles,
     }
 
     bool success;
-    PARSE_UINT(v1, parts[1], success);
-    PARSE_UINT(v2, parts[2], success);
-    PARSE_UINT(v3, parts[3], success);
+    PARSE_UINT(v1, parts[1], success)
+    PARSE_UINT(v2, parts[2], success)
+    PARSE_UINT(v3, parts[3], success)
 
     triangles->AddTriangle(Triangle { verticesPool[v1 - 1], verticesPool[v2 - 1], verticesPool[v3 - 1] });
   } else if (parts[0] == "s" || parts[0] == "o") {

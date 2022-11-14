@@ -58,6 +58,8 @@ private:
   std::size_t m_RadarId;
   std::size_t m_ScreenGlassId;
   std::size_t m_ScreenId;
+  std::size_t m_ChestBoxId;
+  std::size_t m_ChestPlateId;
 
   CameraEntityStatus m_CameraEntityStatus;
   ScreenStatus m_ScreenStatus;
