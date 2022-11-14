@@ -9,14 +9,22 @@ namespace cw {
 #define PARSE_DOUBLE(v, s, r) \
   double v = (s).toDouble(&(r)); \
   if (!(r)) { \
-    qDebug() << "error processing file:" << meshFile << "line:" << lineNo << "(invalid v-line)"; \
+    qDebug() << "error processing file:" \
+             << meshFile      \
+             << "line:"       \
+             << lineNo        \
+             << "(invalid v-line)"; \
     return; \
   }
 
 #define PARSE_UINT(v, s, r) \
   std::size_t v = (s).toUInt(&(r)); \
   if (!(r)) { \
-    qDebug() << "error processing file:" << meshFile << "line:" << lineNo << "(invalid f-line)"; \
+    qDebug() << "error processing file:" \
+             << meshFile    \
+             << "line:"     \
+             << lineNo      \
+             << "(invalid f-line)"; \
     return; \
   }
 
@@ -38,7 +46,11 @@ static void ProcessMeshLine(PlainTriangles* triangles,
 
   if (parts[0] == "v") {
     if (parts.length() != 4) {
-      qDebug() << "error processing file:" << meshFile << "line:" << lineNo << "(invalid v-line)";
+      qDebug() << "error processing file:"
+               << meshFile
+               << "line:"
+               << lineNo
+               << "(invalid v-line)";
       return;
     }
 
@@ -50,7 +62,11 @@ static void ProcessMeshLine(PlainTriangles* triangles,
     verticesPool.emplace_back(x, y, z);
   } else if (parts[0] == "f") {
     if (parts.length() != 4) {
-      qDebug() << "error processing file:" << meshFile << "line:" << lineNo << "(invalid f-line)";
+      qDebug() << "error processing file:"
+               << meshFile
+               << "line:"
+               << lineNo
+               << "(invalid f-line)";
       return;
     }
 
@@ -60,6 +76,15 @@ static void ProcessMeshLine(PlainTriangles* triangles,
     PARSE_UINT(v3, parts[3], success);
 
     triangles->AddTriangle(Triangle { verticesPool[v1 - 1], verticesPool[v2 - 1], verticesPool[v3 - 1] });
+  } else {
+    qDebug() << "warning: when processing file:"
+             << meshFile
+             << "line:"
+             << lineNo
+             << "(unknown command"
+             << parts[0]
+             << ")";
+    return;
   }
 }
 
