@@ -932,7 +932,7 @@
 机器人形象以 CC-BY-NC-SA 4.0 授权
 
 特别鸣谢:
-	幼-菲尼克斯
+	缪缪Mio (幼-菲尼克斯)
 	阿正昂
 	CrLF0710
 	Seija
@@ -1028,9 +1028,9 @@
   <slot>setCameraMoveZ(int)</slot>
  </slots>
  <buttongroups>
-  <buttongroup name="culLFaceButtonGroup"/>
   <buttongroup name="imgTexFiltButtonGroup"/>
   <buttongroup name="scrRenderModeButtonGroup"/>
+  <buttongroup name="culLFaceButtonGroup"/>
   <buttongroup name="scrTexFiltButtonGroup"/>
  </buttongroups>
 </ui>
