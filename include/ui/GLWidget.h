@@ -55,6 +55,7 @@ private:
 
   cw::DrawableArena m_Arena;
   std::size_t m_HeadId;
+  std::size_t m_RadarId;
   std::size_t m_ScreenGlassId;
   std::size_t m_ScreenId;
 

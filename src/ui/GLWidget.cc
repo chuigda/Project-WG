@@ -100,14 +100,30 @@ void GLWidget::initializeGL() {
   std::unique_ptr<cw::PlainTriangles> headTriangles = cw::LoadMesh("./resc/head.mesh");
   headTriangles->PreInitialize(this);
 
-  const auto [_, head] = m_Arena.Put(std::move(headTriangles));
-  const auto [headId, _2] = m_Arena.Put(
+  {
+    const auto [_, head] = m_Arena.Put(std::move(headTriangles));
+    const auto [headId, _2] = m_Arena.Put(
       std::make_unique<cw::MaterializedDrawable>(
-          cw::GetPlasticMaterial(),
-          std::vector { head }
+        cw::GetPlasticMaterial(),
+        std::vector{head}
       )
-  );
-  m_HeadId = headId;
+    );
+    m_HeadId = headId;
+  }
+
+  std::unique_ptr<cw::PlainTriangles> radarTriangles = cw::LoadMesh("./resc/radar.mesh");
+  radarTriangles->PreInitialize(this);
+
+  {
+    const auto [_, radar] = m_Arena.Put(std::move(radarTriangles));
+    const auto [radarId, _2] = m_Arena.Put(
+      std::make_unique<cw::MaterializedDrawable>(
+        cw::GetBrassMaterial(),
+        std::vector{radar}
+      )
+    );
+    m_RadarId = radarId;
+  }
 
   std::unique_ptr<cw::TriangleGen> glassGenerator = wgc0310::ScreenGlass();
   std::unique_ptr<cw::PlainTriangles> glassTriangles =
@@ -175,7 +191,10 @@ void GLWidget::paintGL() {
   glTranslatef(0.0f, -9.25f, 0.0f);
   m_Arena.Get(m_HeadId)->Draw(this);
 
-  glTranslatef(0.0f, 9.25f, 4.5f);
+  glTranslatef(0.0f, 9.25f, 0.0f);
+  m_Arena.Get(m_RadarId)->Draw(this);
+
+  glTranslatef(0.0f, 0.0f, 4.5f);
   screen->Draw(this);
 
   glTranslatef(0.0f, 0.0f, 0.5f);

@@ -7,7 +7,8 @@ class Components {
 public:
   enum {
     Head = 1,
-    Screen = 2
+    Screen = 2,
+    Radar = 3
   };
 };
 
