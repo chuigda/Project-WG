@@ -179,6 +179,9 @@ void GLWidget::paintGL() {
     m_Mesh->power->Draw(this);
     m_Mesh->powerPin->Draw(this);
 
+    m_Mesh->abdomen->Draw(this);
+    m_Mesh->waist->Draw(this);
+
     glPushMatrix();
     {
       glTranslatef(14.5f, 7.5f, 0.0f);

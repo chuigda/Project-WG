@@ -27,6 +27,10 @@ public:
   cw::Drawable const* ber;
   cw::Drawable const* berShell;
 
+  // 腹部模型
+  cw::Drawable const* abdomen;
+  cw::Drawable const* waist;
+
   // 肩部模型
   cw::Drawable const* shoulder;
   cw::Drawable const* shoulderPlate;

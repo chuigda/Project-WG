@@ -46,6 +46,9 @@ WGCMeshCollection::WGCMeshCollection(GLFunctions *f, cw::DrawableArena &arena) {
   LOAD_MESH_MTL("./resc/model/ber-shell.mesh", glass, berShell)
   LOAD_MESH("./resc/model/ber.mesh", ber)
 
+  LOAD_MESH_MTL("./resc/model/abdomen.mesh", blackPlastic, abdomen)
+  LOAD_MESH_MTL("./resc/model/waist.mesh", plastic, waist)
+
   LOAD_MESH_MTL("./resc/model/shoulder-connector.mesh", plastic, shoulder)
   LOAD_MESH_MTL("./resc/model/shoulder-plate.mesh", chrome, shoulderPlate)
 
