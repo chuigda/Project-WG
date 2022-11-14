@@ -22,6 +22,7 @@ GLWidget::GLWidget(QWidget *parent)
     m_Light2(nullptr),
     m_Arena(),
     m_HeadId(0),
+    m_RadarId(0),
     m_ScreenGlassId(0),
     m_ScreenId(0),
     m_Timer(new QTimer(this))
@@ -97,7 +98,8 @@ void GLWidget::initializeGL() {
                                     cw::Vertex(25.0, 0.0, 0),
                                     this));
 
-  std::unique_ptr<cw::PlainTriangles> headTriangles = cw::LoadMesh("./resc/head.mesh");
+  std::unique_ptr<cw::PlainTriangles> headTriangles =
+    cw::LoadMesh("./resc/model/head.mesh");
   headTriangles->PreInitialize(this);
 
   {
@@ -111,7 +113,8 @@ void GLWidget::initializeGL() {
     m_HeadId = headId;
   }
 
-  std::unique_ptr<cw::PlainTriangles> radarTriangles = cw::LoadMesh("./resc/radar.mesh");
+  std::unique_ptr<cw::PlainTriangles> radarTriangles =
+    cw::LoadMesh("./resc/model/radar.mesh");
   radarTriangles->PreInitialize(this);
 
   {
@@ -192,7 +195,10 @@ void GLWidget::paintGL() {
   m_Arena.Get(m_HeadId)->Draw(this);
 
   glTranslatef(0.0f, 9.25f, 0.0f);
+  glPushMatrix();
+  glRotatef(m_RadarRotation, 1.0f, 0.0f, 0.0f);
   m_Arena.Get(m_RadarId)->Draw(this);
+  glPopMatrix();
 
   glTranslatef(0.0f, 0.0f, 4.5f);
   screen->Draw(this);
