@@ -6,7 +6,6 @@ namespace wgc0310 {
 class Components {
 public:
   enum {
-    SideThermalController = 0,
     Head = 1,
     Screen = 2
   };

@@ -11,7 +11,6 @@
 #include "cwglx/drawable/Composition.h"
 #include "cwglx/drawable/PlainTriangles.h"
 #include "cwglx/drawable/TriangleGen.h"
-#include "wgc0310/head/Head.h"
 #include "wgc0310/head/ScreenGlass.h"
 #include "wgc0310/head/Screen.h"
 #include "ui/ConfigWidget.h"
@@ -98,7 +97,6 @@ void GLWidget::initializeGL() {
                                     cw::Vertex(25.0, 0.0, 0),
                                     this));
 
-  std::unique_ptr<cw::TriangleGen> headGenerator = wgc0310::Head();
   std::unique_ptr<cw::PlainTriangles> headTriangles = cw::LoadMesh("./resc/head.mesh");
   headTriangles->PreInitialize(this);
 
