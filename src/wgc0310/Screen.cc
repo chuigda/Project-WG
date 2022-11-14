@@ -1,4 +1,4 @@
-#include "wgc0310/head/Screen.h"
+#include "include/wgc0310/Screen.h"
 
 #include <cstdlib>
 #include <QThread>
@@ -6,7 +6,7 @@
 #include <QImage>
 #include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
-#include "wgc0310/head/ScreenCurveHelper.h"
+#include "include/wgc0310/ScreenCurveHelper.h"
 #include "util/Derive.h"
 
 namespace wgc0310 {

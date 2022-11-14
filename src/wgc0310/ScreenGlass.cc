@@ -1,5 +1,5 @@
-#include "wgc0310/head/ScreenGlass.h"
-#include "wgc0310/head/ScreenCurveHelper.h"
+#include "include/wgc0310/ScreenGlass.h"
+#include "include/wgc0310/ScreenCurveHelper.h"
 
 namespace wgc0310 {
 

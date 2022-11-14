@@ -1,4 +1,4 @@
-#include "wgc0310/head/ScreenCurveHelper.h"
+#include "include/wgc0310/ScreenCurveHelper.h"
 
 #include <cmath>
 #include <QDebug>
