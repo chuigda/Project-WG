@@ -26,10 +26,10 @@
    <string>控制台</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
-   <item row="0" column="1">
+   <item row="0" column="0">
     <widget class="QTabWidget" name="configTab">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="openglTab">
       <attribute name="title">
@@ -895,8 +895,146 @@
      </widget>
      <widget class="QWidget" name="robotBoneTab">
       <attribute name="title">
-       <string>骨骼动画</string>
+       <string>身体动画</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_14">
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>彩色计时器</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_11">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_26">
+            <item>
+             <widget class="QRadioButton" name="radioGray">
+              <property name="text">
+               <string>常亮</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioBlink">
+              <property name="text">
+               <string>闪烁</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioBlue">
+              <property name="text">
+               <string>熄灭</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_27">
+            <item>
+             <widget class="QLabel" name="labelBlinkTime">
+              <property name="text">
+               <string>闪烁时长</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSlider" name="blinkTimeSlider">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="maximum">
+               <number>40</number>
+              </property>
+              <property name="value">
+               <number>20</number>
+              </property>
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_25">
+         <item>
+          <widget class="QGroupBox" name="leftArmGroupBox">
+           <property name="title">
+            <string>左臂</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_12">
+            <item>
+             <spacer name="verticalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>280</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="rightArmGroupBox">
+           <property name="title">
+            <string>右臂</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_13">
+            <item>
+             <spacer name="verticalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>280</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_28">
+         <item>
+          <spacer name="horizontalSpacer_10">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="resetBoneButton">
+           <property name="text">
+            <string>重置</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="faceCaptureTab">
       <attribute name="title">
@@ -1029,8 +1167,8 @@
  </slots>
  <buttongroups>
   <buttongroup name="imgTexFiltButtonGroup"/>
+  <buttongroup name="scrTexFiltButtonGroup"/>
   <buttongroup name="scrRenderModeButtonGroup"/>
   <buttongroup name="culLFaceButtonGroup"/>
-  <buttongroup name="scrTexFiltButtonGroup"/>
  </buttongroups>
 </ui>

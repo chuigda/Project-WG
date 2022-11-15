@@ -6,7 +6,15 @@
 
 class ArmStatus {
 public:
-  GLdouble rotation[5] = { 0.0, 0.0, 0.0, 0.0, 0.0 };
+  GLdouble rotation[5] = { 0.0, 90.0, 0.0, 0.0, 0.0 };
+
+  constexpr inline void Reset() noexcept {
+    rotation[0] = 0.0;
+    rotation[1] = 90.0;
+    rotation[2] = 0.0;
+    rotation[3] = 0.0;
+    rotation[4] = 0.0;
+  }
 };
 
 class BodyStatus {
@@ -23,7 +31,7 @@ public:
   ArmStatus leftArmStatus;
   ArmStatus rightArmStatus;
 
-  explicit constexpr inline BodyStatus()
+  explicit constexpr inline BodyStatus() noexcept
     : colorTimerStatus(Blue),
       blinkFrames(30),
       blinkCounter(0),
@@ -31,12 +39,20 @@ public:
       rightArmStatus()
   {}
 
-  constexpr inline void StartBlinking() {
+  constexpr inline void Reset() noexcept {
+    colorTimerStatus = Blue;
+    blinkFrames = 30;
+    blinkCounter = 0;
+    leftArmStatus.Reset();
+    rightArmStatus.Reset();
+  }
+
+  constexpr inline void StartBlinking() noexcept {
     colorTimerStatus = Blinking;
     blinkCounter = 0;
   }
 
-  constexpr inline void SetBlinkFrames(unsigned frames) {
+  constexpr inline void SetBlinkFrames(unsigned frames) noexcept {
     blinkFrames = frames;
     if (blinkCounter >= blinkFrames) {
       blinkCounter = 0;

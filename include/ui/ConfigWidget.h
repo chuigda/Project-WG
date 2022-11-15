@@ -57,7 +57,7 @@ private slots:
   void UpdateEntityRotationX(int value);
   void UpdateEntityRotationY(int value);
   void UpdateEntityRotationZ(int value);
-  void ResetAll();
+  void ResetCameraEntityAll();
 
   void ShowThirdParties();
   void ShowAGPLLicense();
@@ -65,6 +65,8 @@ private slots:
   void ShowAboutQt();
 
 private:
+  void SetupCameraPage();
+
   Ui::ConfigWidget *ui;
 
   QWidget *m_GLWidget;

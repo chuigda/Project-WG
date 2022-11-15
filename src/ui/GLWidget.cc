@@ -47,7 +47,7 @@ GLWidget::GLWidget(QWidget *parent)
           this, &GLWidget::OnRenderSettingsSet);
 
   setBaseSize(1024, 768);
-  resize(1024,768);
+  resize(1024, 768);
 
   connect(this, &GLWidget::StaticScreensLoaded,
           m_ConfigWidget, &ConfigWidget::OnStaticScreensLoaded);
