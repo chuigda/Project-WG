@@ -185,60 +185,12 @@ void GLWidget::paintGL() {
     m_Mesh->waist->Draw(this);
 
     glPushMatrix();
-    {
-      glTranslatef(14.5f, 7.5f, 0.0f);
-      m_Mesh->shoulder->Draw(this);
-      m_Mesh->shoulderPlate->Draw(this);
-
-      glTranslatef(4.75, 0.0f, 0.0f);
-      glRotatef(-75.0f, 0.0f, 0.0f, 1.0f);
-      m_Mesh->wheelSmall->Draw(this);
-      m_Mesh->bigArm->Draw(this);
-      m_Mesh->bigArmCover->Draw(this);
-
-      glTranslatef(20.0, 0.0f, 0.0f);
-      m_Mesh->bigArmConnector->Draw(this);
-
-      glTranslatef(4.5, 0.0f, 0.0f);
-      glRotatef(-15.0f, 0.0f, 0.0f, 1.0f);
-      m_Mesh->wheelSmall->Draw(this);
-      m_Mesh->smallArm->Draw(this);
-      m_Mesh->smallArmCover->Draw(this);
-
-      glTranslatef(25.0f, 0.0f, 0.0f);
-      glRotatef(-7.5f, 0.0f, 0.0f, 1.0f);
-      m_Mesh->claw->Draw(this);
-      m_Mesh->clawCover->Draw(this);
-    }
+    DrawArm(m_BodyStatus.rightArmStatus);
     glPopMatrix();
 
     glPushMatrix();
     glScalef(-1.0f, 1.0f, -1.0f);
-    {
-      glTranslatef(14.5f, 7.5f, 0.0f);
-      m_Mesh->shoulder->Draw(this);
-      m_Mesh->shoulderPlate->Draw(this);
-
-      glTranslatef(4.75, 0.0f, 0.0f);
-      glRotatef(-75.0f, 0.0f, 0.0f, 1.0f);
-      m_Mesh->wheelSmall->Draw(this);
-      m_Mesh->bigArm->Draw(this);
-      m_Mesh->bigArmCover->Draw(this);
-
-      glTranslatef(20.0, 0.0f, 0.0f);
-      m_Mesh->bigArmConnector->Draw(this);
-
-      glTranslatef(4.5, 0.0f, 0.0f);
-      glRotatef(-15.0f, 0.0f, 0.0f, 1.0f);
-      m_Mesh->wheelSmall->Draw(this);
-      m_Mesh->smallArm->Draw(this);
-      m_Mesh->smallArmCover->Draw(this);
-
-      glTranslatef(25.0f, 0.0f, 0.0f);
-      glRotatef(-7.5f, 0.0f, 0.0f, 1.0f);
-      m_Mesh->claw->Draw(this);
-      m_Mesh->clawCover->Draw(this);
-    }
+    DrawArm(m_BodyStatus.leftArmStatus);
     glPopMatrix();
 
     glTranslatef(0.0f, 12.875f, 0.0f);
@@ -262,6 +214,34 @@ void GLWidget::paintGL() {
 void GLWidget::resizeGL(int w, int h) {
   Q_UNUSED(w)
   Q_UNUSED(h)
+}
+
+void GLWidget::DrawArm(const ArmStatus &armStatus) {
+  glTranslatef(14.5f, 7.5f, 0.0f);
+  glRotatef(armStatus.rotation[0], 1.0f, 0.0f, 0.0f);
+  m_Mesh->shoulder->Draw(this);
+  m_Mesh->shoulderPlate->Draw(this);
+
+  glTranslatef(4.75, 0.0f, 0.0f);
+  glRotatef(armStatus.rotation[1], 0.0f, 0.0f, 1.0f);
+  m_Mesh->wheelSmall->Draw(this);
+  m_Mesh->bigArm->Draw(this);
+  m_Mesh->bigArmCover->Draw(this);
+
+  glTranslatef(20.0, 0.0f, 0.0f);
+  glRotatef(armStatus.rotation[2], 1.0f, 0.0f, 0.0f);
+  m_Mesh->bigArmConnector->Draw(this);
+
+  glTranslatef(4.5, 0.0f, 0.0f);
+  glRotatef(armStatus.rotation[3], 0.0f, 0.0f, 1.0f);
+  m_Mesh->wheelSmall->Draw(this);
+  m_Mesh->smallArm->Draw(this);
+  m_Mesh->smallArmCover->Draw(this);
+
+  glTranslatef(25.0f, 0.0f, 0.0f);
+  glRotatef(armStatus.rotation[4], 0.0f, 0.0f, 1.0f);
+  m_Mesh->claw->Draw(this);
+  m_Mesh->clawCover->Draw(this);
 }
 
 void GLWidget::mouseDoubleClickEvent(QMouseEvent *event) {

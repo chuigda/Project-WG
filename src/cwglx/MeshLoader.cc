@@ -75,7 +75,11 @@ static void ProcessMeshLine(PlainTriangles* triangles,
     PARSE_UINT(v2, parts[2], success)
     PARSE_UINT(v3, parts[3], success)
 
-    triangles->AddTriangle(Triangle { verticesPool[v1 - 1], verticesPool[v2 - 1], verticesPool[v3 - 1] });
+    triangles->AddTriangle(Triangle {
+      verticesPool[v1 - 1],
+      verticesPool[v2 - 1],
+      verticesPool[v3 - 1]
+    });
   } else if (parts[0] == "s" || parts[0] == "o") {
     // do nothing, since we put only one object into one mesh file
   } else {
@@ -101,7 +105,8 @@ std::unique_ptr<PlainTriangles> LoadMesh(const char *meshFile) {
   }
 
   QTextStream textStream(&file);
-  std::unique_ptr<PlainTriangles> triangles = std::make_unique<PlainTriangles>();
+  std::unique_ptr<PlainTriangles> triangles =
+    std::make_unique<PlainTriangles>();
   std::vector<Vertex> verticesPool;
   std::size_t lineNo = 1;
   while (!textStream.atEnd()) {
@@ -113,4 +118,4 @@ std::unique_ptr<PlainTriangles> LoadMesh(const char *meshFile) {
   return triangles;
 }
 
-}
+} // namespace cw

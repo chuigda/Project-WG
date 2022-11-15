@@ -6,14 +6,14 @@
 
 class ArmStatus {
 public:
-  GLdouble rotation[5] = { 0.0, 90.0, 0.0, 0.0, 0.0 };
+  GLfloat rotation[5] = { 0.0f, -90.0f, 0.0f, 0.0f, 0.0f };
 
   constexpr inline void Reset() noexcept {
-    rotation[0] = 0.0;
-    rotation[1] = 90.0;
-    rotation[2] = 0.0;
-    rotation[3] = 0.0;
-    rotation[4] = 0.0;
+    rotation[0] = 0.0f;
+    rotation[1] = -90.0f;
+    rotation[2] = 0.0f;
+    rotation[3] = 0.0f;
+    rotation[4] = 0.0f;
   }
 };
 

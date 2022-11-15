@@ -52,6 +52,8 @@ private:
   void LoadAnimations();
   void InitAnimations();
 
+  void DrawArm(const ArmStatus& armStatus);
+
 private:
   QScopedPointer<cw::Light> m_Light;
   QScopedPointer<cw::Light> m_Light2;
