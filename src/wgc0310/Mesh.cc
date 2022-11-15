@@ -37,7 +37,6 @@ WGCMeshCollection::WGCMeshCollection(GLFunctions *f, cw::DrawableArena &arena) {
   LOAD_MESH_MTL("./resc/model/wheel.mesh", blackPlastic, wheel)
   LOAD_MESH_MTL("./resc/model/monitor.mesh", plastic, monitor)
   LOAD_MESH_MTL("./resc/model/monitor-intake.mesh", chrome, monitorIntake)
-  LOAD_MESH_MTL("./resc/model/radar.mesh", brass, radar)
 
   LOAD_MESH_MTL("./resc/model/chest-box.mesh", plastic, chestBox)
   LOAD_MESH_MTL("./resc/model/chest-plate.mesh", chrome, chestPlate)

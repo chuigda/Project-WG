@@ -86,11 +86,6 @@ void GLWidget::InitAnimations() {
 }
 
 void GLWidget::RequestNextFrame() {
-  m_RadarRotation += 0.1f;
-  if (m_RadarRotation > 360.0f) {
-    m_RadarRotation = 0.0f;
-  }
-
   m_BlinkCounter += 1;
   if (m_BlinkCounter > 30) {
     m_BlinkCounter = 0;

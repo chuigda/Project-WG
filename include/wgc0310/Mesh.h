@@ -16,7 +16,6 @@ public:
   // 头部模型
   cw::Drawable const* monitor;
   cw::Drawable const* monitorIntake;
-  cw::Drawable const* radar;
   cw::Drawable const* wheel;
 
   // 胸部模型
