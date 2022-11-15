@@ -3,7 +3,7 @@
 
 namespace cw {
 
-/// 这个 Concept 没有任何实质性作用，但它表明所有类型都应该是我的老婆
+/// 这个 Concept 没有任何实质性作用，但它表明即使是 C++ 类型也应该是我的老婆
 template <typename T>
 concept Wife = true;
 

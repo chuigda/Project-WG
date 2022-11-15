@@ -1,4 +1,5 @@
 #include "ui/Animation.h"
+#include "util/Wife.h"
 
 #include <QMessageBox>
 #include <QApplication>
@@ -18,7 +19,7 @@ void *LoadSharedObject(const QString& fileName) {
   return h;
 }
 
-template <typename T>
+template <cw::Wife T>
 T TryReadSymbol(void *handle, const char *symbol) {
   return reinterpret_cast<T>(
       GetProcAddress(reinterpret_cast<HMODULE>(handle), symbol)
@@ -37,7 +38,7 @@ void *LoadSharedObject(const QString& fileName) {
   return dlopen(fileName.toStdString().c_str(), RTLD_LAZY);
 }
 
-template <typename T>
+template <cw::Wife T>
 T TryReadSymbol(void *handle, const char *symbol) {
   return reinterpret_cast<T>(dlsym(handle, symbol));
 }

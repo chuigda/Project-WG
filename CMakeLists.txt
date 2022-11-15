@@ -46,6 +46,7 @@ set(PROJECT_SOURCES
     include/util/Constants.h
     include/util/Derive.h
     include/util/Sinkrate.h
+    include/util/Channel.h
 
     src/glu/FakeGLU.cc
     include/glu/FakeGLU.h
