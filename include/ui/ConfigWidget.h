@@ -8,6 +8,7 @@
 
 class QListWidgetItem;
 class CameraEntityStatus;
+class BodyStatus;
 class ScreenStatus;
 
 namespace Ui {
@@ -19,6 +20,7 @@ class ConfigWidget final : public QWidget {
 
 public:
   explicit ConfigWidget(CameraEntityStatus *cameraEntityStatus,
+                        BodyStatus *bodyStatus,
                         ScreenStatus *screenStatus,
                         QWidget *glWidget);
   ~ConfigWidget() final;
@@ -67,6 +69,7 @@ private:
 
   QWidget *m_GLWidget;
   CameraEntityStatus *m_CameraEntityStatus;
+  BodyStatus *m_BodyStatus;
   ScreenStatus *m_ScreenStatus;
 
   QString m_3rdPartiesText;

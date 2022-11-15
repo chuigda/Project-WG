@@ -5,6 +5,7 @@
 #include "cwglx/Color.h"
 
 class ArmStatus {
+public:
   GLdouble rotation[5] = { 0.0, 0.0, 0.0, 0.0, 0.0 };
 };
 

@@ -62,6 +62,7 @@ private:
   cw::Drawable const* m_ScreenGlass;
   wgc0310::Screen const* m_Screen;
 
+  BodyStatus m_BodyStatus;
   CameraEntityStatus m_CameraEntityStatus;
   ScreenStatus m_ScreenStatus;
   ConfigWidget *m_ConfigWidget;

@@ -40,6 +40,7 @@ GLWidget::GLWidget(QWidget *parent)
   this->setAttribute(Qt::WA_AlwaysStackOnTop);
 
   m_ConfigWidget = new ConfigWidget(&m_CameraEntityStatus,
+                                    &m_BodyStatus,
                                     &m_ScreenStatus,
                                     this);
   connect(m_ConfigWidget, &ConfigWidget::SetRenderSettings,
