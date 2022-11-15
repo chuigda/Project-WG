@@ -58,7 +58,7 @@ static void SetupArmGroup(QGroupBox *groupBox,
   QSlider *slider0 = AddSlider(layout, &armStatus->rotation[0], -180, 180, 0);
   QSlider *slider1 = AddSlider(layout, &armStatus->rotation[1], -105, 0, -90);
   QSlider *slider2 = AddSlider(layout, &armStatus->rotation[2], -180, 180, 0);
-  QSlider *slider3 = AddSlider(layout, &armStatus->rotation[3], -120, 120, 0);
+  QSlider *slider3 = AddSlider(layout, &armStatus->rotation[3], -105, 105, 0);
   QSlider *slider4 = AddSlider(layout, &armStatus->rotation[4], -120, 120, 0);
 
   QObject::connect(resetButton, &QPushButton::clicked, [=] {

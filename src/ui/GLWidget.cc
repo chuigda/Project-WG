@@ -223,8 +223,9 @@ void GLWidget::DrawArm(const ArmStatus &armStatus) {
   m_Mesh->shoulderPlate->Draw(this);
 
   glTranslatef(4.75, 0.0f, 0.0f);
-  glRotatef(armStatus.rotation[1], 0.0f, 0.0f, 1.0f);
+  glRotatef(armStatus.rotation[1] / 2.0f, 0.0f, 0.0f, 1.0f);
   m_Mesh->wheelSmall->Draw(this);
+  glRotatef(armStatus.rotation[1] / 2.0f, 0.0f, 0.0f, 1.0f);
   m_Mesh->bigArm->Draw(this);
   m_Mesh->bigArmCover->Draw(this);
 
@@ -233,8 +234,9 @@ void GLWidget::DrawArm(const ArmStatus &armStatus) {
   m_Mesh->bigArmConnector->Draw(this);
 
   glTranslatef(4.5, 0.0f, 0.0f);
-  glRotatef(armStatus.rotation[3], 0.0f, 0.0f, 1.0f);
+  glRotatef(armStatus.rotation[3] / 2.0f, 0.0f, 0.0f, 1.0f);
   m_Mesh->wheelSmall->Draw(this);
+  glRotatef(armStatus.rotation[3] / 2.0f, 0.0f, 0.0f, 1.0f);
   m_Mesh->smallArm->Draw(this);
   m_Mesh->smallArmCover->Draw(this);
 
