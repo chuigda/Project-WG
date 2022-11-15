@@ -3,9 +3,9 @@
 
 namespace cw {
 
-class SecretInternalsDoNotUseOrYouWillBeFired {};
+class Sinkrate {};
 
-extern const SecretInternalsDoNotUseOrYouWillBeFired Sinkrate;
+extern const Sinkrate SecretInternalsDoNotUseOrYouWillBeFired;
 
 } // namespace cw
 

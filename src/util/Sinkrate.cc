@@ -2,6 +2,6 @@
 
 namespace cw {
 
-const SecretInternalsDoNotUseOrYouWillBeFired Sinkrate;
+const Sinkrate SecretInternalsDoNotUseOrYouWillBeFired;
 
 } // namespace cw

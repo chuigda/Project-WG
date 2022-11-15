@@ -40,7 +40,7 @@ StoredTriangles::StoredTriangles(std::vector<Triangle> &&triangles)
 
 StoredTriangles::
 StoredTriangles(std::shared_ptr<std::vector<Triangle>> triangles,
-                const SecretInternalsDoNotUseOrYouWillBeFired &)
+                const Sinkrate &)
   : m_Triangles(std::move(triangles)),
     m_CurrentTriangle(m_Triangles->begin())
 {}
@@ -58,7 +58,10 @@ Triangle StoredTriangles::NextTriangle() {
 }
 
 std::unique_ptr<TriangleGen> StoredTriangles::Clone() const {
-  return std::make_unique<StoredTriangles>(m_Triangles, Sinkrate);
+  return std::make_unique<StoredTriangles>(
+    m_Triangles,
+    SecretInternalsDoNotUseOrYouWillBeFired
+  );
 }
 
 void StoredTriangles::Reset() {
@@ -112,7 +115,7 @@ Rotator::Rotator(std::unique_ptr<TriangleGen> &&base,
                  const Vertex &centerPoint,
                  Axis axis,
                  GLdouble rad,
-                 const SecretInternalsDoNotUseOrYouWillBeFired&)
+                 const Sinkrate&)
   : m_Base(std::move(base)),
     m_CenterPoint(centerPoint),
     m_Axis(axis),
@@ -127,11 +130,11 @@ bool Rotator::HasNextTriangle() {
 
 std::unique_ptr<TriangleGen> Rotator::Clone() const {
   return std::make_unique<Rotator>(
-      m_Base->Clone(),
-      m_CenterPoint,
-      m_Axis,
-      m_Degree,
-      Sinkrate
+    m_Base->Clone(),
+    m_CenterPoint,
+    m_Axis,
+    m_Degree,
+    SecretInternalsDoNotUseOrYouWillBeFired
   );
 }
 
@@ -152,13 +155,13 @@ Composer::Composer(std::vector<std::unique_ptr<TriangleGen>> &&generators)
       std::make_shared<std::vector<std::unique_ptr<TriangleGen>>>(
           std::move(generators)
       ),
-      Sinkrate
+      SecretInternalsDoNotUseOrYouWillBeFired
     )
 {}
 
 Composer::
 Composer(std::shared_ptr<std::vector<std::unique_ptr<TriangleGen>>> ptr,
-         const SecretInternalsDoNotUseOrYouWillBeFired&)
+         const Sinkrate&)
   : m_Generators(std::move(ptr)),
     m_CurrentGenerator(m_Generators->begin())
 {}
@@ -188,7 +191,8 @@ Triangle Composer::NextTriangle() {
 }
 
 std::unique_ptr<TriangleGen> Composer::Clone() const {
-  return std::make_unique<Composer>(m_Generators, Sinkrate);
+  return std::make_unique<Composer>(m_Generators,
+                                    SecretInternalsDoNotUseOrYouWillBeFired);
 }
 
 void Composer::Reset() {
@@ -208,7 +212,7 @@ FanGenerator::FanGenerator(const Vector &centerPoint,
                  DegToRad(startAngle),
                  count,
                  DegToRad(endAngle - startAngle) / static_cast<GLdouble>(count),
-                 Sinkrate)
+                 SecretInternalsDoNotUseOrYouWillBeFired)
 {}
 
 FanGenerator::FanGenerator(const Vector &centerPoint,
@@ -216,7 +220,7 @@ FanGenerator::FanGenerator(const Vector &centerPoint,
                            GLdouble startAngleRad,
                            std::size_t count,
                            GLdouble pieceDegreeRad,
-                           const SecretInternalsDoNotUseOrYouWillBeFired&)
+                           const Sinkrate&)
   : m_CenterPoint(centerPoint),
     m_Radius(radius),
     m_StartAngle(startAngleRad),
@@ -257,12 +261,12 @@ Triangle FanGenerator::NextTriangle() {
 
 std::unique_ptr<TriangleGen> FanGenerator::Clone() const {
   return std::make_unique<FanGenerator>(
-      m_CenterPoint,
-      m_Radius,
-      m_StartAngle,
-      m_Count,
-      m_PieceDegree,
-      Sinkrate
+    m_CenterPoint,
+    m_Radius,
+    m_StartAngle,
+    m_Count,
+    m_PieceDegree,
+    SecretInternalsDoNotUseOrYouWillBeFired
   );
 }
 
@@ -283,7 +287,7 @@ CylinderGenerator::CylinderGenerator(const Vector &centerPoint,
       DegToRad(startAngle),
       count,
       DegToRad(endAngle - startAngle) / static_cast<GLdouble>(count),
-      Sinkrate
+      SecretInternalsDoNotUseOrYouWillBeFired
     )
 {}
 
@@ -294,7 +298,7 @@ CylinderGenerator(const Vector &centerPoint,
                   GLdouble startAngleRad,
                   std::size_t count,
                   GLdouble pieceDegreeRad,
-                  const SecretInternalsDoNotUseOrYouWillBeFired &)
+                  const Sinkrate &)
   : m_CenterPoint(centerPoint),
     m_Radius(radius),
     m_HalfHeight(halfHeight),
@@ -345,13 +349,13 @@ Triangle CylinderGenerator::NextTriangle() {
 
 std::unique_ptr<TriangleGen> CylinderGenerator::Clone() const {
   return std::make_unique<CylinderGenerator>(
-      m_CenterPoint,
-      m_Radius,
-      m_HalfHeight,
-      m_StartAngle,
-      m_Count,
-      m_PieceDegree,
-      Sinkrate
+    m_CenterPoint,
+    m_Radius,
+    m_HalfHeight,
+    m_StartAngle,
+    m_Count,
+    m_PieceDegree,
+    SecretInternalsDoNotUseOrYouWillBeFired
   );
 }
 
@@ -416,7 +420,7 @@ SphereGenerator::SphereGenerator(const Vector &centerPoint,
                       / static_cast<GLdouble>(xyCount),
                     DegToRad(zEndAngle - zStartAngle)
                       / static_cast<GLdouble>(zCount),
-                    Sinkrate)
+                    SecretInternalsDoNotUseOrYouWillBeFired)
 {
   Q_ASSERT(xyStartAngle >= 0.0 && "Only first octant is ok");
   Q_ASSERT(xyEndAngle <= 90.0 && "Only first octant is ok");
@@ -432,7 +436,7 @@ SphereGenerator::SphereGenerator(const Vector &centerPoint,
                                  std::size_t zCount,
                                  GLdouble xyPieceDegreeRad,
                                  GLdouble zPieceDegreeRad,
-                                 const SecretInternalsDoNotUseOrYouWillBeFired&)
+                                 const Sinkrate&)
   : m_CenterPoint(centerPoint),
     m_Radius(radius),
     m_XYStartAngle(xyStartAngleRad),
@@ -506,15 +510,15 @@ Triangle SphereGenerator::NextTriangle() {
 
 std::unique_ptr<TriangleGen> SphereGenerator::Clone() const {
   return std::make_unique<SphereGenerator>(
-      m_CenterPoint,
-      m_Radius,
-      m_XYStartAngle,
-      m_ZStartAngle,
-      m_XYCount,
-      m_ZCount,
-      m_XYPieceDegree,
-      m_ZPieceDegree,
-      Sinkrate
+    m_CenterPoint,
+    m_Radius,
+    m_XYStartAngle,
+    m_ZStartAngle,
+    m_XYCount,
+    m_ZCount,
+    m_XYPieceDegree,
+    m_ZPieceDegree,
+    SecretInternalsDoNotUseOrYouWillBeFired
   );
 }
 
@@ -540,7 +544,7 @@ DonutGenerator::DonutGenerator(const Vector &centerPoint,
                    DegToRad(endAngle - startAngle)
                    / static_cast<GLdouble>(pipeCount),
                    constants::PI * 2 / static_cast<GLdouble>(pipePolyCount),
-                   Sinkrate)
+                   SecretInternalsDoNotUseOrYouWillBeFired)
 {}
 
 DonutGenerator::DonutGenerator(const Vector &centerPoint,
@@ -551,7 +555,7 @@ DonutGenerator::DonutGenerator(const Vector &centerPoint,
                                std::size_t pipePolyCount,
                                GLdouble pieceDegreeRad,
                                GLdouble piecePolyDegreeRad,
-                               const SecretInternalsDoNotUseOrYouWillBeFired &)
+                               const Sinkrate &)
   : m_CenterPoint(centerPoint),
     m_Radius(radius),
     m_PipeRadius(pipeRadius),
@@ -641,15 +645,15 @@ Triangle DonutGenerator::NextTriangle() {
 
 std::unique_ptr<TriangleGen> DonutGenerator::Clone() const {
   return std::make_unique<DonutGenerator>(
-      m_CenterPoint,
-      m_Radius,
-      m_PipeRadius,
-      m_StartAngle,
-      m_PipeCount,
-      m_PipePolyCount,
-      m_PieceDegree,
-      m_PiecePolyDegree,
-      Sinkrate
+    m_CenterPoint,
+    m_Radius,
+    m_PipeRadius,
+    m_StartAngle,
+    m_PipeCount,
+    m_PipePolyCount,
+    m_PieceDegree,
+    m_PiecePolyDegree,
+    SecretInternalsDoNotUseOrYouWillBeFired
   );
 }
 
@@ -667,14 +671,14 @@ BoxGenerator::BoxGenerator(const Vector &centerPoint,
                  xScale / 2.0,
                  yScale / 2.0,
                  zScale / 2.0,
-                 Sinkrate)
+                 SecretInternalsDoNotUseOrYouWillBeFired)
 {}
 
 BoxGenerator::BoxGenerator(const Vector &centerPoint,
                            GLdouble xScale,
                            GLdouble yScale,
                            GLdouble zScale,
-                           const SecretInternalsDoNotUseOrYouWillBeFired &)
+                           const Sinkrate &)
   : m_CenterPoint(centerPoint),
     m_XScale(xScale),
     m_YScale(yScale),
@@ -767,11 +771,11 @@ BoxGenerator::~BoxGenerator() = default;
 
 std::unique_ptr<TriangleGen> BoxGenerator::Clone() const {
   return std::make_unique<BoxGenerator>(
-      m_CenterPoint,
-      m_XScale,
-      m_YScale,
-      m_ZScale,
-      Sinkrate
+    m_CenterPoint,
+    m_XScale,
+    m_YScale,
+    m_ZScale,
+    SecretInternalsDoNotUseOrYouWillBeFired
   );
 }
 
@@ -781,14 +785,14 @@ void BoxGenerator::Reset() {
 
 ConvexPolyGenerator::ConvexPolyGenerator(std::vector<Vertex> &&vertices)
     : ConvexPolyGenerator(
-        std::make_shared<std::vector<Vertex>>(std::move(vertices)),
-        Sinkrate
+  std::make_shared<std::vector<Vertex>>(std::move(vertices)),
+  SecretInternalsDoNotUseOrYouWillBeFired
       )
 {}
 
 ConvexPolyGenerator::
 ConvexPolyGenerator(std::shared_ptr<std::vector<Vertex>> vertices,
-                    const SecretInternalsDoNotUseOrYouWillBeFired &)
+                    const Sinkrate &)
     : m_Vertices(std::move(vertices)),
       m_CurrentCount(1)
 {}
@@ -815,8 +819,8 @@ Triangle ConvexPolyGenerator::NextTriangle() {
 
 std::unique_ptr<TriangleGen> ConvexPolyGenerator::Clone() const {
   return std::make_unique<ConvexPolyGenerator>(
-      std::make_shared<std::vector<Vertex>>(*m_Vertices),
-      Sinkrate
+    std::make_shared<std::vector<Vertex>>(*m_Vertices),
+    SecretInternalsDoNotUseOrYouWillBeFired
   );
 }
 

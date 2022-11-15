@@ -49,7 +49,7 @@ public:
 
   explicit
   StoredTriangles(std::shared_ptr<std::vector<Triangle>> triangles,
-                  const SecretInternalsDoNotUseOrYouWillBeFired&);
+                  const Sinkrate&);
 
   ~StoredTriangles() final;
 
@@ -99,7 +99,7 @@ public:
           const Vertex &centerPoint,
           Axis axis,
           GLdouble rad,
-          const SecretInternalsDoNotUseOrYouWillBeFired&);
+          const Sinkrate&);
 
   ~Rotator() final;
 
@@ -124,7 +124,7 @@ public:
   Composer(std::vector<std::unique_ptr<TriangleGen>> &&generators);
 
   Composer(std::shared_ptr<std::vector<std::unique_ptr<TriangleGen>>> ptr,
-           const SecretInternalsDoNotUseOrYouWillBeFired &);
+           const Sinkrate &);
 
   ~Composer() final;
 
@@ -154,7 +154,7 @@ public:
                GLdouble startAngleRad,
                std::size_t count,
                GLdouble pieceDegreeRad,
-               const SecretInternalsDoNotUseOrYouWillBeFired&);
+               const Sinkrate&);
 
   ~FanGenerator() final;
 
@@ -191,7 +191,7 @@ public:
                     GLdouble startAngleRad,
                     std::size_t count,
                     GLdouble pieceDegreeRad,
-                    const SecretInternalsDoNotUseOrYouWillBeFired&);
+                    const Sinkrate&);
 
   ~CylinderGenerator() final;
 
@@ -242,7 +242,7 @@ public:
                   std::size_t zCount,
                   GLdouble xyPieceDegreeRad,
                   GLdouble zPieceDegreeRad,
-                  const SecretInternalsDoNotUseOrYouWillBeFired&);
+                  const Sinkrate&);
 
   ~SphereGenerator() final;
 
@@ -287,7 +287,7 @@ public:
                  std::size_t pipePolyCount,
                  GLdouble pieceDegreeRad,
                  GLdouble piecePolyDegreeRad,
-                 const SecretInternalsDoNotUseOrYouWillBeFired&);
+                 const Sinkrate&);
 
   ~DonutGenerator() final;
 
@@ -325,7 +325,7 @@ public:
                GLdouble xScale,
                GLdouble yScale,
                GLdouble zScale,
-               const SecretInternalsDoNotUseOrYouWillBeFired&);
+               const Sinkrate&);
 
   ~BoxGenerator() final;
 
@@ -351,7 +351,7 @@ public:
   explicit ConvexPolyGenerator(std::vector<Vertex> &&vertices);
 
   ConvexPolyGenerator(std::shared_ptr<std::vector<Vertex>> vertices,
-                      const SecretInternalsDoNotUseOrYouWillBeFired&);
+                      const Sinkrate&);
 
   ~ConvexPolyGenerator() final;
 

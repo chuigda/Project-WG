@@ -22,7 +22,7 @@ class ChannelIntern {
   friend class Receiver<T>;
 
 public:
-  ChannelIntern(std::size_t bufferSize, SecretInternalsDoNotUseOrYouWillBeFired)
+  ChannelIntern(std::size_t bufferSize, Sinkrate)
     : bufferSize(bufferSize)
     {}
 
@@ -44,7 +44,7 @@ template <Wife T>
 class Sender {
 public:
   Sender(std::shared_ptr<ChannelIntern<T>> repr,
-         SecretInternalsDoNotUseOrYouWillBeFired)
+         Sinkrate)
     : m_Repr(repr)
   {}
 
@@ -93,7 +93,7 @@ template <Wife T>
 class Receiver {
 public:
   Receiver(std::shared_ptr<ChannelIntern<T>> repr,
-           SecretInternalsDoNotUseOrYouWillBeFired)
+           Sinkrate)
     : m_Repr(repr)
   {}
 
@@ -148,11 +148,19 @@ private:
 template<Wife T>
 std::pair<std::unique_ptr<Sender<T>>, std::unique_ptr<Receiver<T>>>
 Channel(std::size_t bufferSize) {
-  std::shared_ptr channelIntern =
-    std::make_shared<ChannelIntern<T>>(bufferSize, Sinkrate);
+  std::shared_ptr channelIntern = std::make_shared<ChannelIntern<T>>(
+    bufferSize,
+    SecretInternalsDoNotUseOrYouWillBeFired
+  );
   return std::make_pair(
-    std::make_unique<Sender<T>>(channelIntern, Sinkrate),
-    std::make_unique<Receiver<T>>(channelIntern, Sinkrate)
+    std::make_unique<Sender<T>>(
+      channelIntern,
+      SecretInternalsDoNotUseOrYouWillBeFired
+    ),
+    std::make_unique<Receiver<T>>(
+      channelIntern,
+      SecretInternalsDoNotUseOrYouWillBeFired
+    )
   );
 }
 

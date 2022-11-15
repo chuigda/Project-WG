@@ -38,10 +38,10 @@ public:
 
 private:
   void AddTriangleInner(const Triangle &triangle,
-                        const SecretInternalsDoNotUseOrYouWillBeFired&);
+                        const Sinkrate&);
   void AddTrianglesInner(const Triangle &triangle,
                          const TriangleNormal &normals,
-                         const SecretInternalsDoNotUseOrYouWillBeFired&);
+                         const Sinkrate&);
 
   bool m_ComputeNormal;
   std::vector<VertexF> m_Vertices;
