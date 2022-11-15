@@ -29,7 +29,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="configTab">
      <property name="currentIndex">
-      <number>1</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="openglTab">
       <attribute name="title">
@@ -907,7 +907,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_26">
             <item>
-             <widget class="QRadioButton" name="radioGray">
+             <widget class="QRadioButton" name="radioBlue">
               <property name="text">
                <string>常亮</string>
               </property>
@@ -924,7 +924,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QRadioButton" name="radioBlue">
+             <widget class="QRadioButton" name="radioGray">
               <property name="text">
                <string>熄灭</string>
               </property>
@@ -949,8 +949,11 @@
               <property name="maximum">
                <number>40</number>
               </property>
+              <property name="minimum">
+               <number>15</number>
+              </property>
               <property name="value">
-               <number>20</number>
+               <number>30</number>
               </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -1167,8 +1170,8 @@
  </slots>
  <buttongroups>
   <buttongroup name="imgTexFiltButtonGroup"/>
-  <buttongroup name="scrTexFiltButtonGroup"/>
   <buttongroup name="scrRenderModeButtonGroup"/>
+  <buttongroup name="scrTexFiltButtonGroup"/>
   <buttongroup name="culLFaceButtonGroup"/>
  </buttongroups>
 </ui>

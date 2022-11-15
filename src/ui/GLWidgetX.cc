@@ -86,10 +86,6 @@ void GLWidget::InitAnimations() {
 }
 
 void GLWidget::RequestNextFrame() {
-  m_BlinkCounter += 1;
-  if (m_BlinkCounter > 30) {
-    m_BlinkCounter = 0;
-  }
-
+  m_BodyStatus.NextTick();
   update();
 }

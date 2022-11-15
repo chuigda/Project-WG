@@ -2,7 +2,7 @@
 #include "ui/CameraEntityStatus.h"
 #include "ui_ConfigWidget.h"
 
-void ConfigWidget::SetupCameraPage() {
+void ConfigWidget::SetupCameraEntityPage() {
   #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-narrowing-conversions"
   ui->cameraXSlider->setValue(m_CameraEntityStatus->cameraX / 5);

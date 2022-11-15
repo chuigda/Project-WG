@@ -67,8 +67,6 @@ private:
   ScreenStatus m_ScreenStatus;
   ConfigWidget *m_ConfigWidget;
 
-  int m_BlinkCounter = 0;
-
   std::vector<std::unique_ptr<cw::Texture2D>> m_StaticScreens;
   std::vector<std::unique_ptr<Animation>> m_Animations;
   QList<QListWidgetItem*> m_StaticScreenItems;

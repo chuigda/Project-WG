@@ -65,7 +65,8 @@ private slots:
   void ShowAboutQt();
 
 private:
-  void SetupCameraPage();
+  void SetupCameraEntityPage();
+  void SetupBodyPage();
 
   Ui::ConfigWidget *ui;
 

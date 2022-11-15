@@ -22,7 +22,8 @@ GLWidget::GLWidget(QWidget *parent)
     m_Light2(nullptr),
     m_Arena(),
     m_Mesh(nullptr),
-
+    m_ScreenGlass(nullptr),
+    m_Screen(nullptr),
     m_Timer(new QTimer(this))
 {
   QSurfaceFormat format;
@@ -166,12 +167,8 @@ void GLWidget::paintGL() {
   m_Light2->Enable(this);
   m_CameraEntityStatus.ApplyEntityTransformation(this);
 
-  if (m_BlinkCounter > 15) {
-    glColor4f(1.0f, 0.25f, 0.0f, 1.0f);
-  } else {
-    glColor4f(0.4, 0.4f, 0.4f, 1.0f);
-  }
-
+  cw::RGBAColorF berColor = m_BodyStatus.GetTimerColor();
+  berColor.Apply(this);
   glDisable(GL_LIGHTING);
   m_Mesh->ber->Draw(this);
   glEnable(GL_LIGHTING);

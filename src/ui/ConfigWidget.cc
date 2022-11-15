@@ -51,7 +51,8 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
     std::abort();
   }
 
-  SetupCameraPage();
+  SetupCameraEntityPage();
+  SetupBodyPage();
 
   connect(ui->thridPartiesButton, &QPushButton::clicked,
           this, &ConfigWidget::ShowThirdParties);

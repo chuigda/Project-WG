@@ -68,7 +68,7 @@ public:
     }
   }
 
-  [[nodiscard]] constexpr inline cw::RGBAColorF GetColor() const noexcept {
+  [[nodiscard]] constexpr inline cw::RGBAColorF GetTimerColor() const noexcept {
     switch (colorTimerStatus) {
       case Blue:
         return cw::RGBAColorF { 0.0f, 0.75f, 1.0f, 1.0f };
