@@ -11,6 +11,7 @@
 #include "cwglx/DrawableArena.h"
 #include "ui/CameraEntityStatus.h"
 #include "ui/ScreenStatus.h"
+#include "ui/BodyStatus.h"
 #include "ui/Animation.h"
 #include "wgc0310/Mesh.h"
 #include "wgc0310/Screen.h"

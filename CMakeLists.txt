@@ -30,6 +30,7 @@ set(PROJECT_SOURCES
     src/ui/GLWidget.cc
     src/ui/ConfigWidget.cc
     src/ui/MessageBoxAlter.cc
+    include/ui/BodyStatus.h
     include/ui/ScreenStatus.h
     include/ui/Animation.h
     include/ui/CameraEntityStatus.h
