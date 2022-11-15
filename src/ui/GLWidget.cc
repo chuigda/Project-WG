@@ -8,7 +8,6 @@
 #include "glu/FakeGLU.h"
 #include "cwglx/Setup.h"
 #include "cwglx/Material.h"
-#include "cwglx/MeshLoader.h"
 #include "cwglx/drawable/Composition.h"
 #include "cwglx/drawable/PlainTriangles.h"
 #include "cwglx/drawable/TriangleGen.h"
