@@ -34,21 +34,21 @@ struct AnimationSection {
                            std::size_t frame) const noexcept;
 };
 
-using Animation = std::vector<AnimationSection>;
+using BodyAnimation = std::vector<AnimationSection>;
 
 class PlayAnimationStatus {
 public:
-  explicit PlayAnimationStatus(Animation const* animation) noexcept;
+  explicit PlayAnimationStatus(BodyAnimation const* animation) noexcept;
 
   bool NextFrame(BodyStatus* bodyStatus) noexcept;
 
 private:
-  Animation const* m_Animation;
+  BodyAnimation const* m_Animation;
   std::size_t m_CurrentSection;
   std::size_t m_CurrentFrameCount;
 };
 
-std::unique_ptr<Animation> LoadAnimation(const char *fileName);
+std::unique_ptr<BodyAnimation> LoadBodyAnimation(const char *fileName);
 
 } // namespace wgc0310
 

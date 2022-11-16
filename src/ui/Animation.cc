@@ -115,7 +115,7 @@ Animation::Animation(const QString &fileName)
 
 Animation::~Animation() {
   if (!m_Deleted) {
-    qWarning() << "Animation::~Animation() called without calling Delete()";
+    qWarning() << "BodyAnimation::~BodyAnimation() called without calling Delete()";
   }
 
   DetachSharedObject(m_Handle);
@@ -131,13 +131,13 @@ bool Animation::IsOpen() const noexcept {
 
 bool Animation::Initialize(GLFunctions *f) {
   if (m_Context != nullptr) {
-    qWarning() << "Animation::Initialize() called twice";
+    qWarning() << "BodyAnimation::Initialize() called twice";
     return true;
   }
 
   m_Context = m_InitContextFn(f);
   if (m_Context == nullptr) {
-    qWarning() << "Animation::Initialize() failed";
+    qWarning() << "BodyAnimation::Initialize() failed";
     return false;
   } else {
     return true;
@@ -146,7 +146,7 @@ bool Animation::Initialize(GLFunctions *f) {
 
 bool Animation::StartAnimation(GLFunctions *f) {
   if (m_Context == nullptr) {
-    qWarning() << "Animation::StartAnimation() called before Initialize()";
+    qWarning() << "BodyAnimation::StartAnimation() called before Initialize()";
     return false;
   }
 
@@ -155,7 +155,7 @@ bool Animation::StartAnimation(GLFunctions *f) {
 
 bool Animation::PlayAnimationFrame(GLFunctions *f, std::uint64_t frame) {
   if (m_Context == nullptr) {
-    qWarning() << "Animation::PlayAnimationFrame() called before Initialize()";
+    qWarning() << "BodyAnimation::PlayAnimationFrame() called before Initialize()";
     return false;
   }
 
@@ -167,7 +167,7 @@ void Animation::Delete(GLFunctions *f) {
     m_DestroyContextFn(m_Context, f);
     m_Context = nullptr;
   } else {
-    qWarning() << "Animation::Delete() called twice";
+    qWarning() << "BodyAnimation::Delete() called twice";
   }
 
   m_Deleted = true;

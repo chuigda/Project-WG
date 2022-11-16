@@ -828,71 +828,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="faceAnimationTab">
-      <attribute name="title">
-       <string>屏幕动画</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QGroupBox" name="staticGraphBox">
-           <property name="title">
-            <string>静态画面</string>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_21">
-            <item>
-             <widget class="QListWidget" name="staticAnimList"/>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QGroupBox" name="dynamicAnimationBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="title">
-            <string>动画</string>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_22">
-            <item>
-             <widget class="QListWidget" name="dynamicAnimList"/>
-            </item>
-           </layout>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_20">
-         <item>
-          <spacer name="horizontalSpacer_7">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="resetScrAnimButton">
-           <property name="text">
-            <string>重置</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="robotBoneTab">
       <attribute name="title">
        <string>身体动画</string>
@@ -986,17 +921,11 @@
         </layout>
        </item>
        <item>
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
+        <widget class="QGroupBox" name="presetBodyAnimGroupBox">
+         <property name="title">
+          <string>预设动画</string>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_28">
@@ -1015,6 +944,71 @@
          </item>
          <item>
           <widget class="QPushButton" name="resetBoneButton">
+           <property name="text">
+            <string>重置</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="faceAnimationTab">
+      <attribute name="title">
+       <string>屏幕动画</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QGroupBox" name="staticGraphBox">
+           <property name="title">
+            <string>静态画面</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_21">
+            <item>
+             <widget class="QListWidget" name="staticAnimList"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="dynamicAnimationBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="title">
+            <string>动画</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_22">
+            <item>
+             <widget class="QListWidget" name="dynamicAnimList"/>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_20">
+         <item>
+          <spacer name="horizontalSpacer_7">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="resetScrAnimButton">
            <property name="text">
             <string>重置</string>
            </property>
@@ -1154,8 +1148,8 @@
   <slot>setCameraMoveZ(int)</slot>
  </slots>
  <buttongroups>
-  <buttongroup name="imgTexFiltButtonGroup"/>
   <buttongroup name="scrRenderModeButtonGroup"/>
+  <buttongroup name="imgTexFiltButtonGroup"/>
   <buttongroup name="scrTexFiltButtonGroup"/>
   <buttongroup name="culLFaceButtonGroup"/>
  </buttongroups>

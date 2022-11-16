@@ -28,7 +28,7 @@ void AnimationSection::ApplyAnimationFrame(BodyStatus *bodyStatus,
   }
 }
 
-PlayAnimationStatus::PlayAnimationStatus(Animation const* animation) noexcept
+PlayAnimationStatus::PlayAnimationStatus(BodyAnimation const* animation) noexcept
   : m_Animation(animation),
     m_CurrentSection(0),
     m_CurrentFrameCount(0)
@@ -74,7 +74,7 @@ restart:
     continue; \
   }
 
-std::unique_ptr<Animation> LoadAnimation(const char *fileName) {
+std::unique_ptr<BodyAnimation> LoadBodyAnimation(const char *fileName) {
   QFile file(fileName);
   if (!file.open(QIODevice::ReadOnly)) {
     qDebug() << "cannot open animation file:" << fileName;
@@ -82,14 +82,14 @@ std::unique_ptr<Animation> LoadAnimation(const char *fileName) {
   }
 
   QTextStream textStream(&file);
-  std::unique_ptr<Animation> animation = std::make_unique<Animation>();
+  std::unique_ptr<BodyAnimation> animation = std::make_unique<BodyAnimation>();
 
   std::size_t lineNo = 0;
   while (!textStream.atEnd()) {
     QString line = textStream.readLine().trimmed();
     lineNo += 1;
 
-    if (line.startsWith('#')) {
+    if (line.isEmpty() || line.startsWith('#')) {
       continue;
     }
 

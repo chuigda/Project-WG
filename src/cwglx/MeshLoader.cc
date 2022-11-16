@@ -34,7 +34,7 @@ static void ProcessMeshLine(PlainTriangles* triangles,
                             const char *meshFile,
                             size_t lineNo)
 {
-  if (meshLine.length() == 0 || meshLine.startsWith('#')) {
+  if (meshLine.isEmpty() || meshLine.startsWith('#')) {
     return;
   }
 
