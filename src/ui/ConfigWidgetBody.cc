@@ -50,6 +50,7 @@ void ConfigWidget::SetupBodyPage() {
                 ui->resetBoneButton);
 
   connect(ui->resetBoneButton, &QPushButton::clicked, [=] {
+    emit this->DoneBodyAnimation();
     m_BodyStatus->Reset();
   });
 }
