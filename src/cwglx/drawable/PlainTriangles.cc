@@ -2,7 +2,6 @@
 
 #include "cwglx/GLImpl.h"
 #include "cwglx/drawable/TriangleGen.h"
-#include "cwglx/drawable/FineTriangleGen.h"
 
 namespace cw {
 
@@ -177,9 +176,6 @@ AddTriangleInner(const Triangle &triangle,
     }
     m_Indices.push_back(m_Indices.size());
   }
-}
-
-void PlainTriangles::AddTriangles(FineTriangleGen*) {
 }
 
 void PlainTriangles::PreInitialize(GLFunctions *f) const {
