@@ -188,12 +188,12 @@ void GLWidget::paintGL() {
     m_Mesh->waist->Draw(this);
 
     glPushMatrix();
-    DrawArm(m_BodyStatus.rightArmStatus);
+    DrawArm(m_BodyStatus.rightArmStatus, 1.0f);
     glPopMatrix();
 
     glPushMatrix();
     glScalef(-1.0f, 1.0f, -1.0f);
-    DrawArm(m_BodyStatus.leftArmStatus);
+    DrawArm(m_BodyStatus.leftArmStatus, -1.0f);
     glPopMatrix();
 
     glTranslatef(0.0f, 12.875f, 0.0f);
@@ -219,9 +219,9 @@ void GLWidget::resizeGL(int w, int h) {
   Q_UNUSED(h)
 }
 
-void GLWidget::DrawArm(const wgc0310::ArmStatus &armStatus) {
+void GLWidget::DrawArm(const wgc0310::ArmStatus &armStatus, GLfloat coeff) {
   glTranslatef(14.5f, 7.5f, 0.0f);
-  glRotatef(armStatus.rotation[0], 1.0f, 0.0f, 0.0f);
+  glRotatef(coeff * armStatus.rotation[0], 1.0f, 0.0f, 0.0f);
   m_Mesh->shoulder->Draw(this);
   m_Mesh->shoulderPlate->Draw(this);
 
@@ -233,18 +233,18 @@ void GLWidget::DrawArm(const wgc0310::ArmStatus &armStatus) {
   m_Mesh->bigArmCover->Draw(this);
 
   glTranslatef(20.0, 0.0f, 0.0f);
-  glRotatef(armStatus.rotation[2], 1.0f, 0.0f, 0.0f);
+  glRotatef(-1.0 * armStatus.rotation[2], 1.0f, 0.0f, 0.0f);
   m_Mesh->bigArmConnector->Draw(this);
 
   glTranslatef(4.5, 0.0f, 0.0f);
-  glRotatef(armStatus.rotation[3] / 2.0f, 0.0f, 0.0f, 1.0f);
+  glRotatef(coeff * armStatus.rotation[3] / 2.0f, 0.0f, 0.0f, 1.0f);
   m_Mesh->wheelSmall->Draw(this);
-  glRotatef(armStatus.rotation[3] / 2.0f, 0.0f, 0.0f, 1.0f);
+  glRotatef(coeff * armStatus.rotation[3] / 2.0f, 0.0f, 0.0f, 1.0f);
   m_Mesh->smallArm->Draw(this);
   m_Mesh->smallArmCover->Draw(this);
 
   glTranslatef(25.0f, 0.0f, 0.0f);
-  glRotatef(armStatus.rotation[4], 0.0f, 0.0f, 1.0f);
+  glRotatef(coeff * armStatus.rotation[4], 0.0f, 0.0f, 1.0f);
   m_Mesh->claw->Draw(this);
   m_Mesh->clawCover->Draw(this);
 }

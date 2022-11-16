@@ -56,7 +56,7 @@ private:
   void InitAnimations();
   void LoadBodyAnimations();
 
-  void DrawArm(const wgc0310::ArmStatus& armStatus);
+  void DrawArm(const wgc0310::ArmStatus& armStatus, GLfloat coeff);
 
 private:
   QScopedPointer<cw::Light> m_Light;

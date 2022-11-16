@@ -1,5 +1,4 @@
 #include "wgc0310/BodyStatus.h"
-#include <QDebug>
 
 namespace wgc0310 {
 
