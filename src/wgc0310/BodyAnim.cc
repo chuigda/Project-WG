@@ -1,4 +1,5 @@
 #include "wgc0310/BodyAnim.h"
+#include "wgc0310/BodyStatus.h"
 
 #include <QDebug>
 #include <QFile>
@@ -26,30 +27,6 @@ void AnimationSection::ApplyAnimationFrame(BodyStatus *bodyStatus,
                                     : bodyStatus->rightArmStatus;
     arm.rotation[command.rotationAxisIndex] += command.frameRotation;
   }
-}
-
-PlayAnimationStatus::PlayAnimationStatus(BodyAnimation const* animation) noexcept
-  : m_Animation(animation),
-    m_CurrentSection(0),
-    m_CurrentFrameCount(0)
-{}
-
-bool PlayAnimationStatus::NextFrame(BodyStatus *bodyStatus) noexcept {
-restart:
-  if (m_CurrentFrameCount >= m_Animation->size()) {
-    return false;
-  }
-
-  AnimationSection const& section = (*m_Animation)[m_CurrentSection];
-  if (m_CurrentFrameCount >= section.totalFrameCount) {
-    m_CurrentSection += 1;
-    m_CurrentFrameCount = 0;
-    goto restart;
-  }
-
-  section.ApplyAnimationFrame(bodyStatus, m_CurrentFrameCount);
-  m_CurrentFrameCount += 1;
-  return true;
 }
 
 #define PARSE_DOUBLE(v, s, r) \

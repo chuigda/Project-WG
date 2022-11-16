@@ -1,10 +1,34 @@
 #ifndef PROJECT_WG_BODY_STATUS_H
 #define PROJECT_WG_BODY_STATUS_H
 
+#include <vector>
 #include <QtGui/qopengl.h>
 #include "cwglx/Color.h"
+#include "wgc0310/BodyAnim.h"
 
 namespace wgc0310 {
+
+using BodyAnimation = std::vector<AnimationSection>;
+class BodyStatus;
+
+class PlayAnimationStatus {
+public:
+  explicit PlayAnimationStatus() noexcept;
+
+  void SetAnimation(BodyAnimation const* animation) noexcept;
+
+  [[nodiscard]] constexpr inline bool IsPlayingAnimation() const noexcept {
+    return static_cast<bool>(m_Animation);
+  }
+
+  bool NextFrame(BodyStatus* bodyStatus) noexcept;
+
+private:
+  BodyAnimation const* m_Animation;
+  std::size_t m_CurrentSection;
+  std::size_t m_CurrentFrameCount;
+};
+
 
 class ArmStatus {
 public:
@@ -31,12 +55,15 @@ public:
   ArmStatus leftArmStatus;
   ArmStatus rightArmStatus;
 
-  explicit constexpr inline BodyStatus() noexcept
+  PlayAnimationStatus playAnimationStatus;
+
+  explicit inline BodyStatus() noexcept
     : colorTimerStatus(Blue),
       blinkFrames(30),
       blinkCounter(0),
       leftArmStatus(),
-      rightArmStatus() {}
+      rightArmStatus(),
+      playAnimationStatus() {}
 
   constexpr inline void Reset() noexcept {
     colorTimerStatus = Blue;
@@ -44,6 +71,7 @@ public:
     blinkCounter = 0;
     leftArmStatus.Reset();
     rightArmStatus.Reset();
+    playAnimationStatus.SetAnimation(nullptr);
   }
 
   constexpr inline void StartBlinking() noexcept {

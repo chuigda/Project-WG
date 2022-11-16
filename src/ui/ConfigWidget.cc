@@ -104,7 +104,7 @@ ConfigWidget::OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens) {
   }
 }
 
-void ConfigWidget::OnAnimationsLoaded(QList<QListWidgetItem*> *animations) {
+void ConfigWidget::OnScreenAnimationsLoaded(QList<QListWidgetItem*> *animations) {
   for (auto animation : *animations) {
     ui->dynamicAnimList->addItem(animation);
   }

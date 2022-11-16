@@ -53,13 +53,16 @@ GLWidget::GLWidget(QWidget *parent)
   connect(this, &GLWidget::StaticScreensLoaded,
           m_ConfigWidget, &ConfigWidget::OnStaticScreensLoaded);
   connect(this, &GLWidget::AnimationsLoaded,
-          m_ConfigWidget, &ConfigWidget::OnAnimationsLoaded);
+          m_ConfigWidget, &ConfigWidget::OnScreenAnimationsLoaded);
+  connect(this, &GLWidget::BodyAnimationsLoaded,
+          m_ConfigWidget, &ConfigWidget::OnBodyAnimationsLoaded);
 
   m_Timer->setInterval(1000 / 90);
   connect(m_Timer, &QTimer::timeout, this, &GLWidget::RequestNextFrame);
   m_Timer->start();
 
   LoadAnimations();
+  LoadBodyAnimations();
 }
 
 GLWidget::~GLWidget() {

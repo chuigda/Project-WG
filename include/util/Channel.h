@@ -7,6 +7,7 @@
 #include <deque>
 #include <mutex>
 #include <condition_variable>
+#include <QtCore>
 
 #include "util/Sinkrate.h"
 #include "util/Wife.h"
@@ -110,7 +111,7 @@ public:
     self->condvar.wait(lock, [&self] {
       return self->buffer.size() != 0;
     });
-    assert(!self->buffer.empty());
+    Q_ASSERT(!self->buffer.empty());
 
     T ret = std::move(self->buffer.front());
     self->buffer.pop_front();
@@ -124,7 +125,7 @@ public:
     std::unique_lock lock { self->mutex };
 
     self->condvar.wait(lock, [&self] { return self->buffer.size() != 0; });
-    assert(!self->buffer.empty());
+    Q_ASSERT(!self->buffer.empty());
 
     std::deque<T> ret;
     std::swap(self->buffer, ret);

@@ -5,7 +5,8 @@
 #include <QSlider>
 #include <QRadioButton>
 
-static void SetupArmGroup(QGroupBox *groupBox,
+static void SetupArmGroup(ConfigWidget *configWidget,
+                          QGroupBox *groupBox,
                           wgc0310::ArmStatus* armStatus,
                           QPushButton *resetButton);
 
@@ -39,10 +40,12 @@ void ConfigWidget::SetupBodyPage() {
     m_BodyStatus->SetBlinkFrames(value);
   });
 
-  SetupArmGroup(ui->leftArmGroupBox,
+  SetupArmGroup(this,
+                ui->leftArmGroupBox,
                 &m_BodyStatus->leftArmStatus,
                 ui->resetBoneButton);
-  SetupArmGroup(ui->rightArmGroupBox,
+  SetupArmGroup(this,
+                ui->rightArmGroupBox,
                 &m_BodyStatus->rightArmStatus,
                 ui->resetBoneButton);
 
@@ -51,7 +54,8 @@ void ConfigWidget::SetupBodyPage() {
   });
 }
 
-static void SetupArmGroup(QGroupBox *groupBox,
+static void SetupArmGroup(ConfigWidget *configWidget,
+                          QGroupBox *groupBox,
                           wgc0310::ArmStatus* armStatus,
                           QPushButton *resetButton) {
   QVBoxLayout *layout = static_cast<QVBoxLayout*>(groupBox->layout());
@@ -68,6 +72,27 @@ static void SetupArmGroup(QGroupBox *groupBox,
     slider3->setValue(0);
     slider4->setValue(0);
   });
+
+  QObject::connect(configWidget, &ConfigWidget::StartBodyAnimation, [=] {
+    slider0->setEnabled(false);
+    slider1->setEnabled(false);
+    slider2->setEnabled(false);
+    slider3->setEnabled(false);
+    slider4->setEnabled(false);
+  });
+
+  QObject::connect(configWidget, &ConfigWidget::DoneBodyAnimation, [=] {
+    slider0->setEnabled(true);
+    slider1->setEnabled(true);
+    slider2->setEnabled(true);
+    slider3->setEnabled(true);
+    slider4->setEnabled(true);
+    slider0->setValue(static_cast<int>(armStatus->rotation[0] / 5.0f));
+    slider1->setValue(static_cast<int>(armStatus->rotation[1] / 5.0f));
+    slider2->setValue(static_cast<int>(armStatus->rotation[2] / 5.0f));
+    slider3->setValue(static_cast<int>(armStatus->rotation[3] / 5.0f));
+    slider4->setValue(static_cast<int>(armStatus->rotation[4] / 5.0f));
+  });
 }
 
 static QSlider*
@@ -81,4 +106,25 @@ AddSlider(QLayout *layout, float *valueSlot, int min, int max, int curr) {
     *valueSlot = static_cast<float>(value) * 5.0f;
   });
   return slider;
+}
+
+void ConfigWidget::OnBodyAnimationsLoaded(
+  QList<QString> *animationNames,
+  std::vector<std::unique_ptr<wgc0310::BodyAnimation>> *animations
+) {
+  QGridLayout *gridLayout = new QGridLayout();
+  ui->presetBodyAnimGroupBox->setLayout(gridLayout);
+
+  Q_ASSERT(static_cast<std::size_t>(animationNames->size())
+           == animations->size());
+  for (qsizetype i = 0; i < animationNames->length(); i++) {
+    QPushButton *button = new QPushButton((*animationNames)[i]);
+    wgc0310::BodyAnimation *animationPtr = animations->at(i).get();
+    gridLayout->addWidget(button);
+
+    connect(button, &QPushButton::clicked, [this, animationPtr] {
+      this->m_BodyStatus->playAnimationStatus.SetAnimation(animationPtr);
+      emit this->StartBodyAnimation();
+    });
+  }
 }

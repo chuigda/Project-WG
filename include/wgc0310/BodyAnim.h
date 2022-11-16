@@ -5,9 +5,10 @@
 #include <vector>
 #include <memory>
 #include <QtGui/qopengl.h>
-#include "wgc0310/BodyStatus.h"
 
 namespace wgc0310 {
+
+class BodyStatus;
 
 struct AnimationCommand {
   bool isLeft;
@@ -35,18 +36,6 @@ struct AnimationSection {
 };
 
 using BodyAnimation = std::vector<AnimationSection>;
-
-class PlayAnimationStatus {
-public:
-  explicit PlayAnimationStatus(BodyAnimation const* animation) noexcept;
-
-  bool NextFrame(BodyStatus* bodyStatus) noexcept;
-
-private:
-  BodyAnimation const* m_Animation;
-  std::size_t m_CurrentSection;
-  std::size_t m_CurrentFrameCount;
-};
 
 std::unique_ptr<BodyAnimation> LoadBodyAnimation(const char *fileName);
 

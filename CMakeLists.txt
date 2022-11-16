@@ -89,6 +89,7 @@ set(PROJECT_SOURCES
     src/wgc0310/Screen.cc
     src/wgc0310/ScreenCurveHelper.cc
     src/wgc0310/BodyAnim.cc
+    src/wgc0310/BodyStatus.cc
     include/wgc0310/Mesh.h
     include/wgc0310/ScreenGlass.h
     include/wgc0310/Screen.h

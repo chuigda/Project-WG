@@ -39,6 +39,10 @@ signals:
 #pragma ide diagnostic ignored "NotImplementedFunctions"
   void StaticScreensLoaded(QList<QListWidgetItem*>*);
   void AnimationsLoaded(QList<QListWidgetItem*>*);
+  void BodyAnimationsLoaded(
+    QList<QString>*,
+    std::vector<std::unique_ptr<wgc0310::BodyAnimation>>*
+  );
 #pragma clang diagnostic pop
 
 public slots:
@@ -51,6 +55,7 @@ private:
   void LoadAndInitScreens();
   void LoadAnimations();
   void InitAnimations();
+  void LoadBodyAnimations();
 
   void DrawArm(const wgc0310::ArmStatus& armStatus);
 
@@ -73,6 +78,8 @@ private:
   std::vector<std::unique_ptr<Animation>> m_Animations;
   QList<QListWidgetItem*> m_StaticScreenItems;
   QList<QListWidgetItem*> m_AnimationItems;
+  QList<QString> m_BodyAnimationNames;
+  std::vector<std::unique_ptr<wgc0310::BodyAnimation>> m_BodyAnimations;
 
   QTimer *m_Timer;
 };

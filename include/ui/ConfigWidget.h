@@ -5,6 +5,7 @@
 #include <QtGui/qopengl.h>
 
 #include "cwglx/GLInfo.h"
+#include "wgc0310/BodyAnim.h"
 
 class QListWidgetItem;
 class CameraEntityStatus;
@@ -34,11 +35,17 @@ signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
   void SetRenderSettings(GLenum cullFaceMode, int targetFPS);
+  void StartBodyAnimation(void);
+  void DoneBodyAnimation(void);
 #pragma clang diagnostic pop
 
 public slots:
   void OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens);
-  void OnAnimationsLoaded(QList<QListWidgetItem*> *animations);
+  void OnScreenAnimationsLoaded(QList<QListWidgetItem*> *animations);
+  void OnBodyAnimationsLoaded(
+    QList<QString> *animationNames,
+    std::vector<std::unique_ptr<wgc0310::BodyAnimation>> *animations
+  );
 
 private slots:
   void OnRenderSettingsConfirmed();

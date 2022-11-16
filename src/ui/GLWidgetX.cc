@@ -1,4 +1,5 @@
 #include "ui/GLWidget.h"
+#include "ui/ConfigWidget.h"
 
 #include <QDir>
 #include <QMessageBox>
@@ -85,7 +86,36 @@ void GLWidget::InitAnimations() {
   emit AnimationsLoaded(&m_AnimationItems);
 }
 
+void GLWidget::LoadBodyAnimations() {
+  QDir dir(QStringLiteral("animations/body"));
+  QStringList filters;
+  filters << "*.anim" << "*.txt" << "*.cfg";
+
+  QStringList files = dir.entryList(filters, QDir::Files);
+  for (const auto &file : files) {
+    std::unique_ptr<wgc0310::BodyAnimation> animation =
+      wgc0310::LoadBodyAnimation(
+        (QStringLiteral("animations/body/") + file).toStdString().c_str()
+      );
+    if (!animation) {
+      continue;
+    }
+
+    m_BodyAnimationNames.push_back(file);
+    m_BodyAnimations.push_back(std::move(animation));
+  }
+
+  emit BodyAnimationsLoaded(&m_BodyAnimationNames, &m_BodyAnimations);
+}
+
 void GLWidget::RequestNextFrame() {
+  if (m_BodyStatus.playAnimationStatus.IsPlayingAnimation()) {
+    if (!m_BodyStatus.playAnimationStatus.NextFrame(&m_BodyStatus)) {
+      m_BodyStatus.playAnimationStatus.SetAnimation(nullptr);
+      emit m_ConfigWidget->DoneBodyAnimation();
+    }
+  }
+
   m_BodyStatus.NextTick();
   update();
 }
