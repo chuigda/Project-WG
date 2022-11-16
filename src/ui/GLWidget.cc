@@ -216,7 +216,7 @@ void GLWidget::resizeGL(int w, int h) {
   Q_UNUSED(h)
 }
 
-void GLWidget::DrawArm(const ArmStatus &armStatus) {
+void GLWidget::DrawArm(const wgc0310::ArmStatus &armStatus) {
   glTranslatef(14.5f, 7.5f, 0.0f);
   glRotatef(armStatus.rotation[0], 1.0f, 0.0f, 0.0f);
   m_Mesh->shoulder->Draw(this);

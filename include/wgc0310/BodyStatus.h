@@ -4,9 +4,11 @@
 #include <QtGui/qopengl.h>
 #include "cwglx/Color.h"
 
+namespace wgc0310 {
+
 class ArmStatus {
 public:
-  GLfloat rotation[5] = { 0.0f, -90.0f, 0.0f, 0.0f, 0.0f };
+  GLfloat rotation[5] = {0.0f, -90.0f, 0.0f, 0.0f, 0.0f};
 
   constexpr inline void Reset() noexcept {
     rotation[0] = 0.0f;
@@ -20,9 +22,7 @@ public:
 class BodyStatus {
 public:
   enum ColorTimerStatus {
-    Blue,
-    Blinking,
-    Gray
+    Blue, Blinking, Gray
   };
 
   ColorTimerStatus colorTimerStatus;
@@ -36,8 +36,7 @@ public:
       blinkFrames(30),
       blinkCounter(0),
       leftArmStatus(),
-      rightArmStatus()
-  {}
+      rightArmStatus() {}
 
   constexpr inline void Reset() noexcept {
     colorTimerStatus = Blue;
@@ -71,17 +70,19 @@ public:
   [[nodiscard]] constexpr inline cw::RGBAColorF GetTimerColor() const noexcept {
     switch (colorTimerStatus) {
       case Blue:
-        return cw::RGBAColorF { 0.0f, 0.75f, 1.0f, 1.0f };
+        return cw::RGBAColorF{0.0f, 0.75f, 1.0f, 1.0f};
       case Blinking:
         if (blinkCounter > (blinkFrames / 2)) {
-          return cw::RGBAColorF { 0.4, 0.4f, 0.4f, 1.0f };
+          return cw::RGBAColorF{0.4, 0.4f, 0.4f, 1.0f};
         } else {
-          return cw::RGBAColorF { 1.0f, 0.25f, 0.0f, 1.0f };
+          return cw::RGBAColorF{1.0f, 0.25f, 0.0f, 1.0f};
         }
       case Gray:
-        return cw::RGBAColorF { 0.4, 0.4f, 0.4f, 1.0f };
+        return cw::RGBAColorF{0.4, 0.4f, 0.4f, 1.0f};
     }
   }
 };
+
+} // namespace wgc0310
 
 #endif // PROJECT_WG_BODY_STATUS_H

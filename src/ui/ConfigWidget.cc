@@ -4,12 +4,12 @@
 #include <QFile>
 #include <QMessageBox>
 #include "ui/CameraEntityStatus.h"
-#include "ui/BodyStatus.h"
+#include "include/wgc0310/BodyStatus.h"
 #include "ui/ScreenStatus.h"
 #include "ui/MessageBoxAlter.h"
 
 ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
-                           BodyStatus *bodyStatus,
+                           wgc0310::BodyStatus *bodyStatus,
                            ScreenStatus *screenStatus,
                            QWidget *glWidget) :
   QWidget(glWidget, Qt::Window),

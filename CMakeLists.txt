@@ -32,7 +32,6 @@ set(PROJECT_SOURCES
     src/ui/ConfigWidgetCamera.cc
     src/ui/ConfigWidgetBody.cc
     src/ui/MessageBoxAlter.cc
-    include/ui/BodyStatus.h
     include/ui/ScreenStatus.h
     include/ui/Animation.h
     include/ui/CameraEntityStatus.h
@@ -89,10 +88,13 @@ set(PROJECT_SOURCES
     src/wgc0310/ScreenGlass.cc
     src/wgc0310/Screen.cc
     src/wgc0310/ScreenCurveHelper.cc
+    src/wgc0310/BodyAnim.cc
     include/wgc0310/Mesh.h
     include/wgc0310/ScreenGlass.h
     include/wgc0310/Screen.h
     include/wgc0310/ScreenCurveHelper.h
+    include/wgc0310/BodyStatus.h
+    include/wgc0310/BodyAnim.h
 
     resc/main.qrc)
 

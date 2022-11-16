@@ -1,12 +1,12 @@
 #include "ui/ConfigWidget.h"
-#include "ui/BodyStatus.h"
+#include "include/wgc0310/BodyStatus.h"
 #include "ui_ConfigWidget.h"
 
 #include <QSlider>
 #include <QRadioButton>
 
 static void SetupArmGroup(QGroupBox *groupBox,
-                          ArmStatus* armStatus,
+                          wgc0310::ArmStatus* armStatus,
                           QPushButton *resetButton);
 
 static QSlider*
@@ -15,7 +15,7 @@ AddSlider(QLayout *layout, float *valueSlot, int min, int max, int curr);
 void ConfigWidget::SetupBodyPage() {
   connect(ui->radioBlue, &QRadioButton::toggled, [=] (bool checked) {
     if (checked) {
-      m_BodyStatus->colorTimerStatus = BodyStatus::Blue;
+      m_BodyStatus->colorTimerStatus = wgc0310::BodyStatus::Blue;
     }
   });
 
@@ -31,7 +31,7 @@ void ConfigWidget::SetupBodyPage() {
   connect(ui->radioGray, &QRadioButton::toggled, [=] (bool checked) {
     if (checked) {
       qDebug() << "gray!";
-      m_BodyStatus->colorTimerStatus = BodyStatus::Gray;
+      m_BodyStatus->colorTimerStatus = wgc0310::BodyStatus::Gray;
     }
   });
 
@@ -52,7 +52,7 @@ void ConfigWidget::SetupBodyPage() {
 }
 
 static void SetupArmGroup(QGroupBox *groupBox,
-                          ArmStatus* armStatus,
+                          wgc0310::ArmStatus* armStatus,
                           QPushButton *resetButton) {
   QVBoxLayout *layout = static_cast<QVBoxLayout*>(groupBox->layout());
   QSlider *slider0 = AddSlider(layout, &armStatus->rotation[0], -180, 180, 0);

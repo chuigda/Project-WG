@@ -11,7 +11,7 @@
 #include "cwglx/DrawableArena.h"
 #include "ui/CameraEntityStatus.h"
 #include "ui/ScreenStatus.h"
-#include "ui/BodyStatus.h"
+#include "include/wgc0310/BodyStatus.h"
 #include "ui/Animation.h"
 #include "wgc0310/Mesh.h"
 #include "wgc0310/Screen.h"
@@ -52,7 +52,7 @@ private:
   void LoadAnimations();
   void InitAnimations();
 
-  void DrawArm(const ArmStatus& armStatus);
+  void DrawArm(const wgc0310::ArmStatus& armStatus);
 
 private:
   QScopedPointer<cw::Light> m_Light;
@@ -64,7 +64,7 @@ private:
   cw::Drawable const* m_ScreenGlass;
   wgc0310::Screen const* m_Screen;
 
-  BodyStatus m_BodyStatus;
+  wgc0310::BodyStatus m_BodyStatus;
   CameraEntityStatus m_CameraEntityStatus;
   ScreenStatus m_ScreenStatus;
   ConfigWidget *m_ConfigWidget;
