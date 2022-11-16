@@ -965,7 +965,6 @@
            <property name="title">
             <string>静态画面</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_21"/>
           </widget>
          </item>
          <item>
@@ -979,7 +978,6 @@
            <property name="title">
             <string>动画</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_22"/>
           </widget>
          </item>
         </layout>

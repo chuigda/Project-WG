@@ -113,12 +113,30 @@ Animation::Animation(const QString &fileName)
   m_Deleted = false;
 }
 
+Animation::Animation(Animation &&that) noexcept
+  : m_Handle(that.m_Handle),
+    m_InitContextFn(that.m_InitContextFn),
+    m_DestroyContextFn(that.m_DestroyContextFn),
+    m_RewindContextFn(that.m_RewindContextFn),
+    m_PlayAnimationFrameFn(that.m_PlayAnimationFrameFn),
+    m_FileName(that.m_FileName),
+    m_AnimationName(std::move(that.m_AnimationName)),
+    m_Context(that.m_Context),
+    m_Deleted(that.m_Deleted)
+{
+  that.m_Deleted = true;
+  that.m_Handle = nullptr;
+}
+
+
 Animation::~Animation() {
   if (!m_Deleted) {
     qWarning() << "BodyAnimation::~BodyAnimation() called without calling Delete()";
   }
 
-  DetachSharedObject(m_Handle);
+  if (m_Handle) {
+    DetachSharedObject(m_Handle);
+  }
 }
 
 bool Animation::IsOpen() const noexcept {

@@ -21,8 +21,7 @@ public:
   Animation(Animation const&) = delete;
   Animation& operator=(Animation const&) = delete;
 
-  Animation(Animation&&) = default;
-  Animation& operator=(Animation&&) = default;
+  Animation(Animation&&) noexcept;
 
   [[nodiscard]] bool IsOpen() const noexcept;
 

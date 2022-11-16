@@ -117,7 +117,7 @@ ConfigWidget::OnStaticScreensLoaded(std::vector<StaticScreen> *staticScreens) {
 
 void ConfigWidget::OnScreenAnimationsLoaded(std::vector<Animation> *animations) {
   QVBoxLayout *layout = new QVBoxLayout();
-  ui->staticGraphBox->setLayout(layout);
+  ui->dynamicAnimationBox->setLayout(layout);
 
   for (auto &animation : *animations) {
     QPushButton *button = new QPushButton(animation.GetAnimationName());
