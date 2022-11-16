@@ -98,32 +98,42 @@ void ConfigWidget::OnRenderSettingsReset() {
 }
 
 void
-ConfigWidget::OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens) {
-  for (auto staticScreen : *staticScreens) {
-    ui->staticAnimList->addItem(staticScreen);
+ConfigWidget::OnStaticScreensLoaded(std::vector<StaticScreen> *staticScreens) {
+  QVBoxLayout *layout = new QVBoxLayout();
+  ui->staticGraphBox->setLayout(layout);
+
+  for (auto &staticScreen : *staticScreens) {
+    QPushButton *button = new QPushButton(staticScreen.imageName);
+    layout->addWidget(button);
+
+    StaticScreen *ptr = &staticScreen;
+    connect(button, &QPushButton::clicked, [this, ptr] {
+      m_ScreenStatus->PlayStaticAnimation(ptr);
+    });
   }
+
+  layout->addStretch();
 }
 
-void ConfigWidget::OnScreenAnimationsLoaded(QList<QListWidgetItem*> *animations) {
-  for (auto animation : *animations) {
-    ui->dynamicAnimList->addItem(animation);
+void ConfigWidget::OnScreenAnimationsLoaded(std::vector<Animation> *animations) {
+  QVBoxLayout *layout = new QVBoxLayout();
+  ui->staticGraphBox->setLayout(layout);
+
+  for (auto &animation : *animations) {
+    QPushButton *button = new QPushButton(animation.GetAnimationName());
+    layout->addWidget(button);
+
+    Animation *ptr = &animation;
+    connect(button, &QPushButton::clicked, [this, ptr] {
+      m_ScreenStatus->PlayAnimation(ptr);
+    });
   }
-}
 
-void ConfigWidget::OnStaticScreenChosen(QListWidgetItem *item) {
-  StaticScreenItem *staticScreenItem = static_cast<StaticScreenItem*>(item);
-  m_ScreenStatus->PlayStaticAnimation(staticScreenItem);
-}
-
-void ConfigWidget::OnAnimationChosen(QListWidgetItem *item) {
-  AnimationItem *animationItem = static_cast<AnimationItem*>(item);
-  m_ScreenStatus->PlayAnimation(animationItem);
+  layout->addStretch();
 }
 
 void ConfigWidget::OnScreenAnimationReset() {
   m_ScreenStatus->Reset();
-  ui->staticAnimList->clearSelection();
-  ui->dynamicAnimList->clearSelection();
 }
 
 void ConfigWidget::ShowThirdParties() {

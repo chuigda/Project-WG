@@ -26,12 +26,13 @@ void GLWidget::LoadAndInitScreens() {
 
     std::unique_ptr<cw::Texture2D> texture =
         std::make_unique<cw::Texture2D>(image, this);
-    cw::Texture2D *ptr = texture.get();
-    m_StaticScreens.push_back(std::move(texture));
-    m_StaticScreenItems.push_back(new StaticScreenItem(file, ptr));
+    m_StaticScreens.push_back(StaticScreen {
+      .imageName = file,
+      .texture = std::move(texture)
+    });
   }
 
-  emit StaticScreensLoaded(&m_StaticScreenItems);
+  emit StaticScreensLoaded(&m_StaticScreens);
 }
 
 void GLWidget::LoadAnimations() {
@@ -45,45 +46,35 @@ void GLWidget::LoadAnimations() {
 
   QStringList files = dir.entryList(filters, QDir::Files);
   for (const auto &file : files) {
-    Animation *animation =
-        new Animation(QStringLiteral("animations/dynamic/") + file);
-    if (!animation->IsOpen()) {
-      delete animation;
+    Animation animation { QStringLiteral("animations/dynamic/") + file };
+    if (!animation.IsOpen()) {
       continue;
     }
-    m_Animations.emplace_back(animation);
+    m_Animations.emplace_back(std::move(animation));
   }
 }
 
 void GLWidget::InitAnimations() {
-  std::vector<std::unique_ptr<Animation>> initializedAnimations;
-
-  for (std::unique_ptr<Animation>& ptr : m_Animations) {
-    std::unique_ptr<Animation> anim = std::move(ptr);
-    if (anim) {
-      if (!anim->Initialize(this)) {
+  std::vector<Animation> initializedAnimations;
+  for (auto &animation : m_Animations) {
+      if (!animation.Initialize(this)) {
         QMessageBox::warning(
             this,
             "警告",
             QString("动画 %1（来自文件 %2）初始化失败，将不可用")
-              .arg(anim->GetAnimationName(),
-                   anim->GetFileName())
+              .arg(animation.GetAnimationName(),
+                   animation.GetFileName())
         );
         continue;
       }
 
-      QString originalFileName = anim->GetFileName();
+      QString originalFileName = animation.GetFileName();
       originalFileName.replace("animations/dynamic/", "", Qt::CaseInsensitive);
-      m_AnimationItems.push_back(new AnimationItem(
-          anim->GetAnimationName() + " (" + originalFileName + ")",
-          anim.get()
-      ));
-      initializedAnimations.push_back(std::move(anim));
-    }
+      initializedAnimations.push_back(std::move(animation));
   }
-  m_Animations.swap(initializedAnimations);
 
-  emit AnimationsLoaded(&m_AnimationItems);
+  m_Animations.swap(initializedAnimations);
+  emit AnimationsLoaded(&m_Animations);
 }
 
 void GLWidget::LoadBodyAnimations() {
@@ -105,7 +96,7 @@ void GLWidget::LoadBodyAnimations() {
     m_BodyAnimations.push_back(std::move(animation));
   }
 
-  emit BodyAnimationsLoaded(&m_BodyAnimationNames, &m_BodyAnimations);
+  emit BodyAnimationsLoaded(&m_BodyAnimations);
 }
 
 void GLWidget::RequestNextFrame() {

@@ -110,17 +110,14 @@ AddSlider(QLayout *layout, float *valueSlot, int min, int max, int curr) {
 }
 
 void ConfigWidget::OnBodyAnimationsLoaded(
-  QList<QString> *animationNames,
   std::vector<std::unique_ptr<wgc0310::BodyAnimation>> *animations
 ) {
   QGridLayout *gridLayout = new QGridLayout();
   ui->presetBodyAnimGroupBox->setLayout(gridLayout);
 
-  Q_ASSERT(static_cast<std::size_t>(animationNames->size())
-           == animations->size());
-  for (qsizetype i = 0; i < animationNames->length(); i++) {
-    QPushButton *button = new QPushButton((*animationNames)[i]);
-    wgc0310::BodyAnimation *animationPtr = animations->at(i).get();
+  for (const auto &animation : *animations) {
+    wgc0310::BodyAnimation const* animationPtr = animation.get();
+    QPushButton *button = new QPushButton(animationPtr->GetName());
     gridLayout->addWidget(button);
 
     connect(button, &QPushButton::clicked, [this, animationPtr] {

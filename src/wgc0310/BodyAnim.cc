@@ -70,29 +70,25 @@ std::unique_ptr<BodyAnimation> LoadBodyAnimation(const char *fileName) {
       continue;
     }
 
+    if (line.startsWith("n=")) {
+      animation->SetAnimationName(line.replace("n=", "").trimmed());
+      continue;
+    }
+
     if (line == "s") {
-      animation->emplace_back();
+      animation->AddSection();
       continue;
     }
 
     QStringList parts = line.split(' ');
     if (parts.length() == 4 && (parts[0] == "l" || parts[0] == "r")) {
-      if (animation->empty()) {
-        qDebug() << "error loading animation:"
-                 << fileName
-                 << "line:"
-                 << lineNo
-                 << "(cannot define rotation without section)";
-        continue;
-      }
-
       bool isLeft = parts[0] == "l";
       bool success;
       PARSE_UINT(axisIndex, parts[1], success)
       PARSE_DOUBLE(rotation, parts[2], success)
       PARSE_UINT(frameCount, parts[3], success)
 
-      animation->back().AddCommand(AnimationCommand {
+      animation->AddCommand(fileName, lineNo, AnimationCommand {
         .isLeft = isLeft,
         .rotationAxisIndex = axisIndex,
         .frameRotation =
@@ -113,5 +109,26 @@ std::unique_ptr<BodyAnimation> LoadBodyAnimation(const char *fileName) {
 
 #undef PARSE_DOUBLE
 #undef PARSE_INT
+
+void BodyAnimation::AddSection() noexcept {
+  m_Sections.emplace_back();
+}
+
+void BodyAnimation::AddCommand(
+  const char *fileName,
+  std::size_t lineNo,
+  AnimationCommand command
+) noexcept {
+  if (m_Sections.empty()) {
+    qDebug() << "error loading animation:"
+             << fileName
+             << "line:"
+             << lineNo
+             << "(cannot define rotation without section)";
+    return;
+  }
+
+  m_Sections.back().AddCommand(command);
+}
 
 } // namespace wgc0310

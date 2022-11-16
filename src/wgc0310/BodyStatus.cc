@@ -21,12 +21,14 @@ bool PlayAnimationStatus::NextFrame(BodyStatus *bodyStatus) noexcept {
     return false;
   }
 
+  std::vector<AnimationSection> const& sections = m_Animation->GetSections();
+
 restart:
-  if (m_CurrentSection >= m_Animation->size()) {
+  if (m_CurrentSection >= sections.size()) {
     return false;
   }
 
-  AnimationSection const& section = (*m_Animation)[m_CurrentSection];
+  AnimationSection const& section = sections[m_CurrentSection];
   if (m_CurrentFrameCount >= section.totalFrameCount) {
     m_CurrentSection += 1;
     m_CurrentFrameCount = 0;

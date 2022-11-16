@@ -71,14 +71,14 @@ GLWidget::~GLWidget() {
   m_Arena.Delete(this);
   qDebug() << "GLWidget::~GLWidget(): arena released successfully";
 
-  for (const std::unique_ptr<cw::Texture2D>& item : m_StaticScreens) {
-    item->DeleteTexture(this);
+  for (auto& item : m_StaticScreens) {
+    item.texture->DeleteTexture(this);
   }
   qDebug() << "GLWidget::~GLWidget():"
            << "static screen textures released successfully";
 
-  for (const std::unique_ptr<Animation>& item : m_Animations) {
-    item->Delete(this);
+  for (auto &item : m_Animations) {
+    item.Delete(this);
   }
   qDebug() << "GLWidget::~GLWidget():"
            << "animations released successfully";

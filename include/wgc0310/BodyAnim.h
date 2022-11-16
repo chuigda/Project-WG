@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <memory>
+#include <QString>
 #include <QtGui/qopengl.h>
 
 namespace wgc0310 {
@@ -35,7 +36,41 @@ struct AnimationSection {
                            std::size_t frame) const noexcept;
 };
 
-using BodyAnimation = std::vector<AnimationSection>;
+class BodyAnimation {
+public:
+  BodyAnimation() = default;
+
+  BodyAnimation(BodyAnimation const&) = delete;
+  BodyAnimation& operator=(BodyAnimation const&) = delete;
+
+  BodyAnimation(BodyAnimation&&) = default;
+  BodyAnimation& operator=(BodyAnimation&&) = default;
+
+  void SetAnimationName(QString const& name) noexcept {
+    m_AnimationName = name;
+  }
+
+  [[nodiscard]]
+  constexpr inline QString const& GetName() const noexcept {
+    return m_AnimationName;
+  }
+
+  [[nodiscard]]
+  constexpr inline
+  std::vector<AnimationSection> const& GetSections() const noexcept {
+    return m_Sections;
+  }
+
+  void AddSection() noexcept;
+
+  void AddCommand(const char *fileName,
+                  std::size_t lineNo,
+                  AnimationCommand command) noexcept;
+
+private:
+  QString m_AnimationName;
+  std::vector<AnimationSection> m_Sections;
+};
 
 std::unique_ptr<BodyAnimation> LoadBodyAnimation(const char *fileName);
 

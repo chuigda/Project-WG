@@ -27,10 +27,6 @@ void ConfigWidget::SetupCameraEntityPage() {
   connect(ui->resetRenderSettingsButton, &QPushButton::clicked,
           this, &ConfigWidget::OnRenderSettingsReset);
 
-  connect(ui->staticAnimList, &QListWidget::itemDoubleClicked,
-          this, &ConfigWidget::OnStaticScreenChosen);
-  connect(ui->dynamicAnimList, &QListWidget::itemDoubleClicked,
-          this, &ConfigWidget::OnAnimationChosen);
   connect(ui->resetScrAnimButton, &QPushButton::clicked,
           this, &ConfigWidget::OnScreenAnimationReset);
 

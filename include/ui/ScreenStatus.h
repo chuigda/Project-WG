@@ -13,52 +13,15 @@ class Texture2D;
 
 } // namespace cw
 
-class StaticScreenItem final : public QListWidgetItem {
-public:
-  StaticScreenItem(const QString &text, cw::Texture2D *texture2D)
-      : QListWidgetItem(text),
-        m_Texture2D(texture2D)
-  {}
-  ~StaticScreenItem() final = default;
-
-  [[nodiscard]] constexpr inline cw::Texture2D* GetTexture() const noexcept {
-    return m_Texture2D;
-  }
-
-  CW_DERIVE_UNCOPYABLE(StaticScreenItem)
-  CW_DERIVE_UNMOVABLE(StaticScreenItem)
-
-private:
-  cw::Texture2D *m_Texture2D;
-};
-
-class AnimationItem final : public QListWidgetItem {
-public:
-  AnimationItem(const QString &text, Animation *animation)
-    : QListWidgetItem(text),
-      m_Animation(animation)
-  {}
-
-  [[nodiscard]] constexpr inline Animation *GetAnimation() const noexcept {
-    return m_Animation;
-  }
-
-  CW_DERIVE_UNCOPYABLE(AnimationItem)
-  CW_DERIVE_UNMOVABLE(AnimationItem)
-
-private:
-  Animation *m_Animation;
-};
-
 class ScreenStatus final : public QObject {
   Q_OBJECT
 
 public:
   ScreenStatus();
 
-  void PlayStaticAnimation(StaticScreenItem *staticScreenItem);
+  void PlayStaticAnimation(StaticScreen *staticScreen);
 
-  void PlayAnimation(AnimationItem *animationItem);
+  void PlayAnimation(Animation *animation);
 
   void DrawOnScreen(GLFunctions *f);
 
@@ -74,8 +37,8 @@ private:
   bool m_IsPlayingStaticAnimation;
   bool m_IsPlayingDynamicAnimation;
 
-  StaticScreenItem *m_StaticScreenItem;
-  AnimationItem *m_AnimationItem;
+  StaticScreen *m_StaticScreen;
+  Animation *m_Animation;
   QTimer *m_Timer;
   std::uint64_t m_Frame;
 };

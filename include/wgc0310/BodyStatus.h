@@ -8,7 +8,6 @@
 
 namespace wgc0310 {
 
-using BodyAnimation = std::vector<AnimationSection>;
 class BodyStatus;
 
 class PlayAnimationStatus {

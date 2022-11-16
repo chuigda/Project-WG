@@ -5,12 +5,24 @@
 #include <QString>
 
 #include "cwglx/GL.h"
+#include "cwglx/Texture.h"
 #include "util/Derive.h"
+
+struct StaticScreen final {
+  QString imageName;
+  std::unique_ptr<cw::Texture2D> texture;
+};
 
 class Animation final {
 public:
   explicit Animation(const QString& fileName);
   ~Animation();
+
+  Animation(Animation const&) = delete;
+  Animation& operator=(Animation const&) = delete;
+
+  Animation(Animation&&) = default;
+  Animation& operator=(Animation&&) = default;
 
   [[nodiscard]] bool IsOpen() const noexcept;
 

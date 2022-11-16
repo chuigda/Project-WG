@@ -37,10 +37,9 @@ protected:
 signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
-  void StaticScreensLoaded(QList<QListWidgetItem*>*);
-  void AnimationsLoaded(QList<QListWidgetItem*>*);
+  void StaticScreensLoaded(std::vector<StaticScreen>*);
+  void AnimationsLoaded(std::vector<Animation>*);
   void BodyAnimationsLoaded(
-    QList<QString>*,
     std::vector<std::unique_ptr<wgc0310::BodyAnimation>>*
   );
 #pragma clang diagnostic pop
@@ -74,10 +73,8 @@ private:
   ScreenStatus m_ScreenStatus;
   ConfigWidget *m_ConfigWidget;
 
-  std::vector<std::unique_ptr<cw::Texture2D>> m_StaticScreens;
-  std::vector<std::unique_ptr<Animation>> m_Animations;
-  QList<QListWidgetItem*> m_StaticScreenItems;
-  QList<QListWidgetItem*> m_AnimationItems;
+  std::vector<StaticScreen> m_StaticScreens;
+  std::vector<Animation> m_Animations;
   QList<QString> m_BodyAnimationNames;
   std::vector<std::unique_ptr<wgc0310::BodyAnimation>> m_BodyAnimations;
 

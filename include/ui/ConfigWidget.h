@@ -6,6 +6,8 @@
 
 #include "cwglx/GLInfo.h"
 #include "wgc0310/BodyAnim.h"
+#include "cwglx/Texture.h"
+#include "Animation.h"
 
 class QListWidgetItem;
 class CameraEntityStatus;
@@ -40,10 +42,9 @@ signals:
 #pragma clang diagnostic pop
 
 public slots:
-  void OnStaticScreensLoaded(QList<QListWidgetItem*> *staticScreens);
-  void OnScreenAnimationsLoaded(QList<QListWidgetItem*> *animations);
+  void OnStaticScreensLoaded(std::vector<StaticScreen> *staticScreens);
+  void OnScreenAnimationsLoaded(std::vector<Animation> *animations);
   void OnBodyAnimationsLoaded(
-    QList<QString> *animationNames,
     std::vector<std::unique_ptr<wgc0310::BodyAnimation>> *animations
   );
 
@@ -51,8 +52,6 @@ private slots:
   void OnRenderSettingsConfirmed();
   void OnRenderSettingsReset();
 
-  void OnStaticScreenChosen(QListWidgetItem *item);
-  void OnAnimationChosen(QListWidgetItem *item);
   void OnScreenAnimationReset();
 
   void UpdateCameraX(int value);

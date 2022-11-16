@@ -29,7 +29,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="configTab">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="openglTab">
       <attribute name="title">
@@ -965,11 +965,7 @@
            <property name="title">
             <string>静态画面</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_21">
-            <item>
-             <widget class="QListWidget" name="staticAnimList"/>
-            </item>
-           </layout>
+           <layout class="QHBoxLayout" name="horizontalLayout_21"/>
           </widget>
          </item>
          <item>
@@ -983,11 +979,7 @@
            <property name="title">
             <string>动画</string>
            </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_22">
-            <item>
-             <widget class="QListWidget" name="dynamicAnimList"/>
-            </item>
-           </layout>
+           <layout class="QHBoxLayout" name="horizontalLayout_22"/>
           </widget>
          </item>
         </layout>
@@ -1148,9 +1140,9 @@
   <slot>setCameraMoveZ(int)</slot>
  </slots>
  <buttongroups>
+  <buttongroup name="culLFaceButtonGroup"/>
+  <buttongroup name="scrTexFiltButtonGroup"/>
   <buttongroup name="scrRenderModeButtonGroup"/>
   <buttongroup name="imgTexFiltButtonGroup"/>
-  <buttongroup name="scrTexFiltButtonGroup"/>
-  <buttongroup name="culLFaceButtonGroup"/>
  </buttongroups>
 </ui>
