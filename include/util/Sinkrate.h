@@ -5,7 +5,7 @@ namespace cw {
 
 class Sinkrate {};
 
-extern const Sinkrate SecretInternalsDoNotUseOrYouWillBeFired;
+constexpr inline Sinkrate SecretInternalsDoNotUseOrYouWillBeFired {};
 
 } // namespace cw
 

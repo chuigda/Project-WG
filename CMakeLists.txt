@@ -41,7 +41,6 @@ set(PROJECT_SOURCES
     include/ui/MessageBoxAlter.h
 
     src/util/Constants.cc
-    src/util/Sinkrate.cc
     include/util/Wife.h
     include/util/Constants.h
     include/util/Derive.h

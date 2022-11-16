@@ -123,9 +123,7 @@ public:
     const auto &self = m_Repr;
     std::unique_lock lock { self->mutex };
 
-    self->condvar.wait(lock, [&self] {
-      return self->buffer.size() != 0;
-    });
+    self->condvar.wait(lock, [&self] { return self->buffer.size() != 0; });
     assert(!self->buffer.empty());
 
     std::deque<T> ret;
