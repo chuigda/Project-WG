@@ -79,6 +79,11 @@ set(PROJECT_SOURCES
     include/cwglx/GLImpl.h
     include/cwglx/GLInfo.h
 
+    src/pose/DlibPoser.cc
+    include/pose/Pose.h
+    include/pose/DlibPoser.h
+    include/pose/DnnPoser.h
+
     src/cwglx/drawable/PlainTriangles.cc
     src/cwglx/drawable/TriangleGen.cc
     src/cwglx/drawable/Composition.cc
