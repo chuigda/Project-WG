@@ -77,3 +77,6 @@ Thumbs.db
 
 # 傻逼 IDEA 不会 shadow build?
 cmake-build*
+
+# Absolute proprietary！
+alchemy/dlib_sp_68points.dat

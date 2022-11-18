@@ -26,6 +26,11 @@ if (NOT DEFINED CW_DLIB_LIBRARY_FILES)
     message(FATA_ERROR "CW_DLIB_LIBRARY_FILES must be set")
 endif()
 
+add_library(Poser src/pose/DlibPoser.cc)
+# MSVC 无人权
+target_compile_options(Poser PRIVATE -O2 -g)
+target_compile_features(Poser PRIVATE cxx_std_20 c_std_11)
+
 set(PROJECT_SOURCES
     main.cc
 
@@ -79,11 +84,6 @@ set(PROJECT_SOURCES
     include/cwglx/GLImpl.h
     include/cwglx/GLInfo.h
 
-    src/pose/DlibPoser.cc
-    include/pose/Pose.h
-    include/pose/DlibPoser.h
-    include/pose/DnnPoser.h
-
     src/cwglx/drawable/PlainTriangles.cc
     src/cwglx/drawable/TriangleGen.cc
     src/cwglx/drawable/Composition.cc
@@ -113,12 +113,13 @@ include_directories(include)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(Project-WG  MANUAL_FINALIZATION ${PROJECT_SOURCES})
+    qt_add_executable(Project-WG MANUAL_FINALIZATION ${PROJECT_SOURCES})
 else()
     add_executable(Project-WG ${PROJECT_SOURCES})
 endif()
 
 target_link_libraries(Project-WG PRIVATE
+                      Poser
                       Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::OpenGLWidgets
                       ${OpenCV_LIBS}
