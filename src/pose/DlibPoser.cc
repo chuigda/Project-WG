@@ -91,8 +91,19 @@ public:
       6 // chin
     };
 
+    static constexpr std::size_t noEyePointIndices[] = {
+      12, 0, 11, 1, // cheeks
+      55, 49, // nose
+      43, 39, 45, // mouth
+      6 // chin
+    };
+
     for (std::size_t pointIndex : pointIndices) {
       m_DefaultObjectPts.push_back(g_FaceModel[pointIndex]);
+    }
+
+    for (std::size_t pointIndex : noEyePointIndices) {
+      m_NoEyeObjectPts.push_back(g_FaceModel[pointIndex]);
     }
   }
 
