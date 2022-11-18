@@ -1,6 +1,7 @@
 #ifndef PROJECT_WG_SCREEN_STATUS_H
 #define PROJECT_WG_SCREEN_STATUS_H
 
+#include <cstdint>
 #include <QListWidgetItem>
 
 #include "cwglx/GL.h"

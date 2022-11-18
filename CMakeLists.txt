@@ -20,6 +20,12 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
              Widgets
              OpenGLWidgets)
 
+find_package(OpenCV REQUIRED)
+
+if (NOT DEFINED CW_DLIB_LIBRARY_FILES)
+    message(FATA_ERROR "CW_DLIB_LIBRARY_FILES must be set")
+endif()
+
 set(PROJECT_SOURCES
     main.cc
 
@@ -75,10 +81,10 @@ set(PROJECT_SOURCES
 
     src/cwglx/drawable/PlainTriangles.cc
     src/cwglx/drawable/TriangleGen.cc
-        src/cwglx/drawable/Composition.cc
+    src/cwglx/drawable/Composition.cc
     include/cwglx/drawable/PlainTriangles.h
     include/cwglx/drawable/TriangleGen.h
-        include/cwglx/drawable/Composition.h
+    include/cwglx/drawable/Composition.h
 
     src/wgc0310/Mesh.cc
     src/wgc0310/ScreenGlass.cc
@@ -99,6 +105,7 @@ qt_wrap_ui(PROJECT_SOURCES src/ui/ConfigWidget.ui)
 qt_wrap_ui(PROJECT_SOURCES src/ui/MessageBoxAlter.ui)
 
 include_directories(include)
+include_directories(${OpenCV_INCLUDE_DIRS})
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Project-WG  MANUAL_FINALIZATION ${PROJECT_SOURCES})
@@ -108,7 +115,9 @@ endif()
 
 target_link_libraries(Project-WG PRIVATE
                       Qt${QT_VERSION_MAJOR}::Widgets
-                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
+                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets
+                      ${OpenCV_LIBS}
+                      ${CW_DLIB_LIBRARY_FILES})
 
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 
