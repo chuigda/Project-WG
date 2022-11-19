@@ -31,7 +31,6 @@ void ConfigWidget::SetupBodyPage() {
 
   connect(ui->radioGray, &QRadioButton::toggled, [=] (bool checked) {
     if (checked) {
-      qDebug() << "gray!";
       m_BodyStatus->colorTimerStatus = wgc0310::BodyStatus::Gray;
     }
   });
