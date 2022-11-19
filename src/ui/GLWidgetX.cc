@@ -109,6 +109,7 @@ void GLWidget::RequestNextFrame() {
     }
   }
 
+  m_FaceTrackStatus.NextFrame();
   m_ScreenStatus.NextFrame();
   m_BodyStatus.NextTick();
   update();

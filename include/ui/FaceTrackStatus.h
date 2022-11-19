@@ -2,8 +2,10 @@
 #define PROJECT_WG_HEAD_POSE_STATUS_H
 
 #include <cstddef>
+#include <memory>
 
 #include "cwglx/GL.h"
+#include "cwglx/Texture.h"
 #include "pose/Pose.h"
 #include "util/Derive.h"
 
@@ -45,6 +47,8 @@ public:
 
   FaceTrackConfig config;
 
+  void Initialize(GLFunctions *f);
+
   void FeedHeadPose(cw::HeadPose pose);
 
   void NextFrame();
@@ -61,6 +65,9 @@ private:
 
   cw::HeadPose m_CurrentPose;
   std::size_t m_MouthStatusFrame;
+
+  std::unique_ptr<cw::Texture2D> m_EyeTexture;
+  std::unique_ptr<cw::Texture2D> m_MouthTexture;
 };
 
 #endif // PROJECT_WG_HEAD_POSE_STATUS_H

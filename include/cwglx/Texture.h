@@ -6,6 +6,7 @@
 
 #include "cwglx/GL.h"
 #include "cwglx/Vertex.h"
+#include "util/Derive.h"
 
 class QImage;
 
@@ -34,11 +35,8 @@ public:
 
   ~Texture2D() noexcept;
 
-  Texture2D(const Texture2D &) = delete;
-  Texture2D &operator=(const Texture2D &) = delete;
-
-  Texture2D(Texture2D &&) = delete;
-  Texture2D &operator=(Texture2D &&) = delete;
+  CW_DERIVE_UNCOPYABLE(Texture2D);
+  CW_DERIVE_UNMOVABLE(Texture2D);
 
 private:
   GLuint m_TextureId;

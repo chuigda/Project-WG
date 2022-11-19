@@ -2,6 +2,7 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <QImage>
 #include "cwglx/GLImpl.h"
 
 FaceTrackStatus::FaceTrackStatus()
@@ -14,10 +15,24 @@ FaceTrackStatus::FaceTrackStatus()
       .rotationZ = 0.0,
       .mouthStatus = cw::HeadPose::Close,
     },
-    m_MouthStatusFrame(0)
+    m_MouthStatusFrame(0),
+    m_EyeTexture(nullptr),
+    m_MouthTexture(nullptr)
 {
   std::srand(std::time(nullptr));
 }
+
+void FaceTrackStatus::Initialize(GLFunctions *f) {
+  QImage eye9Image(":/eye.9.bmp");
+  QImage halfFaceImage(":/half-face.bmp");
+
+  assert(!eye9Image.isNull());
+  assert(!halfFaceImage.isNull());
+
+  m_EyeTexture = std::make_unique<cw::Texture2D>(eye9Image, f);
+  m_MouthTexture = std::make_unique<cw::Texture2D>(halfFaceImage, f);
+}
+
 
 void FaceTrackStatus::FeedHeadPose(cw::HeadPose pose) {
   if (m_MouthStatusFrame > config.mouthDuration
@@ -64,6 +79,7 @@ void FaceTrackStatus::NextFrame() {
           std::rand() % config.blinkIntervalRange + config.blinkIntervalMin;
         break;
       case Blinking:
+        m_EyeStatusDuration = config.blinkDuration;
         break;
     }
   }
@@ -72,5 +88,80 @@ void FaceTrackStatus::NextFrame() {
 }
 
 void FaceTrackStatus::DrawOnScreen(GLFunctions *f) {
+  float eyeTop;
+  float eyeBottom;
 
+  if (m_EyeStatus == EyeStatus::Blinking) {
+    float len = 4.0f + 48.0f * (static_cast<float>(m_EyeStatusFrame)
+                                / static_cast<float>(m_EyeStatusDuration));
+    eyeTop = 42.0f + len;
+    eyeBottom = 42.0f - len;
+  } else {
+    eyeTop = 42.0f + 52.0f;
+    eyeBottom = 42.0f - 52.0f;
+  }
+
+  f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  f->glTranslatef(0.0f, 0.0f, 0.1f);
+
+  f->glPushMatrix();
+  f->glScalef(1.0f / 0.75f, 1.0f / 0.75f, 1.0f);
+  m_EyeTexture->BeginTexture(f);
+  f->glBegin(GL_QUADS);
+  {
+    f->glTexCoord2f(0.0f, 0.0f);
+    f->glVertex2f(-118.0f, eyeTop);
+
+    f->glTexCoord2f(0.0f, 0.25f);
+    f->glVertex2f(-118.0f, eyeTop - 7.0f);
+
+    f->glTexCoord2f(0.0f, 0.75f);
+    f->glVertex2f(-118.0f, eyeBottom + 7.0f);
+
+    f->glTexCoord2f(0.0f, 1.0f);
+    f->glVertex2f(-118.0f, eyeBottom);
+
+    f->glTexCoord2f(1.0f, 1.0f);
+    f->glVertex2f(-90.0f, eyeBottom);
+
+    f->glTexCoord2f(1.0f, 0.75f);
+    f->glVertex2f(-90.0f, eyeBottom + 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.25f);
+    f->glVertex2f(-90.0f, eyeTop - 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.0f);
+    f->glVertex2f(-90.0f, eyeTop);
+  }
+  f->glEnd();
+
+  f->glBegin(GL_QUADS);
+  {
+    f->glTexCoord2f(0.0f, 0.0f);
+    f->glVertex2f(90.0f, eyeTop);
+
+    f->glTexCoord2f(0.0f, 0.25f);
+    f->glVertex2f(90.0f, eyeTop - 7.0f);
+
+    f->glTexCoord2f(0.0f, 0.75f);
+    f->glVertex2f(90.0f, eyeBottom + 7.0f);
+
+    f->glTexCoord2f(0.0f, 1.0f);
+    f->glVertex2f(90.0f, eyeBottom);
+
+    f->glTexCoord2f(1.0f, 1.0f);
+    f->glVertex2f(118.0f, eyeBottom);
+
+    f->glTexCoord2f(1.0f, 0.75f);
+    f->glVertex2f(118.0f, eyeBottom + 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.25f);
+    f->glVertex2f(118.0f, eyeTop - 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.0f);
+    f->glVertex2f(118.0f, eyeTop);
+  }
+  f->glEnd();
+
+  f->glPopMatrix();
 }

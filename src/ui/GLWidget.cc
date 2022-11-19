@@ -138,6 +138,7 @@ void GLWidget::initializeGL() {
 
   LoadAndInitScreens();
   InitAnimations();
+  m_FaceTrackStatus.Initialize(this);
 }
 
 void GLWidget::paintGL() {

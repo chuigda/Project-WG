@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>volume-bar-composed.bmp</file>
+        <file>eye.9.bmp</file>
+        <file>half-face.bmp</file>
         <file>LICENSE</file>
         <file>LICENSE-CC-BY-NC-SA</file>
         <file>3RD_PARTIES</file>
