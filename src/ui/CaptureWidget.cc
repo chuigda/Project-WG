@@ -73,7 +73,7 @@ void CaptureWidget::hoverMove(QHoverEvent *event) {
     int dx = pos.x() - 150;
     int dy = pos.y() - 150;
 
-    float yRotation = static_cast<float>(dx) / 15.0f;
+    float yRotation = static_cast<float>(dx) / 10.0f;
     float zRotation = static_cast<float>(dx) / -10.0f;
     float xRotation = static_cast<float>(dy) / -10.0f;
 
