@@ -6,54 +6,25 @@
 
 #include "cwglx/GL.h"
 #include "cwglx/Texture.h"
-#include "pose/Pose.h"
 #include "util/Derive.h"
 
-struct FaceTrackConfig {
-  double smooth;
+struct HeadPose {
+  double rotationX;
+  double rotationY;
+  double rotationZ;
 
-  double xFix;
-  double yFix;
-  double zFix;
-
-  double deadZoneX;
-  double deadZoneY;
-  double deadZoneZ;
-
-  std::size_t blinkIntervalMin;
-  std::size_t blinkIntervalRange;
-  std::size_t blinkDuration;
-
-  std::size_t mouthDuration;
-
-  constexpr inline FaceTrackConfig() noexcept
-    : smooth(0.5),
-      xFix(0.0),
-      yFix(0.0),
-      zFix(0.0),
-      deadZoneX(5.0),
-      deadZoneY(5.0),
-      deadZoneZ(5.0),
-      blinkIntervalMin(600),
-      blinkIntervalRange(200),
-      blinkDuration(25),
-      mouthDuration(15)
-  {}
+  enum MouthStatus { Close, Open, OpenBig } mouthStatus;
 };
 
 class FaceTrackStatus {
 public:
   FaceTrackStatus();
 
-  FaceTrackConfig config;
-
-  cw::HeadPose currentPose;
+  HeadPose currentPose;
 
   void Initialize(GLFunctions *f);
 
-  void FeedHeadPose(cw::HeadPose pose);
-
-  void FeedNothing();
+  void FeedHeadPose(HeadPose pose);
 
   void NextFrame();
 
@@ -67,8 +38,6 @@ private:
   std::size_t m_EyeStatusFrame;
   std::size_t m_EyeStatusDuration;
   std::size_t m_MouthStatusFrame;
-
-  cw::HeadPose m_LastFeed;
 
   std::unique_ptr<cw::Texture2D> m_EyeTexture;
   std::unique_ptr<cw::Texture2D> m_MouthTexture;

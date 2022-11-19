@@ -10,16 +10,13 @@
 #include "cwglx/Drawable.h"
 #include "cwglx/DrawableArena.h"
 #include "ui/CameraEntityStatus.h"
+#include "ui/FaceTrackStatus.h"
 #include "ui/ScreenStatus.h"
 #include "ui/Animation.h"
 
 #include "wgc0310/BodyStatus.h"
 #include "wgc0310/Mesh.h"
 #include "wgc0310/Screen.h"
-
-#include "util/Channel.h"
-#include "pose/Pose.h"
-#include "FaceTrackStatus.h"
 
 class QTimer;
 class ConfigWidget;
@@ -28,8 +25,7 @@ class GLWidget final : public QOpenGLWidget, public GLFunctions {
   Q_OBJECT
 
 public:
-  explicit GLWidget(std::unique_ptr<cw::Receiver<cw::HeadPose>> poseReceiver,
-                    QWidget *parent = nullptr);
+  explicit GLWidget(QWidget *parent = nullptr);
   ~GLWidget() final;
 
 protected:
@@ -65,8 +61,6 @@ private:
   void DrawArm(const wgc0310::ArmStatus& armStatus, GLfloat coeff);
 
 private:
-  std::unique_ptr<cw::Receiver<cw::HeadPose>> m_PoseReceiver;
-
   QScopedPointer<cw::Light> m_Light;
   QScopedPointer<cw::Light> m_Light2;
 

@@ -10,13 +10,12 @@ FaceTrackStatus::FaceTrackStatus()
       .rotationX = 0.0,
       .rotationY = 0.0,
       .rotationZ = 0.0,
-      .mouthStatus = cw::HeadPose::Close,
+      .mouthStatus = HeadPose::Close,
     },
     m_EyeStatus(EyeStatus::Open),
     m_EyeStatusFrame(0),
     m_EyeStatusDuration(400),
     m_MouthStatusFrame(0),
-    m_LastFeed(currentPose),
     m_EyeTexture(nullptr),
     m_MouthTexture(nullptr)
 {
@@ -35,42 +34,21 @@ void FaceTrackStatus::Initialize(GLFunctions *f) {
 }
 
 
-void FaceTrackStatus::FeedHeadPose(cw::HeadPose pose) {
-  m_LastFeed = pose;
-
+void FaceTrackStatus::FeedHeadPose(HeadPose pose) {
   {
-    double diffX = std::abs(pose.rotationX - currentPose.rotationX);
-    double diffY = std::abs(pose.rotationY - currentPose.rotationY);
-    double diffZ = std::abs(pose.rotationZ - currentPose.rotationZ);
-    double oldCoeff = 1 - config.smooth;
-    double newCoeff = config.smooth;
+    double oldCoeff = 0.5;
+    double newCoeff = 0.5;
 
     double newX = oldCoeff * currentPose.rotationX + newCoeff * pose.rotationX;
     double newY = oldCoeff * currentPose.rotationY + newCoeff * pose.rotationY;
     double newZ = oldCoeff * currentPose.rotationZ + newCoeff * pose.rotationZ;
 
-    if (diffX > 1.5) {
-      currentPose.rotationX = newX;
-    }
-
-    if (diffY > 1.5) {
-      currentPose.rotationY = newY;
-    }
-
-    if (diffZ > 1.5) {
-      currentPose.rotationZ = newZ;
-    }
+    currentPose.rotationX = newX;
+    currentPose.rotationY = newY;
+    currentPose.rotationZ = newZ;
   }
 
-  if (m_MouthStatusFrame > config.mouthDuration
-      && pose.mouthStatus != currentPose.mouthStatus) {
-    currentPose.mouthStatus = pose.mouthStatus;
-    m_MouthStatusFrame = 0;
-  }
-}
-
-void FaceTrackStatus::FeedNothing() {
-  FeedHeadPose(m_LastFeed);
+  currentPose.mouthStatus = pose.mouthStatus;
 }
 
 void FaceTrackStatus::NextFrame() {
@@ -80,11 +58,10 @@ void FaceTrackStatus::NextFrame() {
     m_EyeStatus = static_cast<EyeStatus>(-m_EyeStatus);
     switch (m_EyeStatus) {
       case Open:
-        m_EyeStatusDuration =
-          std::rand() % config.blinkIntervalRange + config.blinkIntervalMin;
+        m_EyeStatusDuration = std::rand() % 200 + 500;
         break;
       case Blinking:
-        m_EyeStatusDuration = config.blinkDuration;
+        m_EyeStatusDuration = 25;
         break;
     }
   }
