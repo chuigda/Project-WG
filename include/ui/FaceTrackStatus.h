@@ -19,7 +19,7 @@ struct FaceTrackConfig {
   double deadZoneZ;
 
   std::size_t blinkIntervalMin;
-  std::size_t blinkIntervalMax;
+  std::size_t blinkIntervalRange;
   std::size_t blinkDuration;
 
   std::size_t mouthDuration;
@@ -33,7 +33,7 @@ struct FaceTrackConfig {
       deadZoneY(5.0),
       deadZoneZ(5.0),
       blinkIntervalMin(600),
-      blinkIntervalMax(1000),
+      blinkIntervalRange(400),
       blinkDuration(45),
       mouthDuration(25)
   {}
@@ -47,17 +47,20 @@ public:
 
   void FeedHeadPose(cw::HeadPose pose);
 
+  void NextFrame();
+
   void DrawOnScreen(GLFunctions *f);
 
   CW_DERIVE_UNCOPYABLE(FaceTrackStatus)
   CW_DERIVE_UNMOVABLE(FaceTrackStatus)
 
 private:
-  enum EyeStatus { Open, Blinking } m_EyeStatus;
+  enum EyeStatus { Open = 1, Blinking = -1 } m_EyeStatus;
   std::size_t m_EyeStatusFrame;
   std::size_t m_EyeStatusDuration;
 
   cw::HeadPose m_CurrentPose;
+  std::size_t m_MouthStatusFrame;
 };
 
 #endif // PROJECT_WG_HEAD_POSE_STATUS_H
