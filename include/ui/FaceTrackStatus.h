@@ -35,9 +35,9 @@ struct FaceTrackConfig {
       deadZoneY(5.0),
       deadZoneZ(5.0),
       blinkIntervalMin(600),
-      blinkIntervalRange(400),
-      blinkDuration(45),
-      mouthDuration(25)
+      blinkIntervalRange(200),
+      blinkDuration(25),
+      mouthDuration(15)
   {}
 };
 

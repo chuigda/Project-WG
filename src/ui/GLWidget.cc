@@ -59,6 +59,7 @@ GLWidget::GLWidget(std::unique_ptr<cw::Receiver<cw::HeadPose>> poseReceiver,
   connect(this, &GLWidget::BodyAnimationsLoaded,
           m_ConfigWidget, &ConfigWidget::OnBodyAnimationsLoaded);
 
+  m_Timer->setTimerType(Qt::PreciseTimer);
   m_Timer->setInterval(1000 / 90);
   connect(m_Timer, &QTimer::timeout, this, &GLWidget::RequestNextFrame);
   m_Timer->start();

@@ -8,7 +8,7 @@
 FaceTrackStatus::FaceTrackStatus()
   : m_EyeStatus(EyeStatus::Open),
     m_EyeStatusFrame(0),
-    m_EyeStatusDuration(1000),
+    m_EyeStatusDuration(400),
     m_CurrentPose {
       .rotationX = 0.0,
       .rotationY = 0.0,
@@ -87,13 +87,77 @@ void FaceTrackStatus::NextFrame() {
   m_MouthStatusFrame += 1;
 }
 
+static void DrawEye(GLFunctions *f,
+                    float top,
+                    float bottom,
+                    float left,
+                    float right)
+{
+  f->glBegin(GL_QUADS);
+  {
+    f->glTexCoord2f(0.0f, 0.0f);
+    f->glVertex2f(left, top);
+
+    f->glTexCoord2f(0.0f, 0.25f);
+    f->glVertex2f(left, top - 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.25f);
+    f->glVertex2f(right, top - 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.0f);
+    f->glVertex2f(right, top);
+  }
+
+  {
+    f->glTexCoord2f(0.0f, 0.25f);
+    f->glVertex2f(left, top - 7.0f);
+
+    f->glTexCoord2f(0.0f, 0.75f);
+    f->glVertex2f(left, bottom + 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.75f);
+    f->glVertex2f(right, bottom + 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.25f);
+    f->glVertex2f(right, top - 7.0f);
+  }
+
+  {
+    f->glTexCoord2f(0.0f, 0.75f);
+    f->glVertex2f(left, bottom + 7.0f);
+
+    f->glTexCoord2f(0.0f, 1.0f);
+    f->glVertex2f(left, bottom);
+
+    f->glTexCoord2f(1.0f, 1.0f);
+    f->glVertex2f(right, bottom);
+
+    f->glTexCoord2f(1.0f, 0.75f);
+    f->glVertex2f(right, bottom + 7.0f);
+  }
+  f->glEnd();
+}
+
 void FaceTrackStatus::DrawOnScreen(GLFunctions *f) {
+  f->glScalef(1.0f, -1.0f, 1.0f);
+  f->glFrontFace(GL_CW);
+
   float eyeTop;
   float eyeBottom;
 
   if (m_EyeStatus == EyeStatus::Blinking) {
-    float len = 4.0f + 48.0f * (static_cast<float>(m_EyeStatusFrame)
-                                / static_cast<float>(m_EyeStatusDuration));
+    float ratio = static_cast<float>(m_EyeStatusFrame)
+                  / static_cast<float>(m_EyeStatusDuration);
+    float len;
+    if (ratio > 0.5) {
+      float r = (ratio - 0.5f) * 2.0f;
+      r = 0.4f * r * r * r - 0.6f * r * r + 1.2f * r;
+      len = 4.0f + 48.0f * r;
+    } else {
+      float r = (0.5f - ratio) * 2.0f;
+      r = 0.4f * r * r * r - 0.6f * r * r + 1.2f * r;
+      len = 4.0f + 48.0f * r;
+    }
     eyeTop = 42.0f + len;
     eyeBottom = 42.0f - len;
   } else {
@@ -107,61 +171,9 @@ void FaceTrackStatus::DrawOnScreen(GLFunctions *f) {
   f->glPushMatrix();
   f->glScalef(1.0f / 0.75f, 1.0f / 0.75f, 1.0f);
   m_EyeTexture->BeginTexture(f);
-  f->glBegin(GL_QUADS);
-  {
-    f->glTexCoord2f(0.0f, 0.0f);
-    f->glVertex2f(-118.0f, eyeTop);
 
-    f->glTexCoord2f(0.0f, 0.25f);
-    f->glVertex2f(-118.0f, eyeTop - 7.0f);
-
-    f->glTexCoord2f(0.0f, 0.75f);
-    f->glVertex2f(-118.0f, eyeBottom + 7.0f);
-
-    f->glTexCoord2f(0.0f, 1.0f);
-    f->glVertex2f(-118.0f, eyeBottom);
-
-    f->glTexCoord2f(1.0f, 1.0f);
-    f->glVertex2f(-90.0f, eyeBottom);
-
-    f->glTexCoord2f(1.0f, 0.75f);
-    f->glVertex2f(-90.0f, eyeBottom + 7.0f);
-
-    f->glTexCoord2f(1.0f, 0.25f);
-    f->glVertex2f(-90.0f, eyeTop - 7.0f);
-
-    f->glTexCoord2f(1.0f, 0.0f);
-    f->glVertex2f(-90.0f, eyeTop);
-  }
-  f->glEnd();
-
-  f->glBegin(GL_QUADS);
-  {
-    f->glTexCoord2f(0.0f, 0.0f);
-    f->glVertex2f(90.0f, eyeTop);
-
-    f->glTexCoord2f(0.0f, 0.25f);
-    f->glVertex2f(90.0f, eyeTop - 7.0f);
-
-    f->glTexCoord2f(0.0f, 0.75f);
-    f->glVertex2f(90.0f, eyeBottom + 7.0f);
-
-    f->glTexCoord2f(0.0f, 1.0f);
-    f->glVertex2f(90.0f, eyeBottom);
-
-    f->glTexCoord2f(1.0f, 1.0f);
-    f->glVertex2f(118.0f, eyeBottom);
-
-    f->glTexCoord2f(1.0f, 0.75f);
-    f->glVertex2f(118.0f, eyeBottom + 7.0f);
-
-    f->glTexCoord2f(1.0f, 0.25f);
-    f->glVertex2f(118.0f, eyeTop - 7.0f);
-
-    f->glTexCoord2f(1.0f, 0.0f);
-    f->glVertex2f(118.0f, eyeTop);
-  }
-  f->glEnd();
+  DrawEye(f, eyeTop, eyeBottom, -118.0f, -90.0f);
+  DrawEye(f, eyeTop, eyeBottom, 90.0f, 118.0f);
 
   f->glPopMatrix();
 }
