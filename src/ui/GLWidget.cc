@@ -15,9 +15,11 @@
 #include "include/wgc0310/Screen.h"
 #include "ui/ConfigWidget.h"
 
-GLWidget::GLWidget(QWidget *parent)
+GLWidget::GLWidget(std::unique_ptr<cw::Receiver<cw::HeadPose>> poseReceiver,
+                   QWidget *parent)
   : QOpenGLWidget(parent),
     GLFunctions(),
+    m_PoseReceiver(std::move(poseReceiver)),
     m_Light(nullptr),
     m_Light2(nullptr),
     m_Arena(),
