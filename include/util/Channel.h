@@ -123,13 +123,8 @@ public:
   std::deque<T> RecvAll() {
     const auto &self = m_Repr;
     std::unique_lock lock { self->mutex };
-
-    self->condvar.wait(lock, [&self] { return self->buffer.size() != 0; });
-    Q_ASSERT(!self->buffer.empty());
-
     std::deque<T> ret;
     std::swap(self->buffer, ret);
-    self->condvar.notify_one();
     return ret;
   }
 

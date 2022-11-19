@@ -47,9 +47,13 @@ public:
 
   FaceTrackConfig config;
 
+  cw::HeadPose currentPose;
+
   void Initialize(GLFunctions *f);
 
   void FeedHeadPose(cw::HeadPose pose);
+
+  void FeedNothing();
 
   void NextFrame();
 
@@ -62,9 +66,9 @@ private:
   enum EyeStatus { Open = 1, Blinking = -1 } m_EyeStatus;
   std::size_t m_EyeStatusFrame;
   std::size_t m_EyeStatusDuration;
-
-  cw::HeadPose m_CurrentPose;
   std::size_t m_MouthStatusFrame;
+
+  cw::HeadPose m_LastFeed;
 
   std::unique_ptr<cw::Texture2D> m_EyeTexture;
   std::unique_ptr<cw::Texture2D> m_MouthTexture;

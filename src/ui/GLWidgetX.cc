@@ -109,6 +109,15 @@ void GLWidget::RequestNextFrame() {
     }
   }
 
+  if (m_PoseReceiver) {
+    auto allPos = m_PoseReceiver->RecvAll();
+    if (!allPos.empty()) {
+      m_FaceTrackStatus.FeedHeadPose(allPos.back());
+    } else {
+      m_FaceTrackStatus.FeedNothing();
+    }
+  }
+
   m_FaceTrackStatus.NextFrame();
   m_ScreenStatus.NextFrame();
   m_BodyStatus.NextTick();

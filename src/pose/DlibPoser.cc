@@ -162,9 +162,9 @@ public:
 
       cv::solvePnP(m_DefaultObjectPts, m_ImagePts, m_CameraMatrix, m_DistCoeffs, rotation, translation);
       return std::make_pair(true, HeadPose {
-           rotation.at<double>(0),
-           rotation.at<double>(1),
-           rotation.at<double>(2)
+           rotation.at<double>(0) * 90.0,
+           rotation.at<double>(1) * 90.0,
+           rotation.at<double>(2) * 90.0
       });
   }
 

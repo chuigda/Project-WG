@@ -6,16 +6,17 @@
 #include "cwglx/GLImpl.h"
 
 FaceTrackStatus::FaceTrackStatus()
-  : m_EyeStatus(EyeStatus::Open),
-    m_EyeStatusFrame(0),
-    m_EyeStatusDuration(400),
-    m_CurrentPose {
+  : currentPose {
       .rotationX = 0.0,
       .rotationY = 0.0,
       .rotationZ = 0.0,
       .mouthStatus = cw::HeadPose::Close,
     },
+    m_EyeStatus(EyeStatus::Open),
+    m_EyeStatusFrame(0),
+    m_EyeStatusDuration(400),
     m_MouthStatusFrame(0),
+    m_LastFeed(currentPose),
     m_EyeTexture(nullptr),
     m_MouthTexture(nullptr)
 {
@@ -35,37 +36,41 @@ void FaceTrackStatus::Initialize(GLFunctions *f) {
 
 
 void FaceTrackStatus::FeedHeadPose(cw::HeadPose pose) {
+  m_LastFeed = pose;
+
+  {
+    double diffX = std::abs(pose.rotationX - currentPose.rotationX);
+    double diffY = std::abs(pose.rotationY - currentPose.rotationY);
+    double diffZ = std::abs(pose.rotationZ - currentPose.rotationZ);
+    double oldCoeff = 1 - config.smooth;
+    double newCoeff = config.smooth;
+
+    double newX = oldCoeff * currentPose.rotationX + newCoeff * pose.rotationX;
+    double newY = oldCoeff * currentPose.rotationY + newCoeff * pose.rotationY;
+    double newZ = oldCoeff * currentPose.rotationZ + newCoeff * pose.rotationZ;
+
+    if (diffX > 1.5) {
+      currentPose.rotationX = newX;
+    }
+
+    if (diffY > 1.5) {
+      currentPose.rotationY = newY;
+    }
+
+    if (diffZ > 1.5) {
+      currentPose.rotationZ = newZ;
+    }
+  }
+
   if (m_MouthStatusFrame > config.mouthDuration
-      && pose.mouthStatus != m_CurrentPose.mouthStatus) {
-    m_CurrentPose.mouthStatus = pose.mouthStatus;
+      && pose.mouthStatus != currentPose.mouthStatus) {
+    currentPose.mouthStatus = pose.mouthStatus;
     m_MouthStatusFrame = 0;
   }
+}
 
-  double oldCoeff = 1 - config.smooth;
-  double newCoeff = config.smooth;
-  double newX = oldCoeff * m_CurrentPose.rotationX + newCoeff * pose.rotationX;
-  double newY = oldCoeff * m_CurrentPose.rotationY + newCoeff * pose.rotationY;
-  double newZ = oldCoeff * m_CurrentPose.rotationZ + newCoeff * pose.rotationZ;
-
-  double diffX = newX - m_CurrentPose.rotationX;
-  double diffY = newY - m_CurrentPose.rotationY;
-  double diffZ = newZ - m_CurrentPose.rotationZ;
-
-  if (std::abs(diffX) > config.deadZoneX) {
-    newX = m_CurrentPose.rotationX + std::copysign(diffX, config.deadZoneX);
-  }
-
-  if (std::abs(diffY) > config.deadZoneY) {
-    newY = m_CurrentPose.rotationY + std::copysign(diffX, config.deadZoneY);
-  }
-
-  if (std::abs(diffZ) > config.deadZoneZ) {
-    newZ = m_CurrentPose.rotationZ + std::copysign(diffX, config.deadZoneZ);
-  }
-
-  m_CurrentPose.rotationX = newX;
-  m_CurrentPose.rotationY = newY;
-  m_CurrentPose.rotationZ = newZ;
+void FaceTrackStatus::FeedNothing() {
+  FeedHeadPose(m_LastFeed);
 }
 
 void FaceTrackStatus::NextFrame() {
