@@ -9,11 +9,11 @@
 #include "util/Derive.h"
 
 struct HeadPose {
-  double rotationX;
-  double rotationY;
-  double rotationZ;
+  float rotationX;
+  float rotationY;
+  float rotationZ;
 
-  enum MouthStatus { Close, Open, OpenBig } mouthStatus;
+  enum MouthStatus { Close, Open } mouthStatus;
 };
 
 class FaceTrackStatus {
@@ -24,7 +24,7 @@ public:
 
   void Initialize(GLFunctions *f);
 
-  void FeedHeadPose(HeadPose pose);
+  void Destroy(GLFunctions *f);
 
   void NextFrame();
 
@@ -37,10 +37,10 @@ private:
   enum EyeStatus { Open = 1, Blinking = -1 } m_EyeStatus;
   std::size_t m_EyeStatusFrame;
   std::size_t m_EyeStatusDuration;
-  std::size_t m_MouthStatusFrame;
 
   std::unique_ptr<cw::Texture2D> m_EyeTexture;
   std::unique_ptr<cw::Texture2D> m_MouthTexture;
+  std::unique_ptr<cw::Texture2D> m_MouthOpenTexture;
 };
 
 #endif // PROJECT_WG_HEAD_POSE_STATUS_H

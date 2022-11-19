@@ -52,7 +52,6 @@ private slots:
   void RequestNextFrame();
 
 private:
-  void InitPoseEstimator();
   void LoadAndInitScreens();
   void LoadAnimations();
   void InitAnimations();

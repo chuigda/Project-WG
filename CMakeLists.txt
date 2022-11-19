@@ -18,11 +18,13 @@ set(CMAKE_C_FLAGS
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
              Widgets
+             Multimedia
              OpenGLWidgets)
 
 set(PROJECT_SOURCES
     main.cc
 
+    src/ui/CaptureWidget.cc
     src/ui/ScreenStatus.cc
     src/ui/FaceTrackStatus.cc
     src/ui/Animation.cc
@@ -31,8 +33,10 @@ set(PROJECT_SOURCES
     src/ui/GLWidget.cc
     src/ui/ConfigWidget.cc
     src/ui/ConfigWidgetCamera.cc
+    src/ui/ConfigWidgetFakeCapture.cc
     src/ui/ConfigWidgetBody.cc
     src/ui/MessageBoxAlter.cc
+    include/ui/CaptureWidget.h
     include/ui/ScreenStatus.h
     include/ui/FaceTrackStatus.h
     include/ui/Animation.h
@@ -41,7 +45,7 @@ set(PROJECT_SOURCES
     include/ui/ConfigWidget.h
     include/ui/MessageBoxAlter.h
 
-        src/util/Constants.cc
+    src/util/Constants.cc
     include/util/Wife.h
     include/util/Constants.h
     include/util/Derive.h
@@ -112,7 +116,8 @@ endif()
 
 target_link_libraries(Project-WG PRIVATE
                       Qt${QT_VERSION_MAJOR}::Widgets
-                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
+                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets
+                      Qt${QT_VERSION_MAJOR}::Multimedia)
 
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 

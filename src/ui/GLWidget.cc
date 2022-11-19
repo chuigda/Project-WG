@@ -42,6 +42,7 @@ GLWidget::GLWidget(QWidget *parent)
 
   m_ConfigWidget = new ConfigWidget(&m_CameraEntityStatus,
                                     &m_BodyStatus,
+                                    &m_FaceTrackStatus,
                                     &m_ScreenStatus,
                                     this);
   connect(m_ConfigWidget, &ConfigWidget::SetRenderSettings,
@@ -62,13 +63,15 @@ GLWidget::GLWidget(QWidget *parent)
   connect(m_Timer, &QTimer::timeout, this, &GLWidget::RequestNextFrame);
   m_Timer->start();
 
-  InitPoseEstimator();
   LoadAnimations();
   LoadBodyAnimations();
 }
 
 GLWidget::~GLWidget() {
   makeCurrent();
+
+  m_FaceTrackStatus.Destroy(this);
+  qDebug() << "GLWidget::~GLWidget(): face resource released successfully";
 
   m_Arena.Delete(this);
   qDebug() << "GLWidget::~GLWidget(): arena released successfully";
@@ -102,7 +105,6 @@ void GLWidget::initializeGL() {
                                     cw::RGBAColor(127, 127, 127),
                                     cw::Vertex(30.0, 15.0, 10.0),
                                     this));
-
 
   m_Mesh = std::make_unique<wgc0310::WGCMeshCollection>(this, m_Arena);
 
@@ -203,7 +205,6 @@ void GLWidget::paintGL() {
     DrawArm(m_BodyStatus.leftArmStatus, -1.0f);
     glPopMatrix();
 
-    qDebug() << m_FaceTrackStatus.currentPose.rotationY;
     glTranslatef(0.0f, 12.875f, 0.0f);
     glRotatef(m_FaceTrackStatus.currentPose.rotationY, 0.0f, 1.0f, 0.0f);
     m_Mesh->wheel->Draw(this);

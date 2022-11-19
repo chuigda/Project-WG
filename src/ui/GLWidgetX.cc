@@ -1,10 +1,10 @@
 #include "ui/GLWidget.h"
 #include "ui/ConfigWidget.h"
+#include "ui/CaptureWidget.h"
 
 #include <QDir>
 #include <QMessageBox>
-
-void GLWidget::InitPoseEstimator() {}
+#include <QVBoxLayout>
 
 void GLWidget::LoadAndInitScreens() {
   QDir dir(QStringLiteral("animations/static"));

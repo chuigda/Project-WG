@@ -7,9 +7,9 @@
 #include "cwglx/GLInfo.h"
 #include "wgc0310/BodyAnim.h"
 #include "cwglx/Texture.h"
-#include "Animation.h"
+#include "ui/Animation.h"
+#include "ui/FaceTrackStatus.h"
 
-class QListWidgetItem;
 class CameraEntityStatus;
 class ScreenStatus;
 
@@ -27,6 +27,7 @@ class ConfigWidget final : public QWidget {
 public:
   explicit ConfigWidget(CameraEntityStatus *cameraEntityStatus,
                         wgc0310::BodyStatus *bodyStatus,
+                        FaceTrackStatus *faceTrackStatus,
                         ScreenStatus *screenStatus,
                         QWidget *glWidget);
   ~ConfigWidget() final;
@@ -76,6 +77,7 @@ private slots:
 private:
   void SetupCameraEntityPage();
   void SetupBodyPage();
+  void SetupFakeCapturePage(FaceTrackStatus *faceTrackStatus);
 
   Ui::ConfigWidget *ui;
 

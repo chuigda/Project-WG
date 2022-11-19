@@ -15,7 +15,6 @@ FaceTrackStatus::FaceTrackStatus()
     m_EyeStatus(EyeStatus::Open),
     m_EyeStatusFrame(0),
     m_EyeStatusDuration(400),
-    m_MouthStatusFrame(0),
     m_EyeTexture(nullptr),
     m_MouthTexture(nullptr)
 {
@@ -25,30 +24,14 @@ FaceTrackStatus::FaceTrackStatus()
 void FaceTrackStatus::Initialize(GLFunctions *f) {
   QImage eye9Image(":/eye.9.bmp");
   QImage halfFaceImage(":/half-face.bmp");
+  QImage halfFaceMouthOpenImage(":/half-face-mouth-open.bmp");
 
   assert(!eye9Image.isNull());
   assert(!halfFaceImage.isNull());
 
   m_EyeTexture = std::make_unique<cw::Texture2D>(eye9Image, f);
   m_MouthTexture = std::make_unique<cw::Texture2D>(halfFaceImage, f);
-}
-
-
-void FaceTrackStatus::FeedHeadPose(HeadPose pose) {
-  {
-    double oldCoeff = 0.5;
-    double newCoeff = 0.5;
-
-    double newX = oldCoeff * currentPose.rotationX + newCoeff * pose.rotationX;
-    double newY = oldCoeff * currentPose.rotationY + newCoeff * pose.rotationY;
-    double newZ = oldCoeff * currentPose.rotationZ + newCoeff * pose.rotationZ;
-
-    currentPose.rotationX = newX;
-    currentPose.rotationY = newY;
-    currentPose.rotationZ = newZ;
-  }
-
-  currentPose.mouthStatus = pose.mouthStatus;
+  m_MouthOpenTexture = std::make_unique<cw::Texture2D>(halfFaceMouthOpenImage, f);
 }
 
 void FaceTrackStatus::NextFrame() {
@@ -65,8 +48,6 @@ void FaceTrackStatus::NextFrame() {
         break;
     }
   }
-
-  m_MouthStatusFrame += 1;
 }
 
 static void DrawEye(GLFunctions *f,
@@ -158,4 +139,10 @@ void FaceTrackStatus::DrawOnScreen(GLFunctions *f) {
   DrawEye(f, eyeTop, eyeBottom, 90.0f, 118.0f);
 
   f->glPopMatrix();
+}
+
+void FaceTrackStatus::Destroy(GLFunctions *f) {
+  m_EyeTexture->DeleteTexture(f);
+  m_MouthTexture->DeleteTexture(f);
+  m_MouthOpenTexture->DeleteTexture(f);
 }
