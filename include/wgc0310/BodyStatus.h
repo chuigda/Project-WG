@@ -64,7 +64,7 @@ public:
       rightArmStatus(),
       playAnimationStatus() {}
 
-  constexpr inline void Reset() noexcept {
+  inline void Reset() noexcept {
     colorTimerStatus = Blue;
     blinkFrames = 30;
     blinkCounter = 0;

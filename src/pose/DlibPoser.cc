@@ -1,9 +1,12 @@
 #include "pose/DlibPoser.h"
+#include "util/Constants.h"
 
 #include <opencv2/opencv.hpp>
 #include <dlib/opencv.h>
 #include <dlib/image_processing/frontal_face_detector.h>
 #include <dlib/image_processing.h>
+
+#include <iostream>
 
 namespace cw {
 
@@ -77,11 +80,15 @@ cv::Point3d g_FaceModel[58] = {
 
 class DlibPoserPrivate {
 public:
-  DlibPoserPrivate()
-    : m_FaceDetector(dlib::get_frontal_face_detector()),
-      m_ShapePredictor()
-  {
-    static constexpr std::size_t pointIndices[] = {
+  DlibPoserPrivate() {
+    try {
+        m_FaceDetector = dlib::get_frontal_face_detector();
+    } catch (dlib::serialization_error const& e) {
+        std::cerr << e.what() << std::endl;
+        std::abort();
+    }
+
+    constexpr std::size_t pointIndices[] = {
       33, 29, // left brow
       34, 38, // right brow
       13, 17, // left eye
@@ -91,32 +98,82 @@ public:
       6 // chin
     };
 
-    static constexpr std::size_t noEyePointIndices[] = {
+    constexpr std::size_t noEyePointIndices[] = {
       12, 0, 11, 1, // cheeks
       55, 49, // nose
       43, 39, 45, // mouth
       6 // chin
     };
 
+    m_CameraMatrix = cv::Mat { 3, 3, CV_64FC1, K };
+    m_DistCoeffs = cv::Mat { 5, 1, CV_64FC1, D };
+
+    m_DefaultObjectPts.reserve(countof(pointIndices));
     for (std::size_t pointIndex : pointIndices) {
       m_DefaultObjectPts.push_back(g_FaceModel[pointIndex]);
     }
 
+    m_NoEyeObjectPts.reserve(countof(noEyePointIndices));
     for (std::size_t pointIndex : noEyePointIndices) {
       m_NoEyeObjectPts.push_back(g_FaceModel[pointIndex]);
     }
+
+    m_ImagePts.reserve(std::max(countof(pointIndices),
+                                countof(noEyePointIndices)));
   }
 
   bool Open() {
     try {
-      dlib::deserialize("./alchemy/dlib_sp_68points.dat");
+      dlib::deserialize("./alchemy/dlib_sp_68points.dat") >> m_ShapePredictor;
       return true;
     } catch (dlib::serialization_error const& e) {
       return false;
     }
   }
 
-  HeadPose EstimateHeadPose(cv::Mat const& image) {}
+  std::pair<bool, HeadPose> EstimateHeadPose(cv::Mat const& image) {
+      dlib::cv_image<dlib::bgr_pixel> dlib_image(image);
+      std::vector<dlib::rectangle> faces = (m_FaceDetector)(dlib_image);
+      if (faces.size() == 0) {
+          return std::make_pair(false, HeadPose {});
+      }
+
+      dlib::rectangle face = faces[0];
+      dlib::full_object_detection shape = m_ShapePredictor(dlib_image, face);
+      m_ImagePts.clear();
+
+      m_ImagePts.emplace_back(shape.part(17).x(), shape.part(17).y()); //#17 left brow left corner
+      m_ImagePts.emplace_back(shape.part(21).x(), shape.part(21).y()); //#21 left brow right corner
+      m_ImagePts.emplace_back(shape.part(22).x(), shape.part(22).y()); //#22 right brow left corner
+      m_ImagePts.emplace_back(shape.part(26).x(), shape.part(26).y()); //#26 right brow right corner
+      m_ImagePts.emplace_back(shape.part(36).x(), shape.part(36).y()); //#36 left eye left corner
+      m_ImagePts.emplace_back(shape.part(39).x(), shape.part(39).y()); //#39 left eye right corner
+      m_ImagePts.emplace_back(shape.part(42).x(), shape.part(42).y()); //#42 right eye left corner
+      m_ImagePts.emplace_back(shape.part(45).x(), shape.part(45).y()); //#45 right eye right corner
+      m_ImagePts.emplace_back(shape.part(31).x(), shape.part(31).y()); //#31 nose left corner
+      m_ImagePts.emplace_back(shape.part(35).x(), shape.part(35).y()); //#35 nose right corner
+      m_ImagePts.emplace_back(shape.part(48).x(), shape.part(48).y()); //#48 mouth left corner
+      m_ImagePts.emplace_back(shape.part(54).x(), shape.part(54).y()); //#54 mouth right corner
+      m_ImagePts.emplace_back(shape.part(57).x(), shape.part(57).y()); //#57 mouth central bottom corner
+      m_ImagePts.emplace_back(shape.part(8).x(), shape.part(8).y());   //#8 chin corner
+
+      cv::Mat rotation; // 3x1 vector
+      cv::Mat translation;
+
+      cv::solvePnP(m_DefaultObjectPts, m_ImagePts, m_CameraMatrix, m_DistCoeffs, rotation, translation);
+      std::cerr << rotation.at<double>(0)
+                << ","
+                << rotation.at<double>(1)
+                << ","
+                << rotation.at<double>(2)
+                << std::endl;
+
+      return std::make_pair(true, HeadPose {
+           rotation.at<double>(0),
+           rotation.at<double>(1),
+           rotation.at<double>(2)
+      });
+  }
 
   ~DlibPoserPrivate() = default;
 
@@ -124,11 +181,53 @@ public:
   CW_DERIVE_UNMOVABLE(DlibPoserPrivate)
 
 private:
+  cv::Mat m_CameraMatrix;
+  cv::Mat m_DistCoeffs;
+
   dlib::frontal_face_detector m_FaceDetector;
   dlib::shape_predictor m_ShapePredictor;
 
   std::vector<cv::Point3d> m_DefaultObjectPts;
   std::vector<cv::Point3d> m_NoEyeObjectPts;
+  std::vector<cv::Point2d> m_ImagePts;
+
+  // Directly copied from the link above, I don't exactly know what they are
+  // Theorically a calibration or so is required, but since I'm not using
+  // translation matrix, I think this will be fine.
+
+  // OpenCV would modify these values, so make a copy for every class instance
+  double K[9] = {
+      6.5308391993466671e+002,
+      0.0,
+      3.1950000000000000e+002,
+      0.0,
+      6.5308391993466671e+002,
+      2.3950000000000000e+002,
+      0.0,
+      0.0,
+      1.0
+  };
+  double D[5] = {
+      7.0834633684407095e-002,
+      6.9140193737175351e-002,
+      0.0,
+      0.0,
+      -1.3073460323689292e+000
+  };
 };
+
+DlibPoser::DlibPoser() : m_Private(new DlibPoserPrivate()) {}
+
+DlibPoser::~DlibPoser() { delete m_Private; }
+
+bool DlibPoser::Open() {
+    return m_Private->Open();
+}
+
+std::pair<bool, HeadPose>
+DlibPoser::EstimateHeadPose(cv::Mat const& frame, bool useEyeLandmarks) {
+    (void)useEyeLandmarks;
+    return m_Private->EstimateHeadPose(frame);
+}
 
 } // namespace cw

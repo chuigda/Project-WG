@@ -26,10 +26,21 @@ if (NOT DEFINED CW_DLIB_LIBRARY_FILES)
     message(FATA_ERROR "CW_DLIB_LIBRARY_FILES must be set")
 endif()
 
-add_library(Poser src/pose/DlibPoser.cc)
-# MSVC 无人权
-target_compile_options(Poser PRIVATE -O2 -g)
-target_compile_features(Poser PRIVATE cxx_std_20 c_std_11)
+if (DEFINED CW_DLIB_INCLUDE_DIR)
+    include_directories(${CW_DLIB_INCLUDE_DIR})
+endif()
+
+add_library(Poser
+            src/pose/DlibPoser.cc
+            include/pose/Pose.h
+            include/pose/DlibPoser.h)
+
+target_link_libraries(Poser PRIVATE ${CW_DLIB_LIBRARY_FILES})
+
+if (DEFINED CW_DLIB_LIBRARY_FILES_EXTRA)
+    target_link_libraries(Poser PRIVATE
+                          ${CW_DLIB_LIBRARY_FILES_EXTRA})
+endif()
 
 set(PROJECT_SOURCES
     main.cc
@@ -122,8 +133,7 @@ target_link_libraries(Project-WG PRIVATE
                       Poser
                       Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::OpenGLWidgets
-                      ${OpenCV_LIBS}
-                      ${CW_DLIB_LIBRARY_FILES})
+                      ${OpenCV_LIBS})
 
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 

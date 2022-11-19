@@ -61,6 +61,7 @@ GLWidget::GLWidget(QWidget *parent)
   connect(m_Timer, &QTimer::timeout, this, &GLWidget::RequestNextFrame);
   m_Timer->start();
 
+  InitPoseEstimator();
   LoadAnimations();
   LoadBodyAnimations();
 }

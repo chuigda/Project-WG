@@ -1,6 +1,8 @@
 #ifndef PROJECT_WG_DLIB_POSER
 #define PROJECT_WG_DLIB_POSER
 
+#include <utility>
+
 #include "Pose.h"
 #include "util/Derive.h"
 
@@ -17,8 +19,10 @@ public:
   DlibPoser();
   ~DlibPoser();
 
-  HeadPose EstimateHeadPose(cv::Mat const& frame,
-                            bool useEyeLandmarks);
+  bool Open();
+
+  std::pair<bool, HeadPose>
+  EstimateHeadPose(cv::Mat const& frame, bool useEyeLandmarks);
 
   CW_DERIVE_UNCOPYABLE(DlibPoser)
   CW_DERIVE_UNMOVABLE(DlibPoser)
