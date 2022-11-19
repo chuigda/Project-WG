@@ -2,7 +2,6 @@
 #define PROJECT_WG_SCREEN_STATUS_H
 
 #include <cstdint>
-#include <QListWidgetItem>
 
 #include "cwglx/GL.h"
 #include "util/Derive.h"
@@ -14,9 +13,7 @@ class Texture2D;
 
 } // namespace cw
 
-class ScreenStatus final : public QObject {
-  Q_OBJECT
-
+class ScreenStatus final {
 public:
   ScreenStatus();
 
@@ -26,13 +23,11 @@ public:
 
   void DrawOnScreen(GLFunctions *f);
 
-  CW_DERIVE_UNCOPYABLE(ScreenStatus)
-  CW_DERIVE_UNMOVABLE(ScreenStatus)
-
+  void NextFrame();
   void Reset();
 
-private slots:
-  void NextFrame();
+  CW_DERIVE_UNCOPYABLE(ScreenStatus)
+  CW_DERIVE_UNMOVABLE(ScreenStatus)
 
 private:
   bool m_IsPlayingStaticAnimation;
@@ -40,7 +35,6 @@ private:
 
   StaticScreen *m_StaticScreen;
   Animation *m_Animation;
-  QTimer *m_Timer;
   std::uint64_t m_Frame;
 };
 

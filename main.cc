@@ -78,20 +78,13 @@ int main(int argc, char *argv[]) {
     // 出于某种奇怪的原因，dlib 似乎希望自己被运行在“主”线程上
     // 所以选择把 Qt 发送到另一个线程上运行
     while (!thread_done.load() && cap.read(image)) {
-      sona::LogInfo("FaceCapture", "read 1 frame");
       auto [success, pose] = dlibPoser.EstimateHeadPose(image, false);
       if (success) {
-        sona::LogInfo("FaceCapture",
-                      "x=", pose.rotationX,
-                      ", y=", pose.rotationY,
-                      ", z=", pose.rotationZ);
         if (!sender->TrySend(std::move(pose))) {
+          // 使用 Sona，qDebug 在没有 QApplication 的地方不起作用
           sona::LogWarn("FaceCapture",
                         "head pose frame queue full! is the renderer overloaded?");
         }
-      } else {
-        sona::LogWarn("FaceCapture",
-                      "missing face in 1 frame");
       }
     }
   }

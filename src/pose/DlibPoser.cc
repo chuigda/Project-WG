@@ -158,16 +158,9 @@ public:
       m_ImagePts.emplace_back(shape.part(8).x(), shape.part(8).y());   //#8 chin corner
 
       cv::Mat rotation; // 3x1 vector
-      cv::Mat translation;
+      cv::Mat translation; // not important anyway
 
       cv::solvePnP(m_DefaultObjectPts, m_ImagePts, m_CameraMatrix, m_DistCoeffs, rotation, translation);
-      std::cerr << rotation.at<double>(0)
-                << ","
-                << rotation.at<double>(1)
-                << ","
-                << rotation.at<double>(2)
-                << std::endl;
-
       return std::make_pair(true, HeadPose {
            rotation.at<double>(0),
            rotation.at<double>(1),

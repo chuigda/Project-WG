@@ -44,7 +44,7 @@ endif()
 
 # 如果使用 Debug mode 编译 dlib 代码，那么面捕会变得非常慢，以至于无法调试
 # 所以无论如何都带优化编译 dlib
-target_compile_options(Poser PRIVATE -std=c++20 -O2 -g)
+target_compile_options(Poser PRIVATE -std=c++20 -O2 -g -DNDEBUG=1)
 
 set(PROJECT_SOURCES
     main.cc
