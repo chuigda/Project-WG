@@ -1,41 +1,10 @@
 #include "ui/GLWidget.h"
 #include "ui/ConfigWidget.h"
-#include "pose/DlibPoser.h"
-
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/calib3d/calib3d.hpp>
 
 #include <QDir>
 #include <QMessageBox>
-#include <thread>
 
-static void PoseWorker() {
-    cw::DlibPoser dlibPoser;
-    bool success = dlibPoser.Open();
-    if (!success) {
-        qDebug() << "fuck you!";
-        return;
-    }
-
-    cv::VideoCapture cap(0);
-    if (!cap.isOpened())
-    {
-        qDebug() << "cannot connect to camera";
-        return;
-    }
-
-    while (1) {
-        cv::Mat temp;
-        cap >> temp;
-
-        dlibPoser.EstimateHeadPose(temp, false);
-    }
-}
-
-void GLWidget::InitPoseEstimator() {
-    PoseWorker();
-}
+void GLWidget::InitPoseEstimator() {}
 
 void GLWidget::LoadAndInitScreens() {
   QDir dir(QStringLiteral("animations/static"));
