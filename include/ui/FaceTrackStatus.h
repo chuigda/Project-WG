@@ -13,7 +13,7 @@ struct HeadPose {
   float rotationY;
   float rotationZ;
 
-  enum MouthStatus { Close, Open } mouthStatus;
+  enum MouthStatus { Close = -1, Open = 1 } mouthStatus = MouthStatus::Close;
 };
 
 class FaceTrackStatus {

@@ -12,10 +12,6 @@ public:
 
   void keyPressEvent(QKeyEvent *event) override;
 
-  void keyReleaseEvent(QKeyEvent *event) override;
-
-  void wheelEvent(QWheelEvent *event) override;
-
 protected:
   bool event(QEvent *event) override;
   void hoverMove(QHoverEvent *event);

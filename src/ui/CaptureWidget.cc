@@ -27,14 +27,19 @@ void CaptureWidget::paintEvent(QPaintEvent*) {
     } else {
       painter.setBrush(QColor(0xcd, 0, 0));
     }
-    painter.drawEllipse(145, 145, 10, 10);
+    painter.drawEllipse(m_Status->pose.rotationZ * -10.0 + 145,
+                        m_Status->pose.rotationX * -10.0 + 145,
+                        10, 10);
   }
 }
 
 void CaptureWidget::keyPressEvent(QKeyEvent *event) {
   switch (event->key()) {
     case Qt::Key_Q:
-      m_Status->pose.mouthStatus = HeadPose::Open;
+      qDebug() << "open";
+      m_Status->pose.mouthStatus =
+        static_cast<HeadPose::MouthStatus>(-m_Status->pose.mouthStatus);
+      update();
       return;
     case Qt::Key_Escape:
       clearFocus();
@@ -44,21 +49,8 @@ void CaptureWidget::keyPressEvent(QKeyEvent *event) {
   QWidget::keyPressEvent(event);
 }
 
-void CaptureWidget::keyReleaseEvent(QKeyEvent *event) {
-  if (event->key() == Qt::Key_Q) {
-    m_Status->pose.mouthStatus = HeadPose::Close;
-  }
-}
-
-void CaptureWidget::wheelEvent(QWheelEvent *event) {
-  if (hasFocus()) {
-    m_Status->pose.rotationY += static_cast<float>(event->pixelDelta().y()) / 20.0f;
-  }
-}
-
 bool CaptureWidget::event(QEvent *event) {
-  switch (event->type())
-  {
+  switch (event->type()) {
     case QEvent::HoverMove:
       hoverMove(static_cast<QHoverEvent*>(event));
       return true;
@@ -73,12 +65,17 @@ void CaptureWidget::hoverMove(QHoverEvent *event) {
     int dx = pos.x() - 150;
     int dy = pos.y() - 150;
 
+    float yRotation = static_cast<float>(dx) / 15.0f;
     float zRotation = static_cast<float>(dx) / -10.0f;
     float xRotation = static_cast<float>(dy) / -10.0f;
 
+    m_Status->pose.rotationY =
+      m_Status->pose.rotationY * 0.5f + yRotation * 0.5f;
     m_Status->pose.rotationX =
       m_Status->pose.rotationX * 0.5f + xRotation * 0.5f;
     m_Status->pose.rotationZ =
       m_Status->pose.rotationZ * 0.5f + zRotation * 0.5f;
+
+    update();
   }
 }
