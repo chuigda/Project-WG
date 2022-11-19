@@ -9,10 +9,10 @@ CaptureWidget::CaptureWidget(FaceTrackStatus *status, QWidget *parent)
 {
   this->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 
-  this->setMinimumSize(300, 300);
-  this->setMaximumSize(300, 300);
-  this->setFixedWidth(300);
-  this->setFixedHeight(300);
+  this->setMinimumSize(500, 500);
+  this->setMaximumSize(500, 500);
+  this->setFixedWidth(500);
+  this->setFixedHeight(500);
 
   this->setStyleSheet("border: 1px solid black;");
   this->setFocusPolicy(Qt::StrongFocus);
@@ -22,13 +22,19 @@ CaptureWidget::CaptureWidget(FaceTrackStatus *status, QWidget *parent)
 void CaptureWidget::paintEvent(QPaintEvent*) {
   if (this->hasFocus()) {
     QPainter painter(this);
+
+    painter.setBrush(QColor(0xff, 0xff, 0xff));
+    painter.drawRect(100, 100, 300, 300);
+
+    painter.drawRect(245, 245, 10, 10);
+
     if (m_Status->pose.mouthStatus == HeadPose::Open) {
       painter.setBrush(QColor(0, 0xcd, 0));
     } else {
       painter.setBrush(QColor(0xcd, 0, 0));
     }
-    painter.drawEllipse(m_Status->pose.rotationZ * -10.0 + 145,
-                        m_Status->pose.rotationX * -10.0 + 145,
+    painter.drawEllipse(m_Status->pose.rotationZ * -10.0 + 245,
+                        m_Status->pose.rotationX * -10.0 + 245,
                         10,
                         10);
   }
@@ -70,8 +76,21 @@ bool CaptureWidget::event(QEvent *event) {
 void CaptureWidget::hoverMove(QHoverEvent *event) {
   if (hasFocus()) {
     auto pos = event->oldPos();
-    int dx = pos.x() - 150;
-    int dy = pos.y() - 150;
+    int dx = pos.x();
+    int dy = pos.y();
+    if (dx > 400) {
+      dx = 400;
+    } else if (dx < 100) {
+      dx = 100;
+    }
+    if (dy > 400) {
+      dy = 400;
+    } else if (dy < 100) {
+      dy = 100;
+    }
+
+    dx -= 250;
+    dy -= 250;
 
     float yRotation = static_cast<float>(dx) / 10.0f;
     float zRotation = static_cast<float>(dx) / -10.0f;

@@ -104,6 +104,26 @@ static void DrawEye(GLFunctions *f,
 void FaceTrackStatus::DrawOnScreen(GLFunctions *f) {
   f->glScalef(1.0f, -1.0f, 1.0f);
   f->glFrontFace(GL_CW);
+  f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  if (pose.mouthStatus == HeadPose::Open) {
+    m_MouthOpenTexture->BeginTexture(f);
+  } else {
+    m_MouthTexture->BeginTexture(f);
+  }
+
+  f->glBegin(GL_QUADS);
+  f->glTexCoord2f(0.0f, 0.0f);
+  f->glVertex2f(-320.0f, 0.0f);
+
+  f->glTexCoord2f(0.0f, 1.0f);
+  f->glVertex2f(-320.0f, -240.0f);
+
+  f->glTexCoord2f(1.0f, 1.0f);
+  f->glVertex2f(320.0f, -240.0f);
+
+  f->glTexCoord2f(1.0f, 0.0f);
+  f->glVertex2f(320.0f, 0.0f);
+  f->glEnd();
 
   float eyeTop;
   float eyeBottom;
@@ -128,7 +148,6 @@ void FaceTrackStatus::DrawOnScreen(GLFunctions *f) {
     eyeBottom = 42.0f - 52.0f;
   }
 
-  f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   f->glTranslatef(0.0f, 0.0f, 0.1f);
 
   f->glPushMatrix();
