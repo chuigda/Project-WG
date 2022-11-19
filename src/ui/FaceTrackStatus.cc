@@ -6,7 +6,7 @@
 #include "cwglx/GLImpl.h"
 
 FaceTrackStatus::FaceTrackStatus()
-  : currentPose {
+  : pose {
       .rotationX = 0.0,
       .rotationY = 0.0,
       .rotationZ = 0.0,

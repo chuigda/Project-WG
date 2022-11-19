@@ -20,7 +20,7 @@ class FaceTrackStatus {
 public:
   FaceTrackStatus();
 
-  HeadPose currentPose;
+  HeadPose pose;
 
   void Initialize(GLFunctions *f);
 

@@ -206,7 +206,7 @@ void GLWidget::paintGL() {
     glPopMatrix();
 
     glTranslatef(0.0f, 12.875f, 0.0f);
-    glRotatef(m_FaceTrackStatus.currentPose.rotationY, 0.0f, 1.0f, 0.0f);
+    glRotatef(m_FaceTrackStatus.pose.rotationY, 0.0f, 1.0f, 0.0f);
     m_Mesh->wheel->Draw(this);
 
     glTranslatef(0.0f, 0.375f, 0.0f);
