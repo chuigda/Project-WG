@@ -29,14 +29,14 @@ void CaptureWidget::paintEvent(QPaintEvent*) {
     }
     painter.drawEllipse(m_Status->pose.rotationZ * -10.0 + 145,
                         m_Status->pose.rotationX * -10.0 + 145,
-                        10, 10);
+                        10,
+                        10);
   }
 }
 
 void CaptureWidget::keyPressEvent(QKeyEvent *event) {
   switch (event->key()) {
     case Qt::Key_Q:
-      qDebug() << "open";
       m_Status->pose.mouthStatus =
         static_cast<HeadPose::MouthStatus>(-m_Status->pose.mouthStatus);
       update();
@@ -47,6 +47,14 @@ void CaptureWidget::keyPressEvent(QKeyEvent *event) {
   }
 
   QWidget::keyPressEvent(event);
+}
+
+void CaptureWidget::mousePressEvent(QMouseEvent* event) {
+  if (event->button() == Qt::RightButton) {
+    clearFocus();
+  } else {
+    QWidget::mousePressEvent(event);
+  }
 }
 
 bool CaptureWidget::event(QEvent *event) {

@@ -179,6 +179,19 @@ void GLWidget::paintGL() {
   m_Light2->Enable(this);
   m_CameraEntityStatus.ApplyEntityTransformation(this);
 
+  glTranslatef(0.0f, -12.0f, 0.0f);
+
+  for (std::size_t i = 0; i < 10; i++) {
+    m_Mesh->waist->Draw(this);
+    glTranslatef(0.0f, 1.0f, 0.0f);
+    glRotatef(m_FaceTrackStatus.pose.rotationZ / 10.0f, 0.0f, 0.0f, 1.0f);
+    glRotatef(m_FaceTrackStatus.pose.rotationX / 10.0f, 1.0f, 0.0f, 0.0f);
+    m_Mesh->abdomen->Draw(this);
+    glTranslatef(0.0f, 1.0f, 0.0f);
+  }
+
+  glTranslatef(0.0f, 6.0f, 0.0f);
+
   cw::RGBAColorF berColor = m_BodyStatus.GetTimerColor();
   berColor.Apply(this);
   glDisable(GL_LIGHTING);
@@ -192,9 +205,6 @@ void GLWidget::paintGL() {
     m_Mesh->chestPlate->Draw(this);
     m_Mesh->power->Draw(this);
     m_Mesh->powerPin->Draw(this);
-
-    m_Mesh->abdomen->Draw(this);
-    m_Mesh->waist->Draw(this);
 
     glPushMatrix();
     DrawArm(m_BodyStatus.rightArmStatus, 1.0f);

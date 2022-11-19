@@ -12,6 +12,8 @@ public:
 
   void keyPressEvent(QKeyEvent *event) override;
 
+  void mousePressEvent(QMouseEvent *event) override;
+
 protected:
   bool event(QEvent *event) override;
   void hoverMove(QHoverEvent *event);
