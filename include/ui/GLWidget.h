@@ -19,6 +19,7 @@
 
 #include "util/Channel.h"
 #include "pose/Pose.h"
+#include "FaceTrackStatus.h"
 
 class QTimer;
 class ConfigWidget;
@@ -77,6 +78,7 @@ private:
 
   wgc0310::BodyStatus m_BodyStatus;
   CameraEntityStatus m_CameraEntityStatus;
+  FaceTrackStatus m_FaceTrackStatus;
   ScreenStatus m_ScreenStatus;
   ConfigWidget *m_ConfigWidget;
 

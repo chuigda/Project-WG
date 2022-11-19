@@ -21,6 +21,8 @@ public:
 
   void PlayAnimation(Animation *animation);
 
+  [[nodiscard]] bool HasThingToDraw() const noexcept;
+
   void DrawOnScreen(GLFunctions *f);
 
   void NextFrame();

@@ -7,6 +7,8 @@ struct HeadPose {
     double rotationX;
     double rotationY;
     double rotationZ;
+
+    enum MouthStatus { Close, Open, OpenBig } mouthStatus;
 };
 
 } // namespace cw

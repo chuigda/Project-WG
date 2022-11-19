@@ -26,6 +26,10 @@ void ScreenStatus::PlayAnimation(Animation *animation) {
   m_Animation = animation;
 }
 
+bool ScreenStatus::HasThingToDraw() const noexcept {
+  return m_IsPlayingStaticAnimation || m_IsPlayingDynamicAnimation;
+}
+
 void ScreenStatus::DrawOnScreen(GLFunctions *f) {
   if (m_IsPlayingStaticAnimation) {
     f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);

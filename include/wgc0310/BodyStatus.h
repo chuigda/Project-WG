@@ -65,9 +65,6 @@ public:
       playAnimationStatus() {}
 
   inline void Reset() noexcept {
-    colorTimerStatus = Blue;
-    blinkFrames = 30;
-    blinkCounter = 0;
     leftArmStatus.Reset();
     rightArmStatus.Reset();
     playAnimationStatus.SetAnimation(nullptr);

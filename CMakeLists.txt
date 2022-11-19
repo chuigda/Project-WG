@@ -50,6 +50,7 @@ set(PROJECT_SOURCES
     main.cc
 
     src/ui/ScreenStatus.cc
+    src/ui/FaceTrackStatus.cc
     src/ui/Animation.cc
     src/ui/CameraEntityStatus.cc
     src/ui/GLWidgetX.cc
@@ -59,6 +60,7 @@ set(PROJECT_SOURCES
     src/ui/ConfigWidgetBody.cc
     src/ui/MessageBoxAlter.cc
     include/ui/ScreenStatus.h
+    include/ui/FaceTrackStatus.h
     include/ui/Animation.h
     include/ui/CameraEntityStatus.h
     include/ui/GLWidget.h

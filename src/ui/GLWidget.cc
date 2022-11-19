@@ -143,7 +143,11 @@ void GLWidget::initializeGL() {
 void GLWidget::paintGL() {
   // preparation stage
   m_Screen->BeginScreenContext(this);
-  m_ScreenStatus.DrawOnScreen(this);
+  if (m_ScreenStatus.HasThingToDraw()) {
+    m_ScreenStatus.DrawOnScreen(this);
+  } else {
+    m_FaceTrackStatus.DrawOnScreen(this);
+  }
   m_Screen->DoneScreenContext(this);
 
   // switch back to default framebuffer. not using `0` since
