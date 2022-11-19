@@ -38,28 +38,27 @@ void FaceTrackStatus::Initialize(GLFunctions *f) {
 void FaceTrackStatus::FeedHeadPose(cw::HeadPose pose) {
   m_LastFeed = pose;
 
-  {
-    double diffX = std::abs(pose.rotationX - currentPose.rotationX);
-    double diffY = std::abs(pose.rotationY - currentPose.rotationY);
-    double diffZ = std::abs(pose.rotationZ - currentPose.rotationZ);
-    double oldCoeff = 1 - config.smooth;
-    double newCoeff = config.smooth;
+  double oldCoeff = 1 - config.smooth;
+  double newCoeff = config.smooth;
 
-    double newX = oldCoeff * currentPose.rotationX + newCoeff * pose.rotationX;
-    double newY = oldCoeff * currentPose.rotationY + newCoeff * pose.rotationY;
-    double newZ = oldCoeff * currentPose.rotationZ + newCoeff * pose.rotationZ;
+  double newX = oldCoeff * currentPose.rotationX + newCoeff * pose.rotationX;
+  double newY = oldCoeff * currentPose.rotationY + newCoeff * pose.rotationY;
+  double newZ = oldCoeff * currentPose.rotationZ + newCoeff * pose.rotationZ;
 
-    if (diffX > 1.5) {
-      currentPose.rotationX = newX;
-    }
+  double diffX = std::abs(newX - currentPose.rotationX);
+  double diffY = std::abs(newY - currentPose.rotationY);
+  double diffZ = std::abs(newZ - currentPose.rotationZ);
 
-    if (diffY > 1.5) {
-      currentPose.rotationY = newY;
-    }
+  if (diffX > 1.5) {
+    currentPose.rotationX = newX;
+  }
 
-    if (diffZ > 1.5) {
-      currentPose.rotationZ = newZ;
-    }
+  if (diffY > 1.5) {
+    currentPose.rotationY = newY;
+  }
+
+  if (diffZ > 1.5) {
+    currentPose.rotationZ = newZ;
   }
 
   if (m_MouthStatusFrame > config.mouthDuration
@@ -70,7 +69,20 @@ void FaceTrackStatus::FeedHeadPose(cw::HeadPose pose) {
 }
 
 void FaceTrackStatus::FeedNothing() {
-  FeedHeadPose(m_LastFeed);
+  cw::HeadPose pose = m_LastFeed;
+
+  double oldCoeff = 1 - config.smooth;
+  double newCoeff = config.smooth;
+
+  currentPose.rotationX = oldCoeff * currentPose.rotationX + newCoeff * pose.rotationX;
+  currentPose.rotationY = oldCoeff * currentPose.rotationY + newCoeff * pose.rotationY;
+  currentPose.rotationZ = oldCoeff * currentPose.rotationZ + newCoeff * pose.rotationZ;
+
+  if (m_MouthStatusFrame > config.mouthDuration
+      && pose.mouthStatus != currentPose.mouthStatus) {
+    currentPose.mouthStatus = pose.mouthStatus;
+    m_MouthStatusFrame = 0;
+  }
 }
 
 void FaceTrackStatus::NextFrame() {

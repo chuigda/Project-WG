@@ -13,8 +13,7 @@
 int main(int argc, char *argv[]) {
   int qt_ret_value;
 
-  // cv::VideoCapture cap(0);
-  cv::VideoCapture cap("/home/icey/Videos/test_video.mkv");
+  cv::VideoCapture cap(0);
   cw::DlibPoser dlibPoser;
   std::unique_ptr<cw::Sender<cw::HeadPose>> sender = nullptr;
   std::unique_ptr<cw::Receiver<cw::HeadPose>> receiver = nullptr;
