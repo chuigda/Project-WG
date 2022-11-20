@@ -3,10 +3,11 @@
 
 #include <QOpenGLWidget>
 #include <QScopedPointer>
+#include <QMediaDevices>
+#include <QAudioSource>
 
 #include "cwglx/GLImpl.h"
 #include "cwglx/Light.h"
-#include "cwglx/Texture.h"
 #include "cwglx/Drawable.h"
 #include "cwglx/DrawableArena.h"
 #include "ui/CameraEntityStatus.h"
@@ -53,6 +54,7 @@ private slots:
 
 private:
   void LoadAndInitScreens();
+  void InitSoundCapture();
   void LoadAnimations();
   void InitAnimations();
   void LoadBodyAnimations();
@@ -80,6 +82,8 @@ private:
   QList<QString> m_BodyAnimationNames;
   std::vector<std::unique_ptr<wgc0310::BodyAnimation>> m_BodyAnimations;
 
+  QMediaDevices *m_MediaDevices;
+  QScopedPointer<QAudioSource> m_AudioInput;
   QTimer *m_Timer;
 };
 

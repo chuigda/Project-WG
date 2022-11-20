@@ -295,6 +295,18 @@ public:
     return m_Repr;
   }
 
+  constexpr inline void SetX(GLfloat x) noexcept {
+    m_Repr[0] = x;
+  }
+
+  constexpr inline void SetY(GLfloat y) noexcept {
+    m_Repr[1] = y;
+  }
+
+  constexpr inline void SetZ(GLfloat z) noexcept {
+    m_Repr[2] = z;
+  }
+
 private:
   std::array<GLfloat, 3> m_Repr;
 };

@@ -35,8 +35,8 @@ public:
 
   ~Texture2D() noexcept;
 
-  CW_DERIVE_UNCOPYABLE(Texture2D);
-  CW_DERIVE_UNMOVABLE(Texture2D);
+  CW_DERIVE_UNCOPYABLE(Texture2D)
+  CW_DERIVE_UNMOVABLE(Texture2D)
 
 private:
   GLuint m_TextureId;

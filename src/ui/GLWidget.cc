@@ -24,6 +24,8 @@ GLWidget::GLWidget(QWidget *parent)
     m_Mesh(nullptr),
     m_ScreenGlass(nullptr),
     m_Screen(nullptr),
+    m_MediaDevices(new QMediaDevices(this)),
+    m_AudioInput(nullptr),
     m_Timer(new QTimer(this))
 {
   QSurfaceFormat format;
@@ -63,6 +65,7 @@ GLWidget::GLWidget(QWidget *parent)
   connect(m_Timer, &QTimer::timeout, this, &GLWidget::RequestNextFrame);
   m_Timer->start();
 
+  InitSoundCapture();
   LoadAnimations();
   LoadBodyAnimations();
 }
