@@ -38,8 +38,8 @@ signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
   void SetRenderSettings(GLenum cullFaceMode, int targetFPS);
-  void StartBodyAnimation(void);
-  void DoneBodyAnimation(void);
+  void StartBodyAnimation();
+  void DoneBodyAnimation();
 #pragma clang diagnostic pop
 
 public slots:

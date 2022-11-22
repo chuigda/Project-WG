@@ -15,6 +15,10 @@
 #include "include/wgc0310/Screen.h"
 #include "ui/ConfigWidget.h"
 
+#ifdef CW_WIN32
+#include <Windows.h>
+#endif // CW_WIN32
+
 GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
     GLFunctions(),
@@ -257,7 +261,7 @@ void GLWidget::DrawArm(const wgc0310::ArmStatus &armStatus, GLfloat coeff) {
   m_Mesh->bigArmCover->Draw(this);
 
   glTranslatef(20.0, 0.0f, 0.0f);
-  glRotatef(-1.0 * armStatus.rotation[2], 1.0f, 0.0f, 0.0f);
+  glRotatef(-1.0f * armStatus.rotation[2], 1.0f, 0.0f, 0.0f);
   m_Mesh->bigArmConnector->Draw(this);
 
   glTranslatef(4.5, 0.0f, 0.0f);
