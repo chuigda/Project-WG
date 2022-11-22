@@ -50,7 +50,7 @@ GLWidget::GLWidget(QWidget *parent)
                                     &m_BodyStatus,
                                     &m_FaceTrackStatus,
                                     &m_ScreenStatus,
-                                    this);
+                                    nullptr);
   connect(m_ConfigWidget, &ConfigWidget::SetRenderSettings,
           this, &GLWidget::OnRenderSettingsSet);
 

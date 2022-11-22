@@ -1,6 +1,5 @@
 #include "ui/GLWidget.h"
 #include "ui/ConfigWidget.h"
-#include "ui/CaptureWidget.h"
 
 #include <QDir>
 #include <QMessageBox>
@@ -160,10 +159,4 @@ void GLWidget::RequestNextFrame() {
   m_ScreenStatus.NextFrame();
   m_BodyStatus.NextTick();
   update();
-
-  winId();
-
-#ifdef CW_WIN32
-  RedrawWindow(this->winId(), NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
-#endif // CW_WIN32
 }
