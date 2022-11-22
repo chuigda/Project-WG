@@ -5,6 +5,8 @@ Author: Chuigda<icey@icey.tech>
 
 Try drawing a cute (?maybe) robot with OpenGL 3.3 (Compatibility Profile, i.e. Fixed function pipeline)
 
+image::./blobs/render-output.jpg[]
+
 == ⚠️⚠️⚠️ 警告：包含远古技术 ⚠️⚠️⚠️
 [quote]
 ____
