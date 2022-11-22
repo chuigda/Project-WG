@@ -1,9 +1,0 @@
-The DLIB face landmark model "shape_predictor_68_face_landmarks.dat", according
-to the dlib example (http://dlib.net/face_landmark_detection_ex.cpp.html), was
-trained on a dataset for non-commercial use only. I won't include this blob in
-this git repository. And if you're about to use this model, pay extra attention
-to legitimacy issues.
-
-If desired, you can get the model from:
-
-http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
