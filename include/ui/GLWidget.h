@@ -3,23 +3,21 @@
 
 #include <QOpenGLWidget>
 #include <QScopedPointer>
+#include <QMediaDevices>
+#include <QAudioSource>
 
 #include "cwglx/GLImpl.h"
 #include "cwglx/Light.h"
-#include "cwglx/Texture.h"
 #include "cwglx/Drawable.h"
 #include "cwglx/DrawableArena.h"
 #include "ui/CameraEntityStatus.h"
+#include "ui/FaceTrackStatus.h"
 #include "ui/ScreenStatus.h"
 #include "ui/Animation.h"
 
 #include "wgc0310/BodyStatus.h"
 #include "wgc0310/Mesh.h"
 #include "wgc0310/Screen.h"
-
-#include "util/Channel.h"
-#include "pose/Pose.h"
-#include "FaceTrackStatus.h"
 
 class QTimer;
 class ConfigWidget;
@@ -28,8 +26,7 @@ class GLWidget final : public QOpenGLWidget, public GLFunctions {
   Q_OBJECT
 
 public:
-  explicit GLWidget(std::unique_ptr<cw::Receiver<cw::HeadPose>> poseReceiver,
-                    QWidget *parent = nullptr);
+  explicit GLWidget(QWidget *parent = nullptr);
   ~GLWidget() final;
 
 protected:
@@ -56,8 +53,8 @@ private slots:
   void RequestNextFrame();
 
 private:
-  void InitPoseEstimator();
   void LoadAndInitScreens();
+  void InitSoundCapture();
   void LoadAnimations();
   void InitAnimations();
   void LoadBodyAnimations();
@@ -65,8 +62,6 @@ private:
   void DrawArm(const wgc0310::ArmStatus& armStatus, GLfloat coeff);
 
 private:
-  std::unique_ptr<cw::Receiver<cw::HeadPose>> m_PoseReceiver;
-
   QScopedPointer<cw::Light> m_Light;
   QScopedPointer<cw::Light> m_Light2;
 
@@ -87,6 +82,8 @@ private:
   QList<QString> m_BodyAnimationNames;
   std::vector<std::unique_ptr<wgc0310::BodyAnimation>> m_BodyAnimations;
 
+  QMediaDevices *m_MediaDevices;
+  QScopedPointer<QAudioSource> m_AudioInput;
   QTimer *m_Timer;
 };
 

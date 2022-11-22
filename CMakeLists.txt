@@ -18,37 +18,13 @@ set(CMAKE_C_FLAGS
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
              Widgets
+             Multimedia
              OpenGLWidgets)
-
-find_package(OpenCV REQUIRED)
-
-if (NOT DEFINED CW_DLIB_LIBRARY_FILES)
-    message(FATA_ERROR "CW_DLIB_LIBRARY_FILES must be set")
-endif()
-
-if (DEFINED CW_DLIB_INCLUDE_DIR)
-    include_directories(${CW_DLIB_INCLUDE_DIR})
-endif()
-
-add_library(Poser
-            src/pose/DlibPoser.cc
-            include/pose/Pose.h
-            include/pose/DlibPoser.h)
-
-target_link_libraries(Poser PRIVATE ${CW_DLIB_LIBRARY_FILES})
-
-if (DEFINED CW_DLIB_LIBRARY_FILES_EXTRA)
-    target_link_libraries(Poser PRIVATE
-                          ${CW_DLIB_LIBRARY_FILES_EXTRA})
-endif()
-
-# 如果使用 Debug mode 编译 dlib 代码，那么面捕会变得非常慢，以至于无法调试
-# 所以无论如何都带优化编译 dlib
-target_compile_options(Poser PRIVATE -std=c++20 -O2 -g -DNDEBUG=1)
 
 set(PROJECT_SOURCES
     main.cc
 
+    src/ui/CaptureWidget.cc
     src/ui/ScreenStatus.cc
     src/ui/FaceTrackStatus.cc
     src/ui/Animation.cc
@@ -57,8 +33,10 @@ set(PROJECT_SOURCES
     src/ui/GLWidget.cc
     src/ui/ConfigWidget.cc
     src/ui/ConfigWidgetCamera.cc
+    src/ui/ConfigWidgetFakeCapture.cc
     src/ui/ConfigWidgetBody.cc
     src/ui/MessageBoxAlter.cc
+    include/ui/CaptureWidget.h
     include/ui/ScreenStatus.h
     include/ui/FaceTrackStatus.h
     include/ui/Animation.h
@@ -137,10 +115,9 @@ else()
 endif()
 
 target_link_libraries(Project-WG PRIVATE
-                      Poser
                       Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::OpenGLWidgets
-                      ${OpenCV_LIBS})
+                      Qt${QT_VERSION_MAJOR}::Multimedia)
 
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 

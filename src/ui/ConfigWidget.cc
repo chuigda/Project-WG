@@ -10,6 +10,7 @@
 
 ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
                            wgc0310::BodyStatus *bodyStatus,
+                           FaceTrackStatus *faceTrackStatus,
                            ScreenStatus *screenStatus,
                            QWidget *glWidget) :
   QWidget(glWidget, Qt::Window),
@@ -53,6 +54,7 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
 
   SetupCameraEntityPage();
   SetupBodyPage();
+  SetupFakeCapturePage(faceTrackStatus);
 
   connect(ui->thridPartiesButton, &QPushButton::clicked,
           this, &ConfigWidget::ShowThirdParties);

@@ -1,10 +1,10 @@
 #include "ui/GLWidget.h"
 #include "ui/ConfigWidget.h"
+#include "ui/CaptureWidget.h"
 
 #include <QDir>
 #include <QMessageBox>
-
-void GLWidget::InitPoseEstimator() {}
+#include <QVBoxLayout>
 
 void GLWidget::LoadAndInitScreens() {
   QDir dir(QStringLiteral("animations/static"));
@@ -35,6 +35,53 @@ void GLWidget::LoadAndInitScreens() {
   }
 
   emit StaticScreensLoaded(&m_StaticScreens);
+}
+
+// directly copied from Qt example
+static qreal calculateLevel(QAudioFormat format, const char *data, qint64 len)
+{
+    const int channelBytes = format.bytesPerSample();
+    const int sampleBytes = format.bytesPerFrame();
+    if (sampleBytes == 0) {
+        return 0.0;
+    }
+    const int numSamples = len / sampleBytes;
+
+    float maxValue = 0;
+    auto *ptr = reinterpret_cast<const unsigned char *>(data);
+
+    for (int i = 0; i < numSamples; ++i) {
+        for (int j = 0; j < format.channelCount(); ++j) {
+            float value = format.normalizedSampleValue(ptr);
+
+            maxValue = qMax(value, maxValue);
+            ptr += channelBytes;
+        }
+    }
+    return maxValue;
+}
+
+void GLWidget::InitSoundCapture() {
+    QAudioDevice deviceInfo = QMediaDevices::defaultAudioInput();
+
+    QAudioFormat format;
+    format.setSampleRate(8000);
+    format.setChannelCount(1);
+    format.setSampleFormat(QAudioFormat::Int16);
+
+    m_AudioInput.reset(new QAudioSource(deviceInfo, format));
+    auto *io = m_AudioInput->start();
+    connect(io, &QIODevice::readyRead, [this, format, io] {
+        static const qint64 BufferSize = 4096;
+        const qint64 len = qMin(m_AudioInput->bytesAvailable(), BufferSize);
+
+        QByteArray buffer(len, 0);
+        qint64 l = io->read(buffer.data(), len);
+        if (l > 0) {
+            const qreal level = calculateLevel(format, buffer.constData(), l);
+            m_FaceTrackStatus.PushVolumeSample(level * 1.5);
+        }
+    });
 }
 
 void GLWidget::LoadAnimations() {
@@ -109,17 +156,14 @@ void GLWidget::RequestNextFrame() {
     }
   }
 
-  if (m_PoseReceiver) {
-    auto allPos = m_PoseReceiver->RecvAll();
-    if (!allPos.empty()) {
-      m_FaceTrackStatus.FeedHeadPose(allPos.back());
-    } else {
-      m_FaceTrackStatus.FeedNothing();
-    }
-  }
-
   m_FaceTrackStatus.NextFrame();
   m_ScreenStatus.NextFrame();
   m_BodyStatus.NextTick();
   update();
+
+  winId();
+
+#ifdef CW_WIN32
+  RedrawWindow(this->winId(), NULL, NULL, RDW_INVALIDATE | RDW_UPDATENOW);
+#endif // CW_WIN32
 }

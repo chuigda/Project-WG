@@ -15,17 +15,21 @@
 #include "include/wgc0310/Screen.h"
 #include "ui/ConfigWidget.h"
 
-GLWidget::GLWidget(std::unique_ptr<cw::Receiver<cw::HeadPose>> poseReceiver,
-                   QWidget *parent)
+#ifdef CW_WIN32
+#include <Windows.h>
+#endif // CW_WIN32
+
+GLWidget::GLWidget(QWidget *parent)
   : QOpenGLWidget(parent),
     GLFunctions(),
-    m_PoseReceiver(std::move(poseReceiver)),
     m_Light(nullptr),
     m_Light2(nullptr),
     m_Arena(),
     m_Mesh(nullptr),
     m_ScreenGlass(nullptr),
     m_Screen(nullptr),
+    m_MediaDevices(new QMediaDevices(this)),
+    m_AudioInput(nullptr),
     m_Timer(new QTimer(this))
 {
   QSurfaceFormat format;
@@ -44,6 +48,7 @@ GLWidget::GLWidget(std::unique_ptr<cw::Receiver<cw::HeadPose>> poseReceiver,
 
   m_ConfigWidget = new ConfigWidget(&m_CameraEntityStatus,
                                     &m_BodyStatus,
+                                    &m_FaceTrackStatus,
                                     &m_ScreenStatus,
                                     this);
   connect(m_ConfigWidget, &ConfigWidget::SetRenderSettings,
@@ -64,13 +69,16 @@ GLWidget::GLWidget(std::unique_ptr<cw::Receiver<cw::HeadPose>> poseReceiver,
   connect(m_Timer, &QTimer::timeout, this, &GLWidget::RequestNextFrame);
   m_Timer->start();
 
-  InitPoseEstimator();
+  InitSoundCapture();
   LoadAnimations();
   LoadBodyAnimations();
 }
 
 GLWidget::~GLWidget() {
   makeCurrent();
+
+  m_FaceTrackStatus.Destroy(this);
+  qDebug() << "GLWidget::~GLWidget(): face resource released successfully";
 
   m_Arena.Delete(this);
   qDebug() << "GLWidget::~GLWidget(): arena released successfully";
@@ -104,7 +112,6 @@ void GLWidget::initializeGL() {
                                     cw::RGBAColor(127, 127, 127),
                                     cw::Vertex(30.0, 15.0, 10.0),
                                     this));
-
 
   m_Mesh = std::make_unique<wgc0310::WGCMeshCollection>(this, m_Arena);
 
@@ -179,6 +186,19 @@ void GLWidget::paintGL() {
   m_Light2->Enable(this);
   m_CameraEntityStatus.ApplyEntityTransformation(this);
 
+  glTranslatef(0.0f, -12.0f, 0.0f);
+
+  for (std::size_t i = 0; i < 10; i++) {
+    m_Mesh->waist->Draw(this);
+    glTranslatef(0.0f, 1.0f, 0.0f);
+    glRotatef(m_FaceTrackStatus.pose.rotationZ / 10.0f, 0.0f, 0.0f, 1.0f);
+    glRotatef(m_FaceTrackStatus.pose.rotationX / 10.0f, 1.0f, 0.0f, 0.0f);
+    m_Mesh->abdomen->Draw(this);
+    glTranslatef(0.0f, 1.0f, 0.0f);
+  }
+
+  glTranslatef(0.0f, 6.0f, 0.0f);
+
   cw::RGBAColorF berColor = m_BodyStatus.GetTimerColor();
   berColor.Apply(this);
   glDisable(GL_LIGHTING);
@@ -193,9 +213,6 @@ void GLWidget::paintGL() {
     m_Mesh->power->Draw(this);
     m_Mesh->powerPin->Draw(this);
 
-    m_Mesh->abdomen->Draw(this);
-    m_Mesh->waist->Draw(this);
-
     glPushMatrix();
     DrawArm(m_BodyStatus.rightArmStatus, 1.0f);
     glPopMatrix();
@@ -205,10 +222,10 @@ void GLWidget::paintGL() {
     DrawArm(m_BodyStatus.leftArmStatus, -1.0f);
     glPopMatrix();
 
-    qDebug() << m_FaceTrackStatus.currentPose.rotationY;
     glTranslatef(0.0f, 12.875f, 0.0f);
-    glRotatef(m_FaceTrackStatus.currentPose.rotationY, 0.0f, 1.0f, 0.0f);
+    glRotatef(m_FaceTrackStatus.pose.rotationY / 2, 0.0f, 1.0f, 0.0f);
     m_Mesh->wheel->Draw(this);
+    glRotatef(m_FaceTrackStatus.pose.rotationY / 2, 0.0f, 1.0f, 0.0f);
 
     glTranslatef(0.0f, 0.375f, 0.0f);
     m_Mesh->monitor->Draw(this);
@@ -244,7 +261,7 @@ void GLWidget::DrawArm(const wgc0310::ArmStatus &armStatus, GLfloat coeff) {
   m_Mesh->bigArmCover->Draw(this);
 
   glTranslatef(20.0, 0.0f, 0.0f);
-  glRotatef(-1.0 * armStatus.rotation[2], 1.0f, 0.0f, 0.0f);
+  glRotatef(-1.0f * armStatus.rotation[2], 1.0f, 0.0f, 0.0f);
   m_Mesh->bigArmConnector->Draw(this);
 
   glTranslatef(4.5, 0.0f, 0.0f);

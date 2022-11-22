@@ -6,83 +6,59 @@
 #include "cwglx/GLImpl.h"
 
 FaceTrackStatus::FaceTrackStatus()
-  : currentPose {
+  : pose {
       .rotationX = 0.0,
       .rotationY = 0.0,
       .rotationZ = 0.0,
-      .mouthStatus = cw::HeadPose::Close,
+      .mouthStatus = HeadPose::Close,
     },
     m_EyeStatus(EyeStatus::Open),
     m_EyeStatusFrame(0),
     m_EyeStatusDuration(400),
-    m_MouthStatusFrame(0),
-    m_LastFeed(currentPose),
     m_EyeTexture(nullptr),
     m_MouthTexture(nullptr)
 {
+  m_VolumeLevels.resize(160, 0.05f);
+
+  m_VolumeVertices.reserve(640);
+  for (GLuint i = 0; i < 160; i++) {
+    float x = static_cast<float>(i) * 4.0f - 320.0f;
+    m_VolumeVertices.emplace_back(x, 0.1f);
+    m_VolumeVertices.emplace_back(x, -0.1f);
+    m_VolumeVertices.emplace_back(x + 4.0f, -0.1f);
+    m_VolumeVertices.emplace_back(x + 4.0f, 0.1f);
+  }
+
+  m_VolumeIndices.reserve(640);
+  for (GLuint i = 0; i < 640; i++) {
+      m_VolumeIndices.push_back(i);
+  }
+
   std::srand(std::time(nullptr));
 }
 
 void FaceTrackStatus::Initialize(GLFunctions *f) {
   QImage eye9Image(":/eye.9.bmp");
   QImage halfFaceImage(":/half-face.bmp");
-
   assert(!eye9Image.isNull());
   assert(!halfFaceImage.isNull());
 
   m_EyeTexture = std::make_unique<cw::Texture2D>(eye9Image, f);
   m_MouthTexture = std::make_unique<cw::Texture2D>(halfFaceImage, f);
-}
 
+  f->glGenBuffers(2, m_VBO.data());
 
-void FaceTrackStatus::FeedHeadPose(cw::HeadPose pose) {
-  m_LastFeed = pose;
+  f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
+  f->glBufferData(GL_ARRAY_BUFFER,
+                  static_cast<GLsizei>(m_VolumeVertices.size() * sizeof(cw::Vertex2DF)),
+                  m_VolumeVertices.data(),
+                  GL_STREAM_DRAW);
 
-  double oldCoeff = 1 - config.smooth;
-  double newCoeff = config.smooth;
-
-  double newX = oldCoeff * currentPose.rotationX + newCoeff * pose.rotationX;
-  double newY = oldCoeff * currentPose.rotationY + newCoeff * pose.rotationY;
-  double newZ = oldCoeff * currentPose.rotationZ + newCoeff * pose.rotationZ;
-
-  double diffX = std::abs(newX - currentPose.rotationX);
-  double diffY = std::abs(newY - currentPose.rotationY);
-  double diffZ = std::abs(newZ - currentPose.rotationZ);
-
-  if (diffX > 1.5) {
-    currentPose.rotationX = newX;
-  }
-
-  if (diffY > 1.5) {
-    currentPose.rotationY = newY;
-  }
-
-  if (diffZ > 1.5) {
-    currentPose.rotationZ = newZ;
-  }
-
-  if (m_MouthStatusFrame > config.mouthDuration
-      && pose.mouthStatus != currentPose.mouthStatus) {
-    currentPose.mouthStatus = pose.mouthStatus;
-    m_MouthStatusFrame = 0;
-  }
-}
-
-void FaceTrackStatus::FeedNothing() {
-  cw::HeadPose pose = m_LastFeed;
-
-  double oldCoeff = 1 - config.smooth;
-  double newCoeff = config.smooth;
-
-  currentPose.rotationX = oldCoeff * currentPose.rotationX + newCoeff * pose.rotationX;
-  currentPose.rotationY = oldCoeff * currentPose.rotationY + newCoeff * pose.rotationY;
-  currentPose.rotationZ = oldCoeff * currentPose.rotationZ + newCoeff * pose.rotationZ;
-
-  if (m_MouthStatusFrame > config.mouthDuration
-      && pose.mouthStatus != currentPose.mouthStatus) {
-    currentPose.mouthStatus = pose.mouthStatus;
-    m_MouthStatusFrame = 0;
-  }
+  f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[1]);
+  f->glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                  static_cast<GLsizei>(m_VolumeIndices.size() * sizeof(GLuint)),
+                  m_VolumeIndices.data(),
+                  GL_STATIC_DRAW);
 }
 
 void FaceTrackStatus::NextFrame() {
@@ -92,16 +68,13 @@ void FaceTrackStatus::NextFrame() {
     m_EyeStatus = static_cast<EyeStatus>(-m_EyeStatus);
     switch (m_EyeStatus) {
       case Open:
-        m_EyeStatusDuration =
-          std::rand() % config.blinkIntervalRange + config.blinkIntervalMin;
+        m_EyeStatusDuration = std::rand() % 200 + 500;
         break;
       case Blinking:
-        m_EyeStatusDuration = config.blinkDuration;
+        m_EyeStatusDuration = 25;
         break;
     }
   }
-
-  m_MouthStatusFrame += 1;
 }
 
 static void DrawEye(GLFunctions *f,
@@ -158,39 +131,99 @@ static void DrawEye(GLFunctions *f,
 void FaceTrackStatus::DrawOnScreen(GLFunctions *f) {
   f->glScalef(1.0f, -1.0f, 1.0f);
   f->glFrontFace(GL_CW);
+  if (pose.mouthStatus == HeadPose::Open) {
+    RecomputeVertices();
 
-  float eyeTop;
-  float eyeBottom;
+    f->glPushMatrix();
+    f->glColor4f(0.5f, 1.0f, 1.0f, 1.0f);
+    f->glBufferData(GL_ARRAY_BUFFER,
+                    static_cast<GLsizei>(m_VolumeVertices.size() * sizeof(cw::Vertex2DF)),
+                    m_VolumeVertices.data(),
+                    GL_STREAM_DRAW);
 
-  if (m_EyeStatus == EyeStatus::Blinking) {
-    float ratio = static_cast<float>(m_EyeStatusFrame)
-                  / static_cast<float>(m_EyeStatusDuration);
-    float len;
-    if (ratio > 0.5) {
-      float r = (ratio - 0.5f) * 2.0f;
-      r = 0.4f * r * r * r - 0.6f * r * r + 1.2f * r;
-      len = 4.0f + 48.0f * r;
-    } else {
-      float r = (0.5f - ratio) * 2.0f;
-      r = 0.4f * r * r * r - 0.6f * r * r + 1.2f * r;
-      len = 4.0f + 48.0f * r;
+    f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+    {
+      f->glEnableClientState(GL_VERTEX_ARRAY);
+      f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
+      f->glVertexPointer(2, GL_FLOAT, 0, nullptr);
+
+      f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[1]);
+      f->glDrawElements(GL_QUADS,
+                        static_cast<GLsizei>(m_VolumeIndices.size()),
+                        GL_UNSIGNED_INT,
+                        nullptr);
     }
-    eyeTop = 42.0f + len;
-    eyeBottom = 42.0f - len;
+    f->glPopClientAttrib();
+    f->glPopMatrix();
   } else {
-    eyeTop = 42.0f + 52.0f;
-    eyeBottom = 42.0f - 52.0f;
+    f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    m_MouthTexture->BeginTexture(f);
+
+    f->glBegin(GL_QUADS);
+    f->glTexCoord2f(0.0f, 0.0f);
+    f->glVertex2f(-320.0f, 0.0f);
+
+    f->glTexCoord2f(0.0f, 1.0f);
+    f->glVertex2f(-320.0f, -240.0f);
+
+    f->glTexCoord2f(1.0f, 1.0f);
+    f->glVertex2f(320.0f, -240.0f);
+
+    f->glTexCoord2f(1.0f, 0.0f);
+    f->glVertex2f(320.0f, 0.0f);
+    f->glEnd();
+
+    float eyeTop;
+    float eyeBottom;
+
+    if (m_EyeStatus == EyeStatus::Blinking) {
+      float ratio = static_cast<float>(m_EyeStatusFrame)
+                    / static_cast<float>(m_EyeStatusDuration);
+      float len;
+      if (ratio > 0.5) {
+        float r = (ratio - 0.5f) * 2.0f;
+        r = 0.4f * r * r * r - 0.6f * r * r + 1.2f * r;
+        len = 4.0f + 48.0f * r;
+      } else {
+        float r = (0.5f - ratio) * 2.0f;
+        r = 0.4f * r * r * r - 0.6f * r * r + 1.2f * r;
+        len = 4.0f + 48.0f * r;
+      }
+      eyeTop = 42.0f + len;
+      eyeBottom = 42.0f - len;
+    } else {
+      eyeTop = 42.0f + 52.0f;
+      eyeBottom = 42.0f - 52.0f;
+    }
+
+    f->glTranslatef(0.0f, 0.0f, 0.1f);
+
+    f->glPushMatrix();
+    f->glScalef(1.0f / 0.75f, 1.0f / 0.75f, 1.0f);
+    m_EyeTexture->BeginTexture(f);
+
+    DrawEye(f, eyeTop, eyeBottom, -118.0f, -90.0f);
+    DrawEye(f, eyeTop, eyeBottom, 90.0f, 118.0f);
+
+    f->glPopMatrix();
   }
+}
 
-  f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-  f->glTranslatef(0.0f, 0.0f, 0.1f);
+void FaceTrackStatus::PushVolumeSample(qreal sample) {
+  m_VolumeLevels.pop_front();
+  m_VolumeLevels.push_back(0.75 * sample + 0.25 * m_VolumeLevels.back());
+}
 
-  f->glPushMatrix();
-  f->glScalef(1.0f / 0.75f, 1.0f / 0.75f, 1.0f);
-  m_EyeTexture->BeginTexture(f);
+void FaceTrackStatus::Destroy(GLFunctions *f) {
+  m_EyeTexture->DeleteTexture(f);
+  m_MouthTexture->DeleteTexture(f);
+}
 
-  DrawEye(f, eyeTop, eyeBottom, -118.0f, -90.0f);
-  DrawEye(f, eyeTop, eyeBottom, 90.0f, 118.0f);
-
-  f->glPopMatrix();
+void FaceTrackStatus::RecomputeVertices() {
+  for (size_t i = 0; i < 160; i++) {
+    m_VolumeVertices[i * 4].SetY(m_VolumeLevels[i] * 200.0);
+    m_VolumeVertices[i * 4 + 1].SetY(m_VolumeLevels[i] * -200.0);
+    m_VolumeVertices[i * 4 + 2].SetY(m_VolumeLevels[i] * -200.0);
+    m_VolumeVertices[i * 4 + 3].SetY(m_VolumeLevels[i] * 200.0);
+  }
 }
