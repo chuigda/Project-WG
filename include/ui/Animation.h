@@ -18,8 +18,7 @@ public:
   explicit Animation(const QString& fileName);
   ~Animation();
 
-  Animation(Animation const&) = delete;
-  Animation& operator=(Animation const&) = delete;
+  CW_DERIVE_UNCOPYABLE(Animation)
 
   Animation(Animation&&) noexcept;
 

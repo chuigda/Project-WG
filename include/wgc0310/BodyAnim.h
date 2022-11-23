@@ -7,6 +7,8 @@
 #include <QString>
 #include <QtGui/qopengl.h>
 
+#include "util/Derive.h"
+
 namespace wgc0310 {
 
 class BodyStatus;
@@ -24,11 +26,8 @@ struct AnimationSection {
 
   AnimationSection() noexcept;
 
-  AnimationSection(AnimationSection const&) = delete;
-  AnimationSection& operator=(AnimationSection const&) = delete;
-
-  AnimationSection(AnimationSection&& other) = default;
-  AnimationSection& operator=(AnimationSection&& other) = default;
+  CW_DERIVE_UNCOPYABLE(AnimationSection)
+  CW_DERIVE_UNMOVABLE(AnimationSection)
 
   void AddCommand(AnimationCommand command) noexcept;
 
@@ -40,11 +39,8 @@ class BodyAnimation {
 public:
   BodyAnimation() = default;
 
-  BodyAnimation(BodyAnimation const&) = delete;
-  BodyAnimation& operator=(BodyAnimation const&) = delete;
-
-  BodyAnimation(BodyAnimation&&) = default;
-  BodyAnimation& operator=(BodyAnimation&&) = default;
+  CW_DERIVE_UNCOPYABLE(BodyAnimation)
+  CW_DERIVE_UNMOVABLE(BodyAnimation)
 
   void SetAnimationName(QString const& name) noexcept {
     m_AnimationName = name;

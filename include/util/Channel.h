@@ -9,6 +9,7 @@
 #include <condition_variable>
 #include <QtCore>
 
+#include "util/Derive.h"
 #include "util/Sinkrate.h"
 #include "util/Wife.h"
 
@@ -25,10 +26,9 @@ class ChannelIntern {
 public:
   ChannelIntern(std::size_t bufferSize, Sinkrate)
     : bufferSize(bufferSize)
-    {}
+  {}
 
-  ChannelIntern(const ChannelIntern&) = delete;
-  ChannelIntern& operator=(const ChannelIntern&) = delete;
+  CW_DERIVE_UNCOPYABLE(ChannelIntern)
 
 private:
   std::size_t bufferSize;
@@ -49,8 +49,7 @@ public:
     : m_Repr(repr)
   {}
 
-  Sender(const Sender&) = delete;
-  Sender& operator=(const Sender&) = delete;
+  CW_DERIVE_UNCOPYABLE(Sender)
 
   Sender(Sender&&) noexcept = default;
   Sender& operator=(Sender&&) noexcept = default;
@@ -98,8 +97,7 @@ public:
     : m_Repr(repr)
   {}
 
-  Receiver(const Receiver&) = delete;
-  Receiver& operator=(const Receiver&) = delete;
+  CW_DERIVE_UNCOPYABLE(Receiver)
 
   Receiver(Receiver&&) noexcept = default;
   Receiver& operator=(Receiver&&) noexcept = default;

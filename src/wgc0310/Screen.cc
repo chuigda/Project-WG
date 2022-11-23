@@ -186,12 +186,15 @@ void Screen::BeginScreenContext(GLFunctions *f) const noexcept {
   f->glDisable(GL_DEPTH_TEST);
 }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "readability-convert-member-functions-to-static"
 void Screen::DoneScreenContext(GLFunctions *f) const noexcept {
   f->glPopClientAttrib();
   f->glPopAttrib();
 
   // no need to restore frame buffer here, we'll do that somewhere else
 }
+#pragma clang diagnostic pop
 
 void Screen::Draw(GLFunctions *f) const noexcept {
   f->glPushAttrib(GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT | GL_LIGHTING_BIT);
