@@ -97,6 +97,7 @@ set(PROJECT_SOURCES
     include/wgc0310/ScreenGlass.h
     include/wgc0310/Screen.h
     include/wgc0310/ScreenCurveHelper.h
+    include/wgc0310/ScreenAnimation.h
     include/wgc0310/BodyStatus.h
     include/wgc0310/BodyAnim.h
 

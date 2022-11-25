@@ -5,8 +5,8 @@
 extern "C" {
 
 std::uint32_t WGAPI GetWGAPIVersion(void) {
-  // WGAPI 0.1.0
-  return 0x00'01'0000;
+  // WGAPI 0.2.0
+  return 0x00'02'0000;
 }
 
 const char* WGAPI GetAnimationName(void) {
