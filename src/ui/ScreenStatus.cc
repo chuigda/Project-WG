@@ -46,6 +46,7 @@ void AnimationContext::Delete(GLFunctions *f) {
 ScreenStatus::ScreenStatus()
   : m_IsPlayingStaticAnimation(false),
     m_IsPlayingDynamicAnimation(false),
+    m_NeedRewind(false),
     m_StaticScreen(nullptr),
     m_Animation(nullptr),
     m_Frame(0)
@@ -63,6 +64,7 @@ void ScreenStatus::PlayAnimation(AnimationContext *animation) {
 
   m_IsPlayingDynamicAnimation = true;
   m_Animation = animation;
+  m_NeedRewind = true;
 }
 
 bool ScreenStatus::HasThingToDraw() const noexcept {
@@ -91,6 +93,15 @@ void ScreenStatus::DrawOnScreen(GLFunctions *f) {
     }
     f->glEnd();
   } else if (m_IsPlayingDynamicAnimation) {
+    if (m_NeedRewind) {
+      m_NeedRewind = false;
+      if (!m_Animation->Rewind(f)) {
+        qWarning() << "ScreenStatus::DrawOnScreen:"
+                   << "error rewinding animation"
+                   << m_Animation->rawAnimation->name;
+      }
+    }
+
     f->glScalef(1.0f, -1.0f, 1.0f);
     f->glFrontFace(GL_CW);
 

@@ -62,6 +62,7 @@ public:
 private:
   bool m_IsPlayingStaticAnimation;
   bool m_IsPlayingDynamicAnimation;
+  bool m_NeedRewind;
 
   StaticScreen *m_StaticScreen;
   AnimationContext *m_Animation;
