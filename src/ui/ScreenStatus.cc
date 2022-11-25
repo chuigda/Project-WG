@@ -3,6 +3,45 @@
 #include <QTimer>
 #include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
+#include "util/DynLoad.h"
+
+AnimationContext::AnimationContext(const WGAPI_Animation *rawAnimation,
+                                   void *rawHandle)
+  : rawAnimation(rawAnimation),
+    m_RawHandle(rawHandle),
+    m_Context(nullptr)
+{}
+
+AnimationContext::~AnimationContext() {
+  if (m_Context) {
+    qWarning() << "Called dtor of animation"
+               << rawAnimation->name
+               << "before deleting OpenGL resources";
+  }
+
+  cw::DetachSharedObject(m_RawHandle);
+}
+
+bool AnimationContext::Initialize(GLFunctions *f) {
+  m_Context = rawAnimation->initContextFn(f);
+  return static_cast<bool>(m_Context);
+}
+
+bool AnimationContext::Rewind(GLFunctions *f) {
+  return rawAnimation->rewindContextFn(m_Context, f);
+}
+
+bool AnimationContext::PlayFrame(GLFunctions *f, std::uint64_t frame) {
+  return rawAnimation->playAnimationFrameFn(m_Context, f, frame);
+}
+
+WGAPI_Error AnimationContext::GetError() {
+  return rawAnimation->getErrorFn(m_Context);
+}
+
+void AnimationContext::Delete(GLFunctions *f) {
+  rawAnimation->destroyContextFn(m_Context, f);
+}
 
 ScreenStatus::ScreenStatus()
   : m_IsPlayingStaticAnimation(false),
@@ -55,7 +94,7 @@ void ScreenStatus::DrawOnScreen(GLFunctions *f) {
     f->glScalef(1.0f, -1.0f, 1.0f);
     f->glFrontFace(GL_CW);
 
-    bool playResult = m_Animation->PlayAnimationFrame(f, m_Frame);
+    bool playResult = m_Animation->PlayFrame(f, m_Frame);
     if (!playResult) {
       qWarning() << "ScreenStatus::DrawOnScreen:"
                  << "error playing the"

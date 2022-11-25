@@ -100,10 +100,18 @@ void GLWidget::LoadAnimations() {
       continue;
     }
 
-    WGAPI_Animation const* animation = cw::LoadSymbol<WGAPI_Animation const*>(
+    LoadAnimationFn loadAnimationFn = cw::LoadSymbol<LoadAnimationFn>(
       sharedObject,
       "LoadAnimation"
     );
+    if (!loadAnimationFn) {
+      continue;
+    }
+
+    WGAPI_Animation const *animation = loadAnimationFn();
+    if (!animation || animation->version != WGAPI_VERSION) {
+      continue;
+    }
 
     m_Animations.emplace_back(std::make_unique<AnimationContext>(animation, sharedObject));
   }

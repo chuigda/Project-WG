@@ -28,18 +28,16 @@ public:
   CW_DERIVE_UNCOPYABLE(AnimationContext)
   CW_DERIVE_UNMOVABLE(AnimationContext)
 
-  [[nodiscard]] bool IsOpen() const noexcept;
-
   [[nodiscard]] bool Initialize(GLFunctions *f);
-  [[nodiscard]] bool StartAnimation(GLFunctions *f);
-  [[nodiscard]] bool PlayAnimationFrame(GLFunctions *f, std::uint64_t frame);
+  [[nodiscard]] bool Rewind(GLFunctions *f);
+  [[nodiscard]] bool PlayFrame(GLFunctions *f, std::uint64_t frame);
   [[nodiscard]] WGAPI_Error GetError(void);
   void Delete(GLFunctions *f);
 
   WGAPI_Animation const* rawAnimation;
 
 private:
-  void *m_rawHandle;
+  void *m_RawHandle;
   void *m_Context;
 };
 
