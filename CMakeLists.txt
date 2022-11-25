@@ -43,7 +43,9 @@ set(PROJECT_SOURCES
     include/ui/ConfigWidget.h
     include/ui/MessageBoxAlter.h
 
+    src/util/DynLoad.cc
     src/util/Constants.cc
+    include/util/DynLoad.h
     include/util/Wife.h
     include/util/Constants.h
     include/util/Derive.h

@@ -103,21 +103,18 @@ void GLWidget::LoadAnimations() {
 }
 
 void GLWidget::InitAnimations() {
-  std::vector<AnimationContext> initializedAnimations;
+  std::vector<std::unique_ptr<AnimationContext>> initializedAnimations;
   for (auto &animation : m_Animations) {
       if (!animation.Initialize(this)) {
         QMessageBox::warning(
             this,
             "警告",
-            QString("动画 %1（来自文件 %2）初始化失败，将不可用")
-              .arg(animation.GetAnimationName(),
-                   animation.GetFileName())
+            QString("动画 %1 初始化失败，将不可用")
+              .arg(animation.rawAnimation->name)
         );
         continue;
       }
 
-      QString originalFileName = animation.GetFileName();
-      originalFileName.replace("animations/dynamic/", "", Qt::CaseInsensitive);
       initializedAnimations.push_back(std::move(animation));
   }
 

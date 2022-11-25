@@ -39,7 +39,9 @@ signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
   void StaticScreensLoaded(std::vector<StaticScreen>*);
-  void AnimationsLoaded(std::vector<AnimationContext>*);
+  void AnimationsLoaded(
+    std::vector<std::unique_ptr<AnimationContext>>*
+  );
   void BodyAnimationsLoaded(
     std::vector<std::unique_ptr<wgc0310::BodyAnimation>>*
   );
@@ -61,8 +63,8 @@ private:
   void DrawArm(const wgc0310::ArmStatus& armStatus, GLfloat coeff);
 
 private:
-  QScopedPointer<cw::Light> m_Light;
-  QScopedPointer<cw::Light> m_Light2;
+  std::unique_ptr<cw::Light> m_Light;
+  std::unique_ptr<cw::Light> m_Light2;
 
   cw::DrawableArena m_Arena;
 
@@ -77,12 +79,12 @@ private:
   ConfigWidget *m_ConfigWidget;
 
   std::vector<StaticScreen> m_StaticScreens;
-  std::vector<AnimationContext> m_Animations;
+  std::vector<std::unique_ptr<AnimationContext>> m_Animations;
   QList<QString> m_BodyAnimationNames;
   std::vector<std::unique_ptr<wgc0310::BodyAnimation>> m_BodyAnimations;
 
   QMediaDevices *m_MediaDevices;
-  QScopedPointer<QAudioSource> m_AudioInput;
+  std::unique_ptr<QAudioSource> m_AudioInput;
   QTimer *m_Timer;
 };
 

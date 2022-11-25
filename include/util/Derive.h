@@ -9,4 +9,8 @@
   CLASS(CLASS &&) = delete;         \
   CLASS &operator=(CLASS &&) = delete;
 
+#define CW_DERIVE_DEFAULT_MOVE(CLASS) \
+  CLASS(CLASS &&) = default;         \
+  CLASS &operator=(CLASS &&) = default;
+
 #endif // PROJECT_WG_DERIVE_H

@@ -27,7 +27,7 @@ struct AnimationSection {
   AnimationSection() noexcept;
 
   CW_DERIVE_UNCOPYABLE(AnimationSection)
-  CW_DERIVE_UNMOVABLE(AnimationSection)
+  CW_DERIVE_DEFAULT_MOVE(AnimationSection)
 
   void AddCommand(AnimationCommand command) noexcept;
 
