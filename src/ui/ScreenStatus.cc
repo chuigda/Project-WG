@@ -19,7 +19,7 @@ void ScreenStatus::PlayStaticAnimation(StaticScreen *staticScreen) {
   m_StaticScreen = staticScreen;
 }
 
-void ScreenStatus::PlayAnimation(Animation *animation) {
+void ScreenStatus::PlayAnimation(AnimationContext *animation) {
   Reset();
 
   m_IsPlayingDynamicAnimation = true;
@@ -61,8 +61,7 @@ void ScreenStatus::DrawOnScreen(GLFunctions *f) {
                  << "error playing the"
                  << m_Frame
                  << "th frame of animation"
-                 << m_Animation->GetAnimationName()
-                 << "(from file \"" + m_Animation->GetFileName() + "\"";
+                 << m_Animation->rawAnimation->name;
     }
   }
 }

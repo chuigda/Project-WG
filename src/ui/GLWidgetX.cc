@@ -94,7 +94,7 @@ void GLWidget::LoadAnimations() {
 
   QStringList files = dir.entryList(filters, QDir::Files);
   for (const auto &file : files) {
-    Animation animation { QStringLiteral("animations/dynamic/") + file };
+    AnimationContext animation {QStringLiteral("animations/dynamic/") + file };
     if (!animation.IsOpen()) {
       continue;
     }
@@ -103,7 +103,7 @@ void GLWidget::LoadAnimations() {
 }
 
 void GLWidget::InitAnimations() {
-  std::vector<Animation> initializedAnimations;
+  std::vector<AnimationContext> initializedAnimations;
   for (auto &animation : m_Animations) {
       if (!animation.Initialize(this)) {
         QMessageBox::warning(

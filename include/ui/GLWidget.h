@@ -13,7 +13,6 @@
 #include "ui/CameraEntityStatus.h"
 #include "ui/FaceTrackStatus.h"
 #include "ui/ScreenStatus.h"
-#include "ui/Animation.h"
 
 #include "wgc0310/BodyStatus.h"
 #include "wgc0310/Mesh.h"
@@ -40,7 +39,7 @@ signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
   void StaticScreensLoaded(std::vector<StaticScreen>*);
-  void AnimationsLoaded(std::vector<Animation>*);
+  void AnimationsLoaded(std::vector<AnimationContext>*);
   void BodyAnimationsLoaded(
     std::vector<std::unique_ptr<wgc0310::BodyAnimation>>*
   );
@@ -78,7 +77,7 @@ private:
   ConfigWidget *m_ConfigWidget;
 
   std::vector<StaticScreen> m_StaticScreens;
-  std::vector<Animation> m_Animations;
+  std::vector<AnimationContext> m_Animations;
   QList<QString> m_BodyAnimationNames;
   std::vector<std::unique_ptr<wgc0310::BodyAnimation>> m_BodyAnimations;
 

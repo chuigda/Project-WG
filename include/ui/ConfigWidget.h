@@ -7,8 +7,8 @@
 #include "cwglx/GLInfo.h"
 #include "wgc0310/BodyAnim.h"
 #include "cwglx/Texture.h"
-#include "ui/Animation.h"
 #include "ui/FaceTrackStatus.h"
+#include "ui/ScreenStatus.h"
 
 class CameraEntityStatus;
 class ScreenStatus;
@@ -44,7 +44,9 @@ signals:
 
 public slots:
   void OnStaticScreensLoaded(std::vector<StaticScreen> *staticScreens);
-  void OnScreenAnimationsLoaded(std::vector<Animation> *animations);
+  void OnScreenAnimationsLoaded(
+    std::vector<std::unique_ptr<AnimationContext>> *animations
+  );
   void OnBodyAnimationsLoaded(
     std::vector<std::unique_ptr<wgc0310::BodyAnimation>> *animations
   );

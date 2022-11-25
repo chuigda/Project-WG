@@ -27,7 +27,6 @@ set(PROJECT_SOURCES
     src/ui/CaptureWidget.cc
     src/ui/ScreenStatus.cc
     src/ui/FaceTrackStatus.cc
-    src/ui/Animation.cc
     src/ui/CameraEntityStatus.cc
     src/ui/GLWidgetX.cc
     src/ui/GLWidget.cc
@@ -39,7 +38,6 @@ set(PROJECT_SOURCES
     include/ui/CaptureWidget.h
     include/ui/ScreenStatus.h
     include/ui/FaceTrackStatus.h
-    include/ui/Animation.h
     include/ui/CameraEntityStatus.h
     include/ui/GLWidget.h
     include/ui/ConfigWidget.h
