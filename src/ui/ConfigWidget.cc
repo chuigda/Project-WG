@@ -117,15 +117,17 @@ ConfigWidget::OnStaticScreensLoaded(std::vector<StaticScreen> *staticScreens) {
   layout->addStretch();
 }
 
-void ConfigWidget::OnScreenAnimationsLoaded(std::vector<AnimationContext> *animations) {
+void ConfigWidget::OnScreenAnimationsLoaded(
+  std::vector<std::unique_ptr<AnimationContext>> *animations
+) {
   QVBoxLayout *layout = new QVBoxLayout();
   ui->dynamicAnimationBox->setLayout(layout);
 
   for (auto &animation : *animations) {
-    QPushButton *button = new QPushButton(animation.GetAnimationName());
+    QPushButton *button = new QPushButton(animation->rawAnimation->name);
     layout->addWidget(button);
 
-    AnimationContext *ptr = &animation;
+    AnimationContext *ptr = animation.get();
     connect(button, &QPushButton::clicked, [this, ptr] {
       m_ScreenStatus->PlayAnimation(ptr);
     });

@@ -1,5 +1,6 @@
 #include "ui/GLWidget.h"
 #include "ui/ConfigWidget.h"
+#include "util/DynLoad.h"
 
 #include <QDir>
 #include <QMessageBox>
@@ -94,23 +95,29 @@ void GLWidget::LoadAnimations() {
 
   QStringList files = dir.entryList(filters, QDir::Files);
   for (const auto &file : files) {
-    AnimationContext animation {QStringLiteral("animations/dynamic/") + file };
-    if (!animation.IsOpen()) {
+    void *sharedObject = cw::LoadSharedObject(QStringLiteral("animations/dynamic/") + file);
+    if (!sharedObject) {
       continue;
     }
-    m_Animations.emplace_back(std::move(animation));
+
+    WGAPI_Animation const* animation = cw::LoadSymbol<WGAPI_Animation const*>(
+      sharedObject,
+      "LoadAnimation"
+    );
+
+    m_Animations.emplace_back(std::make_unique<AnimationContext>(animation, sharedObject));
   }
 }
 
 void GLWidget::InitAnimations() {
   std::vector<std::unique_ptr<AnimationContext>> initializedAnimations;
   for (auto &animation : m_Animations) {
-      if (!animation.Initialize(this)) {
+      if (!animation->Initialize(this)) {
         QMessageBox::warning(
             this,
             "警告",
             QString("动画 %1 初始化失败，将不可用")
-              .arg(animation.rawAnimation->name)
+              .arg(animation->rawAnimation->name)
         );
         continue;
       }

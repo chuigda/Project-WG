@@ -4,6 +4,7 @@
 #include <QTimer>
 #include <QTimerEvent>
 #include <QElapsedTimer>
+#include <memory>
 
 #include "glu/FakeGLU.h"
 #include "cwglx/Setup.h"
@@ -90,7 +91,7 @@ GLWidget::~GLWidget() {
            << "static screen textures released successfully";
 
   for (auto &item : m_Animations) {
-    item.Delete(this);
+    item->Delete(this);
   }
   qDebug() << "GLWidget::~GLWidget():"
            << "animations released successfully";
@@ -100,18 +101,18 @@ GLWidget::~GLWidget() {
 
 void GLWidget::initializeGL() {
   cw::SetupPreferredSettings(this);
-  m_Light.reset(new cw::PointLight(GL_LIGHT0,
-                                   cw::RGBAColor(32, 32, 32),
-                                   cw::RGBAColor(187, 187, 187),
-                                   cw::RGBAColor(127, 127, 127),
-                                   cw::Vertex(-30.0, 15.0, 10.0),
-                                   this));
-  m_Light2.reset(new cw::PointLight(GL_LIGHT1,
-                                    cw::RGBAColor(32, 32, 32),
-                                    cw::RGBAColor(187, 187, 187),
-                                    cw::RGBAColor(127, 127, 127),
-                                    cw::Vertex(30.0, 15.0, 10.0),
-                                    this));
+  m_Light = std::make_unique<cw::PointLight>(GL_LIGHT0,
+                                             cw::RGBAColor(32, 32, 32),
+                                             cw::RGBAColor(187, 187, 187),
+                                             cw::RGBAColor(127, 127, 127),
+                                             cw::Vertex(-30.0, 15.0, 10.0),
+                                             this);
+  m_Light2 = std::make_unique<cw::PointLight>(GL_LIGHT1,
+                                              cw::RGBAColor(32, 32, 32),
+                                              cw::RGBAColor(187, 187, 187),
+                                              cw::RGBAColor(127, 127, 127),
+                                              cw::Vertex(30.0, 15.0, 10.0),
+                                              this);
 
   m_Mesh = std::make_unique<wgc0310::WGCMeshCollection>(this, m_Arena);
 
