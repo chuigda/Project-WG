@@ -1,6 +1,7 @@
 #include "util/DynLoad.h"
 
 #include <QString>
+#include <QDebug>
 
 namespace cw {
 
@@ -19,7 +20,7 @@ void *LoadSharedObject(const QString& fileName) {
   return h;
 }
 
-void* TryReadSymbol(void *handle, const char *symbol) {
+void* TryReadSymbolImpl(void *handle, const char *symbol) {
   return reinterpret_cast<void*>(
       GetProcAddress(reinterpret_cast<HMODULE>(handle), symbol)
   );

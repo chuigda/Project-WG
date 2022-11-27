@@ -4,9 +4,10 @@
 #include <QWidget>
 #include "ui/FaceTrackStatus.h"
 
-class CaptureWidget : public QWidget {
+class ManualOperateWidget : public QWidget {
 public:
-  explicit CaptureWidget(FaceTrackStatus *status, QWidget *parent = nullptr);
+  explicit ManualOperateWidget(FaceTrackStatus *status,
+                               QWidget *parent = nullptr);
 
   void paintEvent(QPaintEvent *event) override;
 

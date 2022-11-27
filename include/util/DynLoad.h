@@ -12,7 +12,7 @@ void *TryReadSymbolImpl(void *handle, const char *funcName);
 void DetachSharedObject(void *handle);
 
 template <Wife T>
-T LoadSymbol(void *handle, const char *funcName) {
+T TryReadSymbol(void *handle, const char *funcName) {
   return reinterpret_cast<T>(TryReadSymbolImpl(handle, funcName));
 }
 

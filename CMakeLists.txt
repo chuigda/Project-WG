@@ -24,7 +24,8 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
 set(PROJECT_SOURCES
     main.cc
 
-    src/ui/CaptureWidget.cc
+    src/ui/OSFTrack.cc
+    src/ui/ManualOperateWidget.cc
     src/ui/ScreenStatus.cc
     src/ui/FaceTrackStatus.cc
     src/ui/CameraEntityStatus.cc
@@ -32,10 +33,11 @@ set(PROJECT_SOURCES
     src/ui/GLWidget.cc
     src/ui/ConfigWidget.cc
     src/ui/ConfigWidgetCamera.cc
-    src/ui/ConfigWidgetFakeCapture.cc
+    src/ui/ConfigWidgetCapture.cc
     src/ui/ConfigWidgetBody.cc
     src/ui/MessageBoxAlter.cc
-    include/ui/CaptureWidget.h
+    include/ui/OSFTrack.h
+    include/ui/ManualOperateWidget.h
     include/ui/ScreenStatus.h
     include/ui/FaceTrackStatus.h
     include/ui/CameraEntityStatus.h

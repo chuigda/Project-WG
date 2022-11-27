@@ -10,9 +10,9 @@
 #include "util/Derive.h"
 
 struct HeadPose {
-  float rotationX;
-  float rotationY;
-  float rotationZ;
+  float rotationX = 0.0f;
+  float rotationY = 0.0f;
+  float rotationZ = 0.0f;
 
   enum MouthStatus { Close = -1, Open = 1 } mouthStatus = MouthStatus::Close;
 };

@@ -100,7 +100,7 @@ void GLWidget::LoadAnimations() {
       continue;
     }
 
-    LoadAnimationFn loadAnimationFn = cw::LoadSymbol<LoadAnimationFn>(
+    LoadAnimationFn loadAnimationFn = cw::TryReadSymbol<LoadAnimationFn>(
       sharedObject,
       "LoadAnimation"
     );

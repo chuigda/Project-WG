@@ -957,6 +957,36 @@
       <attribute name="title">
        <string>面捕(伪)</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_13">
+       <item>
+        <layout class="QHBoxLayout" name="faceCaptureLayout">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>捕捉模式</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioOSFCapture">
+           <property name="text">
+            <string>Open See Face</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioManualOperate">
+           <property name="text">
+            <string>手动控制</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="faceAnimationTab">
       <attribute name="title">
@@ -1138,9 +1168,9 @@
   <slot>setCameraMoveZ(int)</slot>
  </slots>
  <buttongroups>
-  <buttongroup name="scrTexFiltButtonGroup"/>
   <buttongroup name="scrRenderModeButtonGroup"/>
-  <buttongroup name="imgTexFiltButtonGroup"/>
   <buttongroup name="culLFaceButtonGroup"/>
+  <buttongroup name="imgTexFiltButtonGroup"/>
+  <buttongroup name="scrTexFiltButtonGroup"/>
  </buttongroups>
 </ui>

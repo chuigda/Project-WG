@@ -79,7 +79,7 @@ private slots:
 private:
   void SetupCameraEntityPage();
   void SetupBodyPage();
-  void SetupFakeCapturePage(FaceTrackStatus *faceTrackStatus);
+  void SetupCapturePage(FaceTrackStatus *faceTrackStatus);
 
   Ui::ConfigWidget *ui;
 

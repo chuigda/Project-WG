@@ -54,7 +54,7 @@ ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
 
   SetupCameraEntityPage();
   SetupBodyPage();
-  SetupFakeCapturePage(faceTrackStatus);
+  SetupCapturePage(faceTrackStatus);
 
   connect(ui->thridPartiesButton, &QPushButton::clicked,
           this, &ConfigWidget::ShowThirdParties);
