@@ -24,7 +24,7 @@ class OSFTrackReceiver : public QObject {
   Q_OBJECT
 
 public:
-  OSFTrackReceiver(QObject *parent = nullptr);
+  explicit OSFTrackReceiver(QObject *parent = nullptr);
 
   CW_DERIVE_UNCOPYABLE(OSFTrackReceiver)
   CW_DERIVE_UNMOVABLE(OSFTrackReceiver)
@@ -33,7 +33,7 @@ signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
   void HeadPoseUpdated(HeadPose headPose);
-  void TrackingError(QString reason);
+  void TrackingError(QString const& reason);
 #pragma clang diagnostic pop
 
 public slots:
@@ -42,7 +42,7 @@ public slots:
   void SetParameter(OSFTrackParameter parameter);
 
 private slots:
-  void HandleData(void);
+  void HandleData();
 
 private:
   QUdpSocket *m_Socket;
@@ -50,24 +50,23 @@ private:
   std::deque<HeadPose> m_SmoothBuffer;
 };
 
-class OSFTrackController : public QWidget {
+class OSFTrackController final : public QWidget {
   Q_OBJECT
 
 public:
-  OSFTrackController(FaceTrackStatus *fcs,
-                     QWidget *parent = nullptr);
-  ~OSFTrackController();
+  explicit OSFTrackController(FaceTrackStatus *fcs, QWidget *parent = nullptr);
+  ~OSFTrackController() final;
 
 signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
   void StartListening(std::uint16_t port);
-  void StopListening(void);
+  void StopListening();
   void SetParameter(OSFTrackParameter parameter);
 #pragma clang diagnostic pop
 
 private slots:
-  void HandleError(QString reason);
+  void HandleError(const QString& reason);
   void HandlePoseUpdate(HeadPose pose);
 
 private:

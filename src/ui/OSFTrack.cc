@@ -9,7 +9,6 @@
 #include <QLabel>
 #include <QGroupBox>
 #include <QSpinBox>
-#include <QDoubleSpinBox>
 
 OSFTrackReceiver::OSFTrackReceiver(QObject *parent)
   : QObject(parent),
@@ -120,7 +119,6 @@ struct FacePacket {
 
   float mouthOpen;
   float mouthWide;
-
 } __attribute__((packed));
 
 static_assert(sizeof(FacePacket) == 1785);
@@ -148,11 +146,19 @@ void OSFTrackReceiver::HandleData() {
     FacePacket const* facePacket =
         reinterpret_cast<FacePacket const*>(data.data());
 
+    qDebug() << "rawData: rx =" << facePacket->euler[0]
+             << "ry =" << facePacket->euler[1]
+             << "rz =" << facePacket->euler[2]
+             << "blinkL =" << facePacket->eyeBlinkLeft
+             << "blinkR =" << facePacket->eyeBlinkRight
+             << "mouthOpen =" << facePacket->mouthOpen
+             << "mouthWide =" << facePacket->mouthWide;
+
     HeadPose pose {
-      .rotationX = facePacket->euler[0] * -180.0f + m_Parameter.xRotationFix,
-      .rotationY = facePacket->euler[1] * 180.0f + m_Parameter.yRotationFix,
+      .rotationX = facePacket->euler[0] + m_Parameter.xRotationFix,
+      .rotationY = facePacket->euler[1] + m_Parameter.yRotationFix,
       // 不知道为什么，OSF 的输出唯独 Z 轴用的是角度制，还从 180.0f 开始
-      .rotationZ = facePacket->euler[2] - 180.0f + m_Parameter.zRotationFix
+      .rotationZ = facePacket->euler[2] + m_Parameter.zRotationFix
       // not important anyway
       // .mouthStatus = HeadPose::MouthStatus::Close
     };
@@ -176,9 +182,9 @@ void OSFTrackReceiver::HandleData() {
     zSum += pose.rotationZ;
   }
 
-  xSum /= m_SmoothBuffer.size();
-  ySum /= m_SmoothBuffer.size();
-  zSum /= m_SmoothBuffer.size();
+  xSum /= static_cast<float>(m_SmoothBuffer.size());
+  ySum /= static_cast<float>(m_SmoothBuffer.size());
+  zSum /= static_cast<float>(m_SmoothBuffer.size());
 
   emit HeadPoseUpdated(HeadPose { xSum, ySum, zSum });
 }
@@ -207,6 +213,8 @@ OSFTrackController::OSFTrackController(FaceTrackStatus *fcs,
           receiver, &OSFTrackReceiver::SetParameter);
   connect(receiver, &OSFTrackReceiver::HeadPoseUpdated,
           this, &OSFTrackController::HandlePoseUpdate);
+  connect(receiver, &OSFTrackReceiver::TrackingError,
+          this, &OSFTrackController::HandleError);
   m_WorkerThread.start();
 
   QVBoxLayout *layout = new QVBoxLayout(this);
@@ -279,9 +287,9 @@ OSFTrackController::OSFTrackController(FaceTrackStatus *fcs,
       [this, spinSmooth, spinX, spinY, spinZ] {
         OSFTrackParameter parameter;
         parameter.smoothSteps = spinSmooth->value();
-        parameter.xRotationFix = spinX->value();
-        parameter.yRotationFix = spinY->value();
-        parameter.zRotationFix = spinZ->value();
+        parameter.xRotationFix = static_cast<float>(spinX->value());
+        parameter.yRotationFix = static_cast<float>(spinY->value());
+        parameter.zRotationFix = static_cast<float>(spinZ->value());
 
         emit this->SetParameter(parameter);
       }
@@ -298,7 +306,7 @@ OSFTrackController::~OSFTrackController() {
   m_WorkerThread.wait();
 }
 
-void OSFTrackController::HandleError(QString reason) {
+void OSFTrackController::HandleError(const QString& reason) {
   QMessageBox::warning(this, "面部捕捉错误", reason);
 }
 
