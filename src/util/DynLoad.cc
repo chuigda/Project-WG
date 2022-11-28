@@ -2,12 +2,14 @@
 
 #include <QString>
 
+#ifdef CW_WIN32
+#include <windows.h>
+#include <QDebug>
+#endif // CW_WIN32
+
 namespace cw {
 
 #ifdef CW_WIN32
-
-#include <QDebug>
-#include <windows.h>
 
 void *LoadSharedObject(const QString& fileName) {
   QString escaped = fileName;

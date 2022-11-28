@@ -131,7 +131,7 @@ static void DrawEye(GLFunctions *f,
 void FaceTrackStatus::DrawOnScreen(GLFunctions *f) {
   f->glScalef(1.0f, -1.0f, 1.0f);
   f->glFrontFace(GL_CW);
-  if (pose.mouthStatus == HeadPose::Open) {
+  if (pose.screenControlStatus == HeadPose::Soundwave) {
     RecomputeVertices();
 
     f->glPushMatrix();
@@ -211,7 +211,7 @@ void FaceTrackStatus::DrawOnScreen(GLFunctions *f) {
 
 void FaceTrackStatus::PushVolumeSample(qreal sample) {
   m_VolumeLevels.pop_front();
-  m_VolumeLevels.push_back(0.75 * sample + 0.25 * m_VolumeLevels.back());
+  m_VolumeLevels.push_back(sample);
 }
 
 void FaceTrackStatus::Destroy(GLFunctions *f) {

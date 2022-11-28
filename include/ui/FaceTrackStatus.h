@@ -14,7 +14,16 @@ struct HeadPose {
   float rotationY = 0.0f;
   float rotationZ = 0.0f;
 
-  enum MouthStatus { Close = -1, Open = 1 } mouthStatus = MouthStatus::Close;
+  enum MouthStatus {
+    Close = 0,
+    Open = 1,
+    OpenBig = 2
+  } mouthStatus = MouthStatus::Close;
+
+  enum ScreenControlStatus {
+    Face = -1,
+    Soundwave = 1
+  } screenControlStatus = ScreenControlStatus::Face;
 };
 
 class FaceTrackStatus {

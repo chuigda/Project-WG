@@ -28,7 +28,24 @@ void ManualOperateWidget::paintEvent(QPaintEvent*) {
 
     painter.drawRect(245, 245, 10, 10);
 
-    if (m_Status->pose.mouthStatus == HeadPose::Open) {
+    switch (m_Status->pose.mouthStatus) {
+    case HeadPose::Close:
+      painter.setBrush(QColor(0, 0xcd, 0));
+      break;
+    case HeadPose::Open:
+      painter.setBrush(QColor(0xff, 0xff, 0));
+      break;
+    case HeadPose::OpenBig:
+      painter.setBrush(QColor(0xff, 0, 0));
+      break;
+    }
+
+    painter.drawEllipse(m_Status->pose.rotationZ * -10.0 + 242,
+                        m_Status->pose.rotationX * -10.0 + 242,
+                        16,
+                        16);
+
+    if (m_Status->pose.screenControlStatus == HeadPose::Soundwave) {
       painter.setBrush(QColor(0, 0xcd, 0));
     } else {
       painter.setBrush(QColor(0xcd, 0, 0));
@@ -44,7 +61,12 @@ void ManualOperateWidget::keyPressEvent(QKeyEvent *event) {
   switch (event->key()) {
     case Qt::Key_Q:
       m_Status->pose.mouthStatus =
-        static_cast<HeadPose::MouthStatus>(-m_Status->pose.mouthStatus);
+        static_cast<HeadPose::MouthStatus>((m_Status->pose.mouthStatus + 1) % 3);
+      update();
+      return;
+    case Qt::Key_W:
+      m_Status->pose.screenControlStatus =
+        static_cast<HeadPose::ScreenControlStatus>(-m_Status->pose.screenControlStatus);
       update();
       return;
     case Qt::Key_Escape:

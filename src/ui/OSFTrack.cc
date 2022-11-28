@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QGroupBox>
 #include <QSpinBox>
+#include <QRadioButton>
 
 OSFTrackReceiver::OSFTrackReceiver(QObject *parent)
   : QObject(parent),
@@ -39,7 +40,6 @@ void OSFTrackReceiver::StartListening(std::uint16_t port) {
 
 void OSFTrackReceiver::StopListening() {
   if (!m_Socket) {
-    emit TrackingError("并没有进行中的监听任务");
     return;
   }
 
@@ -132,6 +132,7 @@ static void DownscaleToDeadZone(float &value, float deadZone) {
 }
 
 void OSFTrackReceiver::HandleData() {
+  HeadPose::MouthStatus lastMouthStatus = HeadPose::Close;
   while (m_Socket->hasPendingDatagrams()) {
     QNetworkDatagram datagram = m_Socket->receiveDatagram();
 
@@ -149,23 +150,38 @@ void OSFTrackReceiver::HandleData() {
     qDebug() << "rawData: rx =" << facePacket->euler[0]
              << "ry =" << facePacket->euler[1]
              << "rz =" << facePacket->euler[2]
-             << "blinkL =" << facePacket->eyeBlinkLeft
-             << "blinkR =" << facePacket->eyeBlinkRight
+             << "blinkL =" << facePacket->eyeQuirkLeft
+             << "blinkR =" << facePacket->eyeQuirkRight
              << "mouthOpen =" << facePacket->mouthOpen
              << "mouthWide =" << facePacket->mouthWide;
 
     HeadPose pose {
-      .rotationX = facePacket->euler[0] + m_Parameter.xRotationFix,
-      .rotationY = facePacket->euler[1] + m_Parameter.yRotationFix,
-      // 不知道为什么，OSF 的输出唯独 Z 轴用的是角度制，还从 180.0f 开始
-      .rotationZ = facePacket->euler[2] + m_Parameter.zRotationFix
-      // not important anyway
-      // .mouthStatus = HeadPose::MouthStatus::Close
+      .rotationX = facePacket->euler[0],
+      .rotationY = facePacket->euler[1],
+      .rotationZ = facePacket->euler[2],
     };
+    lastMouthStatus = facePacket->mouthOpen > 0.225f ?
+          HeadPose::OpenBig :
+          facePacket->mouthOpen > 0.1f ?
+            HeadPose::Open :
+            HeadPose::Close;
+    qDebug() << "lastMouthStatus =" << lastMouthStatus;
 
-    DownscaleToDeadZone(pose.rotationX, 15.0f);
-    DownscaleToDeadZone(pose.rotationY, 30.0f);
-    DownscaleToDeadZone(pose.rotationZ, 15.0f);
+    if (pose.rotationX > 0)  {
+      pose.rotationX = pose.rotationX - 180.0f;
+    } else {
+      pose.rotationX = pose.rotationX + 180.0f;
+    }
+    pose.rotationY = -pose.rotationY;
+    pose.rotationZ -= 90.0f;
+
+    pose.rotationX += m_Parameter.xRotationFix;
+    pose.rotationY += m_Parameter.yRotationFix;
+    pose.rotationZ += m_Parameter.zRotationFix;
+
+    DownscaleToDeadZone(pose.rotationX, 30.0f);
+    DownscaleToDeadZone(pose.rotationY, 15.0f);
+    DownscaleToDeadZone(pose.rotationZ, 30.0f);
 
     while (m_SmoothBuffer.size() - 1 > m_Parameter.smoothSteps) {
       m_SmoothBuffer.pop_front();
@@ -186,7 +202,7 @@ void OSFTrackReceiver::HandleData() {
   ySum /= static_cast<float>(m_SmoothBuffer.size());
   zSum /= static_cast<float>(m_SmoothBuffer.size());
 
-  emit HeadPoseUpdated(HeadPose { xSum, ySum, zSum });
+  emit HeadPoseUpdated(HeadPose { xSum, ySum, zSum, lastMouthStatus });
 }
 
 static QDoubleSpinBox *createAngleSpinBox() {
@@ -249,8 +265,44 @@ OSFTrackController::OSFTrackController(FaceTrackStatus *fcs,
             &QPushButton::clicked,
             this,
             &OSFTrackController::StopListening);
+    connect(
+      this,
+      &OSFTrackController::StopListening,
+      [this] {
+        this->m_FCS->pose.mouthStatus = HeadPose::Close;
+      }
+    );
 
     layout->addLayout(box);
+  }
+
+  {
+    QGroupBox *groupBox = new QGroupBox("屏幕显示");
+    QHBoxLayout *box = new QHBoxLayout();
+    groupBox->setLayout(box);
+
+    QRadioButton *screenCapture = new QRadioButton("面捕捕捉");
+    screenCapture->setChecked(true);
+    box->addWidget(screenCapture);
+
+    box->addStretch();
+
+    QRadioButton *volumeSignal = new QRadioButton("音频信号");
+    box->addWidget(volumeSignal);
+
+    connect(
+      screenCapture,
+      &QRadioButton::toggled,
+      [this] (bool toggled) {
+        if (toggled) {
+          this->m_FCS->pose.screenControlStatus = HeadPose::Face;
+        } else {
+          this->m_FCS->pose.screenControlStatus = HeadPose::Soundwave;
+        }
+      }
+    );
+
+    layout->addWidget(groupBox);
   }
 
   {
@@ -314,4 +366,5 @@ void OSFTrackController::HandlePoseUpdate(HeadPose pose) {
   m_FCS->pose.rotationX = pose.rotationX;
   m_FCS->pose.rotationY = pose.rotationY;
   m_FCS->pose.rotationZ = pose.rotationZ;
+  m_FCS->pose.mouthStatus = pose.mouthStatus;
 }
