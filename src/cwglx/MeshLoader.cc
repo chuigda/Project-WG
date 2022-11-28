@@ -9,22 +9,22 @@ namespace cw {
 #define PARSE_DOUBLE(v, s, r) \
   double v = (s).toDouble(&(r)); \
   if (!(r)) { \
-    qDebug() << "error processing file:" \
-             << meshFile      \
-             << "line:"       \
-             << lineNo        \
-             << "(invalid v-line)"; \
+    qWarning() << "error processing file:" \
+               << meshFile      \
+               << "line:"       \
+               << lineNo        \
+               << "(invalid v-line)"; \
     return; \
   }
 
 #define PARSE_UINT(v, s, r) \
   std::size_t v = (s).toUInt(&(r)); \
   if (!(r)) { \
-    qDebug() << "error processing file:" \
-             << meshFile    \
-             << "line:"     \
-             << lineNo      \
-             << "(invalid f-line)"; \
+    qWarning() << "error processing file:" \
+               << meshFile    \
+               << "line:"     \
+               << lineNo      \
+               << "(invalid f-line)"; \
     return; \
   }
 
@@ -40,17 +40,17 @@ static void ProcessMeshLine(PlainTriangles* triangles,
 
   QStringList parts = meshLine.split(' ');
   if (parts.length() < 0) {
-    qDebug() << "error processing file:" << meshFile << "line:" << lineNo;
+    qWarning() << "error processing file:" << meshFile << "line:" << lineNo;
     return;
   }
 
   if (parts[0] == "v") {
     if (parts.length() != 4) {
-      qDebug() << "error processing file:"
-               << meshFile
-               << "line:"
-               << lineNo
-               << "(invalid v-line)";
+      qWarning() << "error processing file:"
+                 << meshFile
+                 << "line:"
+                 << lineNo
+                 << "(invalid v-line)";
       return;
     }
 
@@ -62,11 +62,11 @@ static void ProcessMeshLine(PlainTriangles* triangles,
     verticesPool.emplace_back(x, y, z);
   } else if (parts[0] == "f") {
     if (parts.length() != 4) {
-      qDebug() << "error processing file:"
-               << meshFile
-               << "line:"
-               << lineNo
-               << "(invalid f-line)";
+      qWarning() << "error processing file:"
+                 << meshFile
+                 << "line:"
+                 << lineNo
+                 << "(invalid f-line)";
       return;
     }
 
@@ -83,13 +83,13 @@ static void ProcessMeshLine(PlainTriangles* triangles,
   } else if (parts[0] == "s" || parts[0] == "o") {
     // do nothing, since we put only one object into one mesh file
   } else {
-    qDebug() << "warning: when processing file:"
-             << meshFile
-             << "line:"
-             << lineNo
-             << "(unknown command"
-             << parts[0]
-             << ")";
+    qWarning() << "warning: when processing file:"
+               << meshFile
+               << "line:"
+               << lineNo
+               << "(unknown command"
+               << parts[0]
+               << ")";
     return;
   }
 }
@@ -100,7 +100,7 @@ static void ProcessMeshLine(PlainTriangles* triangles,
 std::unique_ptr<PlainTriangles> LoadMesh(const char *meshFile) {
   QFile file(meshFile);
   if (!file.open(QIODevice::ReadOnly)) {
-    qDebug() << "cannot open mesh file:" << meshFile;
+    qWarning() << "cannot open mesh file:" << meshFile;
     return nullptr;
   }
 

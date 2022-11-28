@@ -32,29 +32,29 @@ void AnimationSection::ApplyAnimationFrame(BodyStatus *bodyStatus,
 #define PARSE_DOUBLE(v, s, r) \
   double v = (s).toDouble(&(r)); \
   if (!(r)) { \
-    qDebug() << "error processing file:" \
-             << fileName      \
-             << "line:"       \
-             << lineNo        \
-             << "(invalid float value)"; \
+    qWarning() << "error processing file:" \
+               << fileName      \
+               << "line:"       \
+               << lineNo        \
+               << "(invalid float value)"; \
     continue; \
   }
 
 #define PARSE_UINT(v, s, r) \
   std::size_t v = (s).toUInt(&(r)); \
   if (!(r)) { \
-    qDebug() << "error processing file:" \
-             << fileName    \
-             << "line:"     \
-             << lineNo      \
-             << "(invalid int value)"; \
+    qWarning() << "error processing file:" \
+               << fileName    \
+               << "line:"     \
+               << lineNo      \
+               << "(invalid int value)"; \
     continue; \
   }
 
 std::unique_ptr<BodyAnimation> LoadBodyAnimation(const char *fileName) {
   QFile file(fileName);
   if (!file.open(QIODevice::ReadOnly)) {
-    qDebug() << "cannot open animation file:" << fileName;
+    qWarning() << "cannot open animation file:" << fileName;
     return nullptr;
   }
 
@@ -96,11 +96,11 @@ std::unique_ptr<BodyAnimation> LoadBodyAnimation(const char *fileName) {
         .frameCount = frameCount
       });
     } else {
-      qDebug() << "error loading animation:"
-               << fileName
-               << "line:"
-               << lineNo
-               << "(command not understood)";
+      qWarning() << "error loading animation:"
+                 << fileName
+                 << "line:"
+                 << lineNo
+                 << "(command not understood)";
     }
   }
 
@@ -120,11 +120,11 @@ void BodyAnimation::AddCommand(
   AnimationCommand command
 ) noexcept {
   if (m_Sections.empty()) {
-    qDebug() << "error loading animation:"
-             << fileName
-             << "line:"
-             << lineNo
-             << "(cannot define rotation without section)";
+    qWarning() << "error loading animation:"
+               << fileName
+               << "line:"
+               << lineNo
+               << "(cannot define rotation without section)";
     return;
   }
 

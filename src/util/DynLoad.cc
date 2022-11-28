@@ -1,12 +1,12 @@
 #include "util/DynLoad.h"
 
 #include <QString>
-#include <QDebug>
 
 namespace cw {
 
 #ifdef CW_WIN32
 
+#include <QDebug>
 #include <windows.h>
 
 void *LoadSharedObject(const QString& fileName) {
