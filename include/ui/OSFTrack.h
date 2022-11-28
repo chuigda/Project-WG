@@ -30,8 +30,11 @@ public:
   CW_DERIVE_UNMOVABLE(OSFTrackReceiver)
 
 signals:
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NotImplementedFunctions"
   void HeadPoseUpdated(HeadPose headPose);
   void TrackingError(QString reason);
+#pragma clang diagnostic pop
 
 public slots:
   void StartListening(std::uint16_t port);
@@ -56,9 +59,12 @@ public:
   ~OSFTrackController();
 
 signals:
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NotImplementedFunctions"
   void StartListening(std::uint16_t port);
   void StopListening(void);
   void SetParameter(OSFTrackParameter parameter);
+#pragma clang diagnostic pop
 
 private slots:
   void HandleError(QString reason);

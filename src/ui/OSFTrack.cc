@@ -60,19 +60,70 @@ void OSFTrackReceiver::SetParameter(OSFTrackParameter parameter) {
 
 // Packet 的格式定义在这里：
 // https://github.com/emilianavt/OpenSeeFace/blob/40119c17971c019b892b047b457c8182190acb8c/facetracker.py#L276
+// https://github.com/emilianavt/OpenSeeFace/blob/40119c17971c019b892b047b457c8182190acb8c/Unity/OpenSee.cs#L19
 // 因为这个程序只在 x86_64 架构上运行，所以无视 alignment 问题是可以的
 struct FacePacket {
-  int id ;
+  // 8
+  double now;
+
+  // 4
+  int id;
+
+  // 2 * 4
   float width;
   float height;
+
+  // 2 * 4
   float eyeBlinkRight;
   float eyeBlinkLeft;
-  uint8_t success; // unused
-  float pnpError; // unused
-  float quaternion[4];
-  float euler[3];
-  float translation[3];
+
+  // 1
+  uint8_t success;
+
+  // 4
+  float pnpError;
+
+  // 4 * 4
+  std::array<float, 4> quaternion;
+
+  // 3 * 4
+  std::array<float, 3> euler;
+
+  // 3 * 4
+  std::array<float, 3> translation;
+
+  // 68 * 4
+  std::array<float, 68> lms_confidence;
+
+  // 68 * 2 * 4
+  std::array<std::array<float, 2>, 68> lms;
+
+  // 70 * 4 * 3
+  std::array<std::array<float, 3>, 70> pnpPoints;
+
+  // 14 * 4
+  float eyeLeft;
+  float eyeRight;
+
+  float eyeSteepnessLeft;
+  float eyeUpDownLeft;
+  float eyeQuirkLeft;
+
+  float eyeSteepnessRight;
+  float eyeUpDownRight;
+  float eyeQuirkRight;
+
+  float mouthCornerUpdownLeft;
+  float mouthCornerInOutLeft;
+  float mouthCornerUpdownRight;
+  float mouthCornerInOutRight;
+
+  float mouthOpen;
+  float mouthWide;
+
 } __attribute__((packed));
+
+static_assert(sizeof(FacePacket) == 1785);
 
 static void DownscaleToDeadZone(float &value, float deadZone) {
   if (value > deadZone) {
