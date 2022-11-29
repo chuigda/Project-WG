@@ -1,18 +1,18 @@
-#include "ui/ScreenStatus.h"
+#include "ui/ScreenAnimationStatus.h"
 
 #include <QTimer>
 #include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
 #include "util/DynLoad.h"
 
-AnimationContext::AnimationContext(const WGAPI_Animation *rawAnimation,
-                                   void *rawHandle)
+ScreenAnimation::ScreenAnimation(const WGAPI_Animation *rawAnimation,
+                                 void *rawHandle)
   : rawAnimation(rawAnimation),
     m_RawHandle(rawHandle),
     m_Context(nullptr)
 {}
 
-AnimationContext::~AnimationContext() {
+ScreenAnimation::~ScreenAnimation() {
   if (m_Context) {
     qWarning() << "Called dtor of animation"
                << rawAnimation->name
@@ -22,28 +22,28 @@ AnimationContext::~AnimationContext() {
   cw::DetachSharedObject(m_RawHandle);
 }
 
-bool AnimationContext::Initialize(GLFunctions *f) {
+bool ScreenAnimation::Initialize(GLFunctions *f) {
   m_Context = rawAnimation->initContextFn(f);
   return static_cast<bool>(m_Context);
 }
 
-bool AnimationContext::Rewind(GLFunctions *f) {
+bool ScreenAnimation::Rewind(GLFunctions *f) {
   return rawAnimation->rewindContextFn(m_Context, f);
 }
 
-bool AnimationContext::PlayFrame(GLFunctions *f, std::uint64_t frame) {
+bool ScreenAnimation::PlayFrame(GLFunctions *f, std::uint64_t frame) {
   return rawAnimation->playAnimationFrameFn(m_Context, f, frame);
 }
 
-WGAPI_Error AnimationContext::GetError() {
+WGAPI_Error ScreenAnimation::GetError() {
   return rawAnimation->getErrorFn(m_Context);
 }
 
-void AnimationContext::Delete(GLFunctions *f) {
+void ScreenAnimation::Delete(GLFunctions *f) {
   rawAnimation->destroyContextFn(m_Context, f);
 }
 
-ScreenStatus::ScreenStatus()
+ScreenAnimationStatus::ScreenAnimationStatus()
   : m_IsPlayingStaticAnimation(false),
     m_IsPlayingDynamicAnimation(false),
     m_NeedRewind(false),
@@ -52,14 +52,14 @@ ScreenStatus::ScreenStatus()
     m_Frame(0)
 {}
 
-void ScreenStatus::PlayStaticAnimation(StaticScreen *staticScreen) {
+void ScreenAnimationStatus::PlayStaticAnimation(StaticScreenImage *staticScreen) {
   Reset();
 
   m_IsPlayingStaticAnimation = true;
   m_StaticScreen = staticScreen;
 }
 
-void ScreenStatus::PlayAnimation(AnimationContext *animation) {
+void ScreenAnimationStatus::PlayAnimation(ScreenAnimation *animation) {
   Reset();
 
   m_IsPlayingDynamicAnimation = true;
@@ -67,11 +67,11 @@ void ScreenStatus::PlayAnimation(AnimationContext *animation) {
   m_NeedRewind = true;
 }
 
-bool ScreenStatus::HasThingToDraw() const noexcept {
+bool ScreenAnimationStatus::HasThingToDraw() const noexcept {
   return m_IsPlayingStaticAnimation || m_IsPlayingDynamicAnimation;
 }
 
-void ScreenStatus::DrawOnScreen(GLFunctions *f) {
+void ScreenAnimationStatus::DrawOnScreen(GLFunctions *f) {
   if (m_IsPlayingStaticAnimation) {
     f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     f->glTranslatef(0.0f, 0.0f, 0.1f);
@@ -96,7 +96,7 @@ void ScreenStatus::DrawOnScreen(GLFunctions *f) {
     if (m_NeedRewind) {
       m_NeedRewind = false;
       if (!m_Animation->Rewind(f)) {
-        qWarning() << "ScreenStatus::DrawOnScreen:"
+        qWarning() << "ScreenAnimationStatus::DrawOnScreen:"
                    << "error rewinding animation"
                    << m_Animation->rawAnimation->name;
       }
@@ -107,7 +107,7 @@ void ScreenStatus::DrawOnScreen(GLFunctions *f) {
 
     bool playResult = m_Animation->PlayFrame(f, m_Frame);
     if (!playResult) {
-      qWarning() << "ScreenStatus::DrawOnScreen:"
+      qWarning() << "ScreenAnimationStatus::DrawOnScreen:"
                  << "error playing the"
                  << m_Frame
                  << "th frame of animation"
@@ -116,14 +116,14 @@ void ScreenStatus::DrawOnScreen(GLFunctions *f) {
   }
 }
 
-void ScreenStatus::Reset() {
+void ScreenAnimationStatus::Reset() {
   m_IsPlayingStaticAnimation = false;
   m_IsPlayingDynamicAnimation = false;
   m_StaticScreen = nullptr;
   m_Frame = 0;
 }
 
-void ScreenStatus::NextFrame() {
+void ScreenAnimationStatus::NextFrame() {
   if (m_IsPlayingDynamicAnimation) {
     m_Frame++;
   }

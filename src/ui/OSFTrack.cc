@@ -216,7 +216,7 @@ static QDoubleSpinBox *createAngleSpinBox() {
 OSFTrackController::OSFTrackController(FaceTrackStatus *fcs,
                                        QWidget *parent)
   : QWidget(parent),
-    m_FCS(fcs)
+    m_FaceTrackStatus(fcs)
 {
   OSFTrackReceiver *receiver = new OSFTrackReceiver();
   receiver->moveToThread(&m_WorkerThread);
@@ -269,7 +269,7 @@ OSFTrackController::OSFTrackController(FaceTrackStatus *fcs,
       this,
       &OSFTrackController::StopListening,
       [this] {
-        this->m_FCS->pose.mouthStatus = HeadPose::Close;
+        this->m_FaceTrackStatus->pose.mouthStatus = HeadPose::Close;
       }
     );
 
@@ -295,9 +295,9 @@ OSFTrackController::OSFTrackController(FaceTrackStatus *fcs,
       &QRadioButton::toggled,
       [this] (bool toggled) {
         if (toggled) {
-          this->m_FCS->pose.screenControlStatus = HeadPose::Face;
+          this->m_FaceTrackStatus->pose.screenControlStatus = HeadPose::Face;
         } else {
-          this->m_FCS->pose.screenControlStatus = HeadPose::Soundwave;
+          this->m_FaceTrackStatus->pose.screenControlStatus = HeadPose::Soundwave;
         }
       }
     );
@@ -363,8 +363,8 @@ void OSFTrackController::HandleError(const QString& reason) {
 }
 
 void OSFTrackController::HandlePoseUpdate(HeadPose pose) {
-  m_FCS->pose.rotationX = pose.rotationX;
-  m_FCS->pose.rotationY = pose.rotationY;
-  m_FCS->pose.rotationZ = pose.rotationZ;
-  m_FCS->pose.mouthStatus = pose.mouthStatus;
+  m_FaceTrackStatus->pose.rotationX = pose.rotationX;
+  m_FaceTrackStatus->pose.rotationY = pose.rotationY;
+  m_FaceTrackStatus->pose.rotationZ = pose.rotationZ;
+  m_FaceTrackStatus->pose.mouthStatus = pose.mouthStatus;
 }

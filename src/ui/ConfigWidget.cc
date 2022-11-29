@@ -5,13 +5,13 @@
 #include <QMessageBox>
 #include "ui/CameraEntityStatus.h"
 #include "include/wgc0310/BodyStatus.h"
-#include "ui/ScreenStatus.h"
+#include "ui/ScreenAnimationStatus.h"
 #include "ui/MessageBoxAlter.h"
 
 ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
                            wgc0310::BodyStatus *bodyStatus,
                            FaceTrackStatus *faceTrackStatus,
-                           ScreenStatus *screenStatus,
+                           ScreenAnimationStatus *screenStatus,
                            QWidget *glWidget) :
   QWidget(glWidget, Qt::Window),
   ui(new Ui::ConfigWidget),
@@ -100,7 +100,7 @@ void ConfigWidget::OnRenderSettingsReset() {
 }
 
 void
-ConfigWidget::OnStaticScreensLoaded(std::vector<StaticScreen> *staticScreens) {
+ConfigWidget::OnStaticScreensLoaded(std::vector<StaticScreenImage> *staticScreens) {
   QVBoxLayout *layout = new QVBoxLayout();
   ui->staticGraphBox->setLayout(layout);
 
@@ -108,7 +108,7 @@ ConfigWidget::OnStaticScreensLoaded(std::vector<StaticScreen> *staticScreens) {
     QPushButton *button = new QPushButton(staticScreen.imageName);
     layout->addWidget(button);
 
-    StaticScreen *ptr = &staticScreen;
+    StaticScreenImage *ptr = &staticScreen;
     connect(button, &QPushButton::clicked, [this, ptr] {
       m_ScreenStatus->PlayStaticAnimation(ptr);
     });
@@ -118,7 +118,7 @@ ConfigWidget::OnStaticScreensLoaded(std::vector<StaticScreen> *staticScreens) {
 }
 
 void ConfigWidget::OnScreenAnimationsLoaded(
-  std::vector<std::unique_ptr<AnimationContext>> *animations
+  std::vector<std::unique_ptr<ScreenAnimation>> *animations
 ) {
   QVBoxLayout *layout = new QVBoxLayout();
   ui->dynamicAnimationBox->setLayout(layout);
@@ -127,7 +127,7 @@ void ConfigWidget::OnScreenAnimationsLoaded(
     QPushButton *button = new QPushButton(animation->rawAnimation->name);
     layout->addWidget(button);
 
-    AnimationContext *ptr = animation.get();
+    ScreenAnimation *ptr = animation.get();
     connect(button, &QPushButton::clicked, [this, ptr] {
       m_ScreenStatus->PlayAnimation(ptr);
     });

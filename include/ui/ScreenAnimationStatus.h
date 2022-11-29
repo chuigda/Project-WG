@@ -14,24 +14,24 @@ class Texture2D;
 
 } // namespace cw
 
-struct StaticScreen final {
+struct StaticScreenImage final {
   QString imageName;
   std::unique_ptr<cw::Texture2D> texture;
 };
 
-class AnimationContext final {
+class ScreenAnimation final {
 public:
-  explicit AnimationContext(WGAPI_Animation const* rawAnimation,
-                            void *rawHandle);
-  ~AnimationContext();
+  explicit ScreenAnimation(WGAPI_Animation const* rawAnimation,
+                           void *rawHandle);
+  ~ScreenAnimation();
 
-  CW_DERIVE_UNCOPYABLE(AnimationContext)
-  CW_DERIVE_UNMOVABLE(AnimationContext)
+  CW_DERIVE_UNCOPYABLE(ScreenAnimation)
+  CW_DERIVE_UNMOVABLE(ScreenAnimation)
 
   [[nodiscard]] bool Initialize(GLFunctions *f);
   [[nodiscard]] bool Rewind(GLFunctions *f);
   [[nodiscard]] bool PlayFrame(GLFunctions *f, std::uint64_t frame);
-  [[nodiscard]] WGAPI_Error GetError(void);
+  [[nodiscard]] WGAPI_Error GetError();
   void Delete(GLFunctions *f);
 
   WGAPI_Animation const* rawAnimation;
@@ -41,13 +41,13 @@ private:
   void *m_Context;
 };
 
-class ScreenStatus final {
+class ScreenAnimationStatus final {
 public:
-  ScreenStatus();
+  ScreenAnimationStatus();
 
-  void PlayStaticAnimation(StaticScreen *staticScreen);
+  void PlayStaticAnimation(StaticScreenImage *staticScreen);
 
-  void PlayAnimation(AnimationContext *animation);
+  void PlayAnimation(ScreenAnimation *animation);
 
   [[nodiscard]] bool HasThingToDraw() const noexcept;
 
@@ -56,16 +56,16 @@ public:
   void NextFrame();
   void Reset();
 
-  CW_DERIVE_UNCOPYABLE(ScreenStatus)
-  CW_DERIVE_UNMOVABLE(ScreenStatus)
+  CW_DERIVE_UNCOPYABLE(ScreenAnimationStatus)
+  CW_DERIVE_UNMOVABLE(ScreenAnimationStatus)
 
 private:
   bool m_IsPlayingStaticAnimation;
   bool m_IsPlayingDynamicAnimation;
   bool m_NeedRewind;
 
-  StaticScreen *m_StaticScreen;
-  AnimationContext *m_Animation;
+  StaticScreenImage *m_StaticScreen;
+  ScreenAnimation *m_Animation;
   std::uint64_t m_Frame;
 };
 

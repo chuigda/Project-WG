@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QVBoxLayout>
+#include <memory>
 
 void GLWidget::LoadAndInitScreens() {
   QDir dir(QStringLiteral("animations/static"));
@@ -28,7 +29,7 @@ void GLWidget::LoadAndInitScreens() {
 
     std::unique_ptr<cw::Texture2D> texture =
         std::make_unique<cw::Texture2D>(image, this);
-    m_StaticScreens.push_back(StaticScreen {
+    m_StaticScreens.push_back(StaticScreenImage {
       .imageName = file,
       .texture = std::move(texture)
     });
@@ -69,7 +70,7 @@ void GLWidget::InitSoundCapture() {
     format.setChannelCount(1);
     format.setSampleFormat(QAudioFormat::Int16);
 
-    m_AudioInput.reset(new QAudioSource(deviceInfo, format));
+    m_AudioInput = std::make_unique<QAudioSource>(deviceInfo, format);
     auto *io = m_AudioInput->start();
     connect(io, &QIODevice::readyRead, [this, format, io] {
         static const qint64 BufferSize = 4096;
@@ -113,12 +114,12 @@ void GLWidget::LoadAnimations() {
       continue;
     }
 
-    m_Animations.emplace_back(std::make_unique<AnimationContext>(animation, sharedObject));
+    m_Animations.emplace_back(std::make_unique<ScreenAnimation>(animation, sharedObject));
   }
 }
 
 void GLWidget::InitAnimations() {
-  std::vector<std::unique_ptr<AnimationContext>> initializedAnimations;
+  std::vector<std::unique_ptr<ScreenAnimation>> initializedAnimations;
   for (auto &animation : m_Animations) {
       if (!animation->Initialize(this)) {
         QMessageBox::warning(

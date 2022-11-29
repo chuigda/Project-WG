@@ -71,7 +71,7 @@ private slots:
 
 private:
   QThread m_WorkerThread;
-  FaceTrackStatus *m_FCS;
+  FaceTrackStatus *m_FaceTrackStatus;
 };
 
 #endif // PROJECT_WG_OSFTRACK_H
