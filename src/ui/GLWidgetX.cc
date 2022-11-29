@@ -46,7 +46,7 @@ static qreal calculateLevel(QAudioFormat format, const char *data, qint64 len)
     if (sampleBytes == 0) {
         return 0.0;
     }
-    const int numSamples = len / sampleBytes;
+    const int numSamples = static_cast<int>(len) / sampleBytes;
 
     float maxValue = 0;
     auto *ptr = reinterpret_cast<const unsigned char *>(data);

@@ -312,7 +312,7 @@ OSFTrackController::OSFTrackController(FaceTrackStatus *fcs,
 
     box->addWidget(new QLabel("平滑"));
     QSpinBox *spinSmooth = new QSpinBox();
-    spinSmooth->setValue(4);
+    spinSmooth->setValue(8);
     spinSmooth->setMinimum(1);
     spinSmooth->setMaximum(20);
     box->addWidget(spinSmooth);

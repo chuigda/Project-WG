@@ -16,7 +16,8 @@ FaceTrackStatus::FaceTrackStatus()
     m_EyeStatusFrame(0),
     m_EyeStatusDuration(400),
     m_EyeTexture(nullptr),
-    m_MouthTexture(nullptr)
+    m_MouthTexture(nullptr),
+    m_VBO { 0, 0 }
 {
   m_VolumeLevels.resize(160, 0.05f);
 
@@ -221,9 +222,9 @@ void FaceTrackStatus::Destroy(GLFunctions *f) {
 
 void FaceTrackStatus::RecomputeVertices() {
   for (size_t i = 0; i < 160; i++) {
-    m_VolumeVertices[i * 4].SetY(m_VolumeLevels[i] * 200.0);
-    m_VolumeVertices[i * 4 + 1].SetY(m_VolumeLevels[i] * -200.0);
-    m_VolumeVertices[i * 4 + 2].SetY(m_VolumeLevels[i] * -200.0);
-    m_VolumeVertices[i * 4 + 3].SetY(m_VolumeLevels[i] * 200.0);
+    m_VolumeVertices[i * 4].SetY(static_cast<GLfloat>(m_VolumeLevels[i]) * 200.0f);
+    m_VolumeVertices[i * 4 + 1].SetY(static_cast<GLfloat>(m_VolumeLevels[i]) * -200.0f);
+    m_VolumeVertices[i * 4 + 2].SetY(static_cast<GLfloat>(m_VolumeLevels[i]) * -200.0f);
+    m_VolumeVertices[i * 4 + 3].SetY(static_cast<GLfloat>(m_VolumeLevels[i]) * 200.0f);
   }
 }

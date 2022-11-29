@@ -12,10 +12,12 @@
 class QUdpSocket;
 
 struct OSFTrackParameter {
-  std::size_t smoothSteps = 4;
+  std::size_t smoothSteps = 8;
   float xRotationFix = 0.0f;
   float yRotationFix = 0.0f;
   float zRotationFix = 0.0f;
+
+  std::size_t eyeSmoothSteps = 3;
   float eyeMin = 0.0f;
   float eyeMax = 0.0f;
 };
