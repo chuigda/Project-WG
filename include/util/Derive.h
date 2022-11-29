@@ -9,6 +9,10 @@
   CLASS(CLASS &&) = delete;         \
   CLASS &operator=(CLASS &&) = delete;
 
+#define CW_DERIVE_DEFAULT_COPY(CLASS) \
+  CLASS(const CLASS &) = default;    \
+  CLASS &operator=(const CLASS &) = default;
+
 #define CW_DERIVE_DEFAULT_MOVE(CLASS) \
   CLASS(CLASS &&) = default;         \
   CLASS &operator=(CLASS &&) = default;

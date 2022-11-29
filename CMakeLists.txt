@@ -26,7 +26,7 @@ set(PROJECT_SOURCES
 
     src/ui/OSFTrack.cc
     src/ui/ManualOperateWidget.cc
-        src/ui/ScreenAnimationStatus.cc
+    src/ui/ScreenAnimationStatus.cc
     src/ui/FaceTrackStatus.cc
     src/ui/CameraEntityStatus.cc
     src/ui/GLWidgetX.cc
@@ -38,12 +38,15 @@ set(PROJECT_SOURCES
     src/ui/MessageBoxAlter.cc
     include/ui/OSFTrack.h
     include/ui/ManualOperateWidget.h
-        include/ui/ScreenAnimationStatus.h
+    include/ui/ScreenAnimationStatus.h
     include/ui/FaceTrackStatus.h
     include/ui/CameraEntityStatus.h
     include/ui/GLWidget.h
     include/ui/ConfigWidget.h
     include/ui/MessageBoxAlter.h
+
+    src/ui_next/LicensePresenter.cc
+    include/ui_next/LicensePresenter.h
 
     src/util/DynLoad.cc
     src/util/Constants.cc
