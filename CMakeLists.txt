@@ -45,7 +45,9 @@ set(PROJECT_SOURCES
     include/ui/ConfigWidget.h
     include/ui/MessageBoxAlter.h
 
+    src/ui_next/ControlPanel.cc
     src/ui_next/LicensePresenter.cc
+    include/ui_next/ControlPanel.h
     include/ui_next/LicensePresenter.h
 
     src/util/DynLoad.cc
