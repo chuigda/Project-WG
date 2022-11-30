@@ -1,23 +1,29 @@
 #ifndef PROJECT_WG_UINEXT_LICENSE_PRESENTER_H
 #define PROJECT_WG_UINEXT_LICENSE_PRESENTER_H
 
-#include <QWidget>
-
+#include <QDialog>
 #include "util/Derive.h"
+
+class QLabel;
+class QPushButton;
+class QPlainTextEdit;
+class QGroupBox;
 
 struct LicenseContent {
   LicenseContent(QString const& fileName,
-                 QString  licenseName,
-                 QString  licenseBrief = "");
+                 QString const& licenseName,
+                 QString const& licenseBrief = "",
+                 QString const& helpLink = "");
 
   CW_DERIVE_DEFAULT_COPY(LicenseContent)
 
   QString licenseName;
   QString licenseBrief;
   QString licenseText;
+  QString helpLink;
 };
 
-class LicensePresenter : public QWidget {
+class LicensePresenter final : public QDialog {
   Q_OBJECT
 
 public:
@@ -25,9 +31,28 @@ public:
 
   void AddLicense(LicenseContent const& licenseContent);
 
+  void DisplayCurrentLicense();
+
+  void showEvent(QShowEvent *) final;
+
+private slots:
+  void PrevLicense();
+
+  void NextLicense();
+
 private:
   QList<LicenseContent> m_Licenses;
   qsizetype m_CurrentLicense;
+
+  QLabel *m_LicenseNameLabel;
+  QPushButton *m_PrevLicenseButton;
+  QPushButton *m_NextLicenseButton;
+  QGroupBox *m_BriefGroupBox;
+  QPlainTextEdit *m_BriefText;
+  QPlainTextEdit *m_LicenseText;
+  QLabel *m_LicenseLink;
+  QPushButton *m_DisagreeButton;
+  QPushButton *m_AgreeButton;
 };
 
 #endif
