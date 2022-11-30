@@ -7,5 +7,8 @@
         <file>../LICENSE</file>
         <file>../LICENSE-CC-BY-NC-SA</file>
         <file>../3RD_PARTIES</file>
+        <file>PREAMBLE</file>
+        <file>AGPL-BRIEF</file>
+        <file>CC-BY-NC-SA-BRIEF</file>
     </qresource>
 </RCC>

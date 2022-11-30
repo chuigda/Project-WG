@@ -6,23 +6,15 @@
 #include <QPlainTextEdit>
 #include "ui_next/LicensePresenter.h"
 
-LicenseContent::LicenseContent(QString const& fileName,
-                               QString const& licenseName,
+LicenseContent::LicenseContent(QString const& licenseName,
+                               QString licenseText,
                                QString const& licenseBrief,
                                QString const& helpLink)
   : licenseName(licenseName.trimmed()),
     licenseBrief(licenseBrief.trimmed()),
+    licenseText(std::move(licenseText)),
     helpLink(helpLink.trimmed())
-{
-  QFile file(fileName);
-  if (!file.open(QIODevice::ReadOnly)) {
-    qWarning() << "cannot open license file:" << fileName;
-    return;
-  }
-
-  QTextStream textStream(&file);
-  licenseText = textStream.readAll();
-}
+{}
 
 LicensePresenter::LicensePresenter(QWidget *parent)
   : QDialog(parent),
@@ -33,7 +25,9 @@ LicensePresenter::LicensePresenter(QWidget *parent)
 
   m_LicenseNameLabel = new QLabel("LicenseNamePlaceholder (?/?)");
   m_PrevLicenseButton = new QPushButton("◀");
+  m_PrevLicenseButton->setMaximumWidth(24);
   m_NextLicenseButton = new QPushButton("▶");
+  m_NextLicenseButton->setMaximumWidth(24);
 
   QHBoxLayout *firstRow = new QHBoxLayout();
   firstRow->addWidget(m_LicenseNameLabel);
@@ -45,17 +39,19 @@ LicensePresenter::LicensePresenter(QWidget *parent)
   m_BriefText = new QPlainTextEdit("");
   m_BriefText->setReadOnly(true);
   m_BriefText->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-  m_BriefText->setMaximumHeight(240);
+  m_BriefText->setFont(QFont("monospace"));
 
   QVBoxLayout *briefColumn = new QVBoxLayout();
   briefColumn->addWidget(notLegislative);
   briefColumn->addWidget(m_BriefText);
   m_BriefGroupBox = new QGroupBox("简介");
   m_BriefGroupBox->setLayout(briefColumn);
+  m_BriefGroupBox->setMaximumHeight(240);
 
   m_LicenseText = new QPlainTextEdit("");
   m_LicenseText->setReadOnly(true);
   m_LicenseText->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+  m_LicenseText->setFont(QFont("monospace"));
 
   QVBoxLayout *singleItemLayout = new QVBoxLayout();
   singleItemLayout->addWidget(m_LicenseText);
@@ -63,6 +59,9 @@ LicensePresenter::LicensePresenter(QWidget *parent)
   textGroupBox->setLayout(singleItemLayout);
 
   m_LicenseLink = new QLabel("LicenseLinkPlaceholder");
+  m_LicenseLink->setTextFormat(Qt::RichText);
+  m_LicenseLink->setTextInteractionFlags(Qt::TextBrowserInteraction);
+  m_LicenseLink->setOpenExternalLinks(true);
 
   m_DisagreeButton = new QPushButton("不同意");
   m_AgreeButton = new QPushButton("同意");
@@ -119,7 +118,7 @@ void LicensePresenter::DisplayCurrentLicense() {
   } else {
     m_LicenseLink->setVisible(true);
     m_LicenseLink->setText(
-      QString("<a href=\"%1\"> 更多信息请查阅 %1 </a>")
+      QString("更多信息请查阅 <a href=\"%1\"> %1 </a>")
         .arg(licenseContent.helpLink)
     );
   }

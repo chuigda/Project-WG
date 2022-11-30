@@ -10,8 +10,8 @@ class QPlainTextEdit;
 class QGroupBox;
 
 struct LicenseContent {
-  LicenseContent(QString const& fileName,
-                 QString const& licenseName,
+  LicenseContent(QString const& licenseName,
+                 QString licenseText,
                  QString const& licenseBrief = "",
                  QString const& helpLink = "");
 
