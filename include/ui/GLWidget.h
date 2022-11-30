@@ -2,7 +2,6 @@
 #define PROJECT_WG_GLWIDGET_H
 
 #include <QOpenGLWidget>
-#include <QScopedPointer>
 #include <QMediaDevices>
 #include <QAudioSource>
 

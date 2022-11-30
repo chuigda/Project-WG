@@ -1,5 +1,5 @@
 #include "ui_next/ControlPanel.h"
-
+#include "ui/GLWidget.h"
 
 ControlPanel::ControlPanel()
   : QWidget(nullptr, Qt::Window),

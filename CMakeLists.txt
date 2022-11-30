@@ -47,8 +47,10 @@ set(PROJECT_SOURCES
 
     src/ui_next/ControlPanel.cc
     src/ui_next/LicensePresenter.cc
+    src/ui_next/GLWindow.cc
     include/ui_next/ControlPanel.h
     include/ui_next/LicensePresenter.h
+    include/ui_next/GLWindow.h
 
     src/util/DynLoad.cc
     src/util/Constants.cc

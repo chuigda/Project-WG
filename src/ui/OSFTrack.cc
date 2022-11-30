@@ -201,7 +201,7 @@ void OSFTrackReceiver::HandleData() {
   xSum /= static_cast<float>(m_SmoothBuffer.size());
   ySum /= static_cast<float>(m_SmoothBuffer.size());
   zSum /= static_cast<float>(m_SmoothBuffer.size());
-  mouthStatus /= static_cast<float>(m_SmoothBuffer.size());
+  mouthStatus /= static_cast<int>(m_SmoothBuffer.size());
 
   emit HeadPoseUpdated(HeadPose {
     xSum, ySum, zSum,

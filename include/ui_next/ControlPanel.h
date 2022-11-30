@@ -2,9 +2,9 @@
 #define PROJECT_WG_UINEXT_CONTROL_PANEL_H
 
 #include <QWidget>
-#include "ui/GLWidget.h"
 
 class QPushButton;
+class GLWidget;
 
 class ControlPanel : public QWidget {
   Q_OBJECT
