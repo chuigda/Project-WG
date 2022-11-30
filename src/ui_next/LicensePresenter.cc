@@ -21,7 +21,7 @@ LicensePresenter::LicensePresenter(QWidget *parent)
     m_CurrentLicense(0)
 {
   setWindowTitle("阅读协议");
-  setFixedSize(600, 800);
+  setFixedSize(600, 600);
 
   m_LicenseNameLabel = new QLabel("LicenseNamePlaceholder (?/?)");
   m_PrevLicenseButton = new QPushButton("◀");
@@ -35,7 +35,7 @@ LicensePresenter::LicensePresenter(QWidget *parent)
   firstRow->addWidget(m_PrevLicenseButton);
   firstRow->addWidget(m_NextLicenseButton);
 
-  QLabel *notLegislative = new QLabel("<b>警告:</b> 此处文本不作为法律参考");
+  QLabel *notLegislative = new QLabel("<b>注意:</b> 这只是一个粗略的介绍，具体细节以协议文本为准");
   m_BriefText = new QPlainTextEdit("");
   m_BriefText->setReadOnly(true);
   m_BriefText->setFocusPolicy(Qt::FocusPolicy::NoFocus);

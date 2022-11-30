@@ -27,7 +27,7 @@ QDialog::DialogCode PrecheckLicense() {
   });
 
   presenter.AddLicense(LicenseContent {
-    "GNU Affero 通用公共许可证",
+    "GNU Affero 通用公共许可证 第三版",
     agplText,
     agplBrief,
     "https://www.gnu.org/licenses/agpl-3.0.zh-cn.html"
@@ -52,19 +52,12 @@ QDialog::DialogCode PrecheckLicense() {
 int main(int argc, char *argv[]) {
   QApplication a { argc, argv };
 
-  /*
-
-  GLWidget w { nullptr };
-  w.show();
-
-  */
-
   if (!PrecheckLicense()) {
     QApplication::quit();
     return 0;
-  } else {
-    qDebug() << "xyzzy";
   }
 
+  GLWidget w { nullptr };
+  w.show();
   return QApplication::exec();
 }
