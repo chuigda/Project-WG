@@ -41,11 +41,14 @@ FaceTrackStatus::FaceTrackStatus()
 void FaceTrackStatus::Initialize(GLFunctions *f) {
   QImage eye9Image(":/eye.9.bmp");
   QImage halfFaceImage(":/half-face.bmp");
+  QImage openMouthImage(":/half-face-mouth-open.bmp");
   assert(!eye9Image.isNull());
   assert(!halfFaceImage.isNull());
+  assert(!openMouthImage.isNull());
 
   m_EyeTexture = std::make_unique<cw::Texture2D>(eye9Image, f);
   m_MouthTexture = std::make_unique<cw::Texture2D>(halfFaceImage, f);
+  m_MouthOpenTexture = std::make_unique<cw::Texture2D>(openMouthImage, f);
 
   f->glGenBuffers(2, m_VBO.data());
 
@@ -158,7 +161,11 @@ void FaceTrackStatus::DrawOnScreen(GLFunctions *f) {
     f->glPopMatrix();
   } else {
     f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    m_MouthTexture->BeginTexture(f);
+    if (pose.mouthStatus == HeadPose::Close) {
+      m_MouthTexture->BeginTexture(f);
+    } else {
+      m_MouthOpenTexture->BeginTexture(f);
+    }
 
     f->glBegin(GL_QUADS);
     f->glTexCoord2f(0.0f, 0.0f);

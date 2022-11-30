@@ -54,6 +54,7 @@ private:
 
   std::unique_ptr<cw::Texture2D> m_EyeTexture;
   std::unique_ptr<cw::Texture2D> m_MouthTexture;
+  std::unique_ptr<cw::Texture2D> m_MouthOpenTexture;
 
   std::deque<qreal> m_VolumeLevels;
   std::vector<cw::Vertex2DF> m_VolumeVertices;

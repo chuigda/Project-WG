@@ -132,7 +132,6 @@ static void DownscaleToDeadZone(float &value, float deadZone) {
 }
 
 void OSFTrackReceiver::HandleData() {
-  HeadPose::MouthStatus lastMouthStatus = HeadPose::Close;
   while (m_Socket->hasPendingDatagrams()) {
     QNetworkDatagram datagram = m_Socket->receiveDatagram();
 
@@ -159,13 +158,12 @@ void OSFTrackReceiver::HandleData() {
       .rotationX = facePacket->euler[0],
       .rotationY = facePacket->euler[1],
       .rotationZ = facePacket->euler[2],
-    };
-    lastMouthStatus = facePacket->mouthOpen > 0.225f ?
+      .mouthStatus = facePacket->mouthOpen > 0.225f ?
           HeadPose::OpenBig :
-          facePacket->mouthOpen > 0.1f ?
-            HeadPose::Open :
-            HeadPose::Close;
-    qDebug() << "lastMouthStatus =" << lastMouthStatus;
+            facePacket->mouthOpen > 0.0625f ?
+              HeadPose::Open :
+              HeadPose::Close
+    };
 
     if (pose.rotationX > 0)  {
       pose.rotationX = pose.rotationX - 180.0f;
@@ -192,17 +190,23 @@ void OSFTrackReceiver::HandleData() {
   float xSum = 0.0f;
   float ySum = 0.0f;
   float zSum = 0.0f;
+  int mouthStatus = 0;
   for (const auto &pose : m_SmoothBuffer) {
     xSum += pose.rotationX;
     ySum += pose.rotationY;
     zSum += pose.rotationZ;
+    mouthStatus += pose.mouthStatus;
   }
 
   xSum /= static_cast<float>(m_SmoothBuffer.size());
   ySum /= static_cast<float>(m_SmoothBuffer.size());
   zSum /= static_cast<float>(m_SmoothBuffer.size());
+  mouthStatus /= static_cast<float>(m_SmoothBuffer.size());
 
-  emit HeadPoseUpdated(HeadPose { xSum, ySum, zSum, lastMouthStatus });
+  emit HeadPoseUpdated(HeadPose {
+    xSum, ySum, zSum,
+    static_cast<HeadPose::MouthStatus>(mouthStatus)
+  });
 }
 
 static QDoubleSpinBox *createAngleSpinBox() {
