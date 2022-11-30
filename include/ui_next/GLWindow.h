@@ -10,6 +10,7 @@
 #include "wgc0310/BodyStatus.h"
 #include "wgc0310/Mesh.h"
 #include "wgc0310/Screen.h"
+#include "cwglx/Texture.h"
 
 class GLWindow final : public QOpenGLWindow, public GLFunctions {
   Q_OBJECT
@@ -34,6 +35,14 @@ private:
   std::unique_ptr<wgc0310::WGCMeshCollection> m_Mesh;
   cw::Drawable const* m_ScreenGlass;
   wgc0310::Screen const* m_Screen;
+
+  std::unique_ptr<cw::Texture2D> m_EyeTexture;
+  std::unique_ptr<cw::Texture2D> m_MouthTexture;
+  std::unique_ptr<cw::Texture2D> m_MouthOpenTexture;
+  std::vector<GLuint> m_VolumeIndices;
+  std::array<GLuint, 2> m_VolumeVBO;
+
+  QTimer *m_Timer;
 };
 
 #endif // PROJECT_WG_UINEXT_GLWINDOW_H

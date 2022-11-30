@@ -2,6 +2,7 @@
 #include <QFile>
 #include "ui/GLWidget.h"
 #include "ui_next/LicensePresenter.h"
+#include "ui_next/GLWindow.h"
 
 QString ReadToString(const char *fileName) {
   QFile f(fileName);
@@ -52,6 +53,7 @@ QDialog::DialogCode PrecheckLicense() {
 int main(int argc, char *argv[]) {
   QApplication a { argc, argv };
 
+  /*
   if (!PrecheckLicense()) {
     QApplication::quit();
     return 0;
@@ -59,5 +61,10 @@ int main(int argc, char *argv[]) {
 
   GLWidget w { nullptr };
   w.show();
+   */
+
+  GLWindow w {};
+  w.show();
+
   return QApplication::exec();
 }
