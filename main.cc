@@ -1,6 +1,5 @@
 #include <QApplication>
 #include <QFile>
-#include "ui/GLWidget.h"
 #include "ui_next/LicensePresenter.h"
 #include "ui_next/GLWindow.h"
 
@@ -53,20 +52,17 @@ QDialog::DialogCode PrecheckLicense() {
 int main(int argc, char *argv[]) {
   QApplication a { argc, argv };
 
-  /*
   if (!PrecheckLicense()) {
     QApplication::quit();
     return 0;
   }
 
-  GLWidget w { nullptr };
-  w.show();
-   */
-
+  /*
   CameraEntityStatus status;
 
   GLWindow w { &status };
   w.show();
+  */
 
   return QApplication::exec();
 }

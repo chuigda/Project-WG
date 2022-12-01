@@ -7,9 +7,19 @@
 #include "cwglx/drawable/PlainTriangles.h"
 #include "glu/FakeGLU.h"
 
-GLWindow::GLWindow(CameraEntityStatus const* cameraEntityStatus)
+GLWindow::GLWindow(CameraEntityStatus const* cameraEntityStatus,
+                   wgc0310::HeadStatus const* headStatus,
+                   cw::CircularBuffer<qreal, 160> *volumeLevels,
+                   bool *volumeLevelsUpdated,
+                   wgc0310::ScreenDisplayMode const *screenDisplayMode)
   : QOpenGLWidget(nullptr, Qt::Window),
+    // Input status
     m_CameraEntityStatus(cameraEntityStatus),
+    m_HeadStatus(headStatus),
+    m_VolumeLevels(volumeLevels),
+    m_VolumeLevelsUpdated(volumeLevelsUpdated),
+    m_ScreenDisplayMode(screenDisplayMode),
+    // Internal states and OpenGL resources
     m_Light(nullptr),
     m_Light2(nullptr),
     m_ScreenGlass(nullptr),
@@ -18,6 +28,7 @@ GLWindow::GLWindow(CameraEntityStatus const* cameraEntityStatus)
     m_MouthTexture(nullptr),
     m_MouthOpenTexture(nullptr),
     m_VolumeVBO { 0, 0 },
+    // Event-based timer
     m_Timer(new QTimer(this))
 {
   QSurfaceFormat format;
@@ -33,9 +44,8 @@ GLWindow::GLWindow(CameraEntityStatus const* cameraEntityStatus)
   this->setFormat(format);
   this->resize(600, 600);
 
-  m_VolumeIndices.reserve(640);
   for (GLuint i = 0; i < 640; i++) {
-    m_VolumeIndices.push_back(i);
+    m_VolumeIndices[i] = i;
   }
 }
 
@@ -100,6 +110,8 @@ void GLWindow::initializeGL() {
     );
     m_ScreenGlass = mtlMeshPtr;
   }
+
+  // TODO
 }
 
 void GLWindow::paintGL() {

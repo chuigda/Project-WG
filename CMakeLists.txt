@@ -57,9 +57,9 @@ set(PROJECT_SOURCES
     include/util/DynLoad.h
     include/util/Wife.h
     include/util/Constants.h
+    include/util/CircularBuffer.h
     include/util/Derive.h
     include/util/Sinkrate.h
-    include/util/Channel.h
     include/util/Logger.h
 
     src/glu/FakeGLU.cc
@@ -109,11 +109,12 @@ set(PROJECT_SOURCES
     include/wgc0310/ScreenAnimation.h
     include/wgc0310/BodyStatus.h
     include/wgc0310/BodyAnim.h
+    include/wgc0310/HeadStatus.h
 
     resc/main.qrc)
 
-qt_wrap_ui(PROJECT_SOURCES src/ui/ConfigWidget.ui)
-qt_wrap_ui(PROJECT_SOURCES src/ui/MessageBoxAlter.ui)
+qt6_wrap_ui(PROJECT_SOURCES src/ui/ConfigWidget.ui)
+qt6_wrap_ui(PROJECT_SOURCES src/ui/MessageBoxAlter.ui)
 
 include_directories(include)
 include_directories(${OpenCV_INCLUDE_DIRS})
