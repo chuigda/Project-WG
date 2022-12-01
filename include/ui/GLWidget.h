@@ -11,7 +11,7 @@
 #include "cwglx/DrawableArena.h"
 #include "ui/CameraEntityStatus.h"
 #include "ui/FaceTrackStatus.h"
-#include "ui/ScreenAnimationStatus.h"
+#include "include/wgc0310/ScreenAnimationStatus.h"
 
 #include "wgc0310/BodyStatus.h"
 #include "wgc0310/Mesh.h"
@@ -37,9 +37,11 @@ protected:
 signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
-  void StaticScreensLoaded(std::vector<StaticScreenImage>*);
+  void StaticScreensLoaded(
+    std::vector<wgc0310::StaticScreenImage>*
+  );
   void AnimationsLoaded(
-    std::vector<std::unique_ptr<ScreenAnimation>>*
+    std::vector<std::unique_ptr<wgc0310::ScreenAnimation>>*
   );
   void BodyAnimationsLoaded(
     std::vector<std::unique_ptr<wgc0310::BodyAnimation>>*
@@ -74,11 +76,11 @@ private:
   wgc0310::BodyStatus m_BodyStatus;
   CameraEntityStatus m_CameraEntityStatus;
   FaceTrackStatus m_FaceTrackStatus;
-  ScreenAnimationStatus m_ScreenStatus;
+  wgc0310::ScreenAnimationStatus m_ScreenStatus;
   ConfigWidget *m_ConfigWidget;
 
-  std::vector<StaticScreenImage> m_StaticScreens;
-  std::vector<std::unique_ptr<ScreenAnimation>> m_Animations;
+  std::vector<wgc0310::StaticScreenImage> m_StaticScreens;
+  std::vector<std::unique_ptr<wgc0310::ScreenAnimation>> m_Animations;
   QList<QString> m_BodyAnimationNames;
   std::vector<std::unique_ptr<wgc0310::BodyAnimation>> m_BodyAnimations;
 

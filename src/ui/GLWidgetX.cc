@@ -29,7 +29,7 @@ void GLWidget::LoadAndInitScreens() {
 
     std::unique_ptr<cw::Texture2D> texture =
         std::make_unique<cw::Texture2D>(image, this);
-    m_StaticScreens.push_back(StaticScreenImage {
+    m_StaticScreens.push_back(wgc0310::StaticScreenImage {
       .imageName = file,
       .texture = std::move(texture)
     });
@@ -114,12 +114,15 @@ void GLWidget::LoadAnimations() {
       continue;
     }
 
-    m_Animations.emplace_back(std::make_unique<ScreenAnimation>(animation, sharedObject));
+    m_Animations.emplace_back(std::make_unique<wgc0310::ScreenAnimation>(
+      animation,
+      sharedObject
+    ));
   }
 }
 
 void GLWidget::InitAnimations() {
-  std::vector<std::unique_ptr<ScreenAnimation>> initializedAnimations;
+  std::vector<std::unique_ptr<wgc0310::ScreenAnimation>> initializedAnimations;
   for (auto &animation : m_Animations) {
       if (!animation->Initialize(this)) {
         QMessageBox::warning(

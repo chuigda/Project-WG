@@ -8,12 +8,13 @@
 #include "wgc0310/BodyAnim.h"
 #include "cwglx/Texture.h"
 #include "ui/FaceTrackStatus.h"
-#include "ui/ScreenAnimationStatus.h"
 
 class CameraEntityStatus;
-class ScreenAnimationStatus;
 
 namespace wgc0310 {
+struct StaticScreenImage;
+class ScreenAnimation;
+class ScreenAnimationStatus;
 class BodyStatus;
 } // namespace wgc0310;
 
@@ -28,7 +29,7 @@ public:
   explicit ConfigWidget(CameraEntityStatus *cameraEntityStatus,
                         wgc0310::BodyStatus *bodyStatus,
                         FaceTrackStatus *faceTrackStatus,
-                        ScreenAnimationStatus *screenStatus,
+                        wgc0310::ScreenAnimationStatus *screenStatus,
                         QWidget *glWidget);
   ~ConfigWidget() final;
 
@@ -43,9 +44,11 @@ signals:
 #pragma clang diagnostic pop
 
 public slots:
-  void OnStaticScreensLoaded(std::vector<StaticScreenImage> *staticScreens);
+  void OnStaticScreensLoaded(
+    std::vector<wgc0310::StaticScreenImage> *staticScreens
+  );
   void OnScreenAnimationsLoaded(
-    std::vector<std::unique_ptr<ScreenAnimation>> *animations
+    std::vector<std::unique_ptr<wgc0310::ScreenAnimation>> *animations
   );
   void OnBodyAnimationsLoaded(
     std::vector<std::unique_ptr<wgc0310::BodyAnimation>> *animations
@@ -86,7 +89,7 @@ private:
   QWidget *m_GLWidget;
   CameraEntityStatus *m_CameraEntityStatus;
   wgc0310::BodyStatus *m_BodyStatus;
-  ScreenAnimationStatus *m_ScreenStatus;
+  wgc0310::ScreenAnimationStatus *m_ScreenStatus;
 
   QString m_3rdPartiesText;
   QString m_AGPLText;

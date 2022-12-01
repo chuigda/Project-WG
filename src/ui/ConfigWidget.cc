@@ -5,13 +5,13 @@
 #include <QMessageBox>
 #include "ui/CameraEntityStatus.h"
 #include "include/wgc0310/BodyStatus.h"
-#include "ui/ScreenAnimationStatus.h"
+#include "include/wgc0310/ScreenAnimationStatus.h"
 #include "ui/MessageBoxAlter.h"
 
 ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
                            wgc0310::BodyStatus *bodyStatus,
                            FaceTrackStatus *faceTrackStatus,
-                           ScreenAnimationStatus *screenStatus,
+                           wgc0310::ScreenAnimationStatus *screenStatus,
                            QWidget *glWidget) :
   QWidget(glWidget, Qt::Window),
   ui(new Ui::ConfigWidget),
@@ -100,7 +100,7 @@ void ConfigWidget::OnRenderSettingsReset() {
 }
 
 void
-ConfigWidget::OnStaticScreensLoaded(std::vector<StaticScreenImage> *staticScreens) {
+ConfigWidget::OnStaticScreensLoaded(std::vector<wgc0310::StaticScreenImage> *staticScreens) {
   QVBoxLayout *layout = new QVBoxLayout();
   ui->staticGraphBox->setLayout(layout);
 
@@ -108,7 +108,7 @@ ConfigWidget::OnStaticScreensLoaded(std::vector<StaticScreenImage> *staticScreen
     QPushButton *button = new QPushButton(staticScreen.imageName);
     layout->addWidget(button);
 
-    StaticScreenImage *ptr = &staticScreen;
+    wgc0310::StaticScreenImage *ptr = &staticScreen;
     connect(button, &QPushButton::clicked, [this, ptr] {
       m_ScreenStatus->PlayStaticAnimation(ptr);
     });
@@ -118,7 +118,7 @@ ConfigWidget::OnStaticScreensLoaded(std::vector<StaticScreenImage> *staticScreen
 }
 
 void ConfigWidget::OnScreenAnimationsLoaded(
-  std::vector<std::unique_ptr<ScreenAnimation>> *animations
+  std::vector<std::unique_ptr<wgc0310::ScreenAnimation>> *animations
 ) {
   QVBoxLayout *layout = new QVBoxLayout();
   ui->dynamicAnimationBox->setLayout(layout);
@@ -127,7 +127,7 @@ void ConfigWidget::OnScreenAnimationsLoaded(
     QPushButton *button = new QPushButton(animation->rawAnimation->name);
     layout->addWidget(button);
 
-    ScreenAnimation *ptr = animation.get();
+    wgc0310::ScreenAnimation *ptr = animation.get();
     connect(button, &QPushButton::clicked, [this, ptr] {
       m_ScreenStatus->PlayAnimation(ptr);
     });

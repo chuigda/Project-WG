@@ -9,10 +9,10 @@
 #include "wgc0310/ScreenAnimation.h"
 
 namespace cw {
-
 class Texture2D;
-
 } // namespace cw
+
+namespace wgc0310 {
 
 struct StaticScreenImage final {
   QString imageName;
@@ -68,5 +68,7 @@ private:
   ScreenAnimation *m_Animation;
   std::uint64_t m_Frame;
 };
+
+} // namespace wgc0310
 
 #endif // PROJECT_WG_SCREEN_STATUS_H

@@ -316,6 +316,8 @@ static_assert(sizeof(VertexF) == sizeof(std::array<GLfloat, 3>),
 
 class Vertex2DF final {
 public:
+  constexpr inline Vertex2DF() noexcept : Vertex2DF(0.0f, 0.0f) {}
+
   constexpr inline Vertex2DF(GLfloat x, GLfloat y) noexcept
     : m_Repr({ x, y })
   {}

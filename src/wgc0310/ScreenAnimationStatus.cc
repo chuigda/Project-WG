@@ -1,16 +1,17 @@
-#include "ui/ScreenAnimationStatus.h"
+#include "include/wgc0310/ScreenAnimationStatus.h"
 
 #include <QTimer>
 #include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
 #include "util/DynLoad.h"
 
+namespace wgc0310 {
+
 ScreenAnimation::ScreenAnimation(const WGAPI_Animation *rawAnimation,
                                  void *rawHandle)
   : rawAnimation(rawAnimation),
     m_RawHandle(rawHandle),
-    m_Context(nullptr)
-{}
+    m_Context(nullptr) {}
 
 ScreenAnimation::~ScreenAnimation() {
   if (m_Context) {
@@ -49,8 +50,7 @@ ScreenAnimationStatus::ScreenAnimationStatus()
     m_NeedRewind(false),
     m_StaticScreen(nullptr),
     m_Animation(nullptr),
-    m_Frame(0)
-{}
+    m_Frame(0) {}
 
 void ScreenAnimationStatus::PlayStaticAnimation(StaticScreenImage *staticScreen) {
   Reset();
@@ -128,3 +128,5 @@ void ScreenAnimationStatus::NextFrame() {
     m_Frame++;
   }
 }
+
+} // namespace wgc0310

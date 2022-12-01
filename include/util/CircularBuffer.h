@@ -11,8 +11,11 @@ template <Wife T, std::size_t N>
 class CircularBuffer {
 public:
   constexpr inline CircularBuffer() : m_First(0), m_Last(0) {}
-  explicit constexpr inline
-  CircularBuffer(T const& fillValue) : m_Buffer { fillValue, N }, m_First(0), m_Last(0) {}
+  explicit constexpr inline CircularBuffer(T const& fillValue)
+    : m_Buffer { fillValue, N },
+      m_First(0),
+      m_Last(0)
+  {}
 
   [[nodiscard]] constexpr inline std::size_t Size() const noexcept {
     if (m_Last >= m_First) {
@@ -20,6 +23,10 @@ public:
     } else {
       return (N - m_First) + m_Last;
     }
+  }
+
+  [[nodiscard]] constexpr inline T Get(std::size_t idx) const noexcept {
+    return m_Buffer[(m_First + idx) % N];
   }
 
   constexpr inline void PushBack(T value) noexcept {

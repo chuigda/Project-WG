@@ -60,6 +60,7 @@ private:
   std::unique_ptr<cw::Texture2D> m_EyeTexture;
   std::unique_ptr<cw::Texture2D> m_MouthTexture;
   std::unique_ptr<cw::Texture2D> m_MouthOpenTexture;
+  std::array<cw::Vertex2DF, 640> m_VolumeVertices;
   std::array<GLuint, 640> m_VolumeIndices;
   std::array<GLuint, 2> m_VolumeVBO;
 
