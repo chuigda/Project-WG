@@ -11,7 +11,10 @@ namespace wgc0310 {
 
 class WGCMeshCollection {
 public:
+  WGCMeshCollection();
   WGCMeshCollection(GLFunctions *f, cw::DrawableArena &arena);
+
+  void Load(GLFunctions *f, cw::DrawableArena &arena);
 
   // 头部模型
   cw::Drawable const* monitor;

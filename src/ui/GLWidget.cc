@@ -118,8 +118,7 @@ void GLWidget::initializeGL() {
 
   // screen
   {
-    const auto [_, screen] =
-      m_Arena.Put(std::make_unique<wgc0310::Screen>(this));
+    const auto screen = m_Arena.Put(std::make_unique<wgc0310::Screen>(this));
     m_Screen = static_cast<wgc0310::Screen const*>(screen);
   }
 
@@ -131,8 +130,8 @@ void GLWidget::initializeGL() {
     glassTriangles->AddTriangles(glassGenerator.get());
     glassTriangles->PreInitialize(this);
 
-    const auto [_, glassMeshPtr] = m_Arena.Put(std::move(glassTriangles));
-    const auto [_2, mtlMeshPtr] = m_Arena.Put(
+    const auto glassMeshPtr = m_Arena.Put(std::move(glassTriangles));
+    const auto mtlMeshPtr = m_Arena.Put(
       std::make_unique<cw::MaterializedDrawable>(
         cw::GetGlassMaterial(),
         std::vector { glassMeshPtr }

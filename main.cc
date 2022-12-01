@@ -63,7 +63,9 @@ int main(int argc, char *argv[]) {
   w.show();
    */
 
-  GLWindow w {};
+  CameraEntityStatus status;
+
+  GLWindow w { &status };
   w.show();
 
   return QApplication::exec();

@@ -5,13 +5,43 @@
 
 namespace wgc0310 {
 
-WGCMeshCollection::WGCMeshCollection(GLFunctions *f, cw::DrawableArena &arena) {
+WGCMeshCollection::WGCMeshCollection()
+  : monitor(nullptr),
+    monitorIntake(nullptr),
+    wheel(nullptr),
+    chestBox(nullptr),
+    chestPlate(nullptr),
+    power(nullptr),
+    powerPin(nullptr),
+    ber(nullptr),
+    berShell(nullptr),
+    abdomen(nullptr),
+    waist(nullptr),
+    shoulder(nullptr),
+    shoulderPlate(nullptr),
+    bigArm(nullptr),
+    bigArmCover(nullptr),
+    bigArmConnector(nullptr),
+    smallArm(nullptr),
+    smallArmCover(nullptr),
+    wheelSmall(nullptr),
+    claw(nullptr),
+    clawCover(nullptr)
+{}
+
+WGCMeshCollection::WGCMeshCollection(GLFunctions *f, cw::DrawableArena &arena)
+  : WGCMeshCollection()
+{
+  Load(f, arena);
+}
+
+void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
   #define LOAD_MESH_MTL(PATH, MTL, TGT) \
     { \
       std::unique_ptr<cw::PlainTriangles> triangles = cw::LoadMesh(PATH); \
       triangles->PreInitialize(f); \
-      const auto [_, meshPtr] = arena.Put(std::move(triangles)); \
-      const auto [_2, mtlMeshPtr] = arena.Put(                          \
+      const auto meshPtr = arena.Put(std::move(triangles)); \
+      const auto mtlMeshPtr = arena.Put(                          \
         std::make_unique<cw::MaterializedDrawable>( \
           MTL, std::vector { meshPtr } \
         ) \
@@ -23,7 +53,7 @@ WGCMeshCollection::WGCMeshCollection(GLFunctions *f, cw::DrawableArena &arena) {
     {                        \
       std::unique_ptr<cw::PlainTriangles> triangles = cw::LoadMesh(PATH); \
       triangles->PreInitialize(f); \
-      const auto [_, meshPtr] = arena.Put(std::move(triangles)); \
+      const auto meshPtr = arena.Put(std::move(triangles)); \
       TGT = meshPtr; \
     }
 

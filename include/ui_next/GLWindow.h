@@ -1,7 +1,7 @@
 #ifndef PROJECT_WG_UINEXT_GLWINDOW_H
 #define PROJECT_WG_UINEXT_GLWINDOW_H
 
-#include <QOpenGLWindow>
+#include <QOpenGLWidget>
 #include "cwglx/GL.h"
 #include "cwglx/GLImpl.h"
 #include "cwglx/Light.h"
@@ -11,12 +11,13 @@
 #include "wgc0310/Mesh.h"
 #include "wgc0310/Screen.h"
 #include "cwglx/Texture.h"
+#include "ui/CameraEntityStatus.h"
 
-class GLWindow final : public QOpenGLWindow, public GLFunctions {
+class GLWindow final : public QOpenGLWidget, public GLFunctions {
   Q_OBJECT
 
 public:
-  GLWindow();
+  GLWindow(CameraEntityStatus const* cameraEntityStatus);
   ~GLWindow() final;
 
   void RunWithGLContext(std::function<void(void)> const& f);
@@ -26,13 +27,23 @@ protected:
   void paintGL() final;
   void resizeGL(int w, int h) final;
 
+signals:
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NotImplementedFunctions"
+  void OpenGLInitialized();
+#pragma clang diagnostic pop
+
 private:
+  // Input status
+  CameraEntityStatus const* m_CameraEntityStatus;
+
+  // Internal states, OpenGL resources and so on
   std::unique_ptr<cw::Light> m_Light;
   std::unique_ptr<cw::Light> m_Light2;
 
   cw::DrawableArena m_Arena;
 
-  std::unique_ptr<wgc0310::WGCMeshCollection> m_Mesh;
+  wgc0310::WGCMeshCollection m_Mesh;
   cw::Drawable const* m_ScreenGlass;
   wgc0310::Screen const* m_Screen;
 
