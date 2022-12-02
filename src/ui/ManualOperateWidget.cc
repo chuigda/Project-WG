@@ -40,8 +40,8 @@ void ManualOperateWidget::paintEvent(QPaintEvent*) {
       break;
     }
 
-    painter.drawEllipse(m_Status->pose.rotationZ * -10.0 + 242,
-                        m_Status->pose.rotationX * -10.0 + 242,
+    painter.drawEllipse(static_cast<int>(m_Status->pose.rotationZ * -10.0) + 242,
+                        static_cast<int>(m_Status->pose.rotationX * -10.0) + 242,
                         16,
                         16);
 
@@ -50,8 +50,8 @@ void ManualOperateWidget::paintEvent(QPaintEvent*) {
     } else {
       painter.setBrush(QColor(0xcd, 0, 0));
     }
-    painter.drawEllipse(m_Status->pose.rotationZ * -10.0 + 245,
-                        m_Status->pose.rotationX * -10.0 + 245,
+    painter.drawEllipse(static_cast<int>(m_Status->pose.rotationZ * -10.0) + 245,
+                        static_cast<int>(m_Status->pose.rotationX * -10.0) + 245,
                         10,
                         10);
   }
