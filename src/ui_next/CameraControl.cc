@@ -38,10 +38,8 @@ static QLayout* CreateSliderSuite(QString const& suiteName,
     cameraControl,
     &CameraControl::ResetCameraEntityStatus,
     slider,
-    [slider, cameraControl, controlledValue, stepValue] () {
-      cameraControl->blockSignals(true);
+    [slider, controlledValue, stepValue] () {
       slider->setValue(static_cast<int>(*controlledValue) / stepValue);
-      cameraControl->blockSignals(false);
     }
   );
 
