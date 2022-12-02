@@ -10,14 +10,17 @@
 
 static QLayout* CreateSliderSuite(QString const& suiteName,
                                   CameraControl *cameraControl,
-                                  GLfloat *controlledValue) {
+                                  GLfloat *controlledValue,
+                                  int min,
+                                  int max,
+                                  int stepValue) {
   QHBoxLayout *layout = new QHBoxLayout();
   QLabel *nameLabel = new QLabel(suiteName);
 
   QSlider *slider = new QSlider();
   slider->setOrientation(Qt::Horizontal);
-  slider->setMinimum(-360 / 5);
-  slider->setMaximum(360 / 5);
+  slider->setMinimum(min / stepValue);
+  slider->setMaximum(max / stepValue);
 
   QLabel *valueLabel = new QLabel("0");
   valueLabel->setFixedWidth(48);
@@ -25,9 +28,9 @@ static QLayout* CreateSliderSuite(QString const& suiteName,
     slider,
     &QSlider::valueChanged,
     valueLabel,
-    [valueLabel, controlledValue] (int value) {
-      *controlledValue = static_cast<GLfloat>(value) * 5.0f;
-      valueLabel->setText(QString::number(value * 5));
+    [valueLabel, controlledValue, stepValue] (int value) {
+      *controlledValue = static_cast<GLfloat>(value * stepValue);
+      valueLabel->setText(QString::number(value * stepValue));
     }
   );
 
@@ -35,9 +38,9 @@ static QLayout* CreateSliderSuite(QString const& suiteName,
     cameraControl,
     &CameraControl::ResetCameraEntityStatus,
     slider,
-    [slider, cameraControl, controlledValue] () {
+    [slider, cameraControl, controlledValue, stepValue] () {
       cameraControl->blockSignals(true);
-      slider->setValue(static_cast<int>(*controlledValue / 5.0f));
+      slider->setValue(static_cast<int>(*controlledValue) / stepValue);
       cameraControl->blockSignals(false);
     }
   );
@@ -51,6 +54,8 @@ static QLayout* CreateSliderSuite(QString const& suiteName,
 CameraControl::CameraControl(CameraEntityStatus *status) noexcept
   : m_CameraEntityStatus(status)
 {
+  this->setMinimumWidth(320);
+
   QVBoxLayout *mainLayout = new QVBoxLayout();
   this->setLayout(mainLayout);
 
@@ -58,9 +63,9 @@ CameraControl::CameraControl(CameraEntityStatus *status) noexcept
     QGroupBox *cameraGroupBox = new QGroupBox("相机参数");
     QVBoxLayout *layout = new QVBoxLayout();
     cameraGroupBox->setLayout(layout);
-    QLayout *x = CreateSliderSuite("X 位移", this, &m_CameraEntityStatus->cameraX);
-    QLayout *y = CreateSliderSuite("Y 位移", this, &m_CameraEntityStatus->cameraY);
-    QLayout *z = CreateSliderSuite("Z 位移", this, &m_CameraEntityStatus->cameraZ);
+    QLayout *x = CreateSliderSuite("X 位移", this, &m_CameraEntityStatus->cameraX, -100, 100, 5);
+    QLayout *y = CreateSliderSuite("Y 位移", this, &m_CameraEntityStatus->cameraY, -100, 100, 5);
+    QLayout *z = CreateSliderSuite("Z 位移", this, &m_CameraEntityStatus->cameraZ, -100, 100, 5);
     layout->addLayout(x);
     layout->addLayout(y);
     layout->addLayout(z);
@@ -72,9 +77,9 @@ CameraControl::CameraControl(CameraEntityStatus *status) noexcept
     QGroupBox *entityGroupBox = new QGroupBox("物体参数");
     QVBoxLayout *layout = new QVBoxLayout();
     entityGroupBox->setLayout(layout);
-    QLayout *x = CreateSliderSuite("X 旋转", this, &m_CameraEntityStatus->entityRotateX);
-    QLayout *y = CreateSliderSuite("Y 旋转", this, &m_CameraEntityStatus->entityRotateY);
-    QLayout *z = CreateSliderSuite("Z 旋转", this, &m_CameraEntityStatus->entityRotateZ);
+    QLayout *x = CreateSliderSuite("X 旋转", this, &m_CameraEntityStatus->entityRotateX, -360, 360, 10);
+    QLayout *y = CreateSliderSuite("Y 旋转", this, &m_CameraEntityStatus->entityRotateY, -360, 360, 10);
+    QLayout *z = CreateSliderSuite("Z 旋转", this, &m_CameraEntityStatus->entityRotateZ, -360, 360, 10);
     layout->addLayout(x);
     layout->addLayout(y);
     layout->addLayout(z);
