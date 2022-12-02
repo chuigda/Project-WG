@@ -378,6 +378,19 @@ public:
     return m_Repr;
   }
 
+  [[nodiscard]]
+  constexpr inline VectorF Normalize() const noexcept {
+    const float length = std::sqrt(GetX() * GetX()
+                                   + GetY() * GetY()
+                                   + GetZ() * GetZ());
+    return { GetX() / length, GetY() / length, GetZ() / length };
+  }
+
+  [[nodiscard]]
+  constexpr inline float Length() const noexcept {
+    return std::sqrt(GetX() * GetX() + GetY() * GetY() + GetZ() * GetZ());
+  }
+
 private:
   std::array<GLfloat, 3> m_Repr;
 };

@@ -11,24 +11,17 @@ public:
   GLfloat cameraY;
   GLfloat cameraZ;
 
-  GLfloat entityX;
-  GLfloat entityY;
-  GLfloat entityZ;
-
-  GLdouble entityRotateX;
-  GLdouble entityRotateY;
-  GLdouble entityRotateZ;
+  GLfloat entityRotateX;
+  GLfloat entityRotateY;
+  GLfloat entityRotateZ;
 
   explicit constexpr inline CameraEntityStatus() noexcept
     : cameraX(0.0f),
-      cameraY(0.0f),
-      cameraZ(0.0f),
-      entityX(0.0f),
-      entityY(-25.0f),
-      entityZ(-75.0f),
-      entityRotateX(0.0),
-      entityRotateY(0.0),
-      entityRotateZ(0.0)
+      cameraY(25.0f),
+      cameraZ(75.0f),
+      entityRotateX(0.0f),
+      entityRotateY(0.0f),
+      entityRotateZ(0.0f)
   {}
 
   constexpr void Reset() noexcept {

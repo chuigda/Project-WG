@@ -8,9 +8,8 @@ void CameraEntityStatus::ApplyCameraTransformation(GLFunctions *f) const noexcep
 }
 
 void CameraEntityStatus::ApplyEntityTransformation(GLFunctions *f) const noexcept {
-  f->glTranslatef(entityX, entityY, entityZ);
-  cw::Vector entityRotation(entityRotateX, entityRotateY, entityRotateZ);
-  cw::Vector normalizedRotationVec = entityRotation.Normalize();
+  cw::VectorF entityRotation(entityRotateX, entityRotateY, entityRotateZ);
+  cw::VectorF normalizedRotationVec = entityRotation.Normalize();
   GLdouble rotationVecLen = entityRotation.Length();
   if (rotationVecLen >= 0.0005) {
     f->glRotatef(static_cast<GLfloat>(rotationVecLen),

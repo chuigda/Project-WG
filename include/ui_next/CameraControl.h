@@ -11,6 +11,12 @@ class CameraControl : public QWidget {
 public:
   explicit CameraControl(CameraEntityStatus *status) noexcept;
 
+signals:
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NotImplementedFunctions"
+  void ResetCameraEntityStatus();
+#pragma clang diagnostic pop
+
 private:
   // Status output
   CameraEntityStatus *m_CameraEntityStatus;

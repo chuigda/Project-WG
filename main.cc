@@ -2,6 +2,7 @@
 #include <QFile>
 #include "ui_next/LicensePresenter.h"
 #include "ui_next/GLWindow.h"
+#include "ui_next/CameraControl.h"
 
 QString ReadToString(const char *fileName) {
   QFile f(fileName);
@@ -52,10 +53,16 @@ QDialog::DialogCode PrecheckLicense() {
 int main(int argc, char *argv[]) {
   QApplication a { argc, argv };
 
+  /*
   if (!PrecheckLicense()) {
     QApplication::quit();
     return 0;
   }
+  */
+
+  CameraEntityStatus s;
+  CameraControl c { &s };
+  c.show();
 
   /*
   CameraEntityStatus status;

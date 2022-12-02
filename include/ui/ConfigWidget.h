@@ -63,12 +63,6 @@ private slots:
   void UpdateCameraX(int value);
   void UpdateCameraY(int value);
   void UpdateCameraZ(int value);
-  void UpdateCameraRotationX(int value);
-  void UpdateCameraRotationY(int value);
-  void UpdateCameraRotationZ(int value);
-  void UpdateEntityX(int value);
-  void UpdateEntityY(int value);
-  void UpdateEntityZ(int value);
   void UpdateEntityRotationX(int value);
   void UpdateEntityRotationY(int value);
   void UpdateEntityRotationZ(int value);
