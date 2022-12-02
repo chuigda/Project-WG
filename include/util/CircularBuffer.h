@@ -12,7 +12,7 @@ class CircularBuffer {
 public:
   constexpr inline CircularBuffer() : m_First(0), m_Last(0) {}
   explicit constexpr inline CircularBuffer(T const& fillValue)
-    : m_Buffer { fillValue, N },
+    : m_Buffer { fillValue, { N } },
       m_First(0),
       m_Last(0)
   {}
@@ -37,6 +37,7 @@ public:
   constexpr inline T PopFront() noexcept {
     T r = m_Buffer[m_First];
     m_First = (m_First + 1) % N;
+    return r;
   }
 
 private:

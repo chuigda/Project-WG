@@ -28,6 +28,12 @@ constexpr inline std::size_t countof(T const (&unused)[N]) noexcept {
   return N;
 }
 
+template <Wife T>
+__attribute__((always_inline))
+constexpr inline T FlipEnum(T input) noexcept {
+  return static_cast<T>(-(static_cast<std::int8_t>(input)));
+}
+
 } // namespace cw
 
 #endif // PROJECT_WG_CONSTANTS_H

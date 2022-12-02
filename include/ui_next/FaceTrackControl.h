@@ -2,10 +2,7 @@
 #define PROJECT_WG_FACE_TRACK_CONTROL_H
 
 #include <QWidget>
-
-namespace wgc0310 {
-struct HeadStatus;
-} // namespace wgc0310
+#include "wgc0310/HeadStatus.h"
 
 class VTSTrackControl;
 class OSFTrackControl;
@@ -15,11 +12,14 @@ class TrackControl : public QWidget {
   Q_OBJECT
 
 public:
-  TrackControl(wgc0310::HeadStatus *headStatus, QThread *workerThread);
+  TrackControl(wgc0310::HeadStatus *headStatus,
+               wgc0310::ScreenDisplayMode *screenDisplayMode,
+               QThread *workerThread);
 
 private:
   // Output
   wgc0310::HeadStatus *m_HeadStatus;
+  wgc0310::ScreenDisplayMode *m_ScreenDisplayMode;
 
   // Control widgets
   VTSTrackControl *m_VTSTrackControl;

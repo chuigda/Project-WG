@@ -6,9 +6,11 @@
 #include "TrackControlImpl.h"
 
 TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
+                           wgc0310::ScreenDisplayMode *screenDisplayMode,
                            QThread *workerThread)
   : QWidget(nullptr, Qt::Window),
     m_HeadStatus(headStatus),
+    m_ScreenDisplayMode(screenDisplayMode),
     m_WorkerThread(workerThread)
 {
   this->setWindowTitle("姿态控制");
@@ -41,7 +43,8 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
   OSFTrackControl *osfTrackControl = new OSFTrackControl(m_HeadStatus, m_WorkerThread);
   mainLayout->addWidget(osfTrackControl);
 
-  ManualTrackControl *manualTrackControl = new ManualTrackControl(m_HeadStatus);
+  ManualTrackControl *manualTrackControl =
+    new ManualTrackControl(m_HeadStatus, m_ScreenDisplayMode);
   manualTrackControl->setVisible(false);
   mainLayout->addWidget(manualTrackControl);
 }
