@@ -11,10 +11,6 @@ public:
   GLfloat cameraY;
   GLfloat cameraZ;
 
-  GLdouble cameraRotateX;
-  GLdouble cameraRotateY;
-  GLdouble cameraRotateZ;
-
   GLfloat entityX;
   GLfloat entityY;
   GLfloat entityZ;
@@ -23,13 +19,10 @@ public:
   GLdouble entityRotateY;
   GLdouble entityRotateZ;
 
-  explicit constexpr inline CameraEntityStatus()
+  explicit constexpr inline CameraEntityStatus() noexcept
     : cameraX(0.0f),
       cameraY(0.0f),
       cameraZ(0.0f),
-      cameraRotateX(0.0),
-      cameraRotateY(0.0),
-      cameraRotateZ(0.0),
       entityX(0.0f),
       entityY(-25.0f),
       entityZ(-75.0f),
@@ -38,8 +31,12 @@ public:
       entityRotateZ(0.0)
   {}
 
-  void ApplyCameraTransformation(GLFunctions *f) const;
-  void ApplyEntityTransformation(GLFunctions *f) const;
+  constexpr void Reset() noexcept {
+    *this = CameraEntityStatus {};
+  }
+
+  void ApplyCameraTransformation(GLFunctions *f) const noexcept;
+  void ApplyEntityTransformation(GLFunctions *f) const noexcept;
 };
 
 #endif // PROJECT_WG_CAMERA_ENTITY_STATUS_H

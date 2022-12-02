@@ -9,10 +9,6 @@ void ConfigWidget::SetupCameraEntityPage() {
   ui->cameraYSlider->setValue(m_CameraEntityStatus->cameraY / 5);
   ui->cameraZSlider->setValue(m_CameraEntityStatus->cameraZ / 5);
 
-  ui->cameraXAngleSlider->setValue(m_CameraEntityStatus->cameraRotateX / 10);
-  ui->cameraYAngleSlider->setValue(m_CameraEntityStatus->cameraRotateY / 10);
-  ui->cameraZAngleSlider->setValue(m_CameraEntityStatus->cameraRotateZ / 10);
-
   ui->entityXSlider->setValue(m_CameraEntityStatus->entityX / 5);
   ui->entityYSlider->setValue(m_CameraEntityStatus->entityY / 5);
   ui->entityZSlider->setValue(m_CameraEntityStatus->entityZ / 5);
@@ -74,17 +70,11 @@ void ConfigWidget::UpdateCameraZ(int value) {
   m_CameraEntityStatus->cameraZ = static_cast<GLfloat>(value * 5);
 }
 
-void ConfigWidget::UpdateCameraRotationX(int value) {
-  m_CameraEntityStatus->cameraRotateX = static_cast<GLdouble>(value * 10);
-}
+void ConfigWidget::UpdateCameraRotationX(int) {}
 
-void ConfigWidget::UpdateCameraRotationY(int value) {
-  m_CameraEntityStatus->cameraRotateY = static_cast<GLdouble>(value * 10);
-}
+void ConfigWidget::UpdateCameraRotationY(int) {}
 
-void ConfigWidget::UpdateCameraRotationZ(int value) {
-  m_CameraEntityStatus->cameraRotateZ = static_cast<GLdouble>(value * 10);
-}
+void ConfigWidget::UpdateCameraRotationZ(int) {}
 
 void ConfigWidget::UpdateEntityX(int value) {
   m_CameraEntityStatus->entityX = static_cast<GLfloat>(value * 5);
@@ -127,19 +117,5 @@ void ConfigWidget::ResetCameraEntityAll() {
   ui->entityYAngleSlider->setValue(0);
   ui->entityZAngleSlider->setValue(0);
 
-  m_CameraEntityStatus->cameraX = 0.0f;
-  m_CameraEntityStatus->cameraY = 0.0f;
-  m_CameraEntityStatus->cameraZ = 0.0f;
-
-  m_CameraEntityStatus->cameraRotateX = 0.0;
-  m_CameraEntityStatus->cameraRotateY = 0.0;
-  m_CameraEntityStatus->cameraRotateZ = 0.0;
-
-  m_CameraEntityStatus->entityX = 0.0f;
-  m_CameraEntityStatus->entityY = -25.0f;
-  m_CameraEntityStatus->entityZ = -75.0f;
-
-  m_CameraEntityStatus->entityRotateX = 0.0;
-  m_CameraEntityStatus->entityRotateY = 0.0;
-  m_CameraEntityStatus->entityRotateZ = 0.0;
+  m_CameraEntityStatus->Reset();
 }

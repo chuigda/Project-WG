@@ -26,7 +26,6 @@ set(PROJECT_SOURCES
 
     src/ui/OSFTrack.cc
     src/ui/ManualOperateWidget.cc
-        src/wgc0310/ScreenAnimationStatus.cc
     src/ui/FaceTrackStatus.cc
     src/ui/CameraEntityStatus.cc
     src/ui/GLWidgetX.cc
@@ -38,7 +37,7 @@ set(PROJECT_SOURCES
     src/ui/MessageBoxAlter.cc
     include/ui/OSFTrack.h
     include/ui/ManualOperateWidget.h
-        include/wgc0310/ScreenAnimationStatus.h
+
     include/ui/FaceTrackStatus.h
     include/ui/CameraEntityStatus.h
     include/ui/GLWidget.h
@@ -46,9 +45,11 @@ set(PROJECT_SOURCES
     include/ui/MessageBoxAlter.h
 
     src/ui_next/ControlPanel.cc
+    src/ui_next/CameraControl.cc
     src/ui_next/LicensePresenter.cc
     src/ui_next/GLWindow.cc
     include/ui_next/ControlPanel.h
+    include/ui_next/CameraControl.h
     include/ui_next/LicensePresenter.h
     include/ui_next/GLWindow.h
 
@@ -100,6 +101,7 @@ set(PROJECT_SOURCES
     src/wgc0310/ScreenGlass.cc
     src/wgc0310/Screen.cc
     src/wgc0310/ScreenCurveHelper.cc
+    src/wgc0310/ScreenAnimationStatus.cc
     src/wgc0310/BodyAnim.cc
     src/wgc0310/BodyStatus.cc
     include/wgc0310/Mesh.h
@@ -107,6 +109,7 @@ set(PROJECT_SOURCES
     include/wgc0310/Screen.h
     include/wgc0310/ScreenCurveHelper.h
     include/wgc0310/ScreenAnimation.h
+    include/wgc0310/ScreenAnimationStatus.h
     include/wgc0310/BodyStatus.h
     include/wgc0310/BodyAnim.h
     include/wgc0310/HeadStatus.h
