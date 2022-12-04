@@ -1,7 +1,14 @@
 #include "TrackControlImpl.h"
 
+#include <QLabel>
+#include <QGroupBox>
+#include <QBoxLayout>
+#include <QLineEdit>
+#include <QPushButton>
 #include <QUdpSocket>
+#include <QMessageBox>
 #include <QNetworkDatagram>
+#include <QSpinBox>
 #include "util/Derive.h"
 #include "util/CircularBuffer.h"
 
@@ -28,6 +35,8 @@ signals:
 
 public slots:
   void StartListening(std::uint16_t port) {
+    qDebug() << "OSFTrackControl::StartListening";
+
     if (m_Socket) {
       emit TrackingError("已经有一个监听任务了\r\n"
                          "请先停止监听");
@@ -72,14 +81,6 @@ private:
   OSFTrackParameter2 m_Parameter;
   cw::CircularBuffer<wgc0310::HeadStatus, 128> m_SmoothBuffer;
 };
-
-OSFTrackControl::OSFTrackControl(wgc0310::HeadStatus *headStatus,
-                                 QThread *workerThread,
-                                 QWidget *parent)
-  : QWidget(parent),
-    m_HeadStatus(headStatus),
-    m_WorkerThread(workerThread)
-{}
 
 // Packet 的格式定义在这里：
 // https://github.com/emilianavt/OpenSeeFace/blob/40119c17971c019b892b047b457c8182190acb8c/facetracker.py#L276
@@ -233,6 +234,136 @@ void OSFTrackWorker::HandleData() {
     mouthStatus > 0 ? wgc0310::HeadStatus::MouthStatus::Open
                     : wgc0310::HeadStatus::MouthStatus::Close
   });
+}
+
+static QDoubleSpinBox *createAngleSpinBox() {
+  QDoubleSpinBox *ret = new QDoubleSpinBox();
+  ret->setValue(0.0);
+  ret->setMinimum(-45.0);
+  ret->setMaximum(45.0);
+  return ret;
+}
+
+OSFTrackControl::OSFTrackControl(wgc0310::HeadStatus *headStatus,
+                                 QThread *workerThread,
+                                 QWidget *parent)
+  : QWidget(parent),
+    m_HeadStatus(headStatus),
+    m_WorkerThread(workerThread)
+{
+  OSFTrackWorker *worker = new OSFTrackWorker();
+  worker->moveToThread(workerThread);
+
+  connect(this, &OSFTrackControl::StartTracking,
+          worker, &OSFTrackWorker::StartListening);
+  connect(this, &OSFTrackControl::StopTracking,
+          worker, &OSFTrackWorker::StopListening);
+  connect(this, &OSFTrackControl::SetParameters,
+          worker, &OSFTrackWorker::SetParameter);
+  connect(worker, &OSFTrackWorker::TrackingError,
+          this, &OSFTrackControl::HandleError);
+  connect(worker, &OSFTrackWorker::HeadPoseUpdated,
+          this, &OSFTrackControl::HandleHeadStatus);
+
+  QVBoxLayout *layout = new QVBoxLayout(this);
+
+  {
+    QGroupBox *osfUdpSettings = new QGroupBox("OpenSeeFrace 设置");
+    layout->addWidget(osfUdpSettings);
+
+    QHBoxLayout *osfLayout = new QHBoxLayout();
+    osfUdpSettings->setLayout(osfLayout);
+
+    QLabel *labelUdpAddr = new QLabel("UDP 端口");
+    QLineEdit *lineEdit = new QLineEdit("11573");
+    QPushButton *startButton = new QPushButton("开始监听");
+    QPushButton *stopButton = new QPushButton("停止监听");
+
+    osfLayout->addWidget(labelUdpAddr);
+    osfLayout->addStretch();
+    osfLayout->addWidget(lineEdit);
+    osfLayout->addWidget(startButton);
+    osfLayout->addWidget(stopButton);
+
+    connect(
+      startButton,
+      &QPushButton::clicked,
+      this,
+      [this, lineEdit] {
+        bool success;
+        std::uint16_t port = lineEdit->text().toUInt(&success);
+        if (!success) {
+          QMessageBox::warning(this, "面部捕捉错误", "输入的端口号无效");
+        }
+
+        emit this->StartTracking(port);
+      }
+    );
+
+    connect(stopButton,
+            &QPushButton::clicked,
+            this,
+            &OSFTrackControl::StopTracking);
+  }
+
+  {
+    QGroupBox *groupBox = new QGroupBox("后处理选项");
+    layout->addWidget(groupBox);
+
+    QHBoxLayout *box = new QHBoxLayout();
+    groupBox->setLayout(box);
+
+    box->addWidget(new QLabel("平滑"));
+    QSpinBox *spinSmooth = new QSpinBox();
+    spinSmooth->setValue(8);
+    spinSmooth->setMinimum(1);
+    spinSmooth->setMaximum(20);
+    box->addWidget(spinSmooth);
+    box->addStretch();
+
+    box->addWidget(new QLabel("X"));
+    QDoubleSpinBox *spinX = createAngleSpinBox();
+    box->addWidget(spinX);
+
+    box->addWidget(new QLabel("Y"));
+    QDoubleSpinBox *spinY = createAngleSpinBox();
+    box->addWidget(spinY);
+
+    box->addWidget(new QLabel("Z"));
+    QDoubleSpinBox *spinZ = createAngleSpinBox();
+    box->addWidget(spinZ);
+
+    QPushButton *okButton = new QPushButton("设定完了");
+    box->addWidget(okButton);
+
+    connect(
+      okButton,
+      &QPushButton::clicked,
+      [this, spinSmooth, spinX, spinY, spinZ] {
+        OSFTrackParameter2 parameter;
+        parameter.smoothSteps = spinSmooth->value();
+        parameter.xRotationFix = static_cast<float>(spinX->value());
+        parameter.yRotationFix = static_cast<float>(spinY->value());
+        parameter.zRotationFix = static_cast<float>(spinZ->value());
+
+        emit this->SetParameters(parameter);
+      }
+    );
+
+    layout->addWidget(groupBox);
+  }
+}
+
+void OSFTrackControl::HandleError(const QString& error) {
+  QMessageBox::warning(this, "OSF 面部捕捉错误", error);
+}
+
+void OSFTrackControl::HandleHeadStatus(wgc0310::HeadStatus headStatus) {
+  *m_HeadStatus = headStatus;
+  qDebug () << headStatus.rotationX
+            << headStatus.rotationY
+            << headStatus.rotationZ
+            << static_cast<int>(headStatus.mouthStatus);
 }
 
 #include "OSFTrackControl.moc"

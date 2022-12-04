@@ -18,7 +18,7 @@ public:
   {}
 
   [[nodiscard]] constexpr inline std::size_t Size() const noexcept {
-    if (m_Last >= m_First) {
+    if (m_Last > m_First) {
       return m_Last - m_First;
     } else {
       return (N - m_First) + m_Last;

@@ -37,10 +37,12 @@ public:
                   QThread *workerThread,
                   QWidget *parent = nullptr);
 
-public slots:
+signals:
   void StartTracking(quint16 port);
   void StopTracking();
   void SetParameters(OSFTrackParameter2 parameter);
+
+public slots:
   void HandleError(const QString& error);
   void HandleHeadStatus(wgc0310::HeadStatus headStatus);
 

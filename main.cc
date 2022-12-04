@@ -1,8 +1,9 @@
 #include <QApplication>
 #include <QFile>
+#include <QThread>
+#include "wgc0310/HeadStatus.h"
 #include "ui_next/LicensePresenter.h"
-#include "ui_next/GLWindow.h"
-#include "ui_next/CameraControl.h"
+#include "ui_next/FaceTrackControl.h"
 
 QString ReadToString(const char *fileName) {
   QFile f(fileName);
@@ -53,23 +54,18 @@ QDialog::DialogCode PrecheckLicense() {
 int main(int argc, char *argv[]) {
   QApplication a { argc, argv };
 
-  /*
-  if (!PrecheckLicense()) {
-    QApplication::quit();
-    return 0;
-  }
-  */
+  wgc0310::HeadStatus headStatus;
+  wgc0310::ScreenDisplayMode screenDisplayMode;
+  QThread workerThread;
+  workerThread.start();
 
-  CameraEntityStatus s;
-  CameraControl c { &s };
-  c.show();
-
-  /*
-  CameraEntityStatus status;
-
-  GLWindow w { &status };
-  w.show();
-  */
+  TrackControl control {
+    &headStatus,
+    &screenDisplayMode,
+    &workerThread
+  };
+  control.show();
+  workerThread.quit();
 
   return QApplication::exec();
 }

@@ -23,6 +23,7 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
   modeSelectBox->addStretch();
 
   QRadioButton *vtsMode = new QRadioButton("VTS");
+  vtsMode->setEnabled(false);
   vtsMode->setCheckable(false);
   vtsMode->setChecked(false);
   modeSelectBox->addWidget(vtsMode);
@@ -47,4 +48,31 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
     new ManualTrackControl(m_HeadStatus, m_ScreenDisplayMode);
   manualTrackControl->setVisible(false);
   mainLayout->addWidget(manualTrackControl);
+
+  connect(
+    osfMode,
+    &QRadioButton::toggled,
+    this,
+    [osfTrackControl] (bool toggled) {
+      if (toggled) {
+        osfTrackControl->show();
+      } else {
+        osfTrackControl->StopTracking();
+        osfTrackControl->hide();
+      }
+    }
+  );
+
+  connect(
+    manualMode,
+    &QRadioButton::toggled,
+    this,
+    [manualTrackControl] (bool toggled) {
+      if (toggled) {
+        manualTrackControl->show();
+      } else {
+        manualTrackControl->hide();
+      }
+    }
+  );
 }
