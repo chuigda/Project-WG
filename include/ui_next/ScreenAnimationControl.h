@@ -3,9 +3,12 @@
 
 #include <memory>
 #include <QWidget>
+
 #include "wgc0310/ScreenAnimationStatus.h"
 
 class GLWindow;
+class QHBoxLayout;
+class QVBoxLayout;
 
 class ScreenAnimationControl : public QWidget {
   Q_OBJECT
@@ -25,8 +28,14 @@ private:
   GLWindow *m_GLWindow;
 
   wgc0310::ScreenAnimationStatus *m_ScreenAnimationStatus;
-  std::vector<std::unique_ptr<wgc0310::StaticScreenImage>> m_StaticImages;
+  std::vector<wgc0310::StaticScreenImage> m_StaticImages;
   std::vector<std::unique_ptr<wgc0310::ScreenAnimation>> m_ScreenAnimations;
+
+  QHBoxLayout *m_StaticImageButtonsLayout;
+  QVBoxLayout *m_StaticImageButtonsLayoutV;
+
+  QHBoxLayout *m_ScreenAnimationButtonsLayout;
+  QVBoxLayout *m_ScreenAnimationButtonsLayoutV;
 };
 
 #endif // SCREENANIMATIONCONTROL_H

@@ -38,9 +38,12 @@ public:
                   QWidget *parent = nullptr);
 
 signals:
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NotImplementedFunctions"
   void StartTracking(quint16 port);
   void StopTracking();
   void SetParameters(OSFTrackParameter2 parameter);
+#pragma clang diagnostic pop
 
 public slots:
   void HandleError(const QString& error);

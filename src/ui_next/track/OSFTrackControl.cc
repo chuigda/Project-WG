@@ -35,8 +35,6 @@ signals:
 
 public slots:
   void StartListening(std::uint16_t port) {
-    qDebug() << "OSFTrackControl::StartListening";
-
     if (m_Socket) {
       emit TrackingError("已经有一个监听任务了\r\n"
                          "请先停止监听");
@@ -58,8 +56,6 @@ public slots:
     if (!m_Socket) {
       return;
     }
-
-    qDebug() << "Stop listening";
 
     // maybe unnecessary, but I'm not really sure
     disconnect(m_Socket, &QUdpSocket::readyRead,
@@ -266,6 +262,16 @@ OSFTrackControl::OSFTrackControl(wgc0310::HeadStatus *headStatus,
           this, &OSFTrackControl::HandleHeadStatus);
 
   QVBoxLayout *layout = new QVBoxLayout(this);
+
+  {
+    QLabel *introduction = new QLabel(
+      "使用开源的 <a href=\"https://github.com/emilianavt/OpenSeeFace\">OpenSeeFace (OSF)</a>"
+      " 进行面部捕捉和姿态估计<br/>"
+      "需要启动 OSF 并且通过 UDP 将面捕数据发送给 Project-WG 控制程序"
+    );
+    introduction->setOpenExternalLinks(true);
+    layout->addWidget(introduction);
+  }
 
   {
     QGroupBox *osfUdpSettings = new QGroupBox("OpenSeeFrace 设置");

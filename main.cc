@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
   QApplication a { argc, argv };
 
   wgc0310::HeadStatus headStatus;
-  wgc0310::ScreenDisplayMode screenDisplayMode;
+  wgc0310::ScreenDisplayMode screenDisplayMode = wgc0310::ScreenDisplayMode::CapturedExpression;
   QThread workerThread;
   workerThread.start();
 

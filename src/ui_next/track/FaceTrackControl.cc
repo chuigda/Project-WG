@@ -37,28 +37,27 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
 
   mainLayout->addLayout(modeSelectBox);
 
-  VTSTrackControl *vtsTrackControl = new VTSTrackControl(m_HeadStatus, m_WorkerThread);
-  vtsTrackControl->setVisible(false);
-  mainLayout->addWidget(vtsTrackControl);
+  m_VTSTrackControl = new VTSTrackControl(m_HeadStatus, m_WorkerThread);
+  m_VTSTrackControl->setVisible(false);
+  mainLayout->addWidget(m_VTSTrackControl);
 
-  OSFTrackControl *osfTrackControl = new OSFTrackControl(m_HeadStatus, m_WorkerThread);
-  mainLayout->addWidget(osfTrackControl);
+  m_OSFTrackControl = new OSFTrackControl(m_HeadStatus, m_WorkerThread);
+  mainLayout->addWidget(m_OSFTrackControl);
 
-  ManualTrackControl *manualTrackControl =
-    new ManualTrackControl(m_HeadStatus, m_ScreenDisplayMode);
-  manualTrackControl->setVisible(false);
-  mainLayout->addWidget(manualTrackControl);
+  m_ManualTrackControl = new ManualTrackControl(m_HeadStatus, m_ScreenDisplayMode);
+  m_ManualTrackControl->setVisible(false);
+  mainLayout->addWidget(m_ManualTrackControl);
 
   connect(
     osfMode,
     &QRadioButton::toggled,
     this,
-    [osfTrackControl] (bool toggled) {
+    [this] (bool toggled) {
       if (toggled) {
-        osfTrackControl->show();
+        m_OSFTrackControl->show();
       } else {
-        osfTrackControl->StopTracking();
-        osfTrackControl->hide();
+        m_OSFTrackControl->StopTracking();
+        m_OSFTrackControl->hide();
       }
     }
   );
@@ -67,11 +66,11 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
     manualMode,
     &QRadioButton::toggled,
     this,
-    [manualTrackControl] (bool toggled) {
+    [this] (bool toggled) {
       if (toggled) {
-        manualTrackControl->show();
+        m_ManualTrackControl->show();
       } else {
-        manualTrackControl->hide();
+        m_ManualTrackControl->hide();
       }
     }
   );

@@ -2,9 +2,8 @@
 
 #include <QPainter>
 #include <QKeyEvent>
-#include <QMouseEvent>
-#include <QHoverEvent>
 #include <QBoxLayout>
+#include <QLabel>
 #include "wgc0310/HeadStatus.h"
 #include "util/Constants.h"
 
@@ -41,7 +40,7 @@ public:
       if (m_HeadStatus->mouthStatus == HeadStatus::MouthStatus::Close) {
         painter.setBrush(QColor(0, 0xcd, 0));
       } else {
-        painter.setBrush(QColor(0xff, 0xff, 0));
+        painter.setBrush(QColor(0xcd, 0, 0));
       }
 
       painter.drawEllipse(static_cast<int>(m_HeadStatus->rotationZ * -10.0) + 242,
@@ -49,15 +48,15 @@ public:
                           16,
                           16);
 
-      if (*m_ScreenDisplayMode == ScreenDisplayMode::SoundWave) {
+      if (*m_ScreenDisplayMode == ScreenDisplayMode::CapturedExpression) {
         painter.setBrush(QColor(0, 0xcd, 0));
       } else {
         painter.setBrush(QColor(0xcd, 0, 0));
       }
       painter.drawEllipse(static_cast<int>(m_HeadStatus->rotationZ * -10.0) + 245,
                           static_cast<int>(m_HeadStatus->rotationX * -10.0) + 245,
-                          16,
-                          16);
+                          10,
+                          10);
     }
   }
 
@@ -148,6 +147,12 @@ ManualTrackControl::ManualTrackControl(wgc0310::HeadStatus *headStatus,
   hbox->addStretch();
 
   QVBoxLayout *vbox = new QVBoxLayout();
+  QLabel *introduction = new QLabel(
+    "左键单击白色区域并使用鼠标操控，右键单击或者按 <code>ESC</code> 来停止操控。<br/>"
+    "按 <code>Q</code> 来切换面部表情/音频分析，按 <code>W</code> 来切换口部状态"
+  );
+  vbox->addWidget(introduction);
+
   vbox->addStretch();
   vbox->addLayout(hbox);
   vbox->addStretch();
