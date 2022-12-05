@@ -1,5 +1,4 @@
 #include "ui_next/ControlPanel.h"
-#include "ui/GLWidget.h"
 
 #include <QCloseEvent>
 #include <QPushButton>
@@ -66,6 +65,7 @@ ControlPanel::ControlPanel()
   layout->addWidget(m_BodyAnimationButton);
   layout->addWidget(m_FaceAnimationButton);
   layout->addWidget(m_PoseEstimationButton);
+  layout->addWidget(m_VolumeAnalysisButton);
   layout->addWidget(m_AboutButton);
   layout->addStretch();
 

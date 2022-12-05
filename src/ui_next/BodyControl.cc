@@ -276,6 +276,7 @@ static void ClearLayout(QLayout *layout) {
 }
 
 void BodyControl::ReloadBodyAnimations() {
+  m_BodyStatus->Reset();
   m_BodyAnimations.clear();
   ClearLayout(m_MinimizedLayout);
   ClearLayout(m_DetailedLayout);
@@ -295,5 +296,30 @@ void BodyControl::ReloadBodyAnimations() {
     }
 
     m_BodyAnimations.push_back(std::move(animation));
+  }
+
+  {
+    int i = 0;
+    for (const auto &animation: m_BodyAnimations) {
+      auto animationPtr = animation.get();
+      auto clickHandler = [this, animationPtr] {
+        m_BodyStatus->playAnimationStatus.SetAnimation(animationPtr);
+        emit
+        this->StartBodyAnimation();
+      };
+
+      QPushButton *hButton = new QPushButton(QString::number(i));
+      hButton->setFixedWidth(32);
+      hButton->setToolTip(animation->GetName());
+      m_MinimizedLayout->addWidget(hButton);
+
+      QPushButton *vButton = new QPushButton(animation->GetName());
+      m_DetailedLayout->addWidget(vButton);
+
+      connect(hButton, &QPushButton::clicked, hButton, clickHandler);
+      connect(vButton, &QPushButton::clicked, vButton, clickHandler);
+
+      i += 1;
+    }
   }
 }
