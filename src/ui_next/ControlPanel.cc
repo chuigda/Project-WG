@@ -2,13 +2,14 @@
 #include "ui/GLWidget.h"
 
 #include <QPushButton>
-#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include "ui_next/GLWindow.h"
 #include "ui_next/CameraControl.h"
 #include "ui_next/FaceTrackControl.h"
 #include "ui_next/ScreenAnimationControl.h"
+#include "ui_next/CloseSignallingWidget.h"
 
-static void LinkButtonAndWidget(QPushButton *button, QWidget *widget) {
+static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widget) {
   QObject::connect(button, &QPushButton::toggled, widget, [widget] (bool checked) {
     if (checked) {
       widget->show();
@@ -16,10 +17,13 @@ static void LinkButtonAndWidget(QPushButton *button, QWidget *widget) {
       widget->hide();
     }
   });
+  QObject::connect(widget, &CloseSignallingWidget::AboutToClose, button, [button] {
+    button->setChecked(false);
+  });
 }
 
 ControlPanel::ControlPanel()
-  : QWidget(nullptr, Qt::Window),
+  : CloseSignallingWidget(nullptr, Qt::Window),
     m_ScreenDisplayMode(wgc0310::ScreenDisplayMode::CapturedExpression),
     m_GLWindow(new GLWindow(
       &m_CameraEntityStatus,
@@ -38,6 +42,8 @@ ControlPanel::ControlPanel()
     m_PoseEstimationButton(new QPushButton("姿态控制")),
     m_AboutButton(new QPushButton("关于"))
 {
+  setWindowTitle("控制面板");
+
   m_WorkerThread.start();
   m_GLWindow->show();
 
@@ -52,7 +58,7 @@ ControlPanel::ControlPanel()
   LinkButtonAndWidget(m_FaceAnimationButton, m_ScreenAnimationControl);
   LinkButtonAndWidget(m_PoseEstimationButton, m_TrackControl);
 
-  QVBoxLayout *layout = new QVBoxLayout;
+  QHBoxLayout *layout = new QHBoxLayout();
   layout->addWidget(m_OpenGLSettingsButton);
   layout->addWidget(m_CameraSettingsButton);
   layout->addWidget(m_BodyAnimationButton);

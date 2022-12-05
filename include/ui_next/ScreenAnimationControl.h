@@ -5,12 +5,13 @@
 #include <QWidget>
 
 #include "wgc0310/ScreenAnimationStatus.h"
+#include "ui_next/CloseSignallingWidget.h"
 
 class GLWindow;
 class QHBoxLayout;
 class QVBoxLayout;
 
-class ScreenAnimationControl : public QWidget {
+class ScreenAnimationControl : public CloseSignallingWidget {
   Q_OBJECT
 
 public:

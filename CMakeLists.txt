@@ -60,6 +60,7 @@ set(PROJECT_SOURCES
     include/ui_next/FaceTrackControl.h
     include/ui_next/LicensePresenter.h
     include/ui_next/GLWindow.h
+    include/ui_next/CloseSignallingWidget.h
 
     src/util/DynLoad.cc
     src/util/Constants.cc

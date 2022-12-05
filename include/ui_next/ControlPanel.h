@@ -6,6 +6,7 @@
 #include "wgc0310/ScreenAnimationStatus.h"
 #include "wgc0310/HeadStatus.h"
 #include "ui/CameraEntityStatus.h"
+#include "ui_next/CloseSignallingWidget.h"
 
 class QPushButton;
 class GLWindow;
@@ -13,7 +14,7 @@ class CameraControl;
 class TrackControl;
 class ScreenAnimationControl;
 
-class ControlPanel : public QWidget {
+class ControlPanel : public CloseSignallingWidget {
   Q_OBJECT
 
 public:

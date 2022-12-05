@@ -8,7 +8,7 @@
 TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
                            wgc0310::ScreenDisplayMode *screenDisplayMode,
                            QThread *workerThread)
-  : QWidget(nullptr, Qt::Window),
+  : CloseSignallingWidget(nullptr, Qt::Window),
     m_HeadStatus(headStatus),
     m_ScreenDisplayMode(screenDisplayMode),
     m_WorkerThread(workerThread)

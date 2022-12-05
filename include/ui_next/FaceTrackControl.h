@@ -3,12 +3,13 @@
 
 #include <QWidget>
 #include "wgc0310/HeadStatus.h"
+#include "ui_next/CloseSignallingWidget.h"
 
 class VTSTrackControl;
 class OSFTrackControl;
 class ManualTrackControl;
 
-class TrackControl : public QWidget {
+class TrackControl : public CloseSignallingWidget {
   Q_OBJECT
 
 public:

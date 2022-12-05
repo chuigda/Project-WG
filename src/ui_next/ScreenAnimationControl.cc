@@ -13,7 +13,7 @@
 
 ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
                                                wgc0310::ScreenAnimationStatus *animationStatus)
-  : QWidget(nullptr, Qt::Window),
+  : CloseSignallingWidget(nullptr, Qt::Window),
     m_GLWindow(glWindow),
     m_ScreenAnimationStatus(animationStatus),
     m_StaticImageButtonsLayout(new QHBoxLayout()),

@@ -2,10 +2,11 @@
 #define PROJECT_WG_UINEXT_CAMERA_CONTROL_H
 
 #include <QWidget>
+#include "ui_next/CloseSignallingWidget.h"
 
 class CameraEntityStatus;
 
-class CameraControl : public QWidget {
+class CameraControl : public CloseSignallingWidget {
   Q_OBJECT
 
 public:
