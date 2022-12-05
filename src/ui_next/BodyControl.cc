@@ -63,6 +63,7 @@ static void SetupArmGroup(BodyControl *bodyControl,
   QObject::connect(
     bodyControl,
     &BodyControl::StartBodyAnimation,
+    bodyControl,
     [slider0_, slider1_, slider2_, slider3_, slider4_] {
       slider0_->setEnabled(false);
       slider1_->setEnabled(false);
@@ -75,6 +76,7 @@ static void SetupArmGroup(BodyControl *bodyControl,
   QObject::connect(
     controlPanel,
     &ControlPanel::DoneBodyAnimation,
+    controlPanel,
     [slider0_, slider1_, slider2_, slider3_, slider4_, armStatus] {
       slider0_->setEnabled(true);
       slider1_->setEnabled(true);
@@ -157,7 +159,7 @@ BodyControl::BodyControl(wgc0310::BodyStatus *bodyStatus,
       });
       radioLayout->addWidget(radioGray);
 
-      connect(slider, &QSlider::valueChanged, [=] (int value) {
+      connect(slider, &QSlider::valueChanged, [this](int value) {
         m_BodyStatus->SetBlinkFrames(value);
       });
       layout->addWidget(slider);
