@@ -21,8 +21,12 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
     m_ScreenAnimationButtonsLayout(new QHBoxLayout()),
     m_ScreenAnimationButtonsLayoutV(new QVBoxLayout())
 {
-  connect(m_GLWindow, &GLWindow::OpenGLInitialized,
-          this, &ScreenAnimationControl::GLContextReady);
+  setWindowTitle("屏幕动画");
+
+  connect(m_GLWindow,
+          &GLWindow::OpenGLInitialized,
+          this,
+          &ScreenAnimationControl::GLContextReady);
 
   QWidget *minimalDisplayWidget = new QWidget();
   QWidget *detailedDisplayWidget = new QWidget();
@@ -91,8 +95,8 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
 
       hBox->addLayout(m_StaticImageButtonsLayout);
       hBox->addStretch();
-      QPushButton *reloadButton = new QPushButton("↻");
-      reloadButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+      QPushButton *reloadButton = new QPushButton("↻>");
+      reloadButton->setFixedWidth(32);
       connect(reloadButton, &QPushButton::clicked, reloadButton, reloadStaticImages);
       hBox->addWidget(reloadButton);
 
@@ -108,10 +112,10 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
       hBox->addLayout(m_ScreenAnimationButtonsLayout);
       hBox->addStretch();
       QPushButton *controlButton = new QPushButton("⌘");
-      controlButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+      controlButton->setFixedWidth(32);
       hBox->addWidget(controlButton);
       QPushButton *reloadButton = new QPushButton("↻");
-      reloadButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+      reloadButton->setFixedWidth(32);
       connect(reloadButton, &QPushButton::clicked, reloadButton, reloadAnimations);
       hBox->addWidget(reloadButton);
 
@@ -212,7 +216,7 @@ void ScreenAnimationControl::ReloadStaticImages() {
       wgc0310::StaticScreenImage *imagePtr = &image;
 
       QPushButton *hButton = new QPushButton(QString::number(i));
-      hButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+      hButton->setFixedWidth(32);
       hButton->setToolTip(image.imageName);
       QPushButton *vButton = new QPushButton(image.imageName);
 
@@ -279,7 +283,7 @@ void ScreenAnimationControl::ReloadScreenAnimations() {
       wgc0310::ScreenAnimation *animationPtr = animation.get();
 
       QPushButton *hButton = new QPushButton(QString::number(i));
-      hButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+      hButton->setFixedWidth(32);
       QString animationName(animation->rawAnimation->name);
       hButton->setToolTip(animationName);
       QPushButton *vButton = new QPushButton(animationName);

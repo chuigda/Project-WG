@@ -27,10 +27,13 @@ GLWindow::GLWindow(CameraEntityStatus const* cameraEntityStatus,
     m_EyeTexture(nullptr),
     m_MouthTexture(nullptr),
     m_MouthOpenTexture(nullptr),
+    m_VolumeIndices {},
     m_VolumeVBO { 0, 0 },
     // Event-based timer
     m_Timer(new QTimer(this))
 {
+  setWindowTitle("Project-WG - 绘图输出窗口");
+
   QSurfaceFormat format;
   format.setSamples(8);
   format.setDepthBufferSize(16);

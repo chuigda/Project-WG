@@ -52,6 +52,8 @@ static QLayout* CreateSliderSuite(QString const& suiteName,
 CameraControl::CameraControl(CameraEntityStatus *status) noexcept
   : m_CameraEntityStatus(status)
 {
+  setWindowTitle("相机控制");
+
   this->setMinimumWidth(320);
 
   QVBoxLayout *mainLayout = new QVBoxLayout();
