@@ -38,6 +38,7 @@ ControlPanel::ControlPanel()
     m_PoseEstimationButton(new QPushButton("姿态控制")),
     m_AboutButton(new QPushButton("关于"))
 {
+  m_WorkerThread.start();
   m_GLWindow->show();
 
   m_OpenGLSettingsButton->setCheckable(true);
@@ -61,4 +62,8 @@ ControlPanel::ControlPanel()
   layout->addStretch();
 
   this->setLayout(layout);
+}
+
+ControlPanel::~ControlPanel() noexcept {
+  m_WorkerThread.quit();
 }

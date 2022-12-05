@@ -71,8 +71,6 @@ void GLWindow::initializeGL() {
   QOpenGLWidget::initializeGL();
   cw::SetupPreferredSettings(this);
 
-  emit OpenGLInitialized();
-
   m_Light = std::make_unique<cw::PointLight>(GL_LIGHT0,
                                              cw::RGBAColor(32, 32, 32),
                                              cw::RGBAColor(187, 187, 187),
@@ -112,6 +110,8 @@ void GLWindow::initializeGL() {
   }
 
   // TODO
+
+  emit OpenGLInitialized();
 }
 
 void GLWindow::paintGL() {

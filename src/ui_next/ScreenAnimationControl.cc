@@ -15,7 +15,11 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
                                                wgc0310::ScreenAnimationStatus *animationStatus)
   : QWidget(nullptr, Qt::Window),
     m_GLWindow(glWindow),
-    m_ScreenAnimationStatus(animationStatus)
+    m_ScreenAnimationStatus(animationStatus),
+    m_StaticImageButtonsLayout(new QHBoxLayout()),
+    m_StaticImageButtonsLayoutV(new QVBoxLayout()),
+    m_ScreenAnimationButtonsLayout(new QHBoxLayout()),
+    m_ScreenAnimationButtonsLayoutV(new QVBoxLayout())
 {
   connect(m_GLWindow, &GLWindow::OpenGLInitialized,
           this, &ScreenAnimationControl::GLContextReady);

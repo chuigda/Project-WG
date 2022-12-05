@@ -18,6 +18,7 @@ class ControlPanel : public QWidget {
 
 public:
   ControlPanel();
+  ~ControlPanel() noexcept;
 
 private:
   // Worker thread, must be initialized very first

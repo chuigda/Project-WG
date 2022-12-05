@@ -118,7 +118,9 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
 void ScreenImpl::InitializeTexture(GLFunctions *f) {
   // initialize FBO first
   f->glGenFramebuffers(1, &fbo);
+  GLenum err = glGetError();
   f->glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+  err = glGetError();
 
   f->glGenTextures(1, &screenTextureId);
   f->glBindTexture(GL_TEXTURE_2D, screenTextureId);
@@ -138,7 +140,8 @@ void ScreenImpl::InitializeTexture(GLFunctions *f) {
   GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
   f->glDrawBuffers(1, DrawBuffers);
 
-  if(f->glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+  GLenum bufferStatus = f->glCheckFramebufferStatus(GL_FRAMEBUFFER);
+  if (bufferStatus != GL_FRAMEBUFFER_COMPLETE) {
     qCritical() << "ScreenImpl::InitializeTexture:"
                 << "failed initializing frame buffer object, glGetError() ="
                 << f->glGetError();

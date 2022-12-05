@@ -1,9 +1,7 @@
 #include <QApplication>
 #include <QFile>
-#include <QThread>
-#include "wgc0310/HeadStatus.h"
 #include "ui_next/LicensePresenter.h"
-#include "ui_next/FaceTrackControl.h"
+#include "ui_next/ControlPanel.h"
 
 QString ReadToString(const char *fileName) {
   QFile f(fileName);
@@ -54,18 +52,8 @@ QDialog::DialogCode PrecheckLicense() {
 int main(int argc, char *argv[]) {
   QApplication a { argc, argv };
 
-  wgc0310::HeadStatus headStatus;
-  wgc0310::ScreenDisplayMode screenDisplayMode = wgc0310::ScreenDisplayMode::CapturedExpression;
-  QThread workerThread;
-  workerThread.start();
-
-  TrackControl control {
-    &headStatus,
-    &screenDisplayMode,
-    &workerThread
-  };
-  control.show();
-  workerThread.quit();
+  ControlPanel panel;
+  panel.show();
 
   return QApplication::exec();
 }
