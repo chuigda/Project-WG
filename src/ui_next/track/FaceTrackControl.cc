@@ -32,7 +32,7 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
   osfMode->setChecked(true);
   modeSelectBox->addWidget(osfMode);
 
-  QRadioButton *manualMode = new QRadioButton("Manual");
+  QRadioButton *manualMode = new QRadioButton("手动控制");
   modeSelectBox->addWidget(manualMode);
 
   mainLayout->addLayout(modeSelectBox);

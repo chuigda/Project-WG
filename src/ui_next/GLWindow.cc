@@ -1,6 +1,7 @@
 #include "ui_next/GLWindow.h"
 
 #include <QTimer>
+#include <QCloseEvent>
 #include "cwglx/Setup.h"
 #include "cwglx/drawable/TriangleGen.h"
 #include "wgc0310/ScreenGlass.h"
@@ -9,16 +10,20 @@
 
 GLWindow::GLWindow(CameraEntityStatus const* cameraEntityStatus,
                    wgc0310::HeadStatus const* headStatus,
+                   wgc0310::BodyStatus const* bodyStatus,
                    cw::CircularBuffer<qreal, 160> *volumeLevels,
                    bool *volumeLevelsUpdated,
-                   wgc0310::ScreenDisplayMode const *screenDisplayMode)
+                   wgc0310::ScreenDisplayMode const *screenDisplayMode,
+                   bool const* shouldCloseGLWindow)
   : QOpenGLWidget(nullptr, Qt::Window),
     // Input status
     m_CameraEntityStatus(cameraEntityStatus),
     m_HeadStatus(headStatus),
+    m_BodyStatus(bodyStatus),
     m_VolumeLevels(volumeLevels),
     m_VolumeLevelsUpdated(volumeLevelsUpdated),
     m_ScreenDisplayMode(screenDisplayMode),
+    m_ShouldCloseGLWindow(shouldCloseGLWindow),
     // Internal states and OpenGL resources
     m_Light(nullptr),
     m_Light2(nullptr),
@@ -155,4 +160,10 @@ void GLWindow::paintGL() {
 void GLWindow::resizeGL(int w, int h) {
   Q_UNUSED(w)
   Q_UNUSED(h)
+}
+
+void GLWindow::closeEvent(QCloseEvent *event) {
+  if (!*m_ShouldCloseGLWindow) {
+    event->ignore();
+  }
 }

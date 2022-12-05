@@ -5,6 +5,8 @@
 #include "ui_next/CloseSignallingWidget.h"
 
 class ControlPanel;
+class QHBoxLayout;
+class QVBoxLayout;
 
 class BodyControl : public CloseSignallingWidget {
   Q_OBJECT
@@ -20,8 +22,15 @@ signals:
 #pragma clang diagnostic pop
 
 private:
+  void ReloadBodyAnimations();
+
   wgc0310::BodyStatus *m_BodyStatus;
+
+  QHBoxLayout *m_MinimizedLayout;
+  QVBoxLayout *m_DetailedLayout;
+
   std::vector<std::unique_ptr<wgc0310::BodyAnimation>> m_BodyAnimations;
 };
 
 #endif // PROJECT_WG_UINEXT_BODY_CONTROL_H
+

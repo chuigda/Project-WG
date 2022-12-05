@@ -7,16 +7,15 @@
 #include "wgc0310/HeadStatus.h"
 #include "wgc0310/BodyStatus.h"
 #include "ui/CameraEntityStatus.h"
-#include "ui_next/CloseSignallingWidget.h"
-#include "BodyControl.h"
 
 class QPushButton;
 class GLWindow;
 class CameraControl;
 class TrackControl;
 class ScreenAnimationControl;
+class BodyControl;
 
-class ControlPanel final : public CloseSignallingWidget {
+class ControlPanel final : public QWidget {
   Q_OBJECT
 
 public:
@@ -29,6 +28,9 @@ signals:
   void DoneBodyAnimation();
 #pragma clang diagnostic pop
 
+protected:
+  void closeEvent(QCloseEvent *e) final;
+
 private:
   // Worker thread, must be initialized very first
   QThread m_WorkerThread;
@@ -39,6 +41,7 @@ private:
   wgc0310::ScreenAnimationStatus m_ScreenAnimationStatus;
   wgc0310::ScreenDisplayMode m_ScreenDisplayMode;
   wgc0310::BodyStatus m_BodyStatus;
+  bool m_ShouldCloseGLWindow;
 
   // widgets
   GLWindow *m_GLWindow;
@@ -52,6 +55,7 @@ private:
   QPushButton *m_BodyAnimationButton;
   QPushButton *m_FaceAnimationButton;
   QPushButton *m_PoseEstimationButton;
+  QPushButton *m_VolumeAnalysisButton;
   QPushButton *m_AboutButton;
 };
 

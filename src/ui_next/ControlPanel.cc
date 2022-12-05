@@ -1,15 +1,19 @@
 #include "ui_next/ControlPanel.h"
 #include "ui/GLWidget.h"
 
+#include <QCloseEvent>
 #include <QPushButton>
 #include <QHBoxLayout>
+#include <QMessageBox>
 #include "ui_next/GLWindow.h"
 #include "ui_next/CameraControl.h"
 #include "ui_next/FaceTrackControl.h"
 #include "ui_next/ScreenAnimationControl.h"
 #include "ui_next/CloseSignallingWidget.h"
+#include "ui_next/BodyControl.h"
 
 static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widget) {
+  button->setCheckable(true);
   QObject::connect(button, &QPushButton::toggled, widget, [widget] (bool checked) {
     if (checked) {
       widget->show();
@@ -23,24 +27,28 @@ static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widg
 }
 
 ControlPanel::ControlPanel()
-  : CloseSignallingWidget(nullptr, Qt::Window),
+  : QWidget(nullptr, Qt::Window),
     m_ScreenDisplayMode(wgc0310::ScreenDisplayMode::CapturedExpression),
+    m_ShouldCloseGLWindow(false),
     m_GLWindow(new GLWindow(
       &m_CameraEntityStatus,
       &m_HeadStatus,
+      &m_BodyStatus,
       nullptr,
       nullptr,
-      &m_ScreenDisplayMode
+      &m_ScreenDisplayMode,
+      &m_ShouldCloseGLWindow
     )),
     m_CameraControl(new CameraControl(&m_CameraEntityStatus)),
     m_TrackControl(new TrackControl(&m_HeadStatus, &m_ScreenDisplayMode, &m_WorkerThread)),
     m_ScreenAnimationControl(new ScreenAnimationControl(m_GLWindow, &m_ScreenAnimationStatus)),
     m_BodyControl(new BodyControl(&m_BodyStatus, this)),
-    m_OpenGLSettingsButton(new QPushButton("OpenGL 设定")),
+    m_OpenGLSettingsButton(new QPushButton("OpenGL")),
     m_CameraSettingsButton(new QPushButton("相机设置")),
     m_BodyAnimationButton(new QPushButton("关节动画")),
-    m_FaceAnimationButton(new QPushButton("面部动画")),
+    m_FaceAnimationButton(new QPushButton("屏幕画面")),
     m_PoseEstimationButton(new QPushButton("姿态控制")),
+    m_VolumeAnalysisButton(new QPushButton("音频分析")),
     m_AboutButton(new QPushButton("关于"))
 {
   setWindowTitle("控制面板");
@@ -48,12 +56,6 @@ ControlPanel::ControlPanel()
   m_WorkerThread.start();
   m_GLWindow->show();
 
-  m_OpenGLSettingsButton->setCheckable(true);
-  m_CameraSettingsButton->setCheckable(true);
-  m_BodyAnimationButton->setCheckable(true);
-  m_FaceAnimationButton->setCheckable(true);
-  m_PoseEstimationButton->setCheckable(true);
-  m_AboutButton->setCheckable(true);
 
   LinkButtonAndWidget(m_CameraSettingsButton, m_CameraControl);
   LinkButtonAndWidget(m_FaceAnimationButton, m_ScreenAnimationControl);
@@ -75,4 +77,27 @@ ControlPanel::ControlPanel()
 ControlPanel::~ControlPanel() noexcept {
   m_WorkerThread.quit();
   m_WorkerThread.wait();
+}
+
+void ControlPanel::closeEvent(QCloseEvent *e) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+  int r = QMessageBox::warning(this,
+                               "警告 ",
+                               "如果关闭这个窗口，将会退出整个程序，确定吗？",
+                               "我手滑了",
+                               "JUST DO IT!");
+#pragma clang diagnostic pop
+
+  if (r == 1) {
+    m_ShouldCloseGLWindow = true;
+    m_GLWindow->close();
+    m_CameraControl->close();
+    m_ScreenAnimationControl->close();
+    m_BodyControl->close();
+
+    e->accept();
+  } else {
+    e->ignore();
+  }
 }

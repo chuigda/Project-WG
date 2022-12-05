@@ -21,7 +21,8 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
     m_ScreenAnimationButtonsLayout(new QHBoxLayout()),
     m_ScreenAnimationButtonsLayoutV(new QVBoxLayout())
 {
-  setWindowTitle("屏幕动画");
+  setWindowTitle("屏幕画面");
+  setMinimumWidth(600);
 
   connect(m_GLWindow,
           &GLWindow::OpenGLInitialized,
@@ -95,7 +96,7 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
 
       hBox->addLayout(m_StaticImageButtonsLayout);
       hBox->addStretch();
-      QPushButton *reloadButton = new QPushButton("↻>");
+      QPushButton *reloadButton = new QPushButton("↻");
       reloadButton->setFixedWidth(32);
       connect(reloadButton, &QPushButton::clicked, reloadButton, reloadStaticImages);
       hBox->addWidget(reloadButton);
