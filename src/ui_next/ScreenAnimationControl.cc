@@ -35,8 +35,6 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
 
   QVBoxLayout *mainLayout = new QVBoxLayout();
   this->setLayout(mainLayout);
-  mainLayout->addWidget(minimalDisplayWidget);
-  mainLayout->addWidget(detailedDisplayWidget);
 
   {
     QHBoxLayout *layout = new QHBoxLayout();
@@ -68,6 +66,9 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
       }
     );
   }
+
+  mainLayout->addWidget(minimalDisplayWidget);
+  mainLayout->addWidget(detailedDisplayWidget);
 
   auto reloadStaticImages = [this] {
     m_ScreenAnimationStatus->Reset();
@@ -136,7 +137,7 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
 
       vBox->addLayout(m_StaticImageButtonsLayoutV);
       vBox->addStretch();
-      QPushButton *reloadButton = new QPushButton("重新加载动画");
+      QPushButton *reloadButton = new QPushButton("重新加载图像");
       connect(reloadButton, &QPushButton::clicked, reloadButton, reloadStaticImages);
       vBox->addWidget(reloadButton);
 
