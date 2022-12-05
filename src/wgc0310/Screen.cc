@@ -118,9 +118,7 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
 void ScreenImpl::InitializeTexture(GLFunctions *f) {
   // initialize FBO first
   f->glGenFramebuffers(1, &fbo);
-  GLenum err = glGetError();
   f->glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-  err = glGetError();
 
   f->glGenTextures(1, &screenTextureId);
   f->glBindTexture(GL_TEXTURE_2D, screenTextureId);

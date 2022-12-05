@@ -66,4 +66,5 @@ ControlPanel::ControlPanel()
 
 ControlPanel::~ControlPanel() noexcept {
   m_WorkerThread.quit();
+  m_WorkerThread.wait();
 }

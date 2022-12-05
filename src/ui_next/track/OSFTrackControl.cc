@@ -360,6 +360,10 @@ OSFTrackControl::OSFTrackControl(wgc0310::HeadStatus *headStatus,
   }
 }
 
+OSFTrackControl::~OSFTrackControl() noexcept {
+  emit StopTracking();
+}
+
 void OSFTrackControl::HandleError(const QString& error) {
   QMessageBox::warning(this, "OSF 面部捕捉错误", error);
 }

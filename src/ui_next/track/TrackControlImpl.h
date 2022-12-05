@@ -29,13 +29,14 @@ struct OSFTrackParameter2 {
   float eyeMax = 0.0f;
 };
 
-class OSFTrackControl : public QWidget {
+class OSFTrackControl final : public QWidget {
   Q_OBJECT
 
 public:
   OSFTrackControl(wgc0310::HeadStatus *headStatus,
                   QThread *workerThread,
                   QWidget *parent = nullptr);
+  ~OSFTrackControl() noexcept final;
 
 signals:
 #pragma clang diagnostic push
