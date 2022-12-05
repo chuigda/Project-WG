@@ -35,6 +35,7 @@ ControlPanel::ControlPanel()
     m_CameraControl(new CameraControl(&m_CameraEntityStatus)),
     m_TrackControl(new TrackControl(&m_HeadStatus, &m_ScreenDisplayMode, &m_WorkerThread)),
     m_ScreenAnimationControl(new ScreenAnimationControl(m_GLWindow, &m_ScreenAnimationStatus)),
+    m_BodyControl(new BodyControl(&m_BodyStatus, this)),
     m_OpenGLSettingsButton(new QPushButton("OpenGL 设定")),
     m_CameraSettingsButton(new QPushButton("相机设置")),
     m_BodyAnimationButton(new QPushButton("关节动画")),
@@ -57,6 +58,7 @@ ControlPanel::ControlPanel()
   LinkButtonAndWidget(m_CameraSettingsButton, m_CameraControl);
   LinkButtonAndWidget(m_FaceAnimationButton, m_ScreenAnimationControl);
   LinkButtonAndWidget(m_PoseEstimationButton, m_TrackControl);
+  LinkButtonAndWidget(m_BodyAnimationButton, m_BodyControl);
 
   QHBoxLayout *layout = new QHBoxLayout();
   layout->addWidget(m_OpenGLSettingsButton);

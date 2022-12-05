@@ -46,6 +46,7 @@ set(PROJECT_SOURCES
 
     src/ui_next/ControlPanel.cc
     src/ui_next/CameraControl.cc
+    src/ui_next/BodyControl.cc
     src/ui_next/ScreenAnimationControl.cc
     src/ui_next/track/FaceTrackControl.cc
     src/ui_next/track/TrackControlImpl.h
@@ -56,6 +57,7 @@ set(PROJECT_SOURCES
     src/ui_next/GLWindow.cc
     include/ui_next/ControlPanel.h
     include/ui_next/CameraControl.h
+    include/ui_next/BodyControl.h
     include/ui_next/ScreenAnimationControl.h
     include/ui_next/FaceTrackControl.h
     include/ui_next/LicensePresenter.h
