@@ -13,8 +13,7 @@ GLWindow::GLWindow(CameraEntityStatus const* cameraEntityStatus,
                    wgc0310::BodyStatus const* bodyStatus,
                    cw::CircularBuffer<qreal, 160> *volumeLevels,
                    bool *volumeLevelsUpdated,
-                   wgc0310::ScreenDisplayMode const *screenDisplayMode,
-                   bool const* shouldCloseGLWindow)
+                   wgc0310::ScreenDisplayMode const *screenDisplayMode)
   : QOpenGLWidget(nullptr, Qt::Window),
     // Input status
     m_CameraEntityStatus(cameraEntityStatus),
@@ -23,7 +22,6 @@ GLWindow::GLWindow(CameraEntityStatus const* cameraEntityStatus,
     m_VolumeLevels(volumeLevels),
     m_VolumeLevelsUpdated(volumeLevelsUpdated),
     m_ScreenDisplayMode(screenDisplayMode),
-    m_ShouldCloseGLWindow(shouldCloseGLWindow),
     // Internal states and OpenGL resources
     m_Light(nullptr),
     m_Light2(nullptr),
@@ -38,6 +36,9 @@ GLWindow::GLWindow(CameraEntityStatus const* cameraEntityStatus,
     m_Timer(new QTimer(this))
 {
   setWindowTitle("Project-WG - 绘图输出窗口");
+  setWindowFlags(Qt::CustomizeWindowHint
+                 | Qt::WindowTitleHint
+                 | Qt::WindowMinMaxButtonsHint);
 
   QSurfaceFormat format;
   format.setSamples(8);
@@ -160,10 +161,4 @@ void GLWindow::paintGL() {
 void GLWindow::resizeGL(int w, int h) {
   Q_UNUSED(w)
   Q_UNUSED(h)
-}
-
-void GLWindow::closeEvent(QCloseEvent *event) {
-  if (!*m_ShouldCloseGLWindow) {
-    event->ignore();
-  }
 }

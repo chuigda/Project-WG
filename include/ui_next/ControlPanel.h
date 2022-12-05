@@ -41,7 +41,6 @@ private:
   wgc0310::ScreenAnimationStatus m_ScreenAnimationStatus;
   wgc0310::ScreenDisplayMode m_ScreenDisplayMode;
   wgc0310::BodyStatus m_BodyStatus;
-  bool m_ShouldCloseGLWindow;
 
   // widgets
   GLWindow *m_GLWindow;

@@ -29,15 +29,13 @@ static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widg
 ControlPanel::ControlPanel()
   : QWidget(nullptr, Qt::Window),
     m_ScreenDisplayMode(wgc0310::ScreenDisplayMode::CapturedExpression),
-    m_ShouldCloseGLWindow(false),
     m_GLWindow(new GLWindow(
       &m_CameraEntityStatus,
       &m_HeadStatus,
       &m_BodyStatus,
       nullptr,
       nullptr,
-      &m_ScreenDisplayMode,
-      &m_ShouldCloseGLWindow
+      &m_ScreenDisplayMode
     )),
     m_CameraControl(new CameraControl(&m_CameraEntityStatus)),
     m_TrackControl(new TrackControl(&m_HeadStatus, &m_ScreenDisplayMode, &m_WorkerThread)),
@@ -90,7 +88,6 @@ void ControlPanel::closeEvent(QCloseEvent *e) {
 #pragma clang diagnostic pop
 
   if (r == 1) {
-    m_ShouldCloseGLWindow = true;
     m_GLWindow->close();
     m_CameraControl->close();
     m_ScreenAnimationControl->close();

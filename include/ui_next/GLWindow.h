@@ -24,8 +24,7 @@ public:
                     wgc0310::BodyStatus const* bodyStatus,
                     cw::CircularBuffer<qreal, 160> *volumeLevels,
                     bool *volumeLevelsUpdated,
-                    wgc0310::ScreenDisplayMode const *screenDisplayMode,
-                    bool const* shouldCloseGLWindow);
+                    wgc0310::ScreenDisplayMode const *screenDisplayMode);
   ~GLWindow() final;
 
   void RunWithGLContext(std::function<void(void)> const& f);
@@ -41,9 +40,6 @@ signals:
   void OpenGLInitialized();
 #pragma clang diagnostic pop
 
-protected:
-  void closeEvent(QCloseEvent *event) final;
-
 private:
   // Input status
   CameraEntityStatus const* m_CameraEntityStatus;
@@ -52,7 +48,6 @@ private:
   cw::CircularBuffer<qreal, 160> *m_VolumeLevels;
   bool *m_VolumeLevelsUpdated;
   wgc0310::ScreenDisplayMode const *m_ScreenDisplayMode;
-  bool const* m_ShouldCloseGLWindow;
 
   // Internal states, OpenGL resources and so on
   std::unique_ptr<cw::Light> m_Light;
