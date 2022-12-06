@@ -5,30 +5,29 @@
 
 #include "cwglx/GL.h"
 
-class CameraEntityStatus {
+class EntityStatus {
 public:
-  GLfloat cameraX;
-  GLfloat cameraY;
-  GLfloat cameraZ;
+  GLfloat translateX;
+  GLfloat translateY;
+  GLfloat translateZ;
 
   GLfloat entityRotateX;
   GLfloat entityRotateY;
   GLfloat entityRotateZ;
 
-  explicit constexpr inline CameraEntityStatus() noexcept
-    : cameraX(0.0f),
-      cameraY(25.0f),
-      cameraZ(75.0f),
+  explicit constexpr inline EntityStatus() noexcept
+    : translateX(0.0f),
+      translateY(25.0f),
+      translateZ(75.0f),
       entityRotateX(0.0f),
       entityRotateY(0.0f),
       entityRotateZ(0.0f)
   {}
 
   constexpr void Reset() noexcept {
-    *this = CameraEntityStatus {};
+    *this = EntityStatus {};
   }
 
-  void ApplyCameraTransformation(GLFunctions *f) const noexcept;
   void ApplyEntityTransformation(GLFunctions *f) const noexcept;
 };
 

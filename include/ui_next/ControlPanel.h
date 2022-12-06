@@ -6,12 +6,12 @@
 #include "wgc0310/ScreenAnimationStatus.h"
 #include "wgc0310/HeadStatus.h"
 #include "wgc0310/BodyStatus.h"
-#include "ui/CameraEntityStatus.h"
+#include "ui/EntityStatus.h"
 #include "util/CircularBuffer.h"
 
 class QPushButton;
 class GLWindow;
-class CameraControl;
+class EntityControl;
 class TrackControl;
 class ScreenAnimationControl;
 class BodyControl;
@@ -39,7 +39,7 @@ private:
   QThread m_WorkerThread;
 
   // status
-  CameraEntityStatus m_CameraEntityStatus;
+  EntityStatus m_CameraEntityStatus;
   wgc0310::HeadStatus m_HeadStatus;
   wgc0310::ScreenAnimationStatus m_ScreenAnimationStatus;
   wgc0310::ScreenDisplayMode m_ScreenDisplayMode;
@@ -49,7 +49,7 @@ private:
 
   // widgets
   GLWindow *m_GLWindow;
-  CameraControl *m_CameraControl;
+  EntityControl *m_EntityControl;
   TrackControl *m_TrackControl;
   ScreenAnimationControl *m_ScreenAnimationControl;
   BodyControl *m_BodyControl;

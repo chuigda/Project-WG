@@ -9,7 +9,7 @@
 #include "cwglx/Texture.h"
 #include "ui/FaceTrackStatus.h"
 
-class CameraEntityStatus;
+class EntityStatus;
 
 namespace wgc0310 {
 struct StaticScreenImage;
@@ -26,7 +26,7 @@ class ConfigWidget final : public QWidget {
   Q_OBJECT
 
 public:
-  explicit ConfigWidget(CameraEntityStatus *cameraEntityStatus,
+  explicit ConfigWidget(EntityStatus *cameraEntityStatus,
                         wgc0310::BodyStatus *bodyStatus,
                         FaceTrackStatus *faceTrackStatus,
                         wgc0310::ScreenAnimationStatus *screenStatus,
@@ -81,7 +81,7 @@ private:
   Ui::ConfigWidget *ui;
 
   QWidget *m_GLWidget;
-  CameraEntityStatus *m_CameraEntityStatus;
+  EntityStatus *m_CameraEntityStatus;
   wgc0310::BodyStatus *m_BodyStatus;
   wgc0310::ScreenAnimationStatus *m_ScreenStatus;
 

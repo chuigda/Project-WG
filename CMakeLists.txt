@@ -39,13 +39,13 @@ set(PROJECT_SOURCES
     include/ui/ManualOperateWidget.h
 
     include/ui/FaceTrackStatus.h
-    include/ui/CameraEntityStatus.h
+    include/ui/EntityStatus.h
     include/ui/GLWidget.h
     include/ui/ConfigWidget.h
     include/ui/MessageBoxAlter.h
 
     src/ui_next/ControlPanel.cc
-    src/ui_next/CameraControl.cc
+    src/ui_next/EntityControl.cc
     src/ui_next/BodyControl.cc
     src/ui_next/ScreenAnimationControl.cc
     src/ui_next/track/FaceTrackControl.cc
@@ -57,7 +57,7 @@ set(PROJECT_SOURCES
     src/ui_next/LicensePresenter.cc
     src/ui_next/GLWindow.cc
     include/ui_next/ControlPanel.h
-    include/ui_next/CameraControl.h
+    include/ui_next/EntityControl.h
     include/ui_next/BodyControl.h
     include/ui_next/ScreenAnimationControl.h
     include/ui_next/FaceTrackControl.h

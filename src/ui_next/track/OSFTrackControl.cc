@@ -36,8 +36,7 @@ signals:
 public slots:
   void StartListening(std::uint16_t port) {
     if (m_Socket) {
-      emit TrackingError("已经有一个监听任务了\r\n"
-                         "请先停止监听");
+      emit TrackingError("已经有一个监听任务了，请先停止监听");
       return;
     }
 

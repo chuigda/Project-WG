@@ -3,12 +3,12 @@
 
 #include <QFile>
 #include <QMessageBox>
-#include "ui/CameraEntityStatus.h"
+#include "ui/EntityStatus.h"
 #include "include/wgc0310/BodyStatus.h"
 #include "include/wgc0310/ScreenAnimationStatus.h"
 #include "ui/MessageBoxAlter.h"
 
-ConfigWidget::ConfigWidget(CameraEntityStatus *cameraEntityStatus,
+ConfigWidget::ConfigWidget(EntityStatus *cameraEntityStatus,
                            wgc0310::BodyStatus *bodyStatus,
                            FaceTrackStatus *faceTrackStatus,
                            wgc0310::ScreenAnimationStatus *screenStatus,

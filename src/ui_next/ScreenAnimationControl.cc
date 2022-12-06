@@ -164,10 +164,11 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
 
 void ScreenAnimationControl::GLContextReady() {
   m_ScreenAnimationStatus->Reset();
-  m_GLWindow->RunWithGLContext([this] {
-    ReloadStaticImages();
-    ReloadScreenAnimations();
-  });
+
+  // `initializeGL` will call this indirectly, and we're already in OpenGL context if so.
+  // Thus, there's no need of doing `makeCurrent` / `doneCurrent` manually.
+  ReloadStaticImages();
+  ReloadScreenAnimations();
 }
 
 static void ClearLayout(QLayout *layout) {

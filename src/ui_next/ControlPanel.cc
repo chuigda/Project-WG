@@ -4,8 +4,9 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QMessageBox>
+#include <QTimer>
 #include "ui_next/GLWindow.h"
-#include "ui_next/CameraControl.h"
+#include "ui_next/EntityControl.h"
 #include "ui_next/FaceTrackControl.h"
 #include "ui_next/ScreenAnimationControl.h"
 #include "ui_next/BodyControl.h"
@@ -38,7 +39,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
       &m_VolumeLevelsUpdated,
       &m_ScreenDisplayMode
     )),
-    m_CameraControl(new CameraControl(&m_CameraEntityStatus)),
+    m_EntityControl(new EntityControl(&m_CameraEntityStatus)),
     m_TrackControl(new TrackControl(&m_HeadStatus, &m_ScreenDisplayMode, &m_WorkerThread)),
     m_ScreenAnimationControl(new ScreenAnimationControl(m_GLWindow, &m_ScreenAnimationStatus)),
     m_BodyControl(new BodyControl(&m_BodyStatus, this)),
@@ -56,7 +57,23 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   m_WorkerThread.start();
   m_GLWindow->show();
 
-  LinkButtonAndWidget(m_CameraSettingsButton, m_CameraControl);
+  QTimer *timer = new QTimer(this);
+  timer->setTimerType(Qt::PreciseTimer);
+  timer->start();
+  connect(timer, &QTimer::timeout, m_GLWindow, [this] {
+    if (m_BodyStatus.playAnimationStatus.IsPlayingAnimation()) {
+      if (!m_BodyStatus.playAnimationStatus.NextFrame(&m_BodyStatus)) {
+        m_BodyStatus.playAnimationStatus.SetAnimation(nullptr);
+        emit DoneBodyAnimation();
+      }
+    }
+
+    m_ScreenAnimationStatus.NextFrame();
+    m_BodyStatus.NextTick();
+    m_GLWindow->update();
+  });
+
+  LinkButtonAndWidget(m_CameraSettingsButton, m_EntityControl);
   LinkButtonAndWidget(m_FaceAnimationButton, m_ScreenAnimationControl);
   LinkButtonAndWidget(m_PoseEstimationButton, m_TrackControl);
   LinkButtonAndWidget(m_BodyAnimationButton, m_BodyControl);
@@ -92,7 +109,7 @@ void ControlPanel::closeEvent(QCloseEvent *e) {
 
   if (r == 1) {
     m_GLWindow->close();
-    m_CameraControl->close();
+    m_EntityControl->close();
     m_ScreenAnimationControl->close();
     m_BodyControl->close();
 

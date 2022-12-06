@@ -12,14 +12,14 @@
 #include "wgc0310/Mesh.h"
 #include "wgc0310/Screen.h"
 #include "wgc0310/HeadStatus.h"
-#include "ui/CameraEntityStatus.h"
+#include "ui/EntityStatus.h"
 #include "util/CircularBuffer.h"
 
 class GLWindow final : public QOpenGLWidget, public GLFunctions {
   Q_OBJECT
 
 public:
-  explicit GLWindow(CameraEntityStatus const* cameraEntityStatus,
+  explicit GLWindow(EntityStatus const* cameraEntityStatus,
                     wgc0310::HeadStatus const* headStatus,
                     wgc0310::BodyStatus const* bodyStatus,
                     cw::CircularBuffer<qreal, 160> *volumeLevels,
@@ -41,8 +41,12 @@ signals:
 #pragma clang diagnostic pop
 
 private:
+  void DrawScreenContent();
+  void DrawArm(const wgc0310::ArmStatus &armStatus, GLfloat coeff);
+
+private:
   // Input status
-  CameraEntityStatus const* m_CameraEntityStatus;
+  EntityStatus const* m_CameraEntityStatus;
   wgc0310::HeadStatus const* m_HeadStatus;
   wgc0310::BodyStatus const* m_BodyStatus;
   cw::CircularBuffer<qreal, 160> *m_VolumeLevels;
@@ -65,9 +69,6 @@ private:
   std::array<cw::Vertex2DF, 640> m_VolumeVertices;
   std::array<GLuint, 640> m_VolumeIndices;
   std::array<GLuint, 2> m_VolumeVBO;
-
-  // Event-based timer
-  QTimer *m_Timer;
 };
 
 #endif // PROJECT_WG_UINEXT_GLWINDOW_H

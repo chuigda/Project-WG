@@ -26,8 +26,8 @@ public:
   cw::Drawable const* chestPlate;
   cw::Drawable const* power;
   cw::Drawable const* powerPin;
-  cw::Drawable const* ber;
-  cw::Drawable const* berShell;
+  cw::Drawable const* colorTimer;
+  cw::Drawable const* colorTimerShell;
 
   // 腹部模型
   cw::Drawable const* abdomen;

@@ -4,13 +4,13 @@
 #include <QWidget>
 #include "ui_next/CloseSignallingWidget.h"
 
-class CameraEntityStatus;
+class EntityStatus;
 
-class CameraControl : public CloseSignallingWidget {
+class EntityControl : public CloseSignallingWidget {
   Q_OBJECT
 
 public:
-  explicit CameraControl(CameraEntityStatus *status) noexcept;
+  explicit EntityControl(EntityStatus *status) noexcept;
 
 signals:
 #pragma clang diagnostic push
@@ -20,7 +20,7 @@ signals:
 
 private:
   // Status output
-  CameraEntityStatus *m_CameraEntityStatus;
+  EntityStatus *m_CameraEntityStatus;
 };
 
 #endif // PROJECT_WG_UINEXT_CAMERA_CONTROL_H

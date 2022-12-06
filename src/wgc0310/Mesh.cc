@@ -13,8 +13,8 @@ WGCMeshCollection::WGCMeshCollection()
     chestPlate(nullptr),
     power(nullptr),
     powerPin(nullptr),
-    ber(nullptr),
-    berShell(nullptr),
+    colorTimer(nullptr),
+    colorTimerShell(nullptr),
     abdomen(nullptr),
     waist(nullptr),
     shoulder(nullptr),
@@ -72,8 +72,8 @@ void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
   LOAD_MESH_MTL("./model/chest-plate.mesh", chrome, chestPlate)
   LOAD_MESH_MTL("./model/power.mesh", blackPlastic, power)
   LOAD_MESH_MTL("./model/power-pin.mesh", brass, powerPin)
-  LOAD_MESH_MTL("./model/ber-shell.mesh", glass, berShell)
-  LOAD_MESH("./model/ber.mesh", ber)
+  LOAD_MESH_MTL("./model/ber-shell.mesh", glass, colorTimerShell)
+  LOAD_MESH("./model/ber.mesh", colorTimer)
 
   LOAD_MESH_MTL("./model/abdomen.mesh", blackPlastic, abdomen)
   LOAD_MESH_MTL("./model/waist.mesh", plastic, waist)

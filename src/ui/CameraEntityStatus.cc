@@ -1,13 +1,11 @@
-#include "ui/CameraEntityStatus.h"
+#include "ui/EntityStatus.h"
 
 #include "cwglx/Vertex.h"
 #include "cwglx/GLImpl.h"
 
-void CameraEntityStatus::ApplyCameraTransformation(GLFunctions *f) const noexcept {
-  f->glTranslatef(-cameraX, -cameraY, -cameraZ);
-}
+void EntityStatus::ApplyEntityTransformation(GLFunctions *f) const noexcept {
+  f->glTranslatef(-translateX, -translateY, -translateZ);
 
-void CameraEntityStatus::ApplyEntityTransformation(GLFunctions *f) const noexcept {
   cw::VectorF entityRotation(entityRotateX, entityRotateY, entityRotateZ);
   cw::VectorF normalizedRotationVec = entityRotation.Normalize();
   GLdouble rotationVecLen = entityRotation.Length();

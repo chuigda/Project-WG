@@ -9,7 +9,7 @@
 #include "cwglx/Light.h"
 #include "cwglx/Drawable.h"
 #include "cwglx/DrawableArena.h"
-#include "ui/CameraEntityStatus.h"
+#include "ui/EntityStatus.h"
 #include "ui/FaceTrackStatus.h"
 #include "include/wgc0310/ScreenAnimationStatus.h"
 
@@ -74,7 +74,7 @@ private:
   wgc0310::Screen const* m_Screen;
 
   wgc0310::BodyStatus m_BodyStatus;
-  CameraEntityStatus m_CameraEntityStatus;
+  EntityStatus m_CameraEntityStatus;
   FaceTrackStatus m_FaceTrackStatus;
   wgc0310::ScreenAnimationStatus m_ScreenStatus;
   ConfigWidget *m_ConfigWidget;

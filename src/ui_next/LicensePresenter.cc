@@ -131,6 +131,7 @@ void LicensePresenter::showEvent(QShowEvent *) {
     this->close();
   }
 
+  m_CurrentLicense = 0;
   DisplayCurrentLicense();
 }
 

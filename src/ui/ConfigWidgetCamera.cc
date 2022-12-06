@@ -1,11 +1,11 @@
 #include "ui/ConfigWidget.h"
-#include "ui/CameraEntityStatus.h"
+#include "ui/EntityStatus.h"
 #include "ui_ConfigWidget.h"
 
 void ConfigWidget::SetupCameraEntityPage() {
-  ui->cameraXSlider->setValue(static_cast<int>(m_CameraEntityStatus->cameraX / 5.0f));
-  ui->cameraYSlider->setValue(static_cast<int>(m_CameraEntityStatus->cameraX / 5.0f));
-  ui->cameraZSlider->setValue(static_cast<int>(m_CameraEntityStatus->cameraX / 5.0f));
+  ui->cameraXSlider->setValue(static_cast<int>(m_CameraEntityStatus->translateX / 5.0f));
+  ui->cameraYSlider->setValue(static_cast<int>(m_CameraEntityStatus->translateX / 5.0f));
+  ui->cameraZSlider->setValue(static_cast<int>(m_CameraEntityStatus->translateX / 5.0f));
 
   ui->entityXAngleSlider->setValue(static_cast<int>(m_CameraEntityStatus->entityRotateX / 10.0f));
   ui->entityYAngleSlider->setValue(static_cast<int>(m_CameraEntityStatus->entityRotateY / 10.0f));
@@ -38,15 +38,15 @@ void ConfigWidget::SetupCameraEntityPage() {
 }
 
 void ConfigWidget::UpdateCameraX(int value) {
-  m_CameraEntityStatus->cameraX = static_cast<GLfloat>(value * 5);
+  m_CameraEntityStatus->translateX = static_cast<GLfloat>(value * 5);
 }
 
 void ConfigWidget::UpdateCameraY(int value) {
-  m_CameraEntityStatus->cameraY = static_cast<GLfloat>(value * 5);
+  m_CameraEntityStatus->translateY = static_cast<GLfloat>(value * 5);
 }
 
 void ConfigWidget::UpdateCameraZ(int value) {
-  m_CameraEntityStatus->cameraZ = static_cast<GLfloat>(value * 5);
+  m_CameraEntityStatus->translateZ = static_cast<GLfloat>(value * 5);
 }
 
 void ConfigWidget::UpdateEntityRotationX(int value) {
@@ -64,9 +64,9 @@ void ConfigWidget::UpdateEntityRotationZ(int value) {
 void ConfigWidget::ResetCameraEntityAll() {
   m_CameraEntityStatus->Reset();
 
-  ui->cameraXSlider->setValue(static_cast<int>(m_CameraEntityStatus->cameraX / 5.0f));
-  ui->cameraYSlider->setValue(static_cast<int>(m_CameraEntityStatus->cameraX / 5.0f));
-  ui->cameraZSlider->setValue(static_cast<int>(m_CameraEntityStatus->cameraX / 5.0f));
+  ui->cameraXSlider->setValue(static_cast<int>(m_CameraEntityStatus->translateX / 5.0f));
+  ui->cameraYSlider->setValue(static_cast<int>(m_CameraEntityStatus->translateX / 5.0f));
+  ui->cameraZSlider->setValue(static_cast<int>(m_CameraEntityStatus->translateX / 5.0f));
 
   ui->entityXAngleSlider->setValue(static_cast<int>(m_CameraEntityStatus->entityRotateX / 10.0f));
   ui->entityYAngleSlider->setValue(static_cast<int>(m_CameraEntityStatus->entityRotateY / 10.0f));

@@ -8,7 +8,7 @@
 #include "cwglx/drawable/PlainTriangles.h"
 #include "glu/FakeGLU.h"
 
-GLWindow::GLWindow(CameraEntityStatus const* cameraEntityStatus,
+GLWindow::GLWindow(EntityStatus const* cameraEntityStatus,
                    wgc0310::HeadStatus const* headStatus,
                    wgc0310::BodyStatus const* bodyStatus,
                    cw::CircularBuffer<qreal, 160> *volumeLevels,
@@ -31,9 +31,7 @@ GLWindow::GLWindow(CameraEntityStatus const* cameraEntityStatus,
     m_MouthTexture(nullptr),
     m_MouthOpenTexture(nullptr),
     m_VolumeIndices {},
-    m_VolumeVBO { 0, 0 },
-    // Event-based timer
-    m_Timer(new QTimer(this))
+    m_VolumeVBO { 0, 0 }
 {
   setWindowTitle("Project-WG - 绘图输出窗口");
   setWindowFlags(Qt::CustomizeWindowHint
@@ -118,7 +116,30 @@ void GLWindow::initializeGL() {
     m_ScreenGlass = mtlMeshPtr;
   }
 
-  // TODO
+  {
+    QImage eye9Image(":/eye.9.bmp");
+    QImage closeMouthImage(":/half-face.bmp");
+    QImage openMouthImage(":/half-face-mouth-open.bmp");
+    Q_ASSERT(!eye9Image.isNull());
+    Q_ASSERT(!closeMouthImage.isNull());
+    Q_ASSERT(!openMouthImage.isNull());
+
+    m_EyeTexture = std::make_unique<cw::Texture2D>(eye9Image, this);
+    m_MouthTexture = std::make_unique<cw::Texture2D>(closeMouthImage, this);
+    m_MouthOpenTexture = std::make_unique<cw::Texture2D>(openMouthImage, this);
+
+    glGenBuffers(2, m_VolumeVBO.data());
+    glBindBuffer(GL_ARRAY_BUFFER, m_VolumeVBO[0]);
+    glBufferData(GL_ARRAY_BUFFER,
+                 static_cast<GLsizei>(m_VolumeVertices.size() * sizeof(cw::Vertex2DF)),
+                 m_VolumeVertices.data(),
+                 GL_STREAM_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VolumeVBO[1]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                 static_cast<GLsizei>(m_VolumeIndices.size() * sizeof(GLuint)),
+                 m_VolumeIndices.data(),
+                 GL_STATIC_DRAW);
+  }
 
   emit OpenGLInitialized();
 }
@@ -126,7 +147,7 @@ void GLWindow::initializeGL() {
 void GLWindow::paintGL() {
   // prepare screen content
   m_Screen->BeginScreenContext(this);
-  // TODO migrate screen content drawing code
+  DrawScreenContent();
   m_Screen->DoneScreenContext(this);
 
   // switch back to default frame buffer.
@@ -150,15 +171,101 @@ void GLWindow::paintGL() {
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  m_CameraEntityStatus->ApplyCameraTransformation(this);
   m_Light->Enable(this);
   m_Light2->Enable(this);
   m_CameraEntityStatus->ApplyEntityTransformation(this);
 
-  // TODO
+  glTranslatef(0.0f, -12.0f, 0.0f);
+
+  for (std::size_t i = 0; i < 10; i++) {
+    m_Mesh.waist->Draw(this);
+    glTranslatef(0.0f, 1.0f, 0.0f);
+    glRotatef(m_HeadStatus->rotationZ / 10.0f, 0.0f, 0.0f, 1.0f);
+    glRotatef(m_HeadStatus->rotationX / 10.0f, 1.0f, 0.0f, 0.0f);
+    m_Mesh.abdomen->Draw(this);
+    glTranslatef(0.0f, 1.0f, 0.0f);
+  }
+
+  glTranslatef(0.0f, 6.0f, 0.0f);
+
+  cw::RGBAColorF berColor = m_BodyStatus->GetTimerColor();
+  berColor.Apply(this);
+  glDisable(GL_LIGHTING);
+  m_Mesh.colorTimer->Draw(this);
+  glEnable(GL_LIGHTING);
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
+  glPushMatrix();
+  {
+    m_Mesh.chestBox->Draw(this);
+    m_Mesh.chestPlate->Draw(this);
+    m_Mesh.power->Draw(this);
+    m_Mesh.powerPin->Draw(this);
+
+    glPushMatrix();
+    DrawArm(m_BodyStatus->rightArmStatus, 1.0f);
+    glPopMatrix();
+
+    glPushMatrix();
+    glScalef(-1.0f, 1.0f, -1.0f);
+    DrawArm(m_BodyStatus->leftArmStatus, -1.0f);
+    glPopMatrix();
+
+    glTranslatef(0.0f, 12.875f, 0.0f);
+    glRotatef(m_HeadStatus->rotationY / 2, 0.0f, 1.0f, 0.0f);
+    m_Mesh.wheel->Draw(this);
+    glRotatef(m_HeadStatus->rotationY / 2, 0.0f, 1.0f, 0.0f);
+
+    glTranslatef(0.0f, 0.375f, 0.0f);
+    m_Mesh.monitor->Draw(this);
+    m_Mesh.monitorIntake->Draw(this);
+
+    glTranslatef(0.0f, 9.25f + 1.875f, 4.5f);
+    m_Screen->Draw(this);
+
+    glTranslatef(0.0f, 0.0f, 0.5f);
+    glColor4f(0.05f, 0.075f, 0.1f, 0.1f);
+    m_ScreenGlass->Draw(this);
+  }
+  glPopMatrix();
+  m_Mesh.colorTimerShell->Draw(this);
 }
 
 void GLWindow::resizeGL(int w, int h) {
   Q_UNUSED(w)
   Q_UNUSED(h)
+}
+
+void GLWindow::DrawScreenContent() {
+
+}
+
+void GLWindow::DrawArm(const wgc0310::ArmStatus &armStatus, GLfloat coeff) {
+  glTranslatef(14.5f, 7.5f, 0.0f);
+  glRotatef(coeff * armStatus.rotation[0], 1.0f, 0.0f, 0.0f);
+  m_Mesh.shoulder->Draw(this);
+  m_Mesh.shoulderPlate->Draw(this);
+
+  glTranslatef(4.75, 0.0f, 0.0f);
+  glRotatef(armStatus.rotation[1] / 2.0f, 0.0f, 0.0f, 1.0f);
+  m_Mesh.wheelSmall->Draw(this);
+  glRotatef(armStatus.rotation[1] / 2.0f, 0.0f, 0.0f, 1.0f);
+  m_Mesh.bigArm->Draw(this);
+  m_Mesh.bigArmCover->Draw(this);
+
+  glTranslatef(20.0, 0.0f, 0.0f);
+  glRotatef(-1.0f * armStatus.rotation[2], 1.0f, 0.0f, 0.0f);
+  m_Mesh.bigArmConnector->Draw(this);
+
+  glTranslatef(4.5, 0.0f, 0.0f);
+  glRotatef(coeff * armStatus.rotation[3] / 2.0f, 0.0f, 0.0f, 1.0f);
+  m_Mesh.wheelSmall->Draw(this);
+  glRotatef(coeff * armStatus.rotation[3] / 2.0f, 0.0f, 0.0f, 1.0f);
+  m_Mesh.smallArm->Draw(this);
+  m_Mesh.smallArmCover->Draw(this);
+
+  glTranslatef(25.0f, 0.0f, 0.0f);
+  glRotatef(coeff * armStatus.rotation[4], 0.0f, 0.0f, 1.0f);
+  m_Mesh.claw->Draw(this);
+  m_Mesh.clawCover->Draw(this);
 }

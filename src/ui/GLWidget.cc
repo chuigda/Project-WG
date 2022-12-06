@@ -181,7 +181,6 @@ void GLWidget::paintGL() {
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  m_CameraEntityStatus.ApplyCameraTransformation(this);
   m_Light->Enable(this);
   m_Light2->Enable(this);
   m_CameraEntityStatus.ApplyEntityTransformation(this);
@@ -202,7 +201,7 @@ void GLWidget::paintGL() {
   cw::RGBAColorF berColor = m_BodyStatus.GetTimerColor();
   berColor.Apply(this);
   glDisable(GL_LIGHTING);
-  m_Mesh->ber->Draw(this);
+  m_Mesh->colorTimer->Draw(this);
   glEnable(GL_LIGHTING);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -239,7 +238,7 @@ void GLWidget::paintGL() {
     m_ScreenGlass->Draw(this);
   }
   glPopMatrix();
-  m_Mesh->berShell->Draw(this);
+  m_Mesh->colorTimerShell->Draw(this);
 }
 
 void GLWidget::resizeGL(int w, int h) {
