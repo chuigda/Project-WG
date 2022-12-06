@@ -66,8 +66,10 @@ set(PROJECT_SOURCES
     include/ui_next/GLWindow.h
     include/ui_next/CloseSignallingWidget.h
 
+    src/util/FileUtil.cc
     src/util/DynLoad.cc
     src/util/Constants.cc
+    include/util/FileUtil.h
     include/util/DynLoad.h
     include/util/Wife.h
     include/util/Constants.h

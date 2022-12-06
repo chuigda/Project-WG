@@ -2,20 +2,15 @@
 #include <QFile>
 #include "ui_next/LicensePresenter.h"
 #include "ui_next/ControlPanel.h"
-
-QString ReadToString(const char *fileName) {
-  QFile f(fileName);
-  f.open(QIODevice::ReadOnly);
-  return f.readAll();
-}
+#include "util/FileUtil.h"
 
 std::pair<QDialog::DialogCode, LicensePresenter*>
 PrecheckLicense() {
-  QString preamble = ReadToString(":/PREAMBLE");
-  QString agplText = ReadToString(":/LICENSE");
-  QString ccText = ReadToString(":/LICENSE-CC-BY-NC-SA");
-  QString agplBrief = ReadToString(":/AGPL-BRIEF");
-  QString ccBrief = ReadToString(":/CC-BY-NC-SA-BRIEF");
+  QString preamble = cw::ReadToString(":/PREAMBLE");
+  QString agplText = cw::ReadToString(":/LICENSE");
+  QString ccText = cw::ReadToString(":/LICENSE-CC-BY-NC-SA");
+  QString agplBrief = cw::ReadToString(":/AGPL-BRIEF");
+  QString ccBrief = cw::ReadToString(":/CC-BY-NC-SA-BRIEF");
 
   LicensePresenter *presenter = new LicensePresenter();
   presenter->AddLicense(LicenseContent {
