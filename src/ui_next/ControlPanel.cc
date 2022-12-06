@@ -8,8 +8,8 @@
 #include "ui_next/CameraControl.h"
 #include "ui_next/FaceTrackControl.h"
 #include "ui_next/ScreenAnimationControl.h"
-#include "ui_next/CloseSignallingWidget.h"
 #include "ui_next/BodyControl.h"
+#include "ui_next/SoundControl.h"
 
 static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widget) {
   button->setCheckable(true);
@@ -25,21 +25,24 @@ static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widg
   });
 }
 
-ControlPanel::ControlPanel()
+ControlPanel::ControlPanel(LicensePresenter *presenter)
   : QWidget(nullptr, Qt::Window),
     m_ScreenDisplayMode(wgc0310::ScreenDisplayMode::CapturedExpression),
+    m_VolumeLevels(0.0),
+    m_VolumeLevelsUpdated(false),
     m_GLWindow(new GLWindow(
       &m_CameraEntityStatus,
       &m_HeadStatus,
       &m_BodyStatus,
-      nullptr,
-      nullptr,
+      &m_VolumeLevels,
+      &m_VolumeLevelsUpdated,
       &m_ScreenDisplayMode
     )),
     m_CameraControl(new CameraControl(&m_CameraEntityStatus)),
     m_TrackControl(new TrackControl(&m_HeadStatus, &m_ScreenDisplayMode, &m_WorkerThread)),
     m_ScreenAnimationControl(new ScreenAnimationControl(m_GLWindow, &m_ScreenAnimationStatus)),
     m_BodyControl(new BodyControl(&m_BodyStatus, this)),
+    m_SoundControl(new SoundControl(&m_VolumeLevels, &m_VolumeLevelsUpdated, &m_WorkerThread)),
     m_OpenGLSettingsButton(new QPushButton("OpenGL")),
     m_CameraSettingsButton(new QPushButton("相机设置")),
     m_BodyAnimationButton(new QPushButton("关节动画")),
@@ -53,11 +56,11 @@ ControlPanel::ControlPanel()
   m_WorkerThread.start();
   m_GLWindow->show();
 
-
   LinkButtonAndWidget(m_CameraSettingsButton, m_CameraControl);
   LinkButtonAndWidget(m_FaceAnimationButton, m_ScreenAnimationControl);
   LinkButtonAndWidget(m_PoseEstimationButton, m_TrackControl);
   LinkButtonAndWidget(m_BodyAnimationButton, m_BodyControl);
+  LinkButtonAndWidget(m_VolumeAnalysisButton, m_SoundControl);
 
   QHBoxLayout *layout = new QHBoxLayout();
   layout->addWidget(m_OpenGLSettingsButton);

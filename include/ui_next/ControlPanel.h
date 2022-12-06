@@ -7,6 +7,7 @@
 #include "wgc0310/HeadStatus.h"
 #include "wgc0310/BodyStatus.h"
 #include "ui/CameraEntityStatus.h"
+#include "util/CircularBuffer.h"
 
 class QPushButton;
 class GLWindow;
@@ -14,12 +15,14 @@ class CameraControl;
 class TrackControl;
 class ScreenAnimationControl;
 class BodyControl;
+class SoundControl;
+class LicensePresenter;
 
 class ControlPanel final : public QWidget {
   Q_OBJECT
 
 public:
-  ControlPanel();
+  explicit ControlPanel(LicensePresenter *presenter);
   ~ControlPanel() noexcept final;
 
 signals:
@@ -41,6 +44,8 @@ private:
   wgc0310::ScreenAnimationStatus m_ScreenAnimationStatus;
   wgc0310::ScreenDisplayMode m_ScreenDisplayMode;
   wgc0310::BodyStatus m_BodyStatus;
+  cw::CircularBuffer<qreal, 160> m_VolumeLevels;
+  bool m_VolumeLevelsUpdated;
 
   // widgets
   GLWindow *m_GLWindow;
@@ -48,6 +53,7 @@ private:
   TrackControl *m_TrackControl;
   ScreenAnimationControl *m_ScreenAnimationControl;
   BodyControl *m_BodyControl;
+  SoundControl *m_SoundControl;
 
   QPushButton *m_OpenGLSettingsButton;
   QPushButton *m_CameraSettingsButton;

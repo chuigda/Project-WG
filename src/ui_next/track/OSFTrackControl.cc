@@ -210,23 +210,48 @@ void OSFTrackWorker::HandleData() {
   float xSum = 0.0f;
   float ySum = 0.0f;
   float zSum = 0.0f;
-  int mouthStatus = 0;
+  float leftEyeSum = 0.0f;
+  float rightEyeSum = 0.0f;
+  float mouthStatus = 0;
 
   for (std::size_t i = 0; i < m_SmoothBuffer.Size(); i++) {
     wgc0310::HeadStatus status = m_SmoothBuffer.Get(i);
     xSum += status.rotationX;
     ySum += status.rotationY;
     zSum += status.rotationZ;
-    mouthStatus += static_cast<int>(status.mouthStatus);
+    leftEyeSum += status.leftEye;
+    rightEyeSum += status.rightEye;
+    mouthStatus += static_cast<float>(static_cast<int>(status.mouthStatus));
   }
 
-  xSum /= static_cast<float>(m_SmoothBuffer.Size());
-  ySum /= static_cast<float>(m_SmoothBuffer.Size());
-  zSum /= static_cast<float>(m_SmoothBuffer.Size());
-  mouthStatus /= static_cast<int>(m_SmoothBuffer.Size());
+  float smoothBufferSize = static_cast<float>(m_SmoothBuffer.Size());
+
+  xSum /= smoothBufferSize;
+  ySum /= smoothBufferSize;
+  zSum /= smoothBufferSize;
+  leftEyeSum /= smoothBufferSize;
+  mouthStatus /= smoothBufferSize;
+
+  leftEyeSum = (leftEyeSum - m_Parameter.eyeMax) / (m_Parameter.eyeMax - m_Parameter.eyeMin);
+  if (leftEyeSum < 0.0f) {
+    leftEyeSum = 0.0f;
+  } else if (leftEyeSum > 1.0f) {
+    leftEyeSum = 1.0f;
+  }
+
+  rightEyeSum = (leftEyeSum - m_Parameter.eyeMax) / (m_Parameter.eyeMax - m_Parameter.eyeMin);
+  if (rightEyeSum < 0.0f) {
+    rightEyeSum = 0.0f;
+  } else if (rightEyeSum > 1.0f) {
+    rightEyeSum = 1.0f;
+  }
 
   emit HeadPoseUpdated(wgc0310::HeadStatus {
-    xSum, ySum, zSum,
+    xSum,
+    ySum,
+    zSum,
+    leftEyeSum,
+    rightEyeSum,
     mouthStatus > 0 ? wgc0310::HeadStatus::MouthStatus::Open
                     : wgc0310::HeadStatus::MouthStatus::Close
   });
@@ -346,7 +371,7 @@ OSFTrackControl::OSFTrackControl(wgc0310::HeadStatus *headStatus,
       okButton,
       &QPushButton::clicked,
       [this, spinSmooth, spinX, spinY, spinZ] {
-        OSFTrackParameter2 parameter;
+        OSFTrackParameter2 parameter {};
         parameter.smoothSteps = spinSmooth->value();
         parameter.xRotationFix = static_cast<float>(spinX->value());
         parameter.yRotationFix = static_cast<float>(spinY->value());

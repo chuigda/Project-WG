@@ -33,4 +33,3 @@ private:
 };
 
 #endif // PROJECT_WG_UINEXT_BODY_CONTROL_H
-

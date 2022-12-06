@@ -11,6 +11,9 @@ struct HeadStatus {
   float rotationY = 0.0f;
   float rotationZ = 0.0f;
 
+  float leftEye = 1.0f;
+  float rightEye = 1.0f;
+
   enum class MouthStatus : std::int8_t {
     Close = -1,
     Open = 1

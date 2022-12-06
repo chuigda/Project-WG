@@ -53,6 +53,7 @@ set(PROJECT_SOURCES
     src/ui_next/track/VTSTrackControl.cc
     src/ui_next/track/OSFTrackControl.cc
     src/ui_next/track/ManualTrackControl.cc
+    src/ui_next/SoundControl.cc
     src/ui_next/LicensePresenter.cc
     src/ui_next/GLWindow.cc
     include/ui_next/ControlPanel.h
@@ -60,6 +61,7 @@ set(PROJECT_SOURCES
     include/ui_next/BodyControl.h
     include/ui_next/ScreenAnimationControl.h
     include/ui_next/FaceTrackControl.h
+    include/ui_next/SoundControl.h
     include/ui_next/LicensePresenter.h
     include/ui_next/GLWindow.h
     include/ui_next/CloseSignallingWidget.h

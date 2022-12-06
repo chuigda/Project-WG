@@ -33,6 +33,8 @@ public:
 
   void DisplayCurrentLicense();
 
+  void RequireAgreement(bool required = true);
+
   void showEvent(QShowEvent *) final;
 
 private slots:

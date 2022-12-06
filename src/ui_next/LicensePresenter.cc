@@ -151,3 +151,13 @@ void LicensePresenter::NextLicense() {
   m_CurrentLicense += 1;
   DisplayCurrentLicense();
 }
+
+void LicensePresenter::RequireAgreement(bool required) {
+  if (required) {
+    m_AgreeButton->setVisible(true);
+    m_DisagreeButton->setVisible(true);
+  } else {
+    m_AgreeButton->setVisible(false);
+    m_DisagreeButton->setVisible(false);
+  }
+}

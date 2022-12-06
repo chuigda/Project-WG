@@ -24,9 +24,8 @@ struct OSFTrackParameter2 {
   float yRotationFix = 0.0f;
   float zRotationFix = 0.0f;
 
-  std::size_t eyeSmoothSteps = 3;
   float eyeMin = 0.0f;
-  float eyeMax = 0.0f;
+  float eyeMax = 0.3f;
 };
 
 class OSFTrackControl final : public QWidget {
