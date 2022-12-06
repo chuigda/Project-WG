@@ -74,7 +74,7 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
     m_ScreenAnimationStatus->Reset();
     m_GLWindow->RunWithGLContext([this] {
       m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
-      m_GLWindow->glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
+      m_GLWindow->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
       this->ReloadStaticImages();
       m_GLWindow->glPopClientAttrib();
       m_GLWindow->glPopAttrib();
@@ -85,7 +85,7 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
     m_ScreenAnimationStatus->Reset();
     m_GLWindow->RunWithGLContext([this] {
       m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
-      m_GLWindow->glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
+      m_GLWindow->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
       this->ReloadScreenAnimations();
       m_GLWindow->glPopClientAttrib();
       m_GLWindow->glPopAttrib();

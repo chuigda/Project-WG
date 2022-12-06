@@ -2,7 +2,6 @@
 #define PROJECT_WG_WGC0310_HEAD_STATUS_H
 
 #include <cstdint>
-#include "util/Wife.h"
 
 namespace wgc0310 {
 

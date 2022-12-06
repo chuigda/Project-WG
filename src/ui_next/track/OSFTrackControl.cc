@@ -166,22 +166,18 @@ void OSFTrackWorker::HandleData() {
     FacePacket const* facePacket =
       reinterpret_cast<FacePacket const*>(data.data());
 
-    qDebug() << "rawData: rx =" << facePacket->euler[0]
-             << "ry =" << facePacket->euler[1]
-             << "rz =" << facePacket->euler[2]
-             << "blinkL =" << facePacket->eyeQuirkLeft
-             << "blinkR =" << facePacket->eyeQuirkRight
-             << "mouthOpen =" << facePacket->mouthOpen
-             << "mouthWide =" << facePacket->mouthWide;
-
     wgc0310::HeadStatus pose {
       .rotationX = facePacket->euler[0],
       .rotationY = facePacket->euler[1],
       .rotationZ = facePacket->euler[2],
+      .leftEye = facePacket->eyeBlinkLeft,
+      .rightEye = facePacket->eyeBlinkRight,
       .mouthStatus = facePacket->mouthOpen > 0.05f ?
                      wgc0310::HeadStatus::MouthStatus::Open :
                      wgc0310::HeadStatus::MouthStatus::Close
     };
+
+    qDebug() << pose.leftEye << pose.rightEye;
 
     if (pose.rotationX > 0)  {
       pose.rotationX = pose.rotationX - 180.0f;
@@ -394,10 +390,6 @@ void OSFTrackControl::HandleError(const QString& error) {
 
 void OSFTrackControl::HandleHeadStatus(wgc0310::HeadStatus headStatus) {
   *m_HeadStatus = headStatus;
-  qDebug () << headStatus.rotationX
-            << headStatus.rotationY
-            << headStatus.rotationZ
-            << static_cast<int>(headStatus.mouthStatus);
 }
 
 #include "OSFTrackControl.moc"

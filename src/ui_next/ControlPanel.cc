@@ -114,8 +114,11 @@ void ControlPanel::closeEvent(QCloseEvent *e) {
   if (r == 1) {
     m_GLWindow->close();
     m_EntityControl->close();
+    m_TrackControl->close();
     m_ScreenAnimationControl->close();
     m_BodyControl->close();
+    m_SoundControl->close();
+    m_AboutBox->close();
 
     e->accept();
   } else {

@@ -52,11 +52,6 @@ public slots:
     format.setChannelCount(1);
     format.setSampleFormat(QAudioFormat::Int16);
 
-    if (!device.isFormatSupported(format)) {
-      emit SoundAnalysisError("不支持的音频格式");
-      return;
-    }
-
     m_AudioSource = std::make_unique<QAudioSource>(device, format);
     if (m_AudioSource->isNull()) {
       emit SoundAnalysisError("启动监听失败");
