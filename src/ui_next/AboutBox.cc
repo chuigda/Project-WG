@@ -11,6 +11,7 @@ AboutBox::AboutBox(LicensePresenter *presenter)
 {
   setWindowTitle("关于");
   setFixedWidth(600);
+  setFixedHeight(600);
 
   QVBoxLayout *box = new QVBoxLayout();
   this->setLayout(box);
@@ -35,12 +36,12 @@ AboutBox::AboutBox(LicensePresenter *presenter)
   );
   label->setOpenExternalLinks(true);
   box->addWidget(label);
+  box->addStretch();
 
   QHBoxLayout *buttonBox = new QHBoxLayout();
   box->addLayout(buttonBox);
 
   buttonBox->addStretch();
-
   QPushButton *licenseButton = new QPushButton("查看协议");
   buttonBox->addWidget(licenseButton);
   connect(licenseButton,
@@ -49,7 +50,6 @@ AboutBox::AboutBox(LicensePresenter *presenter)
           [this] {
             m_LicensePresenter->exec();
           });
-
   QPushButton *aboutQtButton = new QPushButton("关于 Qt");
   buttonBox->addWidget(aboutQtButton);
   connect(aboutQtButton, &QPushButton::clicked, aboutQtButton, [this] {
