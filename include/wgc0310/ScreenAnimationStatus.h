@@ -51,7 +51,7 @@ public:
 
   [[nodiscard]] bool HasThingToDraw() const noexcept;
 
-  void DrawOnScreen(GLFunctions *f);
+  void DrawOnScreen(GLFunctions *f) const noexcept;
 
   void NextFrame();
   void Reset();
@@ -62,7 +62,7 @@ public:
 private:
   bool m_IsPlayingStaticAnimation;
   bool m_IsPlayingDynamicAnimation;
-  bool m_NeedRewind;
+  mutable bool m_NeedRewind;
 
   StaticScreenImage *m_StaticScreen;
   ScreenAnimation *m_Animation;

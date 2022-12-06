@@ -71,7 +71,7 @@ bool ScreenAnimationStatus::HasThingToDraw() const noexcept {
   return m_IsPlayingStaticAnimation || m_IsPlayingDynamicAnimation;
 }
 
-void ScreenAnimationStatus::DrawOnScreen(GLFunctions *f) {
+void ScreenAnimationStatus::DrawOnScreen(GLFunctions *f) const noexcept {
   if (m_IsPlayingStaticAnimation) {
     f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     f->glTranslatef(0.0f, 0.0f, 0.1f);

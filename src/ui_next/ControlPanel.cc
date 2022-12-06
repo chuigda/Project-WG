@@ -35,6 +35,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
       &m_CameraEntityStatus,
       &m_HeadStatus,
       &m_BodyStatus,
+      &m_ScreenAnimationStatus,
       &m_VolumeLevels,
       &m_VolumeLevelsUpdated,
       &m_ScreenDisplayMode

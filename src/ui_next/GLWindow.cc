@@ -11,14 +11,16 @@
 GLWindow::GLWindow(EntityStatus const* cameraEntityStatus,
                    wgc0310::HeadStatus const* headStatus,
                    wgc0310::BodyStatus const* bodyStatus,
+                   wgc0310::ScreenAnimationStatus const *screenAnimationStatus,
                    cw::CircularBuffer<qreal, 160> *volumeLevels,
                    bool *volumeLevelsUpdated,
                    wgc0310::ScreenDisplayMode const *screenDisplayMode)
   : QOpenGLWidget(nullptr, Qt::Window),
     // Input status
-    m_CameraEntityStatus(cameraEntityStatus),
+    m_EntityStatus(cameraEntityStatus),
     m_HeadStatus(headStatus),
     m_BodyStatus(bodyStatus),
+    m_ScreenAnimationStatus(screenAnimationStatus),
     m_VolumeLevels(volumeLevels),
     m_VolumeLevelsUpdated(volumeLevelsUpdated),
     m_ScreenDisplayMode(screenDisplayMode),
@@ -173,7 +175,7 @@ void GLWindow::paintGL() {
 
   m_Light->Enable(this);
   m_Light2->Enable(this);
-  m_CameraEntityStatus->ApplyEntityTransformation(this);
+  m_EntityStatus->ApplyEntityTransformation(this);
 
   glTranslatef(0.0f, -12.0f, 0.0f);
 
@@ -236,8 +238,135 @@ void GLWindow::resizeGL(int w, int h) {
   Q_UNUSED(h)
 }
 
-void GLWindow::DrawScreenContent() {
+static void DrawEye(GLFunctions *f,
+                    float top,
+                    float bottom,
+                    float left,
+                    float right)
+{
+  f->glBegin(GL_QUADS);
+  {
+    f->glTexCoord2f(0.0f, 0.0f);
+    f->glVertex2f(left, top);
 
+    f->glTexCoord2f(0.0f, 0.25f);
+    f->glVertex2f(left, top - 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.25f);
+    f->glVertex2f(right, top - 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.0f);
+    f->glVertex2f(right, top);
+  }
+
+  {
+    f->glTexCoord2f(0.0f, 0.25f);
+    f->glVertex2f(left, top - 7.0f);
+
+    f->glTexCoord2f(0.0f, 0.75f);
+    f->glVertex2f(left, bottom + 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.75f);
+    f->glVertex2f(right, bottom + 7.0f);
+
+    f->glTexCoord2f(1.0f, 0.25f);
+    f->glVertex2f(right, top - 7.0f);
+  }
+
+  {
+    f->glTexCoord2f(0.0f, 0.75f);
+    f->glVertex2f(left, bottom + 7.0f);
+
+    f->glTexCoord2f(0.0f, 1.0f);
+    f->glVertex2f(left, bottom);
+
+    f->glTexCoord2f(1.0f, 1.0f);
+    f->glVertex2f(right, bottom);
+
+    f->glTexCoord2f(1.0f, 0.75f);
+    f->glVertex2f(right, bottom + 7.0f);
+  }
+  f->glEnd();
+}
+
+void GLWindow::DrawScreenContent() {
+  if (m_ScreenAnimationStatus->HasThingToDraw()) {
+    m_ScreenAnimationStatus->DrawOnScreen(this);
+  } else {
+    glPushMatrix();
+    glScalef(1.0f, -1.0f, 1.0f);
+    glFrontFace(GL_CW);
+    if (*m_ScreenDisplayMode == wgc0310::ScreenDisplayMode::SoundWave) {
+      if (*m_VolumeLevelsUpdated) {
+        for (size_t i = 0; i < 160; i++) {
+          m_VolumeVertices[i * 4].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * 200.0f);
+          m_VolumeVertices[i * 4 + 1].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * -200.0f);
+          m_VolumeVertices[i * 4 + 2].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * -200.0f);
+          m_VolumeVertices[i * 4 + 3].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * 200.0f);
+        }
+
+        glBufferData(GL_ARRAY_BUFFER,
+                     static_cast<GLsizei>(m_VolumeVertices.size() * sizeof(cw::Vertex2DF)),
+                     m_VolumeVertices.data(),
+                     GL_STREAM_DRAW);
+      }
+
+      glPushMatrix();
+      glColor4f(0.5f, 1.0f, 1.0f, 1.0f);
+      glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+      {
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glBindBuffer(GL_ARRAY_BUFFER, m_VolumeVBO[0]);
+        glVertexPointer(2, GL_FLOAT, 0, nullptr);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VolumeVBO[1]);
+        glDrawElements(GL_QUADS,
+                       static_cast<GLsizei>(m_VolumeIndices.size()),
+                       GL_UNSIGNED_INT,
+                       nullptr);
+      }
+      glPopClientAttrib();
+      glPopMatrix();
+    } else {
+      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+      if (m_HeadStatus->mouthStatus == wgc0310::HeadStatus::MouthStatus::Close) {
+        m_MouthTexture->BeginTexture(this);
+      } else {
+        m_MouthOpenTexture->BeginTexture(this);
+      }
+
+      glBegin(GL_QUADS);
+      glTexCoord2f(0.0f, 0.0f);
+      glVertex2f(-320.0f, 0.0f);
+
+      glTexCoord2f(0.0f, 1.0f);
+      glVertex2f(-320.0f, -240.0f);
+
+      glTexCoord2f(1.0f, 1.0f);
+      glVertex2f(320.0f, -240.0f);
+
+      glTexCoord2f(1.0f, 0.0f);
+      glVertex2f(320.0f, 0.0f);
+      glEnd();
+
+      float leftEyeTop = 42.0f + 4.0f + 48.0f * m_HeadStatus->leftEye;
+      float leftEyeBottom = 42.0f - 4.0f - 48.0f * m_HeadStatus->leftEye;
+      float rightEyeTop = 42.0f + 4.0f + 48.0f * m_HeadStatus->rightEye;
+      float rightEyeBottom = 42.0f - 4.0f - 48.0f * m_HeadStatus->rightEye;
+
+      glTranslatef(0.0f, 0.0f, 0.1f);
+
+      glPushMatrix();
+      glScalef(1.0f / 0.75f, 1.0f / 0.75f, 1.0f);
+      m_EyeTexture->BeginTexture(this);
+
+      DrawEye(this, leftEyeTop, leftEyeBottom, -118.0f, -90.0f);
+      DrawEye(this, rightEyeTop, rightEyeBottom, 90.0f, 118.0f);
+
+      glPopMatrix();
+    }
+    glPopMatrix();
+  }
 }
 
 void GLWindow::DrawArm(const wgc0310::ArmStatus &armStatus, GLfloat coeff) {

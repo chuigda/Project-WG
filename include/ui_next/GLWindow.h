@@ -12,6 +12,7 @@
 #include "wgc0310/Mesh.h"
 #include "wgc0310/Screen.h"
 #include "wgc0310/HeadStatus.h"
+#include "wgc0310/ScreenAnimationStatus.h"
 #include "EntityStatus.h"
 #include "util/CircularBuffer.h"
 
@@ -22,6 +23,7 @@ public:
   explicit GLWindow(EntityStatus const* cameraEntityStatus,
                     wgc0310::HeadStatus const* headStatus,
                     wgc0310::BodyStatus const* bodyStatus,
+                    wgc0310::ScreenAnimationStatus const *screenAnimationStatus,
                     cw::CircularBuffer<qreal, 160> *volumeLevels,
                     bool *volumeLevelsUpdated,
                     wgc0310::ScreenDisplayMode const *screenDisplayMode);
@@ -46,9 +48,10 @@ private:
 
 private:
   // Input status
-  EntityStatus const* m_CameraEntityStatus;
+  EntityStatus const* m_EntityStatus;
   wgc0310::HeadStatus const* m_HeadStatus;
   wgc0310::BodyStatus const* m_BodyStatus;
+  wgc0310::ScreenAnimationStatus const *m_ScreenAnimationStatus;
   cw::CircularBuffer<qreal, 160> *m_VolumeLevels;
   bool *m_VolumeLevelsUpdated;
   wgc0310::ScreenDisplayMode const *m_ScreenDisplayMode;

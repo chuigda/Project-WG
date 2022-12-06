@@ -73,14 +73,22 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
   auto reloadStaticImages = [this] {
     m_ScreenAnimationStatus->Reset();
     m_GLWindow->RunWithGLContext([this] {
+      m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
+      m_GLWindow->glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
       this->ReloadStaticImages();
+      m_GLWindow->glPopClientAttrib();
+      m_GLWindow->glPopAttrib();
     });
   };
 
   auto reloadAnimations = [this] {
     m_ScreenAnimationStatus->Reset();
     m_GLWindow->RunWithGLContext([this] {
+      m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
+      m_GLWindow->glPushClientAttrib(GL_ALL_CLIENT_ATTRIB_BITS);
       this->ReloadScreenAnimations();
+      m_GLWindow->glPopClientAttrib();
+      m_GLWindow->glPopAttrib();
     });
   };
 
@@ -165,8 +173,6 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
 void ScreenAnimationControl::GLContextReady() {
   m_ScreenAnimationStatus->Reset();
 
-  // `initializeGL` will call this indirectly, and we're already in OpenGL context if so.
-  // Thus, there's no need of doing `makeCurrent` / `doneCurrent` manually.
   ReloadStaticImages();
   ReloadScreenAnimations();
 }
