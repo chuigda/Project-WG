@@ -6,7 +6,7 @@
 #include <QLayout>
 #include <QSpinBox>
 #include <QPushButton>
-#include "ui/EntityStatus.h"
+#include "include/ui_next/EntityStatus.h"
 
 static QLayout* CreateSliderSuite(QString const& suiteName,
                                   EntityControl *cameraControl,

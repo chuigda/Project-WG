@@ -12,7 +12,7 @@
 #include "wgc0310/Mesh.h"
 #include "wgc0310/Screen.h"
 #include "wgc0310/HeadStatus.h"
-#include "ui/EntityStatus.h"
+#include "EntityStatus.h"
 #include "util/CircularBuffer.h"
 
 class GLWindow final : public QOpenGLWidget, public GLFunctions {

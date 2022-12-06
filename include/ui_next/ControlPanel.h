@@ -6,7 +6,7 @@
 #include "wgc0310/ScreenAnimationStatus.h"
 #include "wgc0310/HeadStatus.h"
 #include "wgc0310/BodyStatus.h"
-#include "ui/EntityStatus.h"
+#include "EntityStatus.h"
 #include "util/CircularBuffer.h"
 
 class QPushButton;

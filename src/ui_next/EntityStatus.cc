@@ -1,4 +1,4 @@
-#include "ui/EntityStatus.h"
+#include "include/ui_next/EntityStatus.h"
 
 #include "cwglx/Vertex.h"
 #include "cwglx/GLImpl.h"

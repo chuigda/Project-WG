@@ -24,26 +24,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
 set(PROJECT_SOURCES
     main.cc
 
-    src/ui/OSFTrack.cc
-    src/ui/ManualOperateWidget.cc
-    src/ui/FaceTrackStatus.cc
-    src/ui/CameraEntityStatus.cc
-    src/ui/GLWidgetX.cc
-    src/ui/GLWidget.cc
-    src/ui/ConfigWidget.cc
-    src/ui/ConfigWidgetCamera.cc
-    src/ui/ConfigWidgetCapture.cc
-    src/ui/ConfigWidgetBody.cc
-    src/ui/MessageBoxAlter.cc
-    include/ui/OSFTrack.h
-    include/ui/ManualOperateWidget.h
-
-    include/ui/FaceTrackStatus.h
-    include/ui/EntityStatus.h
-    include/ui/GLWidget.h
-    include/ui/ConfigWidget.h
-    include/ui/MessageBoxAlter.h
-
+    src/ui_next/EntityStatus.cc
     src/ui_next/ControlPanel.cc
     src/ui_next/EntityControl.cc
     src/ui_next/BodyControl.cc
@@ -56,6 +37,7 @@ set(PROJECT_SOURCES
     src/ui_next/SoundControl.cc
     src/ui_next/LicensePresenter.cc
     src/ui_next/GLWindow.cc
+    include/ui_next/EntityStatus.h
     include/ui_next/ControlPanel.h
     include/ui_next/EntityControl.h
     include/ui_next/BodyControl.h

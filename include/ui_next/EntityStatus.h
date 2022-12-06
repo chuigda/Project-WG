@@ -1,5 +1,5 @@
-#ifndef PROJECT_WG_CAMERA_ENTITY_STATUS_H
-#define PROJECT_WG_CAMERA_ENTITY_STATUS_H
+#ifndef PROJECT_WG_UINEXT_CAMERA_ENTITY_STATUS_H
+#define PROJECT_WG_UINEXT_CAMERA_ENTITY_STATUS_H
 
 #include <QtGui/qopengl.h>
 
@@ -31,4 +31,4 @@ public:
   void ApplyEntityTransformation(GLFunctions *f) const noexcept;
 };
 
-#endif // PROJECT_WG_CAMERA_ENTITY_STATUS_H
+#endif // PROJECT_WG_UINEXT_CAMERA_ENTITY_STATUS_H
