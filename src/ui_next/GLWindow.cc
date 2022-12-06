@@ -36,9 +36,7 @@ GLWindow::GLWindow(EntityStatus const* cameraEntityStatus,
     m_VolumeVBO { 0, 0 }
 {
   setWindowTitle("Project-WG - 绘图输出窗口");
-  setWindowFlags(Qt::CustomizeWindowHint
-                 | Qt::WindowTitleHint
-                 | Qt::WindowMinMaxButtonsHint);
+  setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowTitleHint);
 
   QSurfaceFormat format;
   format.setSamples(8);

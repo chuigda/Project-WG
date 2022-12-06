@@ -51,11 +51,10 @@ static QLayout* CreateSliderSuite(QString const& suiteName,
 }
 
 EntityControl::EntityControl(EntityStatus *status) noexcept
-  : m_CameraEntityStatus(status)
+  : m_EntityStatus(status)
 {
-  setWindowTitle("相机设置");
-
-  this->setMinimumWidth(320);
+  setWindowTitle("物体位置");
+  setMinimumWidth(320);
 
   QVBoxLayout *mainLayout = new QVBoxLayout();
   this->setLayout(mainLayout);
@@ -64,9 +63,9 @@ EntityControl::EntityControl(EntityStatus *status) noexcept
     QGroupBox *cameraGroupBox = new QGroupBox("位移");
     QVBoxLayout *layout = new QVBoxLayout();
     cameraGroupBox->setLayout(layout);
-    QLayout *x = CreateSliderSuite("X", this, &m_CameraEntityStatus->translateX, -100, 100, 5);
-    QLayout *y = CreateSliderSuite("Y", this, &m_CameraEntityStatus->translateY, 0, 150, 5);
-    QLayout *z = CreateSliderSuite("Z", this, &m_CameraEntityStatus->translateZ, 0, 150, 5);
+    QLayout *x = CreateSliderSuite("X", this, &m_EntityStatus->translateX, -100, 100, 5);
+    QLayout *y = CreateSliderSuite("Y", this, &m_EntityStatus->translateY, 0, 150, 5);
+    QLayout *z = CreateSliderSuite("Z", this, &m_EntityStatus->translateZ, 0, 150, 5);
     layout->addLayout(x);
     layout->addLayout(y);
     layout->addLayout(z);
@@ -78,9 +77,9 @@ EntityControl::EntityControl(EntityStatus *status) noexcept
     QGroupBox *entityGroupBox = new QGroupBox("旋转");
     QVBoxLayout *layout = new QVBoxLayout();
     entityGroupBox->setLayout(layout);
-    QLayout *x = CreateSliderSuite("X", this, &m_CameraEntityStatus->entityRotateX, -360, 360, 10);
-    QLayout *y = CreateSliderSuite("Y", this, &m_CameraEntityStatus->entityRotateY, -360, 360, 10);
-    QLayout *z = CreateSliderSuite("Z", this, &m_CameraEntityStatus->entityRotateZ, -360, 360, 10);
+    QLayout *x = CreateSliderSuite("X", this, &m_EntityStatus->entityRotateX, -360, 360, 10);
+    QLayout *y = CreateSliderSuite("Y", this, &m_EntityStatus->entityRotateY, -360, 360, 10);
+    QLayout *z = CreateSliderSuite("Z", this, &m_EntityStatus->entityRotateZ, -360, 360, 10);
     layout->addLayout(x);
     layout->addLayout(y);
     layout->addLayout(z);
@@ -100,7 +99,7 @@ EntityControl::EntityControl(EntityStatus *status) noexcept
       &QPushButton::clicked,
       this,
       [this] {
-        this->m_CameraEntityStatus->Reset();
+        this->m_EntityStatus->Reset();
         emit this->ResetCameraEntityStatus();
       }
     );

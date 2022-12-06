@@ -17,7 +17,7 @@ LicenseContent::LicenseContent(QString const& licenseName,
 {}
 
 LicensePresenter::LicensePresenter(QWidget *parent)
-  : QDialog(parent),
+  : QDialog(parent, Qt::Window),
     m_CurrentLicense(0)
 {
   setWindowTitle("阅读协议");

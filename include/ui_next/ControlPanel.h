@@ -16,6 +16,7 @@ class TrackControl;
 class ScreenAnimationControl;
 class BodyControl;
 class SoundControl;
+class AboutBox;
 class LicensePresenter;
 
 class ControlPanel final : public QWidget {
@@ -54,6 +55,7 @@ private:
   ScreenAnimationControl *m_ScreenAnimationControl;
   BodyControl *m_BodyControl;
   SoundControl *m_SoundControl;
+  AboutBox *m_AboutBox;
 
   QPushButton *m_OpenGLSettingsButton;
   QPushButton *m_CameraSettingsButton;

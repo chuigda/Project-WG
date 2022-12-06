@@ -1,7 +1,6 @@
 #ifndef PROJECT_WG_UINEXT_CAMERA_CONTROL_H
 #define PROJECT_WG_UINEXT_CAMERA_CONTROL_H
 
-#include <QWidget>
 #include "ui_next/CloseSignallingWidget.h"
 
 class EntityStatus;
@@ -20,7 +19,7 @@ signals:
 
 private:
   // Status output
-  EntityStatus *m_CameraEntityStatus;
+  EntityStatus *m_EntityStatus;
 };
 
 #endif // PROJECT_WG_UINEXT_CAMERA_CONTROL_H

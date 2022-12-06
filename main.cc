@@ -54,8 +54,7 @@ int main(int argc, char *argv[]) {
     return 0;
   }
 
-  qDebug() << sizeof(ControlPanel);
-
+  presenter->RequireAgreement(false);
   ControlPanel panel { presenter };
   panel.show();
 

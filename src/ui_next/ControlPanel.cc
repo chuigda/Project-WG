@@ -11,6 +11,7 @@
 #include "ui_next/ScreenAnimationControl.h"
 #include "ui_next/BodyControl.h"
 #include "ui_next/SoundControl.h"
+#include "ui_next/AboutBox.h"
 
 static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widget) {
   button->setCheckable(true);
@@ -45,8 +46,9 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     m_ScreenAnimationControl(new ScreenAnimationControl(m_GLWindow, &m_ScreenAnimationStatus)),
     m_BodyControl(new BodyControl(&m_BodyStatus, this)),
     m_SoundControl(new SoundControl(&m_VolumeLevels, &m_VolumeLevelsUpdated, &m_WorkerThread)),
+    m_AboutBox(new AboutBox(presenter)),
     m_OpenGLSettingsButton(new QPushButton("OpenGL")),
-    m_CameraSettingsButton(new QPushButton("相机设置")),
+    m_CameraSettingsButton(new QPushButton("物体位置")),
     m_BodyAnimationButton(new QPushButton("关节动画")),
     m_FaceAnimationButton(new QPushButton("屏幕画面")),
     m_PoseEstimationButton(new QPushButton("姿态控制")),
@@ -79,6 +81,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   LinkButtonAndWidget(m_PoseEstimationButton, m_TrackControl);
   LinkButtonAndWidget(m_BodyAnimationButton, m_BodyControl);
   LinkButtonAndWidget(m_VolumeAnalysisButton, m_SoundControl);
+  LinkButtonAndWidget(m_AboutButton, m_AboutBox);
 
   QHBoxLayout *layout = new QHBoxLayout();
   layout->addWidget(m_OpenGLSettingsButton);
