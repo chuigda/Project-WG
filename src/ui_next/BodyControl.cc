@@ -127,9 +127,9 @@ BodyControl::BodyControl(wgc0310::BodyStatus *bodyStatus,
     {
       QSlider *slider = new QSlider();
       slider->setDisabled(true);
-      slider->setMinimum(15);
-      slider->setMaximum(40);
-      slider->setValue(30);
+      slider->setMinimum(30);
+      slider->setMaximum(100);
+      slider->setValue(50);
       slider->setOrientation(Qt::Horizontal);
 
       QHBoxLayout *radioLayout = new QHBoxLayout();

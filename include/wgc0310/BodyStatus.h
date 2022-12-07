@@ -58,7 +58,7 @@ public:
 
   explicit inline BodyStatus() noexcept
     : colorTimerStatus(Blue),
-      blinkFrames(30),
+      blinkFrames(50),
       blinkCounter(0),
       leftArmStatus(),
       rightArmStatus(),
