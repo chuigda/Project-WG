@@ -16,13 +16,7 @@
 
 static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widget) {
   button->setCheckable(true);
-  QObject::connect(button, &QPushButton::toggled, widget, [widget] (bool checked) {
-    if (checked) {
-      widget->show();
-    } else {
-      widget->hide();
-    }
-  });
+  QObject::connect(button, &QPushButton::toggled, widget, &QWidget::setVisible);
   QObject::connect(widget, &CloseSignallingWidget::AboutToClose, button, [button] {
     button->setChecked(false);
   });
@@ -101,8 +95,6 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   layout->addStretch();
 
   this->setLayout(layout);
-
-  m_GLWindow->hide();
 }
 
 ControlPanel::~ControlPanel() noexcept {
