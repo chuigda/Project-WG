@@ -24,7 +24,7 @@ struct OSFTrackParameter2 {
   float yRotationFix = 0.0f;
   float zRotationFix = 0.0f;
 
-  float eyeMin = 0.0f;
+  float eyeMin = -1.0f;
   float eyeMax = 0.3f;
 };
 

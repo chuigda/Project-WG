@@ -97,8 +97,6 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   layout->addStretch();
 
   this->setLayout(layout);
-
-  m_GLWindow->hide();
 }
 
 ControlPanel::~ControlPanel() noexcept {

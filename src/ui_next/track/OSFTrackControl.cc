@@ -227,14 +227,14 @@ void OSFTrackWorker::HandleData() {
   leftEyeSum /= smoothBufferSize;
   mouthStatus /= smoothBufferSize;
 
-  leftEyeSum = (leftEyeSum - m_Parameter.eyeMax) / (m_Parameter.eyeMax - m_Parameter.eyeMin);
+  leftEyeSum = (leftEyeSum - m_Parameter.eyeMin) / (m_Parameter.eyeMax - m_Parameter.eyeMin);
   if (leftEyeSum < 0.0f) {
     leftEyeSum = 0.0f;
   } else if (leftEyeSum > 1.0f) {
     leftEyeSum = 1.0f;
   }
 
-  rightEyeSum = (leftEyeSum - m_Parameter.eyeMax) / (m_Parameter.eyeMax - m_Parameter.eyeMin);
+  rightEyeSum = (leftEyeSum - m_Parameter.eyeMin) / (m_Parameter.eyeMax - m_Parameter.eyeMin);
   if (rightEyeSum < 0.0f) {
     rightEyeSum = 0.0f;
   } else if (rightEyeSum > 1.0f) {
@@ -245,8 +245,9 @@ void OSFTrackWorker::HandleData() {
     xSum,
     ySum,
     zSum,
-    leftEyeSum,
-    rightEyeSum,
+    // leftEyeSum,
+    /// rightEyeSum,
+    1.0f, 1.0f,
     mouthStatus > 0 ? wgc0310::HeadStatus::MouthStatus::Open
                     : wgc0310::HeadStatus::MouthStatus::Close
   });

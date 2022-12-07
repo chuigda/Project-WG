@@ -143,6 +143,16 @@ void GLWindow::initializeGL() {
                  GL_STATIC_DRAW);
   }
 
+  {
+    for (GLuint i = 0; i < 160; i++) {
+      float x = static_cast<float>(i) * 4.0f - 320.0f;
+      m_VolumeVertices[i * 4] = cw::Vertex2DF(x, 0.1f);
+      m_VolumeVertices[i * 4 + 1] = cw::Vertex2DF(x, -0.1f);
+      m_VolumeVertices[i * 4 + 2] = cw::Vertex2DF(x + 4.0f, -0.1f);
+      m_VolumeVertices[i * 4 + 3] = cw::Vertex2DF(x + 4.0f, 0.1f);
+    }
+  }
+
   emit OpenGLInitialized();
 }
 
@@ -303,6 +313,7 @@ void GLWindow::DrawScreenContent() {
       {
         glEnableClientState(GL_VERTEX_ARRAY);
         glBindBuffer(GL_ARRAY_BUFFER, m_VolumeVBO[0]);
+        glVertexPointer(2, GL_FLOAT, 0, nullptr);
         if (*m_VolumeLevelsUpdated) {
           *m_VolumeLevelsUpdated = false;
           for (size_t i = 0; i < 160; i++) {
@@ -317,7 +328,6 @@ void GLWindow::DrawScreenContent() {
                        m_VolumeVertices.data(),
                        GL_STREAM_DRAW);
         }
-        glVertexPointer(2, GL_FLOAT, 0, nullptr);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VolumeVBO[1]);
         glDrawElements(GL_QUADS,
