@@ -220,13 +220,13 @@ BodyControl::BodyControl(wgc0310::BodyStatus *bodyStatus,
     layout->addLayout(m_DetailedLayout);
     layout->addStretch();
 
-    QPushButton *reloadButton = new QPushButton("重新加载动画");
+    QPushButton *reloadButton = new QPushButton("↻ 重新加载");
     layout->addWidget(reloadButton);
     connect(reloadButton, &QPushButton::clicked, this, [this] {
       ReloadBodyAnimations();
     });
 
-    QPushButton *retractButton = new QPushButton("收起");
+    QPushButton *retractButton = new QPushButton("▲ 收起细节");
     layout->addWidget(retractButton);
     connect(
       retractButton,

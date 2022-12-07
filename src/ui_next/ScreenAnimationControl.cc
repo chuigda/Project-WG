@@ -12,15 +12,16 @@
 #include "util/DynLoad.h"
 
 ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
-                                               wgc0310::ScreenAnimationStatus *animationStatus)
+                                               wgc0310::ScreenAnimationStatus *animationStatus,
+                                               wgc0310::ScreenDisplayMode *screenDisplayMode)
   : CloseSignallingWidget(nullptr, Qt::Window),
     m_GLWindow(glWindow),
     m_ScreenAnimationStatus(animationStatus),
+    m_ScreenDisplayMode(screenDisplayMode),
     m_StaticImageButtonsLayout(new QHBoxLayout()),
     m_StaticImageButtonsLayoutV(new QVBoxLayout()),
     m_ScreenAnimationButtonsLayout(new QHBoxLayout()),
-    m_ScreenAnimationButtonsLayoutV(new QVBoxLayout())
-{
+    m_ScreenAnimationButtonsLayoutV(new QVBoxLayout()) {
   setWindowTitle("屏幕画面");
   setMinimumWidth(600);
 
@@ -28,10 +29,6 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
           &GLWindow::OpenGLInitialized,
           this,
           &ScreenAnimationControl::GLContextReady);
-
-  QWidget *minimalDisplayWidget = new QWidget();
-  QWidget *detailedDisplayWidget = new QWidget();
-  detailedDisplayWidget->setVisible(false);
 
   QVBoxLayout *mainLayout = new QVBoxLayout();
   this->setLayout(mainLayout);
@@ -42,36 +39,51 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
 
     layout->addWidget(new QLabel("显示模式"));
     layout->addStretch();
-    QRadioButton *minimalDisplayMode = new QRadioButton("简单");
-    minimalDisplayMode->setChecked(true);
-    layout->addWidget(minimalDisplayMode);
-    QRadioButton *detailedDisplayMode = new QRadioButton("详细");
-    layout->addWidget(detailedDisplayMode);
+
+    m_PlayingCapturedExpression = new QRadioButton("表情捕获");
+    m_PlayingSoundWave = new QRadioButton("音频信号");
+    m_PlayingStaticImage = new QRadioButton("静态画面");
+    m_PlayingDynamicAnimation = new QRadioButton("动画");
+    m_PlayingCapturedExpression->setChecked(true);
+    m_PlayingStaticImage->setDisabled(true);
+    m_PlayingDynamicAnimation->setDisabled(true);
+    layout->addWidget(m_PlayingCapturedExpression);
+    layout->addWidget(m_PlayingSoundWave);
+    layout->addWidget(m_PlayingStaticImage);
+    layout->addWidget(m_PlayingDynamicAnimation);
 
     connect(
-      minimalDisplayMode,
+      m_PlayingCapturedExpression,
       &QRadioButton::toggled,
-      minimalDisplayMode,
-      [minimalDisplayWidget] (bool toggled) {
-        minimalDisplayWidget->setVisible(toggled);
+      this,
+      [this](bool toggled) {
+        if (toggled) {
+          m_ScreenAnimationStatus->Reset();
+          *m_ScreenDisplayMode = wgc0310::ScreenDisplayMode::CapturedExpression;
+        }
       }
     );
 
     connect(
-      detailedDisplayMode,
+      m_PlayingSoundWave,
       &QRadioButton::toggled,
-      detailedDisplayMode,
-      [detailedDisplayWidget] (bool toggled) {
-        detailedDisplayWidget->setVisible(toggled);
+      this,
+      [this](bool toggled) {
+        if (toggled) {
+          m_ScreenAnimationStatus->Reset();
+          *m_ScreenDisplayMode = wgc0310::ScreenDisplayMode::SoundWave;
+        }
       }
     );
   }
 
-  mainLayout->addWidget(minimalDisplayWidget);
-  mainLayout->addWidget(detailedDisplayWidget);
-
   auto reloadStaticImages = [this] {
     m_ScreenAnimationStatus->Reset();
+    if (*m_ScreenDisplayMode == wgc0310::ScreenDisplayMode::SoundWave) {
+      m_PlayingSoundWave->setChecked(true);
+    } else {
+      m_PlayingCapturedExpression->setChecked(true);
+    }
     m_GLWindow->RunWithGLContext([this] {
       m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
       m_GLWindow->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -81,8 +93,59 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
     });
   };
 
+  QGroupBox *staticImageMinimized = new QGroupBox("静态图像");
+  QGroupBox *staticImageDetailed = new QGroupBox("静态图像");
+  staticImageDetailed->hide();
+
+  {
+    QHBoxLayout *hBox = new QHBoxLayout();
+    staticImageMinimized->setLayout(hBox);
+
+    hBox->addLayout(m_StaticImageButtonsLayout);
+    hBox->addStretch();
+    QPushButton *reloadButton = new QPushButton("↻");
+    reloadButton->setFixedWidth(32);
+    connect(reloadButton, &QPushButton::clicked, reloadButton, reloadStaticImages);
+    hBox->addWidget(reloadButton);
+
+    QPushButton *expandButton = new QPushButton("▼");
+    expandButton->setFixedWidth(32);
+    connect(expandButton, &QPushButton::clicked, this, [staticImageMinimized, staticImageDetailed] {
+      staticImageMinimized->hide();
+      staticImageDetailed->show();
+    });
+    hBox->addWidget(expandButton);
+
+    mainLayout->addWidget(staticImageMinimized);
+  }
+
+  {
+    QVBoxLayout *vBox = new QVBoxLayout();
+    staticImageDetailed->setLayout(vBox);
+
+    vBox->addLayout(m_StaticImageButtonsLayoutV);
+    vBox->addStretch();
+    QPushButton *reloadButton = new QPushButton("↻ 重新加载");
+    connect(reloadButton, &QPushButton::clicked, reloadButton, reloadStaticImages);
+    vBox->addWidget(reloadButton);
+
+    QPushButton *retractButton = new QPushButton("▲ 收起细节");
+    vBox->addWidget(retractButton);
+    connect(retractButton, &QPushButton::clicked, this, [staticImageMinimized, staticImageDetailed] {
+      staticImageMinimized->show();
+      staticImageDetailed->hide();
+    });
+
+    mainLayout->addWidget(staticImageDetailed);
+  }
+
   auto reloadAnimations = [this] {
     m_ScreenAnimationStatus->Reset();
+    if (*m_ScreenDisplayMode == wgc0310::ScreenDisplayMode::SoundWave) {
+      m_PlayingSoundWave->setChecked(true);
+    } else {
+      m_PlayingCapturedExpression->setChecked(true);
+    }
     m_GLWindow->RunWithGLContext([this] {
       m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
       m_GLWindow->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
@@ -92,81 +155,59 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
     });
   };
 
-  // 最小化显示模式
+  QGroupBox *animationMinimized = new QGroupBox("动画");
+  QGroupBox *animationDetailed = new QGroupBox("动画");
+  animationDetailed->hide();
+
   {
-    QVBoxLayout *layout = new QVBoxLayout();
-    minimalDisplayWidget->setLayout(layout);
+    QHBoxLayout *hBox = new QHBoxLayout();
+    animationMinimized->setLayout(hBox);
 
-    // 静态画面
-    {
-      QGroupBox *staticImageGroup = new QGroupBox("静态图像");
-      QHBoxLayout *hBox = new QHBoxLayout();
-      staticImageGroup->setLayout(hBox);
+    hBox->addLayout(m_ScreenAnimationButtonsLayout);
+    hBox->addStretch();
 
-      hBox->addLayout(m_StaticImageButtonsLayout);
-      hBox->addStretch();
-      QPushButton *reloadButton = new QPushButton("↻");
-      reloadButton->setFixedWidth(32);
-      connect(reloadButton, &QPushButton::clicked, reloadButton, reloadStaticImages);
-      hBox->addWidget(reloadButton);
+    QPushButton *configButton = new QPushButton("⌘");
+    configButton->setFixedWidth(32);
+    hBox->addWidget(configButton);
 
-      layout->addWidget(staticImageGroup);
-    }
+    QPushButton *reloadButton = new QPushButton("↻");
+    reloadButton->setFixedWidth(32);
+    connect(reloadButton, &QPushButton::clicked, reloadButton, reloadAnimations);
+    hBox->addWidget(reloadButton);
 
-    // 动画
-    {
-      QGroupBox *animationsGroup = new QGroupBox("动画");
-      QHBoxLayout *hBox = new QHBoxLayout();
-      animationsGroup->setLayout(hBox);
+    QPushButton *expandButton = new QPushButton("▼");
+    expandButton->setFixedWidth(32);
+    connect(expandButton, &QPushButton::clicked, this, [animationMinimized, animationDetailed] {
+      animationMinimized->hide();
+      animationDetailed->show();
+    });
+    hBox->addWidget(expandButton);
 
-      hBox->addLayout(m_ScreenAnimationButtonsLayout);
-      hBox->addStretch();
-      QPushButton *controlButton = new QPushButton("⌘");
-      controlButton->setFixedWidth(32);
-      hBox->addWidget(controlButton);
-      QPushButton *reloadButton = new QPushButton("↻");
-      reloadButton->setFixedWidth(32);
-      connect(reloadButton, &QPushButton::clicked, reloadButton, reloadAnimations);
-      hBox->addWidget(reloadButton);
-
-      layout->addWidget(animationsGroup);
-    }
+    mainLayout->addWidget(animationMinimized);
   }
 
-  // 常规显示模式
   {
-    QHBoxLayout *layout = new QHBoxLayout();
-    detailedDisplayWidget->setLayout(layout);
+    QVBoxLayout *vBox = new QVBoxLayout();
+    animationDetailed->setLayout(vBox);
 
-    {
-      QGroupBox *staticImageGroup = new QGroupBox("静态图像");
-      QVBoxLayout *vBox = new QVBoxLayout();
-      staticImageGroup->setLayout(vBox);
+    vBox->addLayout(m_ScreenAnimationButtonsLayoutV);
+    vBox->addStretch();
 
-      vBox->addLayout(m_StaticImageButtonsLayoutV);
-      vBox->addStretch();
-      QPushButton *reloadButton = new QPushButton("重新加载图像");
-      connect(reloadButton, &QPushButton::clicked, reloadButton, reloadStaticImages);
-      vBox->addWidget(reloadButton);
+    QPushButton *configButton = new QPushButton("⌘ 配置");
+    vBox->addWidget(configButton);
 
-      layout->addWidget(staticImageGroup);
-    }
+    QPushButton *reloadButton = new QPushButton("↻ 重新加载");
+    connect(reloadButton, &QPushButton::clicked, reloadButton, reloadAnimations);
+    vBox->addWidget(reloadButton);
 
-    {
-      QGroupBox *staticImageGroup = new QGroupBox("动画");
-      QVBoxLayout *vBox = new QVBoxLayout();
-      staticImageGroup->setLayout(vBox);
+    QPushButton *retractButton = new QPushButton("▲ 收起细节");
+    vBox->addWidget(retractButton);
+    connect(retractButton, &QPushButton::clicked, this, [animationMinimized, animationDetailed] {
+      animationMinimized->show();
+      animationDetailed->hide();
+    });
 
-      vBox->addLayout(m_ScreenAnimationButtonsLayoutV);
-      vBox->addStretch();
-      QPushButton *controlButton = new QPushButton("动画控制");
-      vBox->addWidget(controlButton);
-      QPushButton *reloadButton = new QPushButton("重新加载动画");
-      connect(reloadButton, &QPushButton::clicked, reloadButton, reloadStaticImages);
-      vBox->addWidget(reloadButton);
-
-      layout->addWidget(staticImageGroup);
-    }
+    mainLayout->addWidget(animationDetailed);
   }
 }
 
@@ -230,6 +271,7 @@ void ScreenAnimationControl::ReloadStaticImages() {
       QPushButton *vButton = new QPushButton(image.imageName);
 
       auto clickHandler = [this, imagePtr] {
+        m_PlayingStaticImage->setChecked(true);
         m_ScreenAnimationStatus->PlayStaticAnimation(imagePtr);
       };
 
@@ -298,6 +340,7 @@ void ScreenAnimationControl::ReloadScreenAnimations() {
       QPushButton *vButton = new QPushButton(animationName);
 
       auto clickHandler = [this, animationPtr] {
+        m_PlayingDynamicAnimation->setChecked(true);
         m_ScreenAnimationStatus->PlayAnimation(animationPtr);
       };
 

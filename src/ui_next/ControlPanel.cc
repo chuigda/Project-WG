@@ -45,7 +45,11 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     m_GLInfoDisplay(new GLInfoDisplay(m_GLWindow)),
     m_EntityControl(new EntityControl(&m_EntityStatus)),
     m_TrackControl(new TrackControl(&m_HeadStatus, &m_ScreenDisplayMode, &m_WorkerThread)),
-    m_ScreenAnimationControl(new ScreenAnimationControl(m_GLWindow, &m_ScreenAnimationStatus)),
+    m_ScreenAnimationControl(new ScreenAnimationControl(
+      m_GLWindow,
+      &m_ScreenAnimationStatus,
+      &m_ScreenDisplayMode
+    )),
     m_BodyControl(new BodyControl(&m_BodyStatus, this)),
     m_SoundControl(new SoundControl(&m_VolumeLevels, &m_VolumeLevelsUpdated, &m_WorkerThread)),
     m_AboutBox(new AboutBox(presenter)),
@@ -97,6 +101,8 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   layout->addStretch();
 
   this->setLayout(layout);
+
+  m_GLWindow->hide();
 }
 
 ControlPanel::~ControlPanel() noexcept {
