@@ -87,9 +87,9 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   QHBoxLayout *layout = new QHBoxLayout();
   layout->addWidget(m_OpenGLSettingsButton);
   layout->addWidget(m_CameraSettingsButton);
+  layout->addWidget(m_PoseEstimationButton);
   layout->addWidget(m_BodyAnimationButton);
   layout->addWidget(m_FaceAnimationButton);
-  layout->addWidget(m_PoseEstimationButton);
   layout->addWidget(m_VolumeAnalysisButton);
   layout->addWidget(m_AboutButton);
   layout->addStretch();
