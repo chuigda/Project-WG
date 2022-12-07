@@ -53,7 +53,7 @@ public:
 
   void DrawOnScreen(GLFunctions *f) const noexcept;
 
-  void NextFrame();
+  void NextTick();
   void Reset();
 
   CW_DERIVE_UNCOPYABLE(ScreenAnimationStatus)

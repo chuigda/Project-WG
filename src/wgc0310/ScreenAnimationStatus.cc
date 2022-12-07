@@ -123,7 +123,7 @@ void ScreenAnimationStatus::Reset() {
   m_Frame = 0;
 }
 
-void ScreenAnimationStatus::NextFrame() {
+void ScreenAnimationStatus::NextTick() {
   if (m_IsPlayingDynamicAnimation) {
     m_Frame++;
   }

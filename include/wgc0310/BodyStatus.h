@@ -20,7 +20,7 @@ public:
     return static_cast<bool>(m_Animation);
   }
 
-  bool NextFrame(BodyStatus* bodyStatus) noexcept;
+  bool NextTick(BodyStatus* bodyStatus) noexcept;
 
 private:
   BodyAnimation const* m_Animation;

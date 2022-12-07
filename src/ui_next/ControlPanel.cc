@@ -63,15 +63,15 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   QTimer *timer = new QTimer(this);
   timer->setTimerType(Qt::PreciseTimer);
   timer->start();
-  connect(timer, &QTimer::timeout, m_GLWindow, [this] {
+  connect(timer, &QTimer::timeout, this, [this] {
     if (m_BodyStatus.playAnimationStatus.IsPlayingAnimation()) {
-      if (!m_BodyStatus.playAnimationStatus.NextFrame(&m_BodyStatus)) {
+      if (!m_BodyStatus.playAnimationStatus.NextTick(&m_BodyStatus)) {
         m_BodyStatus.playAnimationStatus.SetAnimation(nullptr);
         emit DoneBodyAnimation();
       }
     }
 
-    m_ScreenAnimationStatus.NextFrame();
+    m_ScreenAnimationStatus.NextTick();
     m_BodyStatus.NextTick();
     m_GLWindow->update();
   });

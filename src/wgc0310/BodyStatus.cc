@@ -15,7 +15,7 @@ PlayAnimationStatus::SetAnimation(BodyAnimation const* animation) noexcept {
   m_CurrentFrameCount = 0;
 }
 
-bool PlayAnimationStatus::NextFrame(BodyStatus *bodyStatus) noexcept {
+bool PlayAnimationStatus::NextTick(BodyStatus *bodyStatus) noexcept {
   if (!m_Animation) {
     return false;
   }
