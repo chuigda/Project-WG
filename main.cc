@@ -47,6 +47,7 @@ PrecheckLicense() {
 
 int main(int argc, char *argv[]) {
   QApplication a { argc, argv };
+  QApplication::setWindowIcon(QIcon(QPixmap(":/icon.bmp")));
 
   auto [agreed, presenter] = PrecheckLicense();
   if (agreed != QDialog::Accepted) {

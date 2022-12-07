@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>icon.bmp</file>
         <file>volume-bar-composed.bmp</file>
         <file>eye.9.bmp</file>
         <file>half-face.bmp</file>
