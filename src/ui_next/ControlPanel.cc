@@ -2,7 +2,7 @@
 
 #include <QCloseEvent>
 #include <QPushButton>
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include <QMessageBox>
 #include <QTimer>
 #include "ui_next/GLWindow.h"
@@ -34,7 +34,8 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
       &m_ScreenAnimationStatus,
       &m_VolumeLevels,
       &m_VolumeLevelsUpdated,
-      &m_ScreenDisplayMode
+      &m_ScreenDisplayMode,
+      &m_ExtraStatus
     )),
     m_GLInfoDisplay(new GLInfoDisplay(m_GLWindow)),
     m_EntityControl(new EntityControl(&m_EntityStatus)),
@@ -46,6 +47,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     )),
     m_BodyControl(new BodyControl(&m_BodyStatus, this)),
     m_SoundControl(new SoundControl(&m_VolumeLevels, &m_VolumeLevelsUpdated, &m_WorkerThread)),
+    m_ExtraControl(new ExtraControl(&m_ExtraStatus)),
     m_AboutBox(new AboutBox(presenter)),
     m_OpenGLSettingsButton(new QPushButton("OpenGL")),
     m_CameraSettingsButton(new QPushButton("物体位置")),
@@ -53,6 +55,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     m_FaceAnimationButton(new QPushButton("屏幕画面")),
     m_PoseEstimationButton(new QPushButton("姿态控制")),
     m_VolumeAnalysisButton(new QPushButton("音频分析")),
+    m_ExtraSettingsButton(new QPushButton("附加选项")),
     m_AboutButton(new QPushButton("关于"))
 {
   setWindowTitle("控制面板");
@@ -82,19 +85,43 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   LinkButtonAndWidget(m_PoseEstimationButton, m_TrackControl);
   LinkButtonAndWidget(m_BodyAnimationButton, m_BodyControl);
   LinkButtonAndWidget(m_VolumeAnalysisButton, m_SoundControl);
+  LinkButtonAndWidget(m_ExtraSettingsButton, m_ExtraControl);
   LinkButtonAndWidget(m_AboutButton, m_AboutBox);
 
-  QHBoxLayout *layout = new QHBoxLayout();
-  layout->addWidget(m_OpenGLSettingsButton);
-  layout->addWidget(m_CameraSettingsButton);
-  layout->addWidget(m_PoseEstimationButton);
-  layout->addWidget(m_BodyAnimationButton);
-  layout->addWidget(m_FaceAnimationButton);
-  layout->addWidget(m_VolumeAnalysisButton);
-  layout->addWidget(m_AboutButton);
-  layout->addStretch();
+  connect(m_ExtraControl, &ExtraControl::SetStayOnTop, this, [this] (bool stayOnTop) {
+    this->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_GLWindow->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_GLInfoDisplay->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_EntityControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_TrackControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_ScreenAnimationControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_BodyControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_SoundControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_ExtraControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_AboutBox->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+
+    this->show();
+    m_GLWindow->show();
+    m_ExtraControl->show();
+  });
+
+  QGridLayout *layout = new QGridLayout();
+  layout->addWidget(m_OpenGLSettingsButton, 0, 0);
+  layout->addWidget(m_CameraSettingsButton, 0, 1);
+  layout->addWidget(m_PoseEstimationButton, 0, 2);
+  layout->addWidget(m_BodyAnimationButton, 0, 3);
+  layout->addWidget(m_FaceAnimationButton, 1, 0);
+  layout->addWidget(m_VolumeAnalysisButton, 1, 1);
+  layout->addWidget(m_ExtraSettingsButton, 1, 2);
+  layout->addWidget(m_AboutButton, 1, 3);
 
   this->setLayout(layout);
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "VirtualCallInCtorOrDtor"
+  // This should be safe since base class `QWidget` has been initialised,
+  // and we did not reimplement `sizeHint`
+  setFixedSize(sizeHint());
+#pragma clang diagnostic pop
 }
 
 ControlPanel::~ControlPanel() noexcept {
@@ -120,6 +147,7 @@ void ControlPanel::closeEvent(QCloseEvent *e) {
     m_ScreenAnimationControl->close();
     m_BodyControl->close();
     m_SoundControl->close();
+    m_ExtraControl->close();
     m_AboutBox->close();
 
     e->accept();

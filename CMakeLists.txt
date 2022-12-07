@@ -24,10 +24,9 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
 set(PROJECT_SOURCES
     main.cc
 
-    src/ui_next/GLInfoDisplay.cc
-    src/ui_next/AboutBox.cc
     src/ui_next/EntityStatus.cc
     src/ui_next/ControlPanel.cc
+    src/ui_next/GLInfoDisplay.cc
     src/ui_next/EntityControl.cc
     src/ui_next/BodyControl.cc
     src/ui_next/ScreenAnimationControl.cc
@@ -37,17 +36,20 @@ set(PROJECT_SOURCES
     src/ui_next/track/OSFTrackControl.cc
     src/ui_next/track/ManualTrackControl.cc
     src/ui_next/SoundControl.cc
+    src/ui_next/ExtraControl.cc
+    src/ui_next/AboutBox.cc
     src/ui_next/LicensePresenter.cc
     src/ui_next/GLWindow.cc
-    include/ui_next/GLInfoDisplay.h
-    include/ui_next/AboutBox.h
     include/ui_next/EntityStatus.h
     include/ui_next/ControlPanel.h
+    include/ui_next/GLInfoDisplay.h
     include/ui_next/EntityControl.h
     include/ui_next/BodyControl.h
     include/ui_next/ScreenAnimationControl.h
     include/ui_next/FaceTrackControl.h
     include/ui_next/SoundControl.h
+    include/ui_next/ExtraControl.h
+    include/ui_next/AboutBox.h
     include/ui_next/LicensePresenter.h
     include/ui_next/GLWindow.h
     include/ui_next/CloseSignallingWidget.h

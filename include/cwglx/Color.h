@@ -42,8 +42,17 @@ public:
     return m_Repr[3];
   }
 
+  constexpr inline void SetAlpha(std::uint8_t alpha) noexcept {
+    m_Repr[3] = alpha;
+  }
+
   [[nodiscard]]
   constexpr inline std::array<std::uint8_t, 4> GetRepr() const noexcept {
+    return m_Repr;
+  }
+
+  [[nodiscard]]
+  constexpr std::array<std::uint8_t, 4>& GetRawRepr() noexcept {
     return m_Repr;
   }
 

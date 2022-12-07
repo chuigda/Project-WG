@@ -8,6 +8,7 @@
 #include "wgc0310/BodyStatus.h"
 #include "EntityStatus.h"
 #include "util/CircularBuffer.h"
+#include "ExtraControl.h"
 
 class QPushButton;
 class GLWindow;
@@ -48,6 +49,7 @@ private:
   wgc0310::BodyStatus m_BodyStatus;
   cw::CircularBuffer<qreal, 160> m_VolumeLevels;
   bool m_VolumeLevelsUpdated;
+  StatusExtra m_ExtraStatus;
 
   // widgets
   GLWindow *m_GLWindow;
@@ -57,6 +59,7 @@ private:
   ScreenAnimationControl *m_ScreenAnimationControl;
   BodyControl *m_BodyControl;
   SoundControl *m_SoundControl;
+  ExtraControl *m_ExtraControl;
   AboutBox *m_AboutBox;
 
   QPushButton *m_OpenGLSettingsButton;
@@ -65,6 +68,7 @@ private:
   QPushButton *m_FaceAnimationButton;
   QPushButton *m_PoseEstimationButton;
   QPushButton *m_VolumeAnalysisButton;
+  QPushButton *m_ExtraSettingsButton;
   QPushButton *m_AboutButton;
 };
 

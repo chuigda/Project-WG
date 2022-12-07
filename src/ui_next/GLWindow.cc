@@ -14,7 +14,8 @@ GLWindow::GLWindow(EntityStatus const* entityStatus,
                    wgc0310::ScreenAnimationStatus const *screenAnimationStatus,
                    cw::CircularBuffer<qreal, 160> *volumeLevels,
                    bool *volumeLevelsUpdated,
-                   wgc0310::ScreenDisplayMode const *screenDisplayMode)
+                   wgc0310::ScreenDisplayMode const *screenDisplayMode,
+                   StatusExtra const* statusExtra)
   : QOpenGLWidget(nullptr, Qt::Window),
     // Input status
     m_EntityStatus(entityStatus),
@@ -24,6 +25,7 @@ GLWindow::GLWindow(EntityStatus const* entityStatus,
     m_VolumeLevels(volumeLevels),
     m_VolumeLevelsUpdated(volumeLevelsUpdated),
     m_ScreenDisplayMode(screenDisplayMode),
+    m_StatusExtra(statusExtra),
     // Internal states and OpenGL resources
     m_Light(nullptr),
     m_Light2(nullptr),
@@ -180,7 +182,15 @@ void GLWindow::paintGL() {
   glLoadIdentity();
   glScalef(0.01f, 0.01f, 0.01f);
 
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  if (m_StatusExtra->customClearColor) {
+    cw::RGBAColorF clearColor{m_StatusExtra->clearColor};
+    glClearColor(clearColor.GetRed(),
+                 clearColor.GetGreen(),
+                 clearColor.GetBlue(),
+                 clearColor.GetAlpha());
+  } else {
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  }
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   m_Light->Enable(this);

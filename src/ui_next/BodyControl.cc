@@ -232,7 +232,7 @@ BodyControl::BodyControl(wgc0310::BodyStatus *bodyStatus,
       retractButton,
       &QPushButton::clicked,
       this,
-      [=] {
+      [groupBoxMinimized, groupBoxDetailed, armStatusWidget] {
         groupBoxMinimized->setVisible(true);
         groupBoxDetailed->setVisible(false);
         armStatusWidget->setVisible(false);

@@ -13,8 +13,9 @@
 #include "wgc0310/Screen.h"
 #include "wgc0310/HeadStatus.h"
 #include "wgc0310/ScreenAnimationStatus.h"
-#include "EntityStatus.h"
+#include "ui_next/EntityStatus.h"
 #include "util/CircularBuffer.h"
+#include "ExtraControl.h"
 
 class GLWindow final : public QOpenGLWidget, public GLFunctions {
   Q_OBJECT
@@ -26,7 +27,8 @@ public:
                     wgc0310::ScreenAnimationStatus const *screenAnimationStatus,
                     cw::CircularBuffer<qreal, 160> *volumeLevels,
                     bool *volumeLevelsUpdated,
-                    wgc0310::ScreenDisplayMode const *screenDisplayMode);
+                    wgc0310::ScreenDisplayMode const *screenDisplayMode,
+                    StatusExtra const* statusExtra);
   ~GLWindow() final;
 
   void RunWithGLContext(std::function<void(void)> const& f);
@@ -55,6 +57,7 @@ private:
   cw::CircularBuffer<qreal, 160> *m_VolumeLevels;
   bool *m_VolumeLevelsUpdated;
   wgc0310::ScreenDisplayMode const *m_ScreenDisplayMode;
+  StatusExtra const* m_StatusExtra;
 
   // Internal states, OpenGL resources and so on
   std::unique_ptr<cw::Light> m_Light;
