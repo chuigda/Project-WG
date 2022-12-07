@@ -8,7 +8,7 @@
 #include "cwglx/drawable/PlainTriangles.h"
 #include "glu/FakeGLU.h"
 
-GLWindow::GLWindow(EntityStatus const* cameraEntityStatus,
+GLWindow::GLWindow(EntityStatus const* entityStatus,
                    wgc0310::HeadStatus const* headStatus,
                    wgc0310::BodyStatus const* bodyStatus,
                    wgc0310::ScreenAnimationStatus const *screenAnimationStatus,
@@ -17,7 +17,7 @@ GLWindow::GLWindow(EntityStatus const* cameraEntityStatus,
                    wgc0310::ScreenDisplayMode const *screenDisplayMode)
   : QOpenGLWidget(nullptr, Qt::Window),
     // Input status
-    m_EntityStatus(cameraEntityStatus),
+    m_EntityStatus(entityStatus),
     m_HeadStatus(headStatus),
     m_BodyStatus(bodyStatus),
     m_ScreenAnimationStatus(screenAnimationStatus),
@@ -297,26 +297,26 @@ void GLWindow::DrawScreenContent() {
     glScalef(1.0f, -1.0f, 1.0f);
     glFrontFace(GL_CW);
     if (*m_ScreenDisplayMode == wgc0310::ScreenDisplayMode::SoundWave) {
-      if (*m_VolumeLevelsUpdated) {
-        for (size_t i = 0; i < 160; i++) {
-          m_VolumeVertices[i * 4].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * 200.0f);
-          m_VolumeVertices[i * 4 + 1].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * -200.0f);
-          m_VolumeVertices[i * 4 + 2].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * -200.0f);
-          m_VolumeVertices[i * 4 + 3].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * 200.0f);
-        }
-
-        glBufferData(GL_ARRAY_BUFFER,
-                     static_cast<GLsizei>(m_VolumeVertices.size() * sizeof(cw::Vertex2DF)),
-                     m_VolumeVertices.data(),
-                     GL_STREAM_DRAW);
-      }
-
       glPushMatrix();
       glColor4f(0.5f, 1.0f, 1.0f, 1.0f);
       glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
       {
         glEnableClientState(GL_VERTEX_ARRAY);
         glBindBuffer(GL_ARRAY_BUFFER, m_VolumeVBO[0]);
+        if (*m_VolumeLevelsUpdated) {
+          *m_VolumeLevelsUpdated = false;
+          for (size_t i = 0; i < 160; i++) {
+            m_VolumeVertices[i * 4].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * 200.0f);
+            m_VolumeVertices[i * 4 + 1].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * -200.0f);
+            m_VolumeVertices[i * 4 + 2].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * -200.0f);
+            m_VolumeVertices[i * 4 + 3].SetY(static_cast<GLfloat>(m_VolumeLevels->Get(i)) * 200.0f);
+          }
+
+          glBufferData(GL_ARRAY_BUFFER,
+                       static_cast<GLsizei>(m_VolumeVertices.size() * sizeof(cw::Vertex2DF)),
+                       m_VolumeVertices.data(),
+                       GL_STREAM_DRAW);
+        }
         glVertexPointer(2, GL_FLOAT, 0, nullptr);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VolumeVBO[1]);

@@ -24,6 +24,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
 set(PROJECT_SOURCES
     main.cc
 
+    src/ui_next/GLInfoDisplay.cc
     src/ui_next/AboutBox.cc
     src/ui_next/EntityStatus.cc
     src/ui_next/ControlPanel.cc
@@ -38,6 +39,7 @@ set(PROJECT_SOURCES
     src/ui_next/SoundControl.cc
     src/ui_next/LicensePresenter.cc
     src/ui_next/GLWindow.cc
+    include/ui_next/GLInfoDisplay.h
     include/ui_next/AboutBox.h
     include/ui_next/EntityStatus.h
     include/ui_next/ControlPanel.h

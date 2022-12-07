@@ -20,7 +20,7 @@ class GLWindow final : public QOpenGLWidget, public GLFunctions {
   Q_OBJECT
 
 public:
-  explicit GLWindow(EntityStatus const* cameraEntityStatus,
+  explicit GLWindow(EntityStatus const* entityStatus,
                     wgc0310::HeadStatus const* headStatus,
                     wgc0310::BodyStatus const* bodyStatus,
                     wgc0310::ScreenAnimationStatus const *screenAnimationStatus,

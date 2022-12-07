@@ -14,7 +14,7 @@ public:
 signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
-  void ResetCameraEntityStatus();
+  void ResetEntityStatus();
 #pragma clang diagnostic pop
 
 private:

@@ -6,6 +6,7 @@
 #include <QLayout>
 #include <QSpinBox>
 #include <QPushButton>
+#include <QFontDatabase>
 #include "include/ui_next/EntityStatus.h"
 
 static QLayout* CreateSliderSuite(QString const& suiteName,
@@ -15,7 +16,11 @@ static QLayout* CreateSliderSuite(QString const& suiteName,
                                   int max,
                                   int stepValue) {
   QHBoxLayout *layout = new QHBoxLayout();
+
+  QFont monospaceFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+  monospaceFont.setPointSize(11);
   QLabel *nameLabel = new QLabel(suiteName);
+  nameLabel->setFont(monospaceFont);
   nameLabel->setFixedWidth(32);
 
   QSlider *slider = new QSlider();
@@ -24,7 +29,8 @@ static QLayout* CreateSliderSuite(QString const& suiteName,
   slider->setMaximum(max / stepValue);
 
   QLabel *valueLabel = new QLabel("0");
-  valueLabel->setFixedWidth(48);
+  valueLabel->setFont(monospaceFont);
+  valueLabel->setFixedWidth(32);
   QObject::connect(
     slider,
     &QSlider::valueChanged,
@@ -37,7 +43,7 @@ static QLayout* CreateSliderSuite(QString const& suiteName,
 
   QObject::connect(
     cameraControl,
-    &EntityControl::ResetCameraEntityStatus,
+    &EntityControl::ResetEntityStatus,
     slider,
     [slider, controlledValue, stepValue] () {
       slider->setValue(static_cast<int>(*controlledValue) / stepValue);
@@ -100,10 +106,10 @@ EntityControl::EntityControl(EntityStatus *status) noexcept
       this,
       [this] {
         this->m_EntityStatus->Reset();
-        emit this->ResetCameraEntityStatus();
+        emit this->ResetEntityStatus();
       }
     );
   }
 
-  emit this->ResetCameraEntityStatus();
+  emit this->ResetEntityStatus();
 }

@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QDir>
+#include <QFontDatabase>
 
 static std::pair<QSlider*, QLayout*>
 AddSlider(QLayout *layout, float *valueSlot, int min, int max, int curr) {
@@ -18,7 +19,10 @@ AddSlider(QLayout *layout, float *valueSlot, int min, int max, int curr) {
   layout->addWidget(slider);
 
   QLabel *label = new QLabel(QString::number(curr));
-  label->setFixedWidth(48);
+  label->setFixedWidth(32);
+  QFont monospaceFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+  monospaceFont.setPointSize(11);
+  label->setFont(monospaceFont);
   QObject::connect(slider, &QSlider::valueChanged, slider, [=] (int value) {
     *valueSlot = static_cast<float>(value) * 5.0f;
     label->setText(QString::number(*valueSlot));

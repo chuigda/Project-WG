@@ -11,6 +11,7 @@
 
 class QPushButton;
 class GLWindow;
+class GLInfoDisplay;
 class EntityControl;
 class TrackControl;
 class ScreenAnimationControl;
@@ -40,7 +41,7 @@ private:
   QThread m_WorkerThread;
 
   // status
-  EntityStatus m_CameraEntityStatus;
+  EntityStatus m_EntityStatus;
   wgc0310::HeadStatus m_HeadStatus;
   wgc0310::ScreenAnimationStatus m_ScreenAnimationStatus;
   wgc0310::ScreenDisplayMode m_ScreenDisplayMode;
@@ -50,6 +51,7 @@ private:
 
   // widgets
   GLWindow *m_GLWindow;
+  GLInfoDisplay *m_GLInfoDisplay;
   EntityControl *m_EntityControl;
   TrackControl *m_TrackControl;
   ScreenAnimationControl *m_ScreenAnimationControl;

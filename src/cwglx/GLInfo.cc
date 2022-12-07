@@ -1,6 +1,8 @@
 #include "cwglx/GLInfo.h"
 
 #include "cwglx/GLImpl.h"
+#include "ui_next/GLInfoDisplay.h"
+
 
 namespace cw {
 

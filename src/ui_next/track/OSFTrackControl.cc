@@ -170,8 +170,8 @@ void OSFTrackWorker::HandleData() {
       .rotationX = facePacket->euler[0],
       .rotationY = facePacket->euler[1],
       .rotationZ = facePacket->euler[2],
-      .leftEye = facePacket->eyeBlinkLeft,
-      .rightEye = facePacket->eyeBlinkRight,
+      .leftEye = facePacket->eyeLeft,
+      .rightEye = facePacket->eyeRight,
       .mouthStatus = facePacket->mouthOpen > 0.05f ?
                      wgc0310::HeadStatus::MouthStatus::Open :
                      wgc0310::HeadStatus::MouthStatus::Close

@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include "ui_next/GLWindow.h"
+#include "ui_next/GLInfoDisplay.h"
 #include "ui_next/EntityControl.h"
 #include "ui_next/FaceTrackControl.h"
 #include "ui_next/ScreenAnimationControl.h"
@@ -33,7 +34,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     m_VolumeLevels(0.0),
     m_VolumeLevelsUpdated(false),
     m_GLWindow(new GLWindow(
-      &m_CameraEntityStatus,
+      &m_EntityStatus,
       &m_HeadStatus,
       &m_BodyStatus,
       &m_ScreenAnimationStatus,
@@ -41,7 +42,8 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
       &m_VolumeLevelsUpdated,
       &m_ScreenDisplayMode
     )),
-    m_EntityControl(new EntityControl(&m_CameraEntityStatus)),
+    m_GLInfoDisplay(new GLInfoDisplay(m_GLWindow)),
+    m_EntityControl(new EntityControl(&m_EntityStatus)),
     m_TrackControl(new TrackControl(&m_HeadStatus, &m_ScreenDisplayMode, &m_WorkerThread)),
     m_ScreenAnimationControl(new ScreenAnimationControl(m_GLWindow, &m_ScreenAnimationStatus)),
     m_BodyControl(new BodyControl(&m_BodyStatus, this)),
@@ -76,6 +78,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     m_GLWindow->update();
   });
 
+  LinkButtonAndWidget(m_OpenGLSettingsButton, m_GLInfoDisplay);
   LinkButtonAndWidget(m_CameraSettingsButton, m_EntityControl);
   LinkButtonAndWidget(m_FaceAnimationButton, m_ScreenAnimationControl);
   LinkButtonAndWidget(m_PoseEstimationButton, m_TrackControl);
@@ -94,6 +97,8 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   layout->addStretch();
 
   this->setLayout(layout);
+
+  m_GLWindow->hide();
 }
 
 ControlPanel::~ControlPanel() noexcept {
@@ -113,6 +118,7 @@ void ControlPanel::closeEvent(QCloseEvent *e) {
 
   if (r == 1) {
     m_GLWindow->close();
+    m_GLInfoDisplay->close();
     m_EntityControl->close();
     m_TrackControl->close();
     m_ScreenAnimationControl->close();
