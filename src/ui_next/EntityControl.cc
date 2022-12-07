@@ -60,7 +60,6 @@ EntityControl::EntityControl(EntityStatus *status) noexcept
   : m_EntityStatus(status)
 {
   setWindowTitle("物体位置");
-  setMinimumWidth(320);
 
   QVBoxLayout *mainLayout = new QVBoxLayout();
   this->setLayout(mainLayout);
@@ -112,4 +111,12 @@ EntityControl::EntityControl(EntityStatus *status) noexcept
   }
 
   emit this->ResetEntityStatus();
+
+  setMinimumWidth(400);
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "VirtualCallInCtorOrDtor"
+  // This should be safe since base class `QWidget` has been initialised,
+  // and we did not reimplement `sizeHint`
+  setFixedHeight(sizeHint().height());
+#pragma clang diagnostic pop
 }
