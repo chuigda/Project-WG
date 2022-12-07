@@ -93,7 +93,6 @@ SoundControl::SoundControl(cw::CircularBuffer<qreal, 160> *volumeLevels,
     m_WorkerThread(workerThread)
 {
   setWindowTitle("音频分析");
-  setMinimumWidth(400);
 
   m_VolumeLevel->setMinimum(0);
   m_VolumeLevel->setMaximum(100);
@@ -125,6 +124,14 @@ SoundControl::SoundControl(cw::CircularBuffer<qreal, 160> *volumeLevels,
   layout->addWidget(m_DeviceSelect);
   layout->addWidget(m_VolumeLevel);
   setLayout(layout);
+
+  setFixedWidth(400);
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "VirtualCallInCtorOrDtor"
+  // This should be safe since base class `QWidget` has been initialised,
+  // and we did not reimplement `sizeHint`
+  setFixedHeight(sizeHint().height());
+#pragma clang diagnostic pop
 }
 
 void SoundControl::ReloadAudioDevices() {

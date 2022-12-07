@@ -95,6 +95,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     bool screenAnimationControl = m_ScreenAnimationControl->isVisible();
     bool bodyControl = m_BodyControl->isVisible();
     bool soundControl = m_SoundControl->isVisible();
+    bool aboutBox = m_AboutBox->isVisible();
 
     this->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_GLWindow->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
@@ -109,14 +110,14 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
 
     this->show();
     m_GLWindow->show();
-    m_ExtraControl->show();
-
     if (glInfo) { m_GLInfoDisplay->show(); }
     if (entityControl) { m_EntityControl->show(); }
     if (trackControl) { m_TrackControl->show(); }
     if (screenAnimationControl) { m_ScreenAnimationControl->show(); }
     if (bodyControl) { m_BodyControl->show(); }
     if (soundControl) { m_SoundControl->show(); }
+    m_ExtraControl->show();
+    if (aboutBox) { m_AboutBox->show(); }
   });
 
   QGridLayout *layout = new QGridLayout();
