@@ -89,6 +89,13 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   LinkButtonAndWidget(m_AboutButton, m_AboutBox);
 
   connect(m_ExtraControl, &ExtraControl::SetStayOnTop, this, [this] (bool stayOnTop) {
+    bool glInfo = m_GLInfoDisplay->isVisible();
+    bool entityControl = m_EntityControl->isVisible();
+    bool trackControl = m_TrackControl->isVisible();
+    bool screenAnimationControl = m_ScreenAnimationControl->isVisible();
+    bool bodyControl = m_BodyControl->isVisible();
+    bool soundControl = m_SoundControl->isVisible();
+
     this->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_GLWindow->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_GLInfoDisplay->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
@@ -103,6 +110,13 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     this->show();
     m_GLWindow->show();
     m_ExtraControl->show();
+
+    if (glInfo) { m_GLInfoDisplay->show(); }
+    if (entityControl) { m_EntityControl->show(); }
+    if (trackControl) { m_TrackControl->show(); }
+    if (screenAnimationControl) { m_ScreenAnimationControl->show(); }
+    if (bodyControl) { m_BodyControl->show(); }
+    if (soundControl) { m_SoundControl->show(); }
   });
 
   QGridLayout *layout = new QGridLayout();
