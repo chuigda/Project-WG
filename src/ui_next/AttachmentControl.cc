@@ -76,6 +76,12 @@ AttachmentControl::AttachmentControl(wgc0310::AttachmentStatus *attachmentStatus
       if (triggeredAction->data().isNull()) {
         // 清除配件选择
         if (m_AttachmentSlot) {
+          if (*m_AttachmentSlot) {
+            QWidget *controlWidget = (*m_AttachmentSlot)->GetControlWidget();
+            if (controlWidget) {
+              controlWidget->close();
+            }
+          }
           *m_AttachmentSlot = nullptr;
         }
         if (m_ActivatedAttachmentConfigButton) {
@@ -259,6 +265,11 @@ void AttachmentControl::ReloadAttachments() {
     action->setData(QVariant { static_cast<uint>(m_Attachments.size()) });
     m_Attachments.emplace_back(animation);
     m_SharedObjects.push_back(sharedObject);
+
+    QWidget *controlWidget = animation->GetControlWidget();
+    if (controlWidget) {
+      connect(this, &CloseSignallingWidget::AboutToClose, controlWidget, &QWidget::close);
+    }
   }
 }
 

@@ -385,6 +385,11 @@ void ScreenAnimationControl::ReloadScreenAnimations() {
 
     m_ScreenAnimations.emplace_back(animation);
     m_SharedObjects.push_back(sharedObject);
+
+    QWidget *controlWidget = animation->GetControlWidget();
+    if (controlWidget) {
+      connect(this, &CloseSignallingWidget::AboutToClose, controlWidget, &QWidget::close);
+    }
   }
 
   ClearLayout(m_ScreenAnimationButtonsLayout);

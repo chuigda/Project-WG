@@ -21,8 +21,13 @@ signals:
 
 protected:
   void closeEvent(QCloseEvent *event) override {
-    emit AboutToClose();
     QWidget::closeEvent(event);
+    emit AboutToClose();
+  }
+
+  void hideEvent(QHideEvent *event) override {
+    QWidget::hideEvent(event);
+    emit AboutToClose();
   }
 };
 

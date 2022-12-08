@@ -1,6 +1,7 @@
 #include "include/wgc0310/ScreenAnimationStatus.h"
 
 #include <QTimer>
+#include <QWidget>
 #include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
 #include "util/DynLoad.h"
@@ -64,6 +65,13 @@ void ScreenAnimationStatus::DrawOnScreen(GLFunctions *f) const noexcept {
 }
 
 void ScreenAnimationStatus::Reset() {
+  if (animation) {
+    QWidget *controlWidget = animation->GetControlWidget();
+    if (controlWidget) {
+      controlWidget->close();
+    }
+  }
+
   staticScreen = nullptr;
   animation = nullptr;
 }
