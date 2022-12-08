@@ -34,7 +34,8 @@ private:
   wgc0310::ScreenAnimationStatus *m_ScreenAnimationStatus;
   wgc0310::ScreenDisplayMode *m_ScreenDisplayMode;
   std::vector<wgc0310::StaticScreenImage> m_StaticImages;
-  std::vector<std::unique_ptr<wgc0310::ScreenAnimation>> m_ScreenAnimations;
+  std::vector<std::unique_ptr<wgc0310::WGAPIAnimation>> m_ScreenAnimations;
+  std::vector<void*> m_AnimationSharedObjects;
 
   QHBoxLayout *m_StaticImageButtonsLayout;
   QVBoxLayout *m_StaticImageButtonsLayoutV;

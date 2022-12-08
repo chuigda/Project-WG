@@ -17,6 +17,10 @@
 #include "util/CircularBuffer.h"
 #include "ExtraControl.h"
 
+namespace cw {
+struct RawMatrix;
+} // namespace cw
+
 class GLWindow final : public QOpenGLWidget, public GLFunctions {
   Q_OBJECT
 
@@ -46,7 +50,10 @@ signals:
 
 private:
   void DrawScreenContent();
-  void DrawArm(const wgc0310::ArmStatus &armStatus, GLfloat coeff);
+  void DrawArm(const wgc0310::ArmStatus &armStatus,
+               GLfloat coeff,
+               cw::RawMatrix *bigArmMat,
+               cw::RawMatrix *smallArmMat);
 
 private:
   // Input status

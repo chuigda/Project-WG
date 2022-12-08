@@ -6,7 +6,7 @@
 
 #include "cwglx/GL.h"
 #include "util/Derive.h"
-#include "wgc0310/ScreenAnimation.h"
+#include "include/wgc0310/api/ScreenAnimation.h"
 
 namespace cw {
 class Texture2D;
@@ -19,35 +19,13 @@ struct StaticScreenImage final {
   std::unique_ptr<cw::Texture2D> texture;
 };
 
-class ScreenAnimation final {
-public:
-  explicit ScreenAnimation(WGAPI_Animation const* rawAnimation,
-                           void *rawHandle);
-  ~ScreenAnimation();
-
-  CW_DERIVE_UNCOPYABLE(ScreenAnimation)
-  CW_DERIVE_UNMOVABLE(ScreenAnimation)
-
-  [[nodiscard]] bool Initialize(GLFunctions *f);
-  [[nodiscard]] bool Rewind(GLFunctions *f);
-  [[nodiscard]] bool PlayFrame(GLFunctions *f, std::uint64_t frame);
-  [[nodiscard]] WGAPI_Error GetError();
-  void Delete(GLFunctions *f);
-
-  WGAPI_Animation const* rawAnimation;
-
-private:
-  void *m_RawHandle;
-  void *m_Context;
-};
-
 class ScreenAnimationStatus final {
 public:
   ScreenAnimationStatus();
 
   void PlayStaticAnimation(StaticScreenImage *staticScreen);
 
-  void PlayAnimation(ScreenAnimation *animation);
+  void PlayAnimation(WGAPIAnimation *animation);
 
   [[nodiscard]] bool HasThingToDraw() const noexcept;
 
@@ -65,8 +43,7 @@ private:
   mutable bool m_NeedRewind;
 
   StaticScreenImage *m_StaticScreen;
-  ScreenAnimation *m_Animation;
-  std::uint64_t m_Frame;
+  WGAPIAnimation *m_Animation;
 };
 
 } // namespace wgc0310

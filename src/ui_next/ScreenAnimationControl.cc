@@ -285,10 +285,14 @@ void ScreenAnimationControl::ReloadStaticImages() {
 }
 
 void ScreenAnimationControl::ReloadScreenAnimations() {
-  for (const auto &m_Animation : m_ScreenAnimations) {
-    m_Animation->Delete(m_GLWindow);
+  for (const auto &animation : m_ScreenAnimations) {
+    animation->Delete(m_GLWindow);
   }
   m_ScreenAnimations.clear();
+  for (const auto &sharedObject : m_AnimationSharedObjects) {
+    cw::DetachSharedObject(sharedObject);
+  }
+  m_AnimationSharedObjects.clear();
 
   QDir dir(QStringLiteral("animations/dynamic"));
   QStringList filters;
@@ -299,31 +303,75 @@ void ScreenAnimationControl::ReloadScreenAnimations() {
   #endif
 
   QStringList files = dir.entryList(filters, QDir::Files);
-  std::vector<std::unique_ptr<wgc0310::ScreenAnimation>> screenAnimations;
-
   for (const auto &file : files) {
-    void *sharedObject = cw::LoadSharedObject(QStringLiteral("animations/dynamic/") + file);
+    QString filePath = QStringLiteral("animations/dynamic/") + file;
+    void *sharedObject = cw::LoadSharedObject(filePath);
     if (!sharedObject) {
+      QMessageBox::warning(
+        this,
+        "动画加载错误",
+        QString("无法打开共享对象 %1").arg(filePath)
+      );
       continue;
     }
 
-    LoadAnimationFn loadAnimationFn = cw::TryReadSymbol<LoadAnimationFn>(
+    wgc0310::CheckVersionFn checkVersionFn = cw::TryReadSymbol<wgc0310::CheckVersionFn>(
+      sharedObject,
+      "GetWGAPIVersion"
+    );
+    if (checkVersionFn) {
+      QMessageBox::warning(
+        this,
+        "动画加载错误",
+        QString("无法在共享对象 %1 上定位 <code>GetWGAPIVersion</code>")
+          .arg(filePath)
+      );
+      cw::DetachSharedObject(sharedObject);
+      continue;
+    }
+
+    if (checkVersionFn() != WGAPI_VERSION) {
+      QMessageBox::warning(
+        this,
+        "动画加载错误",
+        QString("共享对象 %1 使用的 <code>WGAPI</code> 版本与 Project-WG 程序不匹配")
+          .arg(filePath)
+      );
+      cw::DetachSharedObject(sharedObject);
+      continue;
+    }
+
+    wgc0310::LoadAnimationFn loadAnimationFn = cw::TryReadSymbol<wgc0310::LoadAnimationFn>(
       sharedObject,
       "LoadAnimation"
     );
     if (!loadAnimationFn) {
+      QMessageBox::warning(
+        this,
+        "动画加载错误",
+        QString("无法在共享对象 %1 上定位 <code>LoadAnimation</code>")
+          .arg(filePath)
+      );
+      cw::DetachSharedObject(sharedObject);
       continue;
     }
 
-    WGAPI_Animation const *animation = loadAnimationFn();
-    if (!animation || animation->version != WGAPI_VERSION) {
+    wgc0310::WGAPIAnimation *animation = loadAnimationFn();
+    if (!animation) {
+      QMessageBox::warning(
+        this,
+        "动画加载错误",
+        QString("共享对象 %1 的 <code>LoadAnimation</code> 返回了 <code>nullptr</code>")
+          .arg(filePath)
+      );
+      cw::DetachSharedObject(sharedObject);
       continue;
     }
 
-    m_ScreenAnimations.emplace_back(std::make_unique<wgc0310::ScreenAnimation>(
-      animation,
-      sharedObject
-    ));
+    animation->Initialize(m_GLWindow);
+
+    m_ScreenAnimations.emplace_back(animation);
+    m_AnimationSharedObjects.push_back(sharedObject);
   }
 
   ClearLayout(m_ScreenAnimationButtonsLayout);
@@ -331,11 +379,11 @@ void ScreenAnimationControl::ReloadScreenAnimations() {
   {
     int i = 0;
     for (auto &animation : m_ScreenAnimations) {
-      wgc0310::ScreenAnimation *animationPtr = animation.get();
+      wgc0310::WGAPIAnimation *animationPtr = animation.get();
 
       QPushButton *hButton = new QPushButton(QString::number(i));
       hButton->setFixedWidth(32);
-      QString animationName(animation->rawAnimation->name);
+      QString animationName(animation->GetName());
       hButton->setToolTip(animationName);
       QPushButton *vButton = new QPushButton(animationName);
 

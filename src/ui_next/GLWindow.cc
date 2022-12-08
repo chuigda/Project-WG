@@ -2,11 +2,12 @@
 
 #include <QTimer>
 #include <QCloseEvent>
-#include "cwglx/Setup.h"
-#include "cwglx/drawable/TriangleGen.h"
-#include "wgc0310/ScreenGlass.h"
-#include "cwglx/drawable/PlainTriangles.h"
 #include "glu/FakeGLU.h"
+#include "cwglx/Setup.h"
+#include "cwglx/RawMatrix.h"
+#include "cwglx/drawable/TriangleGen.h"
+#include "cwglx/drawable/PlainTriangles.h"
+#include "wgc0310/ScreenGlass.h"
 
 GLWindow::GLWindow(EntityStatus const* entityStatus,
                    wgc0310::HeadStatus const* headStatus,
@@ -217,6 +218,8 @@ void GLWindow::paintGL() {
   glEnable(GL_LIGHTING);
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
+  cw::RawMatrix rightBigArm, rightSmallArm, leftBigArm, leftSmallArm;
+
   glPushMatrix();
   {
     m_Mesh.chestBox->Draw(this);
@@ -225,12 +228,12 @@ void GLWindow::paintGL() {
     m_Mesh.powerPin->Draw(this);
 
     glPushMatrix();
-    DrawArm(m_BodyStatus->rightArmStatus, 1.0f);
+    DrawArm(m_BodyStatus->rightArmStatus, 1.0f, &rightBigArm, &rightSmallArm);
     glPopMatrix();
 
     glPushMatrix();
     glScalef(-1.0f, 1.0f, -1.0f);
-    DrawArm(m_BodyStatus->leftArmStatus, -1.0f);
+    DrawArm(m_BodyStatus->leftArmStatus, -1.0f, &leftBigArm, &leftSmallArm);
     glPopMatrix();
 
     glTranslatef(0.0f, 12.875f, 0.0f);
@@ -389,7 +392,10 @@ void GLWindow::DrawScreenContent() {
   }
 }
 
-void GLWindow::DrawArm(const wgc0310::ArmStatus &armStatus, GLfloat coeff) {
+void GLWindow::DrawArm(const wgc0310::ArmStatus &armStatus,
+                       GLfloat coeff,
+                       cw::RawMatrix *bigArmMat,
+                       cw::RawMatrix *smallArmMat) {
   glTranslatef(14.5f, 7.5f, 0.0f);
   glRotatef(coeff * armStatus.rotation[0], 1.0f, 0.0f, 0.0f);
   m_Mesh.shoulder->Draw(this);
@@ -399,6 +405,8 @@ void GLWindow::DrawArm(const wgc0310::ArmStatus &armStatus, GLfloat coeff) {
   glRotatef(armStatus.rotation[1] / 2.0f, 0.0f, 0.0f, 1.0f);
   m_Mesh.wheelSmall->Draw(this);
   glRotatef(armStatus.rotation[1] / 2.0f, 0.0f, 0.0f, 1.0f);
+
+  *bigArmMat = cw::RawMatrix::GetFromContext(this);
   m_Mesh.bigArm->Draw(this);
   m_Mesh.bigArmCover->Draw(this);
 
@@ -410,6 +418,8 @@ void GLWindow::DrawArm(const wgc0310::ArmStatus &armStatus, GLfloat coeff) {
   glRotatef(coeff * armStatus.rotation[3] / 2.0f, 0.0f, 0.0f, 1.0f);
   m_Mesh.wheelSmall->Draw(this);
   glRotatef(coeff * armStatus.rotation[3] / 2.0f, 0.0f, 0.0f, 1.0f);
+
+  *smallArmMat = cw::RawMatrix::GetFromContext(this);
   m_Mesh.smallArm->Draw(this);
   m_Mesh.smallArmCover->Draw(this);
 

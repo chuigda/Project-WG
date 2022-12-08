@@ -79,6 +79,7 @@ set(PROJECT_SOURCES
     src/cwglx/Setup.cc
     src/cwglx/Light.cc
     src/cwglx/GLInfo.cc
+    src/cwglx/RawMatrix.cc
     include/cwglx/Color.h
     include/cwglx/Material.h
     include/cwglx/Texture.h
@@ -92,6 +93,7 @@ set(PROJECT_SOURCES
     include/cwglx/GL.h
     include/cwglx/GLImpl.h
     include/cwglx/GLInfo.h
+    include/cwglx/RawMatrix.h
 
     src/cwglx/drawable/PlainTriangles.cc
     src/cwglx/drawable/TriangleGen.cc
@@ -111,16 +113,16 @@ set(PROJECT_SOURCES
     include/wgc0310/ScreenGlass.h
     include/wgc0310/Screen.h
     include/wgc0310/ScreenCurveHelper.h
-    include/wgc0310/ScreenAnimation.h
     include/wgc0310/ScreenAnimationStatus.h
     include/wgc0310/BodyStatus.h
     include/wgc0310/BodyAnim.h
     include/wgc0310/HeadStatus.h
 
-    resc/main.qrc)
+    include/wgc0310/api/ScreenAnimation.h
+    include/wgc0310/api/Attachment.h
+    include/wgc0310/api/WGAPI.h
 
-qt6_wrap_ui(PROJECT_SOURCES src/ui/ConfigWidget.ui)
-qt6_wrap_ui(PROJECT_SOURCES src/ui/MessageBoxAlter.ui)
+    resc/main.qrc)
 
 include_directories(include)
 include_directories(${OpenCV_INCLUDE_DIRS})

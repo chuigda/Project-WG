@@ -7,50 +7,13 @@
 
 namespace wgc0310 {
 
-ScreenAnimation::ScreenAnimation(const WGAPI_Animation *rawAnimation,
-                                 void *rawHandle)
-  : rawAnimation(rawAnimation),
-    m_RawHandle(rawHandle),
-    m_Context(nullptr) {}
-
-ScreenAnimation::~ScreenAnimation() {
-  if (m_Context) {
-    qWarning() << "Called dtor of animation"
-               << rawAnimation->name
-               << "before deleting OpenGL resources";
-  }
-
-  cw::DetachSharedObject(m_RawHandle);
-}
-
-bool ScreenAnimation::Initialize(GLFunctions *f) {
-  m_Context = rawAnimation->initContextFn(f);
-  return static_cast<bool>(m_Context);
-}
-
-bool ScreenAnimation::Rewind(GLFunctions *f) {
-  return rawAnimation->rewindContextFn(m_Context, f);
-}
-
-bool ScreenAnimation::PlayFrame(GLFunctions *f, std::uint64_t frame) {
-  return rawAnimation->playAnimationFrameFn(m_Context, f, frame);
-}
-
-WGAPI_Error ScreenAnimation::GetError() {
-  return rawAnimation->getErrorFn(m_Context);
-}
-
-void ScreenAnimation::Delete(GLFunctions *f) {
-  rawAnimation->destroyContextFn(m_Context, f);
-}
-
 ScreenAnimationStatus::ScreenAnimationStatus()
   : m_IsPlayingStaticAnimation(false),
     m_IsPlayingDynamicAnimation(false),
     m_NeedRewind(false),
     m_StaticScreen(nullptr),
-    m_Animation(nullptr),
-    m_Frame(0) {}
+    m_Animation(nullptr)
+  {}
 
 void ScreenAnimationStatus::PlayStaticAnimation(StaticScreenImage *staticScreen) {
   Reset();
@@ -59,7 +22,7 @@ void ScreenAnimationStatus::PlayStaticAnimation(StaticScreenImage *staticScreen)
   m_StaticScreen = staticScreen;
 }
 
-void ScreenAnimationStatus::PlayAnimation(ScreenAnimation *animation) {
+void ScreenAnimationStatus::PlayAnimation(WGAPIAnimation *animation) {
   Reset();
 
   m_IsPlayingDynamicAnimation = true;
@@ -95,24 +58,13 @@ void ScreenAnimationStatus::DrawOnScreen(GLFunctions *f) const noexcept {
   } else if (m_IsPlayingDynamicAnimation) {
     if (m_NeedRewind) {
       m_NeedRewind = false;
-      if (!m_Animation->Rewind(f)) {
-        qWarning() << "ScreenAnimationStatus::DrawOnScreen:"
-                   << "error rewinding animation"
-                   << m_Animation->rawAnimation->name;
-      }
+      m_Animation->Rewind();
     }
 
     f->glScalef(1.0f, -1.0f, 1.0f);
     f->glFrontFace(GL_CW);
 
-    bool playResult = m_Animation->PlayFrame(f, m_Frame);
-    if (!playResult) {
-      qWarning() << "ScreenAnimationStatus::DrawOnScreen:"
-                 << "error playing the"
-                 << m_Frame
-                 << "th frame of animation"
-                 << m_Animation->rawAnimation->name;
-    }
+    m_Animation->Draw(f);
   }
 }
 
@@ -120,12 +72,11 @@ void ScreenAnimationStatus::Reset() {
   m_IsPlayingStaticAnimation = false;
   m_IsPlayingDynamicAnimation = false;
   m_StaticScreen = nullptr;
-  m_Frame = 0;
 }
 
 void ScreenAnimationStatus::NextTick() {
   if (m_IsPlayingDynamicAnimation) {
-    m_Frame++;
+    m_Animation->NextTick();
   }
 }
 
