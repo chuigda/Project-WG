@@ -153,13 +153,13 @@ if (WIN32)
 endif()
 
 # Attachments
-add_library(TrivialAttachment SHARED extra/attachments/TrivialAttachment.cc)
+qt_add_library(TrivialAttachment SHARED extra/attachments/TrivialAttachment.cc)
 target_link_libraries(TrivialAttachment PUBLIC
                       Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
 
 # Animations
-add_library(TrivialAnimation SHARED extra/animations/TrivialAnimation.cc)
+qt_add_library(TrivialAnimation SHARED extra/animations/TrivialAnimation.cc)
 target_link_libraries(TrivialAnimation PUBLIC
                       Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
