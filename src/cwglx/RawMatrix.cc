@@ -10,7 +10,7 @@ RawMatrix RawMatrix::GetFromContext(GLFunctions *f) {
   return r;
 }
 
-void RawMatrix::SetToContext(GLFunctions *f) {
+void RawMatrix::SetToContext(GLFunctions *f) const noexcept {
   f->glLoadMatrixf(rawMatrix.data());
 }
 

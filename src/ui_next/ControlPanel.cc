@@ -32,6 +32,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
       &m_EntityStatus,
       &m_HeadStatus,
       &m_BodyStatus,
+      &m_AttachmentStatus,
       &m_ScreenAnimationStatus,
       &m_VolumeLevels,
       &m_VolumeLevelsUpdated,
@@ -78,6 +79,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
       }
     }
 
+    m_AttachmentStatus.NextTick();
     m_ScreenAnimationStatus.NextTick();
     m_BodyStatus.NextTick();
     m_GLWindow->update();

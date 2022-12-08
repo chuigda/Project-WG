@@ -17,7 +17,7 @@ struct RawMatrix {
   };
 
   static RawMatrix GetFromContext(GLFunctions *f);
-  void SetToContext(GLFunctions *f);
+  void SetToContext(GLFunctions *f) const noexcept;
 };
 
 } // namespace cw

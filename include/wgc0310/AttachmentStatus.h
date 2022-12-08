@@ -22,6 +22,13 @@ struct AttachmentStatus {
     leftSmallArm = nullptr;
   }
 
+  void NextTick() const noexcept {
+    if (rightBigArm) { rightBigArm->NextTick(); }
+    if (rightSmallArm) { rightSmallArm->NextTick(); }
+    if (leftBigArm) { leftBigArm->NextTick(); }
+    if (leftSmallArm) { leftSmallArm->NextTick(); }
+  }
+
   CW_DERIVE_UNCOPYABLE(AttachmentStatus)
   CW_DERIVE_UNMOVABLE(AttachmentStatus)
 };

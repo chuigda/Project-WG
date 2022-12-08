@@ -9,6 +9,7 @@
 #include "cwglx/Light.h"
 #include "cwglx/Texture.h"
 #include "wgc0310/BodyStatus.h"
+#include "wgc0310/AttachmentStatus.h"
 #include "wgc0310/Mesh.h"
 #include "wgc0310/Screen.h"
 #include "wgc0310/HeadStatus.h"
@@ -28,6 +29,7 @@ public:
   explicit GLWindow(EntityStatus const* entityStatus,
                     wgc0310::HeadStatus const* headStatus,
                     wgc0310::BodyStatus const* bodyStatus,
+                    wgc0310::AttachmentStatus const* attachmentStatus,
                     wgc0310::ScreenAnimationStatus const *screenAnimationStatus,
                     cw::CircularBuffer<qreal, 160> *volumeLevels,
                     bool *volumeLevelsUpdated,
@@ -50,16 +52,22 @@ signals:
 
 private:
   void DrawScreenContent();
+  void DrawAttachments(cw::RawMatrix const& rightBigArm,
+                       cw::RawMatrix const& rightSmallArm,
+                       cw::RawMatrix const& leftBigArm,
+                       cw::RawMatrix const& leftSmallArm);
   void DrawArm(const wgc0310::ArmStatus &armStatus,
                GLfloat coeff,
                cw::RawMatrix *bigArmMat,
                cw::RawMatrix *smallArmMat);
+  void DrawEye(float top, float bottom, float left, float right);
 
 private:
   // Input status
   EntityStatus const* m_EntityStatus;
   wgc0310::HeadStatus const* m_HeadStatus;
   wgc0310::BodyStatus const* m_BodyStatus;
+  wgc0310::AttachmentStatus const* m_AttachmentStatus;
   wgc0310::ScreenAnimationStatus const *m_ScreenAnimationStatus;
   cw::CircularBuffer<qreal, 160> *m_VolumeLevels;
   bool *m_VolumeLevelsUpdated;

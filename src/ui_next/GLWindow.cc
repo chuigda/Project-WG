@@ -12,6 +12,7 @@
 GLWindow::GLWindow(EntityStatus const* entityStatus,
                    wgc0310::HeadStatus const* headStatus,
                    wgc0310::BodyStatus const* bodyStatus,
+                   wgc0310::AttachmentStatus const* attachmentStatus,
                    wgc0310::ScreenAnimationStatus const *screenAnimationStatus,
                    cw::CircularBuffer<qreal, 160> *volumeLevels,
                    bool *volumeLevelsUpdated,
@@ -22,6 +23,7 @@ GLWindow::GLWindow(EntityStatus const* entityStatus,
     m_EntityStatus(entityStatus),
     m_HeadStatus(headStatus),
     m_BodyStatus(bodyStatus),
+    m_AttachmentStatus(attachmentStatus),
     m_ScreenAnimationStatus(screenAnimationStatus),
     m_VolumeLevels(volumeLevels),
     m_VolumeLevelsUpdated(volumeLevelsUpdated),
@@ -254,62 +256,13 @@ void GLWindow::paintGL() {
   }
   glPopMatrix();
   m_Mesh.colorTimerShell->Draw(this);
+
+  DrawAttachments(rightBigArm, rightSmallArm, leftBigArm, leftSmallArm);
 }
 
 void GLWindow::resizeGL(int w, int h) {
   Q_UNUSED(w)
   Q_UNUSED(h)
-}
-
-static void DrawEye(GLFunctions *f,
-                    float top,
-                    float bottom,
-                    float left,
-                    float right)
-{
-  f->glBegin(GL_QUADS);
-  {
-    f->glTexCoord2f(0.0f, 0.0f);
-    f->glVertex2f(left, top);
-
-    f->glTexCoord2f(0.0f, 0.25f);
-    f->glVertex2f(left, top - 7.0f);
-
-    f->glTexCoord2f(1.0f, 0.25f);
-    f->glVertex2f(right, top - 7.0f);
-
-    f->glTexCoord2f(1.0f, 0.0f);
-    f->glVertex2f(right, top);
-  }
-
-  {
-    f->glTexCoord2f(0.0f, 0.25f);
-    f->glVertex2f(left, top - 7.0f);
-
-    f->glTexCoord2f(0.0f, 0.75f);
-    f->glVertex2f(left, bottom + 7.0f);
-
-    f->glTexCoord2f(1.0f, 0.75f);
-    f->glVertex2f(right, bottom + 7.0f);
-
-    f->glTexCoord2f(1.0f, 0.25f);
-    f->glVertex2f(right, top - 7.0f);
-  }
-
-  {
-    f->glTexCoord2f(0.0f, 0.75f);
-    f->glVertex2f(left, bottom + 7.0f);
-
-    f->glTexCoord2f(0.0f, 1.0f);
-    f->glVertex2f(left, bottom);
-
-    f->glTexCoord2f(1.0f, 1.0f);
-    f->glVertex2f(right, bottom);
-
-    f->glTexCoord2f(1.0f, 0.75f);
-    f->glVertex2f(right, bottom + 7.0f);
-  }
-  f->glEnd();
 }
 
 void GLWindow::DrawScreenContent() {
@@ -383,12 +336,38 @@ void GLWindow::DrawScreenContent() {
       glScalef(1.0f / 0.75f, 1.0f / 0.75f, 1.0f);
       m_EyeTexture->BeginTexture(this);
 
-      DrawEye(this, leftEyeTop, leftEyeBottom, -118.0f, -90.0f);
-      DrawEye(this, rightEyeTop, rightEyeBottom, 90.0f, 118.0f);
+      DrawEye(leftEyeTop, leftEyeBottom, -118.0f, -90.0f);
+      DrawEye(rightEyeTop, rightEyeBottom, 90.0f, 118.0f);
 
       glPopMatrix();
     }
     glPopMatrix();
+  }
+}
+
+void GLWindow::DrawAttachments(cw::RawMatrix const& rightBigArm,
+                               cw::RawMatrix const& rightSmallArm,
+                               cw::RawMatrix const& leftBigArm,
+                               cw::RawMatrix const& leftSmallArm)
+{
+  if (m_AttachmentStatus->rightBigArm) {
+    rightBigArm.SetToContext(this);
+    m_AttachmentStatus->rightBigArm->Draw(this);
+  }
+
+  if (m_AttachmentStatus->rightSmallArm) {
+    rightSmallArm.SetToContext(this);
+    m_AttachmentStatus->rightSmallArm->Draw(this);
+  }
+
+  if (m_AttachmentStatus->leftBigArm) {
+    leftBigArm.SetToContext(this);
+    m_AttachmentStatus->leftBigArm->Draw(this);
+  }
+
+  if (m_AttachmentStatus->leftSmallArm) {
+    leftSmallArm.SetToContext(this);
+    m_AttachmentStatus->leftSmallArm->Draw(this);
   }
 }
 
@@ -427,4 +406,50 @@ void GLWindow::DrawArm(const wgc0310::ArmStatus &armStatus,
   glRotatef(coeff * armStatus.rotation[4], 0.0f, 0.0f, 1.0f);
   m_Mesh.claw->Draw(this);
   m_Mesh.clawCover->Draw(this);
+}
+
+void GLWindow::DrawEye(float top, float bottom, float left, float right) {
+  glBegin(GL_QUADS);
+  {
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex2f(left, top);
+
+    glTexCoord2f(0.0f, 0.25f);
+    glVertex2f(left, top - 7.0f);
+
+    glTexCoord2f(1.0f, 0.25f);
+    glVertex2f(right, top - 7.0f);
+
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex2f(right, top);
+  }
+
+  {
+    glTexCoord2f(0.0f, 0.25f);
+    glVertex2f(left, top - 7.0f);
+
+    glTexCoord2f(0.0f, 0.75f);
+    glVertex2f(left, bottom + 7.0f);
+
+    glTexCoord2f(1.0f, 0.75f);
+    glVertex2f(right, bottom + 7.0f);
+
+    glTexCoord2f(1.0f, 0.25f);
+    glVertex2f(right, top - 7.0f);
+  }
+
+  {
+    glTexCoord2f(0.0f, 0.75f);
+    glVertex2f(left, bottom + 7.0f);
+
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex2f(left, bottom);
+
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex2f(right, bottom);
+
+    glTexCoord2f(1.0f, 0.75f);
+    glVertex2f(right, bottom + 7.0f);
+  }
+  glEnd();
 }
