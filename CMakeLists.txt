@@ -20,6 +20,47 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
              Multimedia
              OpenGLWidgets)
 
+set(CWGLX_SOURCES
+    src/cwglx/Color.cc
+    src/cwglx/Material.cc
+    src/cwglx/MeshLoader.cc
+    src/cwglx/Texture.cc
+    src/cwglx/Drawable.cc
+    src/cwglx/DrawableArena.cc
+    src/cwglx/Vertex.cc
+    src/cwglx/Setup.cc
+    src/cwglx/Light.cc
+    src/cwglx/GLInfo.cc
+    src/cwglx/RawMatrix.cc
+    include/cwglx/Color.h
+    include/cwglx/Material.h
+    include/cwglx/Texture.h
+    include/cwglx/Drawable.h
+    include/cwglx/DrawableArena.h
+    include/cwglx/Vertex.h
+    include/cwglx/Setup.h
+    include/cwglx/Light.h
+    include/cwglx/Defs.h
+    include/cwglx/DefaultMaterials.inc
+    include/cwglx/GL.h
+    include/cwglx/GLImpl.h
+    include/cwglx/GLInfo.h
+    include/cwglx/RawMatrix.h
+
+    src/cwglx/drawable/PlainTriangles.cc
+    src/cwglx/drawable/TriangleGen.cc
+    src/cwglx/drawable/Composition.cc
+    include/cwglx/drawable/PlainTriangles.h
+    include/cwglx/drawable/TriangleGen.h
+    include/cwglx/drawable/Composition.h
+)
+
+qt_add_library(CWGLX ${CWGLX_SOURCES})
+
+target_link_libraries(CWGLX PUBLIC
+                      Qt${QT_VERSION_MAJOR}::Widgets
+                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
+
 set(PROJECT_SOURCES
     main.cc
 
@@ -70,39 +111,6 @@ set(PROJECT_SOURCES
     src/glu/FakeGLU.cc
     include/glu/FakeGLU.h
 
-    src/cwglx/Color.cc
-    src/cwglx/Material.cc
-    src/cwglx/MeshLoader.cc
-    src/cwglx/Texture.cc
-    src/cwglx/Drawable.cc
-    src/cwglx/DrawableArena.cc
-    src/cwglx/Vertex.cc
-    src/cwglx/Setup.cc
-    src/cwglx/Light.cc
-    src/cwglx/GLInfo.cc
-    src/cwglx/RawMatrix.cc
-    include/cwglx/Color.h
-    include/cwglx/Material.h
-    include/cwglx/Texture.h
-    include/cwglx/Drawable.h
-    include/cwglx/DrawableArena.h
-    include/cwglx/Vertex.h
-    include/cwglx/Setup.h
-    include/cwglx/Light.h
-    include/cwglx/Defs.h
-    include/cwglx/DefaultMaterials.inc
-    include/cwglx/GL.h
-    include/cwglx/GLImpl.h
-    include/cwglx/GLInfo.h
-    include/cwglx/RawMatrix.h
-
-    src/cwglx/drawable/PlainTriangles.cc
-    src/cwglx/drawable/TriangleGen.cc
-    src/cwglx/drawable/Composition.cc
-    include/cwglx/drawable/PlainTriangles.h
-    include/cwglx/drawable/TriangleGen.h
-    include/cwglx/drawable/Composition.h
-
     src/wgc0310/Mesh.cc
     src/wgc0310/ScreenGlass.cc
     src/wgc0310/Screen.cc
@@ -135,10 +143,11 @@ else()
     add_executable(Project-WG ${PROJECT_SOURCES})
 endif()
 
-target_link_libraries(Project-WG PRIVATE
+target_link_libraries(Project-WG PUBLIC
                       Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::OpenGLWidgets
-                      Qt${QT_VERSION_MAJOR}::Multimedia)
+                      Qt${QT_VERSION_MAJOR}::Multimedia
+                      CWGLX)
 
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 
@@ -156,10 +165,12 @@ endif()
 qt_add_library(TrivialAttachment SHARED extra/attachments/TrivialAttachment.cc)
 target_link_libraries(TrivialAttachment PUBLIC
                       Qt${QT_VERSION_MAJOR}::Widgets
-                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
+                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets
+                      CWGLX)
 
 # Animations
 qt_add_library(TrivialAnimation SHARED extra/animations/TrivialAnimation.cc)
 target_link_libraries(TrivialAnimation PUBLIC
                       Qt${QT_VERSION_MAJOR}::Widgets
-                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
+                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets
+                      CWGLX)
