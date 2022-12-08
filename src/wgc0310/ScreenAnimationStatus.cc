@@ -4,7 +4,6 @@
 #include <QWidget>
 #include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
-#include "util/DynLoad.h"
 
 namespace wgc0310 {
 
