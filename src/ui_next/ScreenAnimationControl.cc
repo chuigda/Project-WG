@@ -159,6 +159,17 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
   QGroupBox *animationDetailed = new QGroupBox("动画");
   animationDetailed->hide();
 
+  auto controlAnimation = [this] {
+    if (m_ScreenAnimationStatus->animation) {
+      QWidget *controlWidget = m_ScreenAnimationStatus->animation->GetControlWidget();
+      if (controlWidget) {
+        controlWidget->show();
+      } else {
+        QMessageBox::information(this, "信息", "这个动画并没有控制组件");
+      }
+    }
+  };
+
   {
     QHBoxLayout *hBox = new QHBoxLayout();
     animationMinimized->setLayout(hBox);
@@ -168,6 +179,7 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
 
     QPushButton *configButton = new QPushButton("⌘");
     configButton->setFixedWidth(32);
+    connect(configButton, &QPushButton::clicked, configButton, controlAnimation);
     hBox->addWidget(configButton);
 
     QPushButton *reloadButton = new QPushButton("↻");
@@ -194,6 +206,7 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
     vBox->addStretch();
 
     QPushButton *configButton = new QPushButton("⌘ 配置");
+    connect(configButton, &QPushButton::clicked, configButton, controlAnimation);
     vBox->addWidget(configButton);
 
     QPushButton *reloadButton = new QPushButton("↻ 重新加载");
@@ -289,10 +302,10 @@ void ScreenAnimationControl::ReloadScreenAnimations() {
     animation->Delete(m_GLWindow);
   }
   m_ScreenAnimations.clear();
-  for (const auto &sharedObject : m_AnimationSharedObjects) {
+  for (const auto &sharedObject : m_SharedObjects) {
     cw::DetachSharedObject(sharedObject);
   }
-  m_AnimationSharedObjects.clear();
+  m_SharedObjects.clear();
 
   QDir dir(QStringLiteral("animations/dynamic"));
   QStringList filters;
@@ -319,7 +332,7 @@ void ScreenAnimationControl::ReloadScreenAnimations() {
       sharedObject,
       "GetWGAPIVersion"
     );
-    if (checkVersionFn) {
+    if (!checkVersionFn) {
       QMessageBox::warning(
         this,
         "动画加载错误",
@@ -371,7 +384,7 @@ void ScreenAnimationControl::ReloadScreenAnimations() {
     animation->Initialize(m_GLWindow);
 
     m_ScreenAnimations.emplace_back(animation);
-    m_AnimationSharedObjects.push_back(sharedObject);
+    m_SharedObjects.push_back(sharedObject);
   }
 
   ClearLayout(m_ScreenAnimationButtonsLayout);

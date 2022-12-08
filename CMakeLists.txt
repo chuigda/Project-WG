@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.5)
 project(Project-WG VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
@@ -30,6 +29,7 @@ set(PROJECT_SOURCES
     src/ui_next/EntityControl.cc
     src/ui_next/BodyControl.cc
     src/ui_next/ScreenAnimationControl.cc
+    src/ui_next/AttachmentControl.cc
     src/ui_next/track/FaceTrackControl.cc
     src/ui_next/track/TrackControlImpl.h
     src/ui_next/track/VTSTrackControl.cc
@@ -46,6 +46,7 @@ set(PROJECT_SOURCES
     include/ui_next/EntityControl.h
     include/ui_next/BodyControl.h
     include/ui_next/ScreenAnimationControl.h
+    include/ui_next/AttachmentControl.h
     include/ui_next/FaceTrackControl.h
     include/ui_next/SoundControl.h
     include/ui_next/ExtraControl.h
@@ -117,6 +118,7 @@ set(PROJECT_SOURCES
     include/wgc0310/BodyStatus.h
     include/wgc0310/BodyAnim.h
     include/wgc0310/HeadStatus.h
+    include/wgc0310/AttachmentStatus.h
 
     include/wgc0310/api/ScreenAnimation.h
     include/wgc0310/api/Attachment.h
@@ -149,3 +151,15 @@ if (WIN32)
     # add definition
     add_definitions(-DCW_WIN32)
 endif()
+
+# Attachments
+add_library(TrivialAttachment SHARED extra/attachments/TrivialAttachment.cc)
+target_link_libraries(TrivialAttachment PUBLIC
+                      Qt${QT_VERSION_MAJOR}::Widgets
+                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
+
+# Animations
+add_library(TrivialAnimation SHARED extra/animations/TrivialAnimation.cc)
+target_link_libraries(TrivialAnimation PUBLIC
+                      Qt${QT_VERSION_MAJOR}::Widgets
+                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets)

@@ -244,15 +244,6 @@ BodyControl::BodyControl(wgc0310::BodyStatus *bodyStatus,
   {
     QHBoxLayout *hSplit = new QHBoxLayout;
     armStatusWidget->setLayout(hSplit);
-    QGroupBox *leftArm = new QGroupBox("左臂");
-    hSplit->addWidget(leftArm);
-    QVBoxLayout *leftLayout = new QVBoxLayout();
-    leftArm->setLayout(leftLayout);
-    SetupArmGroup(this,
-                  controlPanel,
-                  leftLayout,
-                  &m_BodyStatus->leftArmStatus,
-                  resetButton);
 
     QGroupBox *rightArm = new QGroupBox("右臂");
     hSplit->addWidget(rightArm);
@@ -262,6 +253,16 @@ BodyControl::BodyControl(wgc0310::BodyStatus *bodyStatus,
                   controlPanel,
                   rightLayout,
                   &m_BodyStatus->rightArmStatus,
+                  resetButton);
+
+    QGroupBox *leftArm = new QGroupBox("左臂");
+    hSplit->addWidget(leftArm);
+    QVBoxLayout *leftLayout = new QVBoxLayout();
+    leftArm->setLayout(leftLayout);
+    SetupArmGroup(this,
+                  controlPanel,
+                  leftLayout,
+                  &m_BodyStatus->leftArmStatus,
                   resetButton);
   }
 

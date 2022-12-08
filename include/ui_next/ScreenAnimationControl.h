@@ -1,5 +1,5 @@
-#ifndef SCREENANIMATIONCONTROL_H
-#define SCREENANIMATIONCONTROL_H
+#ifndef PROJECT_WG_UINEXT_SCREEN_ANIMATION_CONTROL_H
+#define PROJECT_WG_UINEXT_SCREEN_ANIMATION_CONTROL_H
 
 #include <memory>
 #include <QWidget>
@@ -35,7 +35,7 @@ private:
   wgc0310::ScreenDisplayMode *m_ScreenDisplayMode;
   std::vector<wgc0310::StaticScreenImage> m_StaticImages;
   std::vector<std::unique_ptr<wgc0310::WGAPIAnimation>> m_ScreenAnimations;
-  std::vector<void*> m_AnimationSharedObjects;
+  std::vector<void*> m_SharedObjects;
 
   QHBoxLayout *m_StaticImageButtonsLayout;
   QVBoxLayout *m_StaticImageButtonsLayoutV;
@@ -49,4 +49,4 @@ private:
   QRadioButton *m_PlayingDynamicAnimation;
 };
 
-#endif // SCREENANIMATIONCONTROL_H
+#endif // PROJECT_WG_UINEXT_SCREEN_ANIMATION_CONTROL_H

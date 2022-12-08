@@ -1,5 +1,5 @@
-#ifndef PROJECT_WG_SCREEN_STATUS_H
-#define PROJECT_WG_SCREEN_STATUS_H
+#ifndef PROJECT_WG_SCREEN_ANIMATION_STATUS_H
+#define PROJECT_WG_SCREEN_ANIMATION_STATUS_H
 
 #include <cstdint>
 #include <QString>
@@ -37,15 +37,13 @@ public:
   CW_DERIVE_UNCOPYABLE(ScreenAnimationStatus)
   CW_DERIVE_UNMOVABLE(ScreenAnimationStatus)
 
-private:
-  bool m_IsPlayingStaticAnimation;
-  bool m_IsPlayingDynamicAnimation;
-  mutable bool m_NeedRewind;
+  StaticScreenImage *staticScreen;
+  WGAPIAnimation *animation;
 
-  StaticScreenImage *m_StaticScreen;
-  WGAPIAnimation *m_Animation;
+private:
+  mutable bool m_NeedRewind;
 };
 
 } // namespace wgc0310
 
-#endif // PROJECT_WG_SCREEN_STATUS_H
+#endif // PROJECT_WG_SCREEN_ANIMATION_STATUS_H

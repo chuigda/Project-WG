@@ -1,6 +1,8 @@
 #ifndef PROJECT_WG_WGC0310_WGAPI_H
 #define PROJECT_WG_WGC0310_WGAPI_H
 
+#include <cstdint>
+
 #ifndef WGAPI
 #define WGAPI
 #endif // WGAPI

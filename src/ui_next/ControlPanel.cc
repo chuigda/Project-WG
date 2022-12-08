@@ -11,6 +11,7 @@
 #include "ui_next/FaceTrackControl.h"
 #include "ui_next/ScreenAnimationControl.h"
 #include "ui_next/BodyControl.h"
+#include "ui_next/AttachmentControl.h"
 #include "ui_next/SoundControl.h"
 #include "ui_next/AboutBox.h"
 
@@ -46,12 +47,14 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
       &m_ScreenDisplayMode
     )),
     m_BodyControl(new BodyControl(&m_BodyStatus, this)),
+    m_AttachmentControl(new AttachmentControl(&m_AttachmentStatus, m_GLWindow)),
     m_SoundControl(new SoundControl(&m_VolumeLevels, &m_VolumeLevelsUpdated, &m_WorkerThread)),
     m_ExtraControl(new ExtraControl(&m_ExtraStatus)),
     m_AboutBox(new AboutBox(presenter)),
     m_OpenGLSettingsButton(new QPushButton("OpenGL")),
     m_CameraSettingsButton(new QPushButton("物体位置")),
     m_BodyAnimationButton(new QPushButton("关节动画")),
+    m_AttachmentButton(new QPushButton("附加配件")),
     m_FaceAnimationButton(new QPushButton("屏幕画面")),
     m_PoseEstimationButton(new QPushButton("姿态控制")),
     m_VolumeAnalysisButton(new QPushButton("音频分析")),
@@ -65,6 +68,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
 
   QTimer *timer = new QTimer(this);
   timer->setTimerType(Qt::PreciseTimer);
+  timer->setInterval(90);
   timer->start();
   connect(timer, &QTimer::timeout, this, [this] {
     if (m_BodyStatus.playAnimationStatus.IsPlayingAnimation()) {
@@ -84,6 +88,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   LinkButtonAndWidget(m_FaceAnimationButton, m_ScreenAnimationControl);
   LinkButtonAndWidget(m_PoseEstimationButton, m_TrackControl);
   LinkButtonAndWidget(m_BodyAnimationButton, m_BodyControl);
+  LinkButtonAndWidget(m_AttachmentButton, m_AttachmentControl);
   LinkButtonAndWidget(m_VolumeAnalysisButton, m_SoundControl);
   LinkButtonAndWidget(m_ExtraSettingsButton, m_ExtraControl);
   LinkButtonAndWidget(m_AboutButton, m_AboutBox);
@@ -94,6 +99,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     bool trackControl = m_TrackControl->isVisible();
     bool screenAnimationControl = m_ScreenAnimationControl->isVisible();
     bool bodyControl = m_BodyControl->isVisible();
+    bool attachmentControl = m_AttachmentControl->isVisible();
     bool soundControl = m_SoundControl->isVisible();
     bool aboutBox = m_AboutBox->isVisible();
 
@@ -115,6 +121,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     if (trackControl) { m_TrackControl->show(); }
     if (screenAnimationControl) { m_ScreenAnimationControl->show(); }
     if (bodyControl) { m_BodyControl->show(); }
+    if (attachmentControl) { m_AttachmentControl->show(); }
     if (soundControl) { m_SoundControl->show(); }
     m_ExtraControl->show();
     if (aboutBox) { m_AboutBox->show(); }
@@ -125,10 +132,13 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   layout->addWidget(m_CameraSettingsButton, 0, 1);
   layout->addWidget(m_PoseEstimationButton, 0, 2);
   layout->addWidget(m_BodyAnimationButton, 0, 3);
+  layout->addWidget(m_AttachmentButton, 0, 4);
   layout->addWidget(m_FaceAnimationButton, 1, 0);
   layout->addWidget(m_VolumeAnalysisButton, 1, 1);
   layout->addWidget(m_ExtraSettingsButton, 1, 2);
-  layout->addWidget(m_AboutButton, 1, 3);
+  layout->addWidget(m_AboutButton, 1, 4);
+
+  m_GLWindow->hide();
 
   this->setLayout(layout);
 #pragma clang diagnostic push
@@ -161,6 +171,7 @@ void ControlPanel::closeEvent(QCloseEvent *e) {
     m_TrackControl->close();
     m_ScreenAnimationControl->close();
     m_BodyControl->close();
+    m_AttachmentControl->close();
     m_SoundControl->close();
     m_ExtraControl->close();
     m_AboutBox->close();

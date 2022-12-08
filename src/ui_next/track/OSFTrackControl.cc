@@ -177,8 +177,6 @@ void OSFTrackWorker::HandleData() {
                      wgc0310::HeadStatus::MouthStatus::Close
     };
 
-    qDebug() << pose.leftEye << pose.rightEye;
-
     if (pose.rotationX > 0)  {
       pose.rotationX = pose.rotationX - 180.0f;
     } else {

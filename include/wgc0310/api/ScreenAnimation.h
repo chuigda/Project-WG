@@ -2,7 +2,8 @@
 #define PROJECT_WG_WGC0310_SCREEN_ANIMATION_H
 
 #include "cwglx/GL.h"
-#include "WGAPI.h"
+#include "wgc0310/api/WGAPI.h"
+#include "util/Derive.h"
 
 class QWidget;
 
@@ -10,6 +11,8 @@ namespace wgc0310 {
 
 class WGAPIAnimation {
 public:
+  WGAPIAnimation() = default;
+
   virtual ~WGAPIAnimation() = default;
 
   virtual const char *GetName() noexcept = 0;
@@ -25,6 +28,9 @@ public:
   virtual void Draw(GLFunctions *f) noexcept = 0;
 
   virtual void Delete(GLFunctions *f) noexcept = 0;
+
+  CW_DERIVE_UNCOPYABLE(WGAPIAnimation)
+  CW_DERIVE_UNMOVABLE(WGAPIAnimation)
 };
 
 extern "C" {
