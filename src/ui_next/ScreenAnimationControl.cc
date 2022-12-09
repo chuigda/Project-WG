@@ -249,7 +249,8 @@ void ScreenAnimationControl::ReloadStaticImages() {
 
   QDir dir(QStringLiteral("animations/static"));
   QStringList filters;
-  filters << QStringLiteral("*.bmp");
+  filters << QStringLiteral("*.bmp")
+          << QStringLiteral("*.png");
 
   QStringList files = dir.entryList(filters, QDir::Files);
   for (const auto &file : files) {
