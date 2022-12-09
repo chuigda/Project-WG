@@ -1,12 +1,13 @@
 #include "wgc0310/api/ScreenAnimation.h"
 
-#include <QWidget>
+#include <QLabel>
 #include "cwglx/GLImpl.h"
 
 class TrivialAnimation final : public wgc0310::WGAPIAnimation {
 public:
-  TrivialAnimation() : m_Widget(new QWidget(nullptr, Qt::Window)) {
+  TrivialAnimation() : m_Widget(new QLabel("这是一个测试控件", nullptr, Qt::Window)) {
     m_Widget->setWindowTitle("Test");
+    m_Widget->setFixedSize(m_Widget->sizeHint());
   }
 
   ~TrivialAnimation() final {
@@ -34,7 +35,7 @@ public:
   void Delete(GLFunctions*) noexcept final {}
 
 private:
-  QWidget *m_Widget;
+  QLabel *m_Widget;
 };
 
 extern "C" {
