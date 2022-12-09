@@ -1,5 +1,6 @@
 #include "ui_next/GLWindow.h"
 
+#include <QWindow>
 #include <QTimer>
 #include <QCloseEvent>
 #include "glu/FakeGLU.h"
@@ -19,6 +20,8 @@ GLWindow::GLWindow(EntityStatus const* entityStatus,
                    wgc0310::ScreenDisplayMode const *screenDisplayMode,
                    StatusExtra const* statusExtra)
   : QOpenGLWidget(nullptr, Qt::Window),
+    // Internal status
+    m_DevicePixelRatio(1.0),
     // Input status
     m_EntityStatus(entityStatus),
     m_HeadStatus(headStatus),
@@ -85,6 +88,7 @@ void GLWindow::initializeGL() {
   QOpenGLWidget::initializeGL();
   cw::SetupPreferredSettings(this);
 
+  // light sources
   m_Light = std::make_unique<cw::PointLight>(GL_LIGHT0,
                                              cw::RGBAColor(32, 32, 32),
                                              cw::RGBAColor(187, 187, 187),
@@ -123,10 +127,11 @@ void GLWindow::initializeGL() {
     m_ScreenGlass = mtlMeshPtr;
   }
 
+  // eyes
   {
-    QImage eye9Image(":/eye.9.bmp");
-    QImage closeMouthImage(":/half-face.bmp");
-    QImage openMouthImage(":/half-face-mouth-open.bmp");
+    QImage eye9Image(":/eye.9.png");
+    QImage closeMouthImage(":/half-face.png");
+    QImage openMouthImage(":/half-face-mouth-open.png");
     Q_ASSERT(!eye9Image.isNull());
     Q_ASSERT(!closeMouthImage.isNull());
     Q_ASSERT(!openMouthImage.isNull());
@@ -148,6 +153,7 @@ void GLWindow::initializeGL() {
                  GL_STATIC_DRAW);
   }
 
+  // volume bars
   {
     for (GLuint i = 0; i < 160; i++) {
       float x = static_cast<float>(i) * 4.0f - 320.0f;
@@ -157,6 +163,8 @@ void GLWindow::initializeGL() {
       m_VolumeVertices[i * 4 + 3] = cw::Vertex2DF(x + 4.0f, 0.1f);
     }
   }
+
+  m_DevicePixelRatio = this->windowHandle()->devicePixelRatio();
 
   emit OpenGLInitialized();
 }
@@ -173,8 +181,10 @@ void GLWindow::paintGL() {
 
   GLsizei w = static_cast<GLsizei>(width());
   GLsizei h = static_cast<GLsizei>(height());
-  GLdouble wd = static_cast<GLdouble>(w);
-  GLdouble hd = static_cast<GLdouble>(h);
+  GLdouble wd = static_cast<GLdouble>(w) * m_DevicePixelRatio;
+  GLdouble hd = static_cast<GLdouble>(h) * m_DevicePixelRatio;
+  w = static_cast<GLsizei>(wd);
+  h = static_cast<GLsizei>(hd);
 
   glViewport(0.0f, 0.0f, w, h);
   glMatrixMode(GL_PROJECTION);

@@ -12,6 +12,7 @@ class GLWindow;
 class QHBoxLayout;
 class QVBoxLayout;
 class QRadioButton;
+struct StatusExtra;
 
 class ScreenAnimationControl : public CloseSignallingWidget {
   Q_OBJECT
@@ -19,7 +20,8 @@ class ScreenAnimationControl : public CloseSignallingWidget {
 public:
   ScreenAnimationControl(GLWindow *glWindow,
                          wgc0310::ScreenAnimationStatus *animationStatus,
-                         wgc0310::ScreenDisplayMode *screenDisplayMode);
+                         wgc0310::ScreenDisplayMode *screenDisplayMode,
+                         StatusExtra *statusExtra);
 
 public slots:
   void GLContextReady();
@@ -30,9 +32,10 @@ private:
 
 private:
   GLWindow *m_GLWindow;
-
   wgc0310::ScreenAnimationStatus *m_ScreenAnimationStatus;
   wgc0310::ScreenDisplayMode *m_ScreenDisplayMode;
+  StatusExtra *m_StatusExtra;
+
   std::vector<wgc0310::StaticScreenImage> m_StaticImages;
   std::vector<std::unique_ptr<wgc0310::WGAPIAnimation>> m_ScreenAnimations;
   std::vector<void*> m_SharedObjects;

@@ -10,12 +10,16 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_CXX_FLAGS
-    "-Wall -Wextra -pedantic -Wno-unknown-pragmas -Wno-cast-function-type ${CMAKE_CXX_FLAGS}")
+    "-Wall -Wextra -pedantic -Wno-unknown-pragmas -Wno-cast-function-type \
+    -fno-rtti -fno-exceptions \
+    ${CMAKE_CXX_FLAGS}")
 set(CMAKE_C_FLAGS
-    "-Wall -Wextra -pedantic -Wno-unknown-pragmas -Wno-cast-function-type ${CMAKE_C_FLAGS}")
+    "-Wall -Wextra -pedantic -Wno-unknown-pragmas -Wno-cast-function-type \
+    ${CMAKE_C_FLAGS}")
 
-find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
+             Core
              Widgets
              Multimedia
              OpenGLWidgets)
@@ -61,6 +65,23 @@ target_link_libraries(CWGLX PUBLIC
                       Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
 
+set(CWUTIL_SOURCES
+    src/util/FileUtil.cc
+    src/util/DynLoad.cc
+    src/util/Constants.cc
+    include/util/FileUtil.h
+    include/util/DynLoad.h
+    include/util/Wife.h
+    include/util/Constants.h
+    include/util/CircularBuffer.h
+    include/util/Derive.h
+    include/util/Sinkrate.h
+    include/util/Logger.h)
+
+qt_add_library(CWUtil ${CWUTIL_SOURCES})
+
+target_link_libraries(CWUtil PUBLIC Qt${QT_VERSION_MAJOR}::Core)
+
 set(PROJECT_SOURCES
     main.cc
 
@@ -96,18 +117,6 @@ set(PROJECT_SOURCES
     include/ui_next/GLWindow.h
     include/ui_next/CloseSignallingWidget.h
 
-    src/util/FileUtil.cc
-    src/util/DynLoad.cc
-    src/util/Constants.cc
-    include/util/FileUtil.h
-    include/util/DynLoad.h
-    include/util/Wife.h
-    include/util/Constants.h
-    include/util/CircularBuffer.h
-    include/util/Derive.h
-    include/util/Sinkrate.h
-    include/util/Logger.h
-
     src/glu/FakeGLU.cc
     include/glu/FakeGLU.h
 
@@ -135,7 +144,6 @@ set(PROJECT_SOURCES
     resc/main.qrc)
 
 include_directories(include)
-include_directories(${OpenCV_INCLUDE_DIRS})
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(Project-WG MANUAL_FINALIZATION ${PROJECT_SOURCES})
@@ -147,7 +155,8 @@ target_link_libraries(Project-WG PUBLIC
                       Qt${QT_VERSION_MAJOR}::Widgets
                       Qt${QT_VERSION_MAJOR}::OpenGLWidgets
                       Qt${QT_VERSION_MAJOR}::Multimedia
-                      CWGLX)
+                      CWGLX
+                      CWUtil)
 
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 

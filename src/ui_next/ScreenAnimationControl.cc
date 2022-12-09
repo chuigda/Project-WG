@@ -13,11 +13,13 @@
 
 ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
                                                wgc0310::ScreenAnimationStatus *animationStatus,
-                                               wgc0310::ScreenDisplayMode *screenDisplayMode)
+                                               wgc0310::ScreenDisplayMode *screenDisplayMode,
+                                               StatusExtra *statusExtra)
   : CloseSignallingWidget(nullptr, Qt::Window),
     m_GLWindow(glWindow),
     m_ScreenAnimationStatus(animationStatus),
     m_ScreenDisplayMode(screenDisplayMode),
+    m_StatusExtra(statusExtra),
     m_StaticImageButtonsLayout(new QHBoxLayout()),
     m_StaticImageButtonsLayoutV(new QVBoxLayout()),
     m_ScreenAnimationButtonsLayout(new QHBoxLayout()),
@@ -163,6 +165,7 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
     if (m_ScreenAnimationStatus->animation) {
       QWidget *controlWidget = m_ScreenAnimationStatus->animation->GetControlWidget();
       if (controlWidget) {
+        controlWidget->setWindowFlag(Qt::WindowStaysOnTopHint, m_StatusExtra->stayOnTop);
         controlWidget->show();
       } else {
         QMessageBox::information(this, "信息", "这个动画并没有控制组件");

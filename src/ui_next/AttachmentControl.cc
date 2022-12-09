@@ -11,9 +11,11 @@
 #include "util/DynLoad.h"
 
 AttachmentControl::AttachmentControl(wgc0310::AttachmentStatus *attachmentStatus,
-                                     GLWindow *glWindow)
+                                     GLWindow *glWindow,
+                                     StatusExtra *statusExtra)
   : m_AttachmentStatus(attachmentStatus),
     m_GLWindow(glWindow),
+    m_StatusExtra(statusExtra),
     m_ItemSelectMenu(new QMenu()),
     m_RightBigArmAttachment(new QPushButton("右侧大臂")),
     m_RightSmallArmAttachment(new QPushButton("右侧小臂")),
@@ -287,7 +289,7 @@ void AttachmentControl::LinkButtonAndContextMenu(QPushButton *button,
 
 void AttachmentControl::LinkButtonAndControlWidget(QPushButton *button,
                                                    wgc0310::WGAPIAttachment **attachment) {
-  connect(button, &QPushButton::clicked, this, [button, attachment] {
+  connect(button, &QPushButton::clicked, this, [this, button, attachment] {
     if (!button->isEnabled()) {
       return;
     }
@@ -301,6 +303,7 @@ void AttachmentControl::LinkButtonAndControlWidget(QPushButton *button,
       return;
     }
 
+    controlWidget->setWindowFlag(Qt::WindowStaysOnTopHint, m_StatusExtra->stayOnTop);
     controlWidget->show();
   });
 }

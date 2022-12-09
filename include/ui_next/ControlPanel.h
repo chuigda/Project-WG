@@ -39,6 +39,9 @@ signals:
 protected:
   void closeEvent(QCloseEvent *e) final;
 
+private slots:
+  void NextTick();
+
 private:
   // Worker thread, must be initialized very first
   QThread m_WorkerThread;

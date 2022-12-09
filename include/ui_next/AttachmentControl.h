@@ -11,13 +11,15 @@ struct AttachmentStatus;
 class QMenu;
 class QPushButton;
 class GLWindow;
+struct StatusExtra;
 
 class AttachmentControl final : public CloseSignallingWidget {
   Q_OBJECT
 
 public:
   AttachmentControl(wgc0310::AttachmentStatus *attachmentStatus,
-                    GLWindow *glWindow);
+                    GLWindow *glWindow,
+                    StatusExtra *statusExtra);
 
 private slots:
   void ReloadAttachments();
@@ -32,6 +34,7 @@ private:
 private:
   wgc0310::AttachmentStatus *m_AttachmentStatus;
   GLWindow *m_GLWindow;
+  StatusExtra *m_StatusExtra;
 
   QMenu *m_ItemSelectMenu;
   QPushButton *m_RightBigArmAttachment;

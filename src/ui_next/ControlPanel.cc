@@ -45,10 +45,11 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     m_ScreenAnimationControl(new ScreenAnimationControl(
       m_GLWindow,
       &m_ScreenAnimationStatus,
-      &m_ScreenDisplayMode
+      &m_ScreenDisplayMode,
+      &m_ExtraStatus
     )),
     m_BodyControl(new BodyControl(&m_BodyStatus, this)),
-    m_AttachmentControl(new AttachmentControl(&m_AttachmentStatus, m_GLWindow)),
+    m_AttachmentControl(new AttachmentControl(&m_AttachmentStatus, m_GLWindow, &m_ExtraStatus)),
     m_SoundControl(new SoundControl(&m_VolumeLevels, &m_VolumeLevelsUpdated, &m_WorkerThread)),
     m_ExtraControl(new ExtraControl(&m_ExtraStatus)),
     m_AboutBox(new AboutBox(presenter)),
@@ -71,19 +72,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   timer->setTimerType(Qt::PreciseTimer);
   timer->setInterval(90);
   timer->start();
-  connect(timer, &QTimer::timeout, this, [this] {
-    if (m_BodyStatus.playAnimationStatus.IsPlayingAnimation()) {
-      if (!m_BodyStatus.playAnimationStatus.NextTick(&m_BodyStatus)) {
-        m_BodyStatus.playAnimationStatus.SetAnimation(nullptr);
-        emit DoneBodyAnimation();
-      }
-    }
-
-    m_AttachmentStatus.NextTick();
-    m_ScreenAnimationStatus.NextTick();
-    m_BodyStatus.NextTick();
-    m_GLWindow->update();
-  });
+  connect(timer, &QTimer::timeout, this, &ControlPanel::NextTick);
 
   LinkButtonAndWidget(m_OpenGLSettingsButton, m_GLInfoDisplay);
   LinkButtonAndWidget(m_CameraSettingsButton, m_EntityControl);
@@ -112,6 +101,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
     m_TrackControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_ScreenAnimationControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_BodyControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_AttachmentControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_SoundControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_ExtraControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_AboutBox->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
@@ -139,8 +129,6 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   layout->addWidget(m_VolumeAnalysisButton, 1, 1);
   layout->addWidget(m_ExtraSettingsButton, 1, 2);
   layout->addWidget(m_AboutButton, 1, 4);
-
-  m_GLWindow->hide();
 
   this->setLayout(layout);
 #pragma clang diagnostic push
@@ -182,4 +170,18 @@ void ControlPanel::closeEvent(QCloseEvent *e) {
   } else {
     e->ignore();
   }
+}
+
+void ControlPanel::NextTick() {
+  if (m_BodyStatus.playAnimationStatus.IsPlayingAnimation()) {
+    if (!m_BodyStatus.playAnimationStatus.NextTick(&m_BodyStatus)) {
+      m_BodyStatus.playAnimationStatus.SetAnimation(nullptr);
+      emit DoneBodyAnimation();
+    }
+  }
+
+  m_AttachmentStatus.NextTick();
+  m_ScreenAnimationStatus.NextTick();
+  m_BodyStatus.NextTick();
+  m_GLWindow->update();
 }

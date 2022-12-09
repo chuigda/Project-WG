@@ -15,8 +15,8 @@
 #include "wgc0310/HeadStatus.h"
 #include "wgc0310/ScreenAnimationStatus.h"
 #include "ui_next/EntityStatus.h"
+#include "ui_next/ExtraControl.h"
 #include "util/CircularBuffer.h"
-#include "ExtraControl.h"
 
 namespace cw {
 struct RawMatrix;
@@ -63,6 +63,9 @@ private:
   void DrawEye(float top, float bottom, float left, float right);
 
 private:
+  // Internal status
+  qreal m_DevicePixelRatio;
+
   // Input status
   EntityStatus const* m_EntityStatus;
   wgc0310::HeadStatus const* m_HeadStatus;

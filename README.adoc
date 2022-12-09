@@ -37,3 +37,7 @@ This project works with Qt 6.2.4 and Qt 6.3.2, but black-screens with Qt 6.4. Th
 
 * Code of Project-WG is licensed with link:https://www.gnu.org/licenses/agpl-3.0.txt[AGPLv3]
 * Character "WGC0310" is licensed with link:https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.zh-Hans[CC BY-NC-SA 4.0]
+
+== 其他信息
+* 机器人图标取自 link:https://www.flaticon.com/free-icons/robot[Freepik - Flaticon]
+* Robot icon was taken from by link:https://www.flaticon.com/free-icons/robot[Freepik - Flaticon]

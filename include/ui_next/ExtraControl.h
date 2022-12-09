@@ -7,6 +7,8 @@
 struct StatusExtra {
   bool customClearColor = false;
   cw::RGBAColor clearColor { 0, 0, 0, 255 };
+
+  bool stayOnTop = false;
 };
 
 class ExtraControl final : public CloseSignallingWidget {

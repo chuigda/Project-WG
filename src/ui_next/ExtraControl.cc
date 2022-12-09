@@ -29,7 +29,10 @@ ExtraControl::ExtraControl(StatusExtra *statusExtra)
   stayOnTopBox->setChecked(false);
   stayOnTopBox->setToolTip("尝试让所有窗口常居顶端，此功能的效果取决于窗口管理器");
 
-  connect(stayOnTopBox, &QCheckBox::toggled, this, &ExtraControl::SetStayOnTop);
+  connect(stayOnTopBox, &QCheckBox::toggled, this, [this] (bool toggled) {
+    m_StatusExtra->stayOnTop = toggled;
+    emit this->SetStayOnTop(toggled);
+  });
 
   {
     QHBoxLayout *hBox = new QHBoxLayout();

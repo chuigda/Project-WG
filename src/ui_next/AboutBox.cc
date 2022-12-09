@@ -10,14 +10,12 @@ AboutBox::AboutBox(LicensePresenter *presenter)
   : m_LicensePresenter(presenter)
 {
   setWindowTitle("关于");
-  setFixedWidth(600);
-  setFixedHeight(600);
 
   QVBoxLayout *box = new QVBoxLayout();
   this->setLayout(box);
 
   QLabel *label = new QLabel(
-    "<h1>Project-WG (v0.2.0)</h1>"
+    "<h2>Project-WG (v0.3.0)</h2>"
     "<hr/>"
     "(C) 2022 Chuigda WhiteGive<br/>"
     "<a href=\"https://github.com/chuigda/Project-WG\">https://github.com/chuigda/Project-WG</a><br/>"
@@ -33,6 +31,7 @@ AboutBox::AboutBox(LicensePresenter *presenter)
     "<li><b>emilianavt</b> - OSF 的作者，为 Project-WG 提供了面捕能力</li>"
     "<li>...以及，大家，<b>所有人</b></li>"
     "</ul>"
+    "程序使用的机器人图标由 <a href=\"https://www.flaticon.com/free-icons/robot\">Freepik - Flaticon</a> 提供<br/>"
   );
   label->setOpenExternalLinks(true);
   box->addWidget(label);
@@ -55,6 +54,13 @@ AboutBox::AboutBox(LicensePresenter *presenter)
   connect(aboutQtButton, &QPushButton::clicked, aboutQtButton, [this] {
     QMessageBox::aboutQt(this);
   });
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "VirtualCallInCtorOrDtor"
+  // This should be safe since base class `QWidget` has been initialised,
+  // and we did not reimplement `sizeHint`
+  setFixedSize(sizeHint());
+#pragma clang diagnostic pop
 }
 
 AboutBox::~AboutBox() noexcept {

@@ -1,10 +1,10 @@
 #include "util/DynLoad.h"
 
 #include <QString>
+#include <QDebug>
 
 #ifdef CW_WIN32
 #include <windows.h>
-#include <QDebug>
 #endif // CW_WIN32
 
 namespace cw {
@@ -37,7 +37,11 @@ void DetachSharedObject(void *handle) {
 #include <dlfcn.h>
 
 void *LoadSharedObject(const QString& fileName) {
-  return dlopen(fileName.toStdString().c_str(), RTLD_LAZY);
+  void *descriptor = dlopen(fileName.toStdString().c_str(), RTLD_LAZY);
+  if (descriptor == nullptr) {
+    qWarning() << "dlError() =" << dlerror();
+  }
+  return descriptor;
 }
 
 void *TryReadSymbolImpl(void *handle, const char *symbol) {
