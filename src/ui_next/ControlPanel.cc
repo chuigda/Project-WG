@@ -131,7 +131,10 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   layout->addWidget(m_FaceAnimationButton, 1, 0);
   layout->addWidget(m_VolumeAnalysisButton, 1, 1);
   layout->addWidget(m_ExtraSettingsButton, 1, 2);
-  layout->addWidget(new QLabel("广告位招租"), 1, 3);
+
+  QLabel *label = new QLabel("广告位招租");
+  label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+  layout->addWidget(label, 1, 3);
   layout->addWidget(m_AboutButton, 1, 4);
 
   this->setLayout(layout);
