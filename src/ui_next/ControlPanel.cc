@@ -120,6 +120,8 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   });
 
   QGridLayout *layout = new QGridLayout();
+  layout->setSpacing(3);
+  layout->setContentsMargins(3, 3, 3, 3);
   layout->addWidget(m_OpenGLSettingsButton, 0, 0);
   layout->addWidget(m_CameraSettingsButton, 0, 1);
   layout->addWidget(m_PoseEstimationButton, 0, 2);
