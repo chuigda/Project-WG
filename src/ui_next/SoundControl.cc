@@ -97,6 +97,7 @@ SoundControl::SoundControl(cw::CircularBuffer<qreal, 160> *volumeLevels,
   m_VolumeLevel->setMinimum(0);
   m_VolumeLevel->setMaximum(100);
   m_VolumeLevel->setValue(0);
+  m_VolumeLevel->setTextVisible(false);
 
   SoundAnalysisWorker *worker = new SoundAnalysisWorker();
   worker->moveToThread(m_WorkerThread);
