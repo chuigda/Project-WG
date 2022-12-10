@@ -127,9 +127,9 @@ BodyControl::BodyControl(wgc0310::BodyStatus *bodyStatus,
     {
       QSlider *slider = new QSlider();
       slider->setDisabled(true);
-      slider->setMinimum(30);
-      slider->setMaximum(100);
-      slider->setValue(50);
+      slider->setMinimum(10);
+      slider->setMaximum(40);
+      slider->setValue(30);
       slider->setOrientation(Qt::Horizontal);
 
       QHBoxLayout *radioLayout = new QHBoxLayout();
@@ -245,16 +245,6 @@ BodyControl::BodyControl(wgc0310::BodyStatus *bodyStatus,
     QHBoxLayout *hSplit = new QHBoxLayout;
     armStatusWidget->setLayout(hSplit);
 
-    QGroupBox *rightArm = new QGroupBox("右臂");
-    hSplit->addWidget(rightArm);
-    QVBoxLayout *rightLayout = new QVBoxLayout();
-    rightArm->setLayout(rightLayout);
-    SetupArmGroup(this,
-                  controlPanel,
-                  rightLayout,
-                  &m_BodyStatus->rightArmStatus,
-                  resetButton);
-
     QGroupBox *leftArm = new QGroupBox("左臂");
     hSplit->addWidget(leftArm);
     QVBoxLayout *leftLayout = new QVBoxLayout();
@@ -263,6 +253,16 @@ BodyControl::BodyControl(wgc0310::BodyStatus *bodyStatus,
                   controlPanel,
                   leftLayout,
                   &m_BodyStatus->leftArmStatus,
+                  resetButton);
+
+    QGroupBox *rightArm = new QGroupBox("右臂");
+    hSplit->addWidget(rightArm);
+    QVBoxLayout *rightLayout = new QVBoxLayout();
+    rightArm->setLayout(rightLayout);
+    SetupArmGroup(this,
+                  controlPanel,
+                  rightLayout,
+                  &m_BodyStatus->rightArmStatus,
                   resetButton);
   }
 

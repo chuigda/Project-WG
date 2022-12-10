@@ -177,6 +177,14 @@ target_link_libraries(TrivialAttachment PUBLIC
                       Qt${QT_VERSION_MAJOR}::OpenGLWidgets
                       CWGLX)
 
+qt_add_library(Emitter SHARED extra/attachments/Emitter.cc
+                              extra/attachments/Emitter/emitter.qrc)
+target_link_libraries(Emitter PUBLIC
+                      Qt${QT_VERSION_MAJOR}::Widgets
+                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets
+                      CWGLX
+                      CWUtil)
+
 # Animations
 qt_add_library(TrivialAnimation SHARED extra/animations/TrivialAnimation.cc)
 target_link_libraries(TrivialAnimation PUBLIC

@@ -47,7 +47,11 @@ AttachmentControl::AttachmentControl(wgc0310::AttachmentStatus *attachmentStatus
   connect(m_ReloadButton, &QPushButton::clicked,
           this, [this] {
             m_GLWindow->RunWithGLContext([this] {
+              m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
+              m_GLWindow->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
               ReloadAttachments();
+              m_GLWindow->glPopClientAttrib();
+              m_GLWindow->glPopAttrib();
             });
           });
 
@@ -112,24 +116,25 @@ AttachmentControl::AttachmentControl(wgc0310::AttachmentStatus *attachmentStatus
   QHBoxLayout *layout = new QHBoxLayout();
   this->setLayout(layout);
 
-  // Right side
+  // Left side
   {
-    QVBoxLayout *vBoxRightSide = new QVBoxLayout();
-    layout->addLayout(vBoxRightSide);
+    QVBoxLayout *vBoxLeftSide = new QVBoxLayout();
+    layout->addLayout(vBoxLeftSide);
+
     {
       QHBoxLayout *h1 = new QHBoxLayout();
-      vBoxRightSide->addLayout(h1);
+      vBoxLeftSide->addLayout(h1);
 
-      h1->addWidget(m_RightBigArmConfig);
-      h1->addWidget(m_RightBigArmAttachment);
+      h1->addWidget(m_LeftBigArmConfig);
+      h1->addWidget(m_LeftBigArmAttachment);
     }
 
     {
       QHBoxLayout *h2 = new QHBoxLayout();
-      vBoxRightSide->addLayout(h2);
+      vBoxLeftSide->addLayout(h2);
 
-      h2->addWidget(m_RightSmallArmConfig);
-      h2->addWidget(m_RightSmallArmAttachment);
+      h2->addWidget(m_LeftSmallArmConfig);
+      h2->addWidget(m_LeftSmallArmAttachment);
     }
   }
 
@@ -143,25 +148,24 @@ AttachmentControl::AttachmentControl(wgc0310::AttachmentStatus *attachmentStatus
     vBoxCentre->addStretch();
   }
 
-  // Left side
+  // Right side
   {
-    QVBoxLayout *vBoxLeftSide = new QVBoxLayout();
-    layout->addLayout(vBoxLeftSide);
-
+    QVBoxLayout *vBoxRightSide = new QVBoxLayout();
+    layout->addLayout(vBoxRightSide);
     {
       QHBoxLayout *h1 = new QHBoxLayout();
-      vBoxLeftSide->addLayout(h1);
+      vBoxRightSide->addLayout(h1);
 
-      h1->addWidget(m_LeftBigArmAttachment);
-      h1->addWidget(m_LeftBigArmConfig);
+      h1->addWidget(m_RightBigArmAttachment);
+      h1->addWidget(m_RightBigArmConfig);
     }
 
     {
       QHBoxLayout *h2 = new QHBoxLayout();
-      vBoxLeftSide->addLayout(h2);
+      vBoxRightSide->addLayout(h2);
 
-      h2->addWidget(m_LeftSmallArmAttachment);
-      h2->addWidget(m_LeftSmallArmConfig);
+      h2->addWidget(m_RightSmallArmAttachment);
+      h2->addWidget(m_RightSmallArmConfig);
     }
   }
 
@@ -186,6 +190,16 @@ void AttachmentControl::ReloadAttachments() {
   m_ItemSelectMenu->clear();
   m_ItemSelectMenu->addAction("移除");
   m_ItemSelectMenu->addSeparator();
+
+  m_RightBigArmConfig->setDisabled(true);
+  m_RightSmallArmConfig->setDisabled(true);
+  m_LeftBigArmConfig->setDisabled(true);
+  m_LeftSmallArmConfig->setDisabled(true);
+  QFont systemFont = QFontDatabase::systemFont(QFontDatabase::GeneralFont);
+  m_RightBigArmAttachment->setFont(systemFont);
+  m_RightSmallArmAttachment->setFont(systemFont);
+  m_LeftBigArmAttachment->setFont(systemFont);
+  m_LeftSmallArmAttachment->setFont(systemFont);
 
   QDir dir(QStringLiteral("attachments"));
   QStringList filters;

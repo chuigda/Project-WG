@@ -71,7 +71,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
 
   QTimer *timer = new QTimer(this);
   timer->setTimerType(Qt::PreciseTimer);
-  timer->setInterval(90);
+  timer->setInterval(1000 / 90);
   timer->start();
   connect(timer, &QTimer::timeout, this, &ControlPanel::NextTick);
 

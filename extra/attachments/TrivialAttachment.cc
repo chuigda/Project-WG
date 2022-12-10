@@ -3,14 +3,14 @@
 #include <QLabel>
 #include "cwglx/GLImpl.h"
 
-class TrivialAttachment final : public wgc0310::WGAPIAttachment {
+class Emitter final : public wgc0310::WGAPIAttachment {
 public:
-  TrivialAttachment() : m_Widget(new QLabel("这是一个测试控件", nullptr, Qt::Window)) {
+  Emitter() : m_Widget(new QLabel("这是一个测试控件", nullptr, Qt::Window)) {
     m_Widget->setWindowTitle("Test");
     m_Widget->setFixedSize(m_Widget->sizeHint());
   }
 
-  ~TrivialAttachment() final {
+  ~Emitter() final {
     delete m_Widget;
   }
 
@@ -42,6 +42,6 @@ std::uint32_t WGAPI GetWGAPIVersion() {
 }
 
 wgc0310::WGAPIAttachment * WGAPI LoadAttachment() {
-  return new TrivialAttachment();
+  return new Emitter();
 }
 } // extern "C"
