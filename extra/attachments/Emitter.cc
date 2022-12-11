@@ -21,7 +21,7 @@ struct EmitterStatus {
 class Emitter final : public wgc0310::WGAPIAttachment {
 public:
   Emitter() : m_Widget(new QWidget(nullptr, Qt::Window)) {
-    m_Widget->setWindowTitle("");
+    m_Widget->setWindowTitle("光线发射器 - 控制器");
 
     QHBoxLayout *layout = new QHBoxLayout();
     m_Widget->setLayout(layout);
@@ -29,7 +29,14 @@ public:
     QPushButton *startButton = new QPushButton("开始");
     QPushButton *stopButton = new QPushButton("停止");
     layout->addWidget(startButton);
+
+    QWidget *placeholder = new QWidget();
+    placeholder->setFixedWidth(startButton->sizeHint().width());
+    layout->addWidget(placeholder);
+
     layout->addWidget(stopButton);
+
+    m_Widget->setFixedSize(m_Widget->sizeHint());
 
     QObject::connect(startButton, &QPushButton::clicked, m_Widget, [this] {
       if (m_Status.status != EmitterStatus::Status::Stopped) {
