@@ -23,9 +23,11 @@ AddSlider(QLayout *layout, float *valueSlot, int min, int max, int curr) {
   QFont monospaceFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
   monospaceFont.setPointSize(11);
   label->setFont(monospaceFont);
-  QObject::connect(slider, &QSlider::valueChanged, slider, [=] (int value) {
+  QObject::connect(slider, &QSlider::valueChanged, slider, [slider, valueSlot, label] (int value) {
+    slider->blockSignals(true);
     *valueSlot = static_cast<float>(value) * 5.0f;
     label->setText(QString::number(*valueSlot));
+    slider->blockSignals(false);
   });
 
   QHBoxLayout *retLayout = new QHBoxLayout();

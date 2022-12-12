@@ -20,7 +20,9 @@ static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widg
   button->setCheckable(true);
   QObject::connect(button, &QPushButton::toggled, widget, &QWidget::setVisible);
   QObject::connect(widget, &CloseSignallingWidget::AboutToClose, button, [button] {
+    button->blockSignals(true);
     button->setChecked(false);
+    button->blockSignals(false);
   });
 }
 
