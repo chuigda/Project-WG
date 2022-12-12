@@ -146,6 +146,8 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   // and we did not reimplement `sizeHint`
   setFixedSize(sizeHint());
 #pragma clang diagnostic pop
+
+  m_GLWindow->hide();
 }
 
 ControlPanel::~ControlPanel() noexcept {
