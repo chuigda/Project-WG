@@ -137,8 +137,6 @@ public:
         f->glEnd();
       } else {
         // 第二阶段
-        std::size_t validFrame = m_Status.currentFrame % 150;
-
         GLfloat lightRear = 4.425f + 300.0f;
         GLfloat lightMid = 4.425f + validFrame * 2.0f;
         GLfloat texCoordMid = validFrame / 150.0f;
