@@ -26,7 +26,8 @@ static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widg
   });
 }
 
-ControlPanel::ControlPanel(LicensePresenter *presenter)
+ControlPanel::ControlPanel(LicensePresenter *presenter,
+                           bool startHideGL)
   : QWidget(nullptr, Qt::Window),
     m_ScreenDisplayMode(wgc0310::ScreenDisplayMode::CapturedExpression),
     m_VolumeLevels(0.0),
@@ -147,7 +148,9 @@ ControlPanel::ControlPanel(LicensePresenter *presenter)
   setFixedSize(sizeHint());
 #pragma clang diagnostic pop
 
-  m_GLWindow->hide();
+  if (startHideGL) {
+    m_GLWindow->hide();
+  }
 }
 
 ControlPanel::~ControlPanel() noexcept {

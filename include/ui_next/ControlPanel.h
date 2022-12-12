@@ -27,7 +27,7 @@ class ControlPanel final : public QWidget {
   Q_OBJECT
 
 public:
-  explicit ControlPanel(LicensePresenter *presenter);
+  explicit ControlPanel(LicensePresenter *presenter, bool startHideGL);
   ~ControlPanel() noexcept final;
 
 signals:

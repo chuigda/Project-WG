@@ -18,7 +18,6 @@ GLInfoDisplay::GLInfoDisplay(GLWindow *glWindow)
   setFixedSize(600, 600);
 
   QFont monospaceFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
-  monospaceFont.setPointSize(11);
   m_Vendor->setFont(monospaceFont);
   m_Version->setFont(monospaceFont);
   m_Renderer->setFont(monospaceFont);

@@ -18,7 +18,6 @@ static QLayout* CreateSliderSuite(QString const& suiteName,
   QHBoxLayout *layout = new QHBoxLayout();
 
   QFont monospaceFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
-  monospaceFont.setPointSize(11);
   QLabel *nameLabel = new QLabel(suiteName);
   nameLabel->setFont(monospaceFont);
   nameLabel->setFixedWidth(32);

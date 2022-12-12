@@ -49,6 +49,9 @@ int main(int argc, char *argv[]) {
   QApplication a { argc, argv };
   QApplication::setWindowIcon(QIcon(QPixmap(":/icon-v2.png")));
 
+  QString startHideGLEnv = QString::fromLocal8Bit(qgetenv("START_HIDE_GL"));
+  bool startHideGL = !startHideGLEnv.trimmed().isEmpty();
+
   auto [agreed, presenter] = PrecheckLicense();
   if (agreed != QDialog::Accepted) {
     delete presenter;
@@ -56,7 +59,7 @@ int main(int argc, char *argv[]) {
   }
 
   presenter->RequireAgreement(false);
-  ControlPanel panel { presenter };
+  ControlPanel panel { presenter, startHideGL };
   panel.show();
 
   return QApplication::exec();
