@@ -18,11 +18,24 @@ set(CMAKE_C_FLAGS
     ${CMAKE_C_FLAGS}")
 
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
+find_package(Qt6 REQUIRED COMPONENTS
              Core
              Widgets
              Multimedia
              OpenGLWidgets)
+
+# if we are using Windows
+if (WIN32)
+    # add definition
+    add_definitions(-DCW_WIN32)
+
+    # enable RC processing
+    enable_language(RC)
+
+    set(CWUTIL_RESC resc/win32/CWUtil.rc include/Version.h)
+    set(CWGLX_RESC resc/win32/CWGLX.rc include/Version.h)
+    set(PROJECT_WG_RESC resc/win32/Main.rc)
+endif()
 
 set(CWGLX_SOURCES
     src/cwglx/Color.cc
@@ -59,11 +72,11 @@ set(CWGLX_SOURCES
     include/cwglx/drawable/Composition.h
 )
 
-qt_add_library(CWGLX ${CWGLX_SOURCES})
+qt_add_library(CWGLX ${CWGLX_SOURCES} ${CWGLX_RESC})
 
 target_link_libraries(CWGLX PUBLIC
-                      Qt${QT_VERSION_MAJOR}::Widgets
-                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets)
+                      Qt6::Widgets
+                      Qt6::OpenGLWidgets)
 
 set(CWUTIL_SOURCES
     src/util/FileUtil.cc
@@ -78,9 +91,9 @@ set(CWUTIL_SOURCES
     include/util/Sinkrate.h
     include/util/Logger.h)
 
-qt_add_library(CWUtil ${CWUTIL_SOURCES})
+qt_add_library(CWUtil ${CWUTIL_SOURCES} ${CWUTIL_RESC})
 
-target_link_libraries(CWUtil PUBLIC Qt${QT_VERSION_MAJOR}::Core)
+target_link_libraries(CWUtil PUBLIC Qt6::Core)
 
 set(PROJECT_SOURCES
     main.cc
@@ -141,53 +154,43 @@ set(PROJECT_SOURCES
     include/wgc0310/api/Attachment.h
     include/wgc0310/api/WGAPI.h
 
+    include/Version.h
+
     resc/main.qrc)
 
 include_directories(include)
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(Project-WG MANUAL_FINALIZATION ${PROJECT_SOURCES})
-else()
-    add_executable(Project-WG ${PROJECT_SOURCES})
-endif()
+qt_add_executable(Project-WG MANUAL_FINALIZATION ${PROJECT_SOURCES} ${PROJECT_WG_RESC})
 
 target_link_libraries(Project-WG PUBLIC
-                      Qt${QT_VERSION_MAJOR}::Widgets
-                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets
-                      Qt${QT_VERSION_MAJOR}::Multimedia
+                      Qt6::Widgets
+                      Qt6::OpenGLWidgets
+                      Qt6::Multimedia
                       CWGLX
                       CWUtil)
 
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(Project-WG)
-endif()
-
-# if we are using Windows
-if (WIN32)
-    # add definition
-    add_definitions(-DCW_WIN32)
-endif()
+qt_finalize_executable(Project-WG)
 
 # Attachments
 qt_add_library(TrivialAttachment SHARED extra/attachments/TrivialAttachment.cc)
 target_link_libraries(TrivialAttachment PUBLIC
-                      Qt${QT_VERSION_MAJOR}::Widgets
-                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets
+                      Qt6::Widgets
+                      Qt6::OpenGLWidgets
                       CWGLX)
 
 qt_add_library(Emitter SHARED extra/attachments/Emitter.cc
                               extra/attachments/Emitter/emitter.qrc)
 target_link_libraries(Emitter PUBLIC
-                      Qt${QT_VERSION_MAJOR}::Widgets
-                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets
+                      Qt6::Widgets
+                      Qt6::OpenGLWidgets
                       CWGLX
                       CWUtil)
 
 # Animations
 qt_add_library(TrivialAnimation SHARED extra/animations/TrivialAnimation.cc)
 target_link_libraries(TrivialAnimation PUBLIC
-                      Qt${QT_VERSION_MAJOR}::Widgets
-                      Qt${QT_VERSION_MAJOR}::OpenGLWidgets
+                      Qt6::Widgets
+                      Qt6::OpenGLWidgets
                       CWGLX)
