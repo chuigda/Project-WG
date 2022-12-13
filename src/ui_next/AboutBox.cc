@@ -6,6 +6,8 @@
 #include <QMessageBox>
 #include "ui_next/LicensePresenter.h"
 
+#include "Version.h"
+
 AboutBox::AboutBox(LicensePresenter *presenter)
   : m_LicensePresenter(presenter)
 {
@@ -14,8 +16,8 @@ AboutBox::AboutBox(LicensePresenter *presenter)
   QVBoxLayout *box = new QVBoxLayout();
   this->setLayout(box);
 
-  QLabel *label = new QLabel(
-    "<h2>Project-WG (v0.3.0)</h2>"
+  QString labelText = QStringLiteral(
+    "<h2>%1 (v%2)</h2>"
     "<hr/>"
     "(C) 2022 Chuigda WhiteGive<br/>"
     "<a href=\"https://github.com/chuigda/Project-WG\">https://github.com/chuigda/Project-WG</a><br/>"
@@ -32,7 +34,9 @@ AboutBox::AboutBox(LicensePresenter *presenter)
     "<li>...以及，大家，<b>所有人</b></li>"
     "</ul>"
     "程序使用的机器人图标由 <a href=\"https://www.flaticon.com/free-icons/robot\">Freepik - Flaticon</a> 提供<br/>"
-  );
+  ).arg(WG_PRODUCT_NAME).arg(WG_PRODUCT_VERSION_STRING);
+
+  QLabel *label = new QLabel(labelText);
   label->setOpenExternalLinks(true);
   box->addWidget(label);
   box->addStretch();
