@@ -4,12 +4,24 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QTimer>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QGroupBox>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QMessageBox>
 #include "util/Derive.h"
 
 class VTSTrackWorker : public QObject {
   Q_OBJECT
 
 public:
+  VTSTrackWorker() :
+    m_Websocket(nullptr),
+    m_Timer(nullptr),
+    m_LastRequestId(0),
+    m_LastResponseId(0)
+  {}
 
   CW_DERIVE_UNCOPYABLE(VTSTrackWorker)
   CW_DERIVE_UNMOVABLE(VTSTrackWorker)
@@ -193,6 +205,61 @@ VTSTrackControl::VTSTrackControl(wgc0310::HeadStatus *headStatus,
   : QWidget(parent),
     m_HeadStatus(headStatus),
     m_WorkerThread(workerThread)
-{}
+{
+  VTSTrackWorker *worker = new VTSTrackWorker();
+  worker->moveToThread(workerThread);
+
+  QVBoxLayout *layout = new QVBoxLayout(this);
+
+  {
+    QLabel *introduction = new QLabel(
+      "从 <a href=\"https://denchisoft.com/\">VTubeStudio (VTS)</a> 获取面部捕捉和姿态估计参数<br/>"
+      "需要启动 VTS 并启用插件 API，本程序会作为一个插件接入 VTS"
+    );
+    introduction->setOpenExternalLinks(true);
+    layout->addWidget(introduction);
+  }
+
+  {
+    QGroupBox *vtsSettings = new QGroupBox("VTubeStudio 设置");
+    layout->addWidget(vtsSettings);
+
+    QHBoxLayout *vtsLayout = new QHBoxLayout();
+    vtsSettings->setLayout(vtsLayout);
+
+    QLabel *labelWSAddr = new QLabel("WebSocket 端口");
+    QLineEdit *lineEdit = new QLineEdit("8001");
+    QPushButton *startButton = new QPushButton("启动");
+    QPushButton *stopButton = new QPushButton("停止");
+
+    vtsLayout->addWidget(labelWSAddr);
+    vtsLayout->addStretch();
+    vtsLayout->addWidget(lineEdit);
+    vtsLayout->addWidget(startButton);
+    vtsLayout->addWidget(stopButton);
+
+    connect(
+      startButton,
+      &QPushButton::clicked,
+      this,
+      [this, lineEdit] {
+        bool success;
+        std::uint16_t port = lineEdit->text().toUInt(&success);
+        if (!success) {
+          QMessageBox::warning(this, "VTS 面部捕捉错误", "输入的端口号无效");
+        }
+
+        // emit this->StartTracking(port);
+      }
+    );
+
+    /*
+    connect(stopButton,
+            &QPushButton::clicked,
+            this,
+            &OSFTrackControl::StopTracking);
+    */
+  }
+}
 
 #include "VTSTrackControl.moc"

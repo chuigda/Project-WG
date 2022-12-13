@@ -23,13 +23,10 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
   modeSelectBox->addStretch();
 
   QRadioButton *vtsMode = new QRadioButton("VTS");
-  vtsMode->setEnabled(false);
-  vtsMode->setCheckable(false);
-  vtsMode->setChecked(false);
+  vtsMode->setChecked(true);
   modeSelectBox->addWidget(vtsMode);
 
   QRadioButton *osfMode = new QRadioButton("OSF");
-  osfMode->setChecked(true);
   modeSelectBox->addWidget(osfMode);
 
   QRadioButton *manualMode = new QRadioButton("手动控制");
@@ -38,15 +35,29 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
   mainLayout->addLayout(modeSelectBox);
 
   m_VTSTrackControl = new VTSTrackControl(m_HeadStatus, m_WorkerThread);
-  m_VTSTrackControl->setVisible(false);
   mainLayout->addWidget(m_VTSTrackControl);
 
   m_OSFTrackControl = new OSFTrackControl(m_HeadStatus, m_WorkerThread);
+  m_OSFTrackControl->setVisible(false);
   mainLayout->addWidget(m_OSFTrackControl);
 
   m_ManualTrackControl = new ManualTrackControl(m_HeadStatus, m_ScreenDisplayMode);
   m_ManualTrackControl->setVisible(false);
   mainLayout->addWidget(m_ManualTrackControl);
+
+  connect(
+    vtsMode,
+    &QRadioButton::toggled,
+    this,
+    [this] (bool toggled) {
+      if (toggled) {
+        m_VTSTrackControl->show();
+      } else {
+        m_VTSTrackControl->hide();
+      }
+      setFixedSize(minimumSizeHint());
+    }
+  );
 
   connect(
     osfMode,
@@ -59,6 +70,7 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
         m_OSFTrackControl->StopTracking();
         m_OSFTrackControl->hide();
       }
+      setFixedSize(minimumSizeHint());
     }
   );
 
@@ -72,6 +84,14 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
       } else {
         m_ManualTrackControl->hide();
       }
+      setFixedSize(minimumSizeHint());
     }
   );
+
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "VirtualCallInCtorOrDtor"
+  // This should be safe since base class `QWidget` has been initialised,
+  // and we did not reimplement `sizeHint`
+  setFixedSize(sizeHint());
+#pragma clang diagnostic pop
 }

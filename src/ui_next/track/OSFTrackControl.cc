@@ -310,7 +310,7 @@ OSFTrackControl::OSFTrackControl(wgc0310::HeadStatus *headStatus,
         bool success;
         std::uint16_t port = lineEdit->text().toUInt(&success);
         if (!success) {
-          QMessageBox::warning(this, "面部捕捉错误", "输入的端口号无效");
+          QMessageBox::warning(this, "OSF 面部捕捉错误", "输入的端口号无效");
         }
 
         emit this->StartTracking(port);
