@@ -44,8 +44,8 @@ public slots:
     QString vtsHost = QStringLiteral("ws://localhost:%1").arg(port);
     m_Websocket = new QWebSocket(vtsHost);
     if (!m_Websocket->isValid()) {
+      StopCommunication();
       emit TrackingError("无法初始化到 VTS 服务器的 WebSocket 连接");
-      delete m_Websocket;
       return;
     }
 
@@ -74,15 +74,13 @@ private slots:
     QJsonDocument document = QJsonDocument::fromJson(message.toUtf8()); \
     if (!document.isObject()) { \
       emit TrackingError("VTS 服务器发送了无法理解的响应"); \
-      delete m_Websocket; \
-      delete m_Timer; \
+      StopCommunication(); \
       return; \
     } \
     QJsonObject object = document.object(); \
     if (!object["data"].isObject()) { \
       emit TrackingError("VTS 服务器发送了无法理解的响应"); \
-      delete m_Websocket; \
-      delete m_Timer; \
+      StopCommunication(); \
       return; \
     } \
     QJsonObject data = object["data"].toObject();         \
@@ -92,8 +90,7 @@ private slots:
       \
       if (apiName != "VTubeStudioPublicAPI") { \
         emit TrackingError("VTS 服务器发送了无法理解的响应"); \
-        delete m_Websocket; \
-      delete m_Timer; \
+        StopCommunication(); \
         return; \
       } \
       if (REQUEST_ID && requestId != REQUEST_ID) { \
@@ -105,8 +102,7 @@ private slots:
       if (messageType == "APIError") {\
         QString errorMessage = data["message"].toString("未知错误"); \
         emit TrackingError(QStringLiteral("VTS 服务器返回了错误响应：%1").arg(errorMessage)); \
-        delete m_Websocket; \
-        delete m_Timer; \
+        StopCommunication(); \
         return; \
       } \
       if (MESSAGE_TYPE && messageType != MESSAGE_TYPE) { \
@@ -120,7 +116,7 @@ private slots:
     bool active = data["active"].toBool(false);
     if (!active) {
       emit TrackingError("VTS 服务器的 API 并未激活");
-      delete m_Websocket;
+      StopCommunication();
       return;
     }
 
@@ -204,10 +200,22 @@ VTSTrackControl::VTSTrackControl(wgc0310::HeadStatus *headStatus,
                                  QWidget *parent)
   : QWidget(parent),
     m_HeadStatus(headStatus),
-    m_WorkerThread(workerThread)
+    m_WorkerThread(workerThread),
+    m_VTSVersionLabel(new QLabel(""))
 {
   VTSTrackWorker *worker = new VTSTrackWorker();
   worker->moveToThread(workerThread);
+
+  connect(this, &VTSTrackControl::StartTracking,
+          worker, &VTSTrackWorker::StartCommunication);
+  connect(this, &VTSTrackControl::StopTracking,
+          worker, &VTSTrackWorker::StopCommunication);
+  connect(worker, &VTSTrackWorker::VTSVersionProbed,
+          this, &VTSTrackControl::DisplayVTSVersion);
+  connect(worker, &VTSTrackWorker::TrackingError,
+          this, &VTSTrackControl::HandleError);
+  connect(worker, &VTSTrackWorker::HeadPoseUpdated,
+          this, &VTSTrackControl::HandleHeadStatus);
 
   QVBoxLayout *layout = new QVBoxLayout(this);
 
@@ -249,17 +257,28 @@ VTSTrackControl::VTSTrackControl(wgc0310::HeadStatus *headStatus,
           QMessageBox::warning(this, "VTS 面部捕捉错误", "输入的端口号无效");
         }
 
-        // emit this->StartTracking(port);
+        emit this->StartTracking(port);
       }
     );
 
-    /*
-    connect(stopButton,
-            &QPushButton::clicked,
-            this,
-            &OSFTrackControl::StopTracking);
-    */
+    connect(stopButton, &QPushButton::clicked, this, &VTSTrackControl::StopTracking);
   }
+
+  m_VTSVersionLabel->setVisible(false);
+  layout->addWidget(m_VTSVersionLabel);
+}
+
+void VTSTrackControl::DisplayVTSVersion(const QString &version) {
+  m_VTSVersionLabel->setVisible(true);
+  m_VTSVersionLabel->setText(QStringLiteral("VTS版本: %1").arg(version));
+}
+
+void VTSTrackControl::HandleError(const QString &error) {
+  QMessageBox::warning(this, "VTS 面部捕捉错误", error);
+}
+
+void VTSTrackControl::HandleHeadStatus(wgc0310::HeadStatus headStatus) {
+  *m_HeadStatus = headStatus;
 }
 
 #include "VTSTrackControl.moc"

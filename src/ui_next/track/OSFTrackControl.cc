@@ -42,7 +42,7 @@ public slots:
 
     m_Socket = new QUdpSocket();
     if (!m_Socket->bind(QHostAddress::LocalHost, port)) {
-      delete m_Socket;
+      StopListening();
       emit TrackingError("无法绑定到指定端口");
       return;
     }

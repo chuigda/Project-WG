@@ -5,6 +5,8 @@
 #include "wgc0310/HeadStatus.h"
 #include <QWidget>
 
+class QLabel;
+
 class VTSTrackControl : public QWidget {
   Q_OBJECT
 
@@ -13,9 +15,22 @@ public:
                   QThread *workerThread,
                   QWidget *parent = nullptr);
 
+signals:
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "NotImplementedFunctions"
+  void StartTracking(quint16 port);
+  void StopTracking();
+#pragma clang diagnostic pop
+
+public slots:
+  void DisplayVTSVersion(const QString& version);
+  void HandleError(const QString& error);
+  void HandleHeadStatus(wgc0310::HeadStatus headStatus);
+
 private:
   wgc0310::HeadStatus *m_HeadStatus;
   QThread *m_WorkerThread;
+  QLabel *m_VTSVersionLabel;
 };
 
 struct OSFTrackParameter2 {
