@@ -13,7 +13,7 @@
 #include "util/CircularBuffer.h"
 
 class OSFTrackWorker : public QObject {
-Q_OBJECT
+  Q_OBJECT
 
 public:
   explicit OSFTrackWorker(QObject *parent = nullptr)
@@ -52,14 +52,6 @@ public slots:
   }
 
   void StopListening() {
-    if (!m_Socket) {
-      return;
-    }
-
-    // maybe unnecessary, but I'm not really sure
-    disconnect(m_Socket, &QUdpSocket::readyRead,
-               this, &OSFTrackWorker::HandleData);
-
     delete m_Socket;
     m_Socket = nullptr;
   }

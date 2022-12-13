@@ -17,12 +17,18 @@ set(CMAKE_C_FLAGS
     "-Wall -Wextra -pedantic -Wno-unknown-pragmas -Wno-cast-function-type \
     ${CMAKE_C_FLAGS}")
 
-find_package(QT NAMES Qt6 REQUIRED COMPONENTS Core Widgets)
+find_package(QT NAMES Qt6 REQUIRED COMPONENTS
+             Core
+             Widgets
+             OpenGLWidgets
+             Multimedia
+             WebSockets)
 find_package(Qt6 REQUIRED COMPONENTS
              Core
              Widgets
+             OpenGLWidgets
              Multimedia
-             OpenGLWidgets)
+             WebSockets)
 
 # if we are using Windows
 if (WIN32)
@@ -72,6 +78,8 @@ set(CWGLX_SOURCES
     include/cwglx/drawable/Composition.h
 )
 
+set_property(SOURCE ${CWGLX_SOURCES} PROPERTY SKIP_AUTOMOC ON)
+
 qt_add_library(CWGLX ${CWGLX_SOURCES} ${CWGLX_RESC})
 
 target_link_libraries(CWGLX PUBLIC
@@ -90,6 +98,8 @@ set(CWUTIL_SOURCES
     include/util/Derive.h
     include/util/Sinkrate.h
     include/util/Logger.h)
+
+set_property(SOURCE ${CWUTIL_SOURCES} PROPERTY SKIP_AUTOMOC ON)
 
 qt_add_library(CWUtil ${CWUTIL_SOURCES} ${CWUTIL_RESC})
 
@@ -161,11 +171,11 @@ set(PROJECT_SOURCES
 include_directories(include)
 
 qt_add_executable(Project-WG MANUAL_FINALIZATION ${PROJECT_SOURCES} ${PROJECT_WG_RESC})
-
 target_link_libraries(Project-WG PUBLIC
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
                       Qt6::Multimedia
+                      Qt6::WebSockets
                       CWGLX
                       CWUtil)
 
