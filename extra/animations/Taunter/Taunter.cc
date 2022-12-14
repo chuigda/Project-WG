@@ -1,5 +1,6 @@
 #include "wgc0310/api/ScreenAnimation.h"
 
+#include <QImage>
 #include "cwglx/GLImpl.h"
 #include "cwglx/Texture.h"
 
@@ -26,16 +27,24 @@ public:
     m_CurrentTick = 0;
   }
 
-  bool Initialize(GLFunctions*) noexcept final {
+  bool Initialize(GLFunctions* f) noexcept final {
+    m_TexturePack[0] = std::make_unique<cw::Texture2D>(QImage(":/1.png"), f);
+    m_TexturePack[1] = std::make_unique<cw::Texture2D>(QImage(":/2.png"), f);
+    m_TexturePack[2] = std::make_unique<cw::Texture2D>(QImage(":/3.png"), f);
+    m_TexturePack[3] = std::make_unique<cw::Texture2D>(QImage(":/4.png"), f);
     return true;
   }
 
   void Draw(GLFunctions*) noexcept final {}
 
-  void Delete(GLFunctions*) noexcept final {}
+  void Delete(GLFunctions *f) noexcept final {
+    for (auto &texture : m_TexturePack) {
+      texture->DeleteTexture(f);
+    }
+  }
 
 private:
-  std::unique_ptr<cw::Texture2D> m_Texture[4];
+  std::array<std::unique_ptr<cw::Texture2D>, 4> m_TexturePack;
   std::size_t m_CurrentTick = 0;
 };
 
