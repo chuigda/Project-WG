@@ -76,8 +76,12 @@ set(CWGLX_SOURCES
     include/cwglx/drawable/PlainTriangles.h
     include/cwglx/drawable/TriangleGen.h
     include/cwglx/drawable/Composition.h
+
+    src/glu/FakeGLU.cc
+    include/glu/FakeGLU.h
 )
 
+# CWGLX
 set_property(SOURCE ${CWGLX_SOURCES} PROPERTY SKIP_AUTOMOC ON)
 
 qt_add_library(CWGLX ${CWGLX_SOURCES} ${CWGLX_RESC})
@@ -86,6 +90,7 @@ target_link_libraries(CWGLX PUBLIC
                       Qt6::Widgets
                       Qt6::OpenGLWidgets)
 
+# CWUTIL
 set(CWUTIL_SOURCES
     src/util/FileUtil.cc
     src/util/DynLoad.cc
@@ -105,6 +110,7 @@ qt_add_library(CWUtil ${CWUTIL_SOURCES} ${CWUTIL_RESC})
 
 target_link_libraries(CWUtil PUBLIC Qt6::Core)
 
+# Main executable
 set(PROJECT_SOURCES
     main.cc
 
@@ -139,9 +145,6 @@ set(PROJECT_SOURCES
     include/ui_next/LicensePresenter.h
     include/ui_next/GLWindow.h
     include/ui_next/CloseSignallingWidget.h
-
-    src/glu/FakeGLU.cc
-    include/glu/FakeGLU.h
 
     src/wgc0310/Mesh.cc
     src/wgc0310/ScreenGlass.cc
@@ -182,6 +185,26 @@ target_link_libraries(Project-WG PUBLIC
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 
 qt_finalize_executable(Project-WG)
+
+# Phong tester
+
+qt_add_executable(PhongTester MANUAL_FINALIZATION
+                  extra/utility/phong/PhongTester.cc
+                  extra/utility/phong/PaintWidget.cc
+                  extra/utility/phong/PaintWidget.h
+                  src/ui_next/EntityStatus.cc
+                  include/ui_next/EntityStatus.h
+                  resc/icon-only.qrc)
+
+target_link_libraries(PhongTester PUBLIC
+                      Qt6::Widgets
+                      Qt6::OpenGLWidgets
+                      CWGLX
+                      CWUtil)
+
+set_target_properties(PhongTester PROPERTIES WIN32_EXECUTABLE TRUE)
+
+qt_finalize_executable(PhongTester)
 
 # Attachments
 qt_add_library(TrivialAttachment SHARED extra/attachments/TrivialAttachment.cc)

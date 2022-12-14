@@ -87,7 +87,6 @@ private slots:
     QString requestId = object["requestId"].toString(""); \
     { \
       QString apiName = object["apiName"].toString(""); \
-      \
       if (apiName != "VTubeStudioPublicAPI") { \
         emit TrackingError("VTS 服务器发送了无法理解的响应"); \
         StopCommunication(); \
