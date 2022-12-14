@@ -1,30 +1,30 @@
 #include "wgc0310/api/ScreenAnimation.h"
 
-#include <QLabel>
 #include "cwglx/GLImpl.h"
+#include "cwglx/Texture.h"
 
 class Taunter final : public wgc0310::WGAPIAnimation {
 public:
-  Taunter() : m_Widget(new QLabel("这是一个测试控件", nullptr, Qt::Window)) {
-    m_Widget->setWindowTitle("Test");
-    m_Widget->setFixedSize(m_Widget->sizeHint());
-  }
+  Taunter() = default;
 
-  ~Taunter() final {
-    delete m_Widget;
-  }
+  ~Taunter() final = default;
 
   const char *GetName() noexcept final {
-    return "Trivial Animation";
+    return "电摇嘲讽";
   }
 
-  QWidget *GetControlWidget() noexcept final {
-    return m_Widget;
+  QWidget *GetControlWidget() noexcept final { return nullptr; }
+
+  void NextTick() noexcept final {
+    m_CurrentTick += 1;
+    if (m_CurrentTick >= 100) {
+
+    }
   }
 
-  void NextTick() noexcept final {}
-
-  void Rewind() noexcept final {}
+  void Rewind() noexcept final {
+    m_CurrentTick = 0;
+  }
 
   bool Initialize(GLFunctions*) noexcept final {
     return true;
@@ -35,7 +35,8 @@ public:
   void Delete(GLFunctions*) noexcept final {}
 
 private:
-  QLabel *m_Widget;
+  std::unique_ptr<cw::Texture2D> m_Texture[4];
+  std::size_t m_CurrentTick = 0;
 };
 
 extern "C" {

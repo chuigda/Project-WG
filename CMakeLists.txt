@@ -217,7 +217,7 @@ target_link_libraries(TrivialAttachment PUBLIC
                       Qt6::OpenGLWidgets
                       CWGLX)
 
-qt_add_library(Emitter SHARED extra/attachments/Emitter.cc
+qt_add_library(Emitter SHARED extra/attachments/Emitter/Emitter.cc
                               extra/attachments/Emitter/emitter.qrc)
 target_link_libraries(Emitter PUBLIC
                       Qt6::Widgets
@@ -231,3 +231,11 @@ target_link_libraries(TrivialAnimation PUBLIC
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
                       CWGLX)
+
+qt_add_library(Taunter SHARED extra/animations/Taunter/Taunter.cc
+                              extra/animations/Taunter/Taunter.qrc)
+target_link_libraries(Taunter PUBLIC
+                      Qt6::Widgets
+                      Qt6::OpenGLWidgets
+                      CWGLX
+                      CWUtil)
