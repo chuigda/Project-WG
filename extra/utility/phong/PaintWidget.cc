@@ -1,21 +1,39 @@
 #include "PaintWidget.h"
+
+#include <QScreen>
+#include <QTimer>
 #include "cwglx/Setup.h"
 #include "cwglx/Material.h"
 #include "glu/FakeGLU.h"
 
-PaintWidget::PaintWidget(EntityStatus *entityStatus)
+PaintWidget::PaintWidget(EntityStatus *entityStatus,
+                         cw::Drawable **chosenMesh,
+                         cw::Material const**chosenMaterial)
   : m_EntityStatus(entityStatus),
-    m_ChosenMesh(nullptr),
-    m_ChosenMaterial(nullptr),
+    m_ChosenMesh(chosenMesh),
+    m_ChosenMaterial(chosenMaterial),
     m_DevicePixelRatio(1.0)
 {
-  setWindowTitle("Phong 光照测试器");
-  setFixedSize(800, 600);
+  setMinimumSize(320, 320);
+
+  QTimer *timer = new QTimer(this);
+  timer->setInterval(1000 / 30);
+  timer->start();
+  QObject::connect(timer, &QTimer::timeout, this, [this] { this->update(); });
+}
+
+void PaintWidget::RunWithGLContext(const std::function<void(void)> &f) {
+  makeCurrent();
+  f();
+  doneCurrent();
 }
 
 void PaintWidget::initializeGL() {
   QOpenGLWidget::initializeGL();
   cw::SetupPreferredSettings(this);
+
+  // Some meshes of WGC-0310 looks weird if you cull the "inner" side
+  glDisable(GL_CULL_FACE);
 
   m_Light = std::make_unique<cw::PointLight>(GL_LIGHT0,
                                              cw::RGBAColor(32, 32, 32),
@@ -30,6 +48,8 @@ void PaintWidget::initializeGL() {
                                               cw::RGBAColor(127, 127, 127),
                                               cw::Vertex(30.0, 15.0, 0.0),
                                               this);
+
+  m_DevicePixelRatio = this->screen()->devicePixelRatio();
 
   emit OpenGLInitialized();
 }
@@ -59,12 +79,12 @@ void PaintWidget::paintGL() {
 
   m_EntityStatus->ApplyEntityTransformation(this);
 
-  if (m_ChosenMaterial && *m_ChosenMaterial) {
+  if (*m_ChosenMaterial) {
     (*m_ChosenMaterial)->Apply(this);
   }
 
-  if (m_ChosenMesh) {
-    m_ChosenMesh->Draw(this);
+  if (*m_ChosenMesh) {
+    (*m_ChosenMesh)->Draw(this);
   }
 }
 

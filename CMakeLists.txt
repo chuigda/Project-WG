@@ -41,6 +41,7 @@ if (WIN32)
     set(CWUTIL_RESC resc/win32/CWUtil.rc include/Version.h)
     set(CWGLX_RESC resc/win32/CWGLX.rc include/Version.h)
     set(PROJECT_WG_RESC resc/win32/Main.rc)
+    set(PHONG_TESTER_RESC resc/win32/PhongTester.rc)
 endif()
 
 set(CWGLX_SOURCES
@@ -192,9 +193,12 @@ qt_add_executable(PhongTester MANUAL_FINALIZATION
                   extra/utility/phong/PhongTester.cc
                   extra/utility/phong/PaintWidget.cc
                   extra/utility/phong/PaintWidget.h
+                  extra/utility/phong/TesterWidget.cc
+                  extra/utility/phong/TesterWidget.h
                   src/ui_next/EntityStatus.cc
                   include/ui_next/EntityStatus.h
-                  resc/icon-only.qrc)
+                  resc/icon-only.qrc
+                  ${PHONG_TESTER_RESC})
 
 target_link_libraries(PhongTester PUBLIC
                       Qt6::Widgets

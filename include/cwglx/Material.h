@@ -5,6 +5,7 @@
 
 #include "cwglx/GL.h"
 #include "cwglx/Color.h"
+#include "util/Derive.h"
 
 namespace cw {
 
@@ -31,6 +32,8 @@ public:
                    GLenum colorDimension = GL_SPECULAR) noexcept;
 
   ~StandardMaterial() final;
+
+  CW_DERIVE_DEFAULT_COPY(StandardMaterial)
 
   [[nodiscard]] bool IsTransparent() const noexcept final;
   void Apply(GLFunctions *f) const noexcept final;

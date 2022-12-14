@@ -12,7 +12,11 @@ class PaintWidget final : public QOpenGLWidget, public GLFunctions {
   Q_OBJECT
 
 public:
-  explicit PaintWidget(EntityStatus *entityStatus);
+  explicit PaintWidget(EntityStatus *entityStatus,
+                       cw::Drawable **chosenMesh,
+                       cw::Material const**chosenMaterial);
+
+  void RunWithGLContext(std::function<void(void)> const& f);
 
 signals:
 #pragma clang diagnostic push
@@ -27,8 +31,8 @@ protected:
 
 private:
   EntityStatus *m_EntityStatus;
-  cw::Drawable *m_ChosenMesh;
-  cw::Material* *m_ChosenMaterial;
+  cw::Drawable* *m_ChosenMesh;
+  cw::Material const* *m_ChosenMaterial;
 
   std::unique_ptr<cw::Light> m_Light;
   std::unique_ptr<cw::Light> m_Light2;

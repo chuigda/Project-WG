@@ -66,7 +66,7 @@ private:
   std::vector<Drawable const*> m_Drawables;
 };
 
-class Composition final : Drawable {
+class Composition final : public Drawable {
 public:
   Composition(std::vector<TranslationStep>&& translationSteps,
               std::vector<Drawable const*>&& drawables);
