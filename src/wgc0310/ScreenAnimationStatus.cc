@@ -56,9 +56,6 @@ void ScreenAnimationStatus::DrawOnScreen(GLFunctions *f) const noexcept {
       animation->Rewind();
     }
 
-    f->glScalef(1.0f, -1.0f, 1.0f);
-    f->glFrontFace(GL_CW);
-
     animation->Draw(f);
   }
 }
