@@ -233,7 +233,7 @@ target_link_libraries(TrivialAnimation PUBLIC
                       CWGLX)
 
 qt_add_library(Taunter SHARED extra/animations/Taunter/Taunter.cc
-                              extra/animations/Taunter/Taunter.qrc)
+                              extra/animations/Taunter/taunter.qrc)
 target_link_libraries(Taunter PUBLIC
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
