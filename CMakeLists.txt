@@ -202,7 +202,7 @@ qt_add_executable(PhongTester MANUAL_FINALIZATION
                   extra/utility/phong/TesterWidget.h
                   src/ui_next/EntityStatus.cc
                   include/ui_next/EntityStatus.h
-                  resc/icon-only.qrc
+                  resc/phong-tester.qrc
                   ${PHONG_TESTER_RESC})
 
 target_link_libraries(PhongTester PUBLIC

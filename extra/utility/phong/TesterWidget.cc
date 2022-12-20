@@ -95,7 +95,19 @@ TesterWidget::TesterWidget()
 
   QVBoxLayout *layout = new QVBoxLayout();
   setLayout(layout);
-  layout->addWidget(m_PaintWidget);
+
+  QHBoxLayout *paintLayout = new QHBoxLayout();
+  layout->addLayout(paintLayout);
+  paintLayout->addWidget(m_PaintWidget);
+
+  QSlider *slider = new QSlider(Qt::Vertical);
+  paintLayout->addWidget(slider);
+  slider->setMinimum(-10);
+  slider->setMaximum(10);
+  slider->setSingleStep(1);
+  connect(slider, &QSlider::valueChanged, this, [this] (int value) {
+    m_EntityStatus.translateY = static_cast<GLfloat>(value) * 5.0f;
+  });
 
   {
     QHBoxLayout *meshChooseLayout = new QHBoxLayout();
@@ -282,7 +294,7 @@ TesterWidget::TesterWidget()
   }
 
   QSize size = sizeHint();
-  setFixedSize(size.width() + 200, size.height());
+  setFixedSize(size.width() + 200, size.height() + 100);
 }
 
 TesterWidget::~TesterWidget() {
