@@ -306,6 +306,7 @@ TesterWidget::TesterWidget()
 
         exportWindow->setPlainText(
           QStringLiteral(
+            "// CWGLX format\n"
             "CW_DEFINE_MATERIAL(CustomMaterial,\n"
             "                   %1f, %2f, %3f, 1.0f,\n"
             "                   %4f, %5f, %6f, 1.0f,\n"
