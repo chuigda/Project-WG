@@ -9,6 +9,7 @@
 #include <QTimer>
 #include <QDoubleSpinBox>
 #include <QPushButton>
+#include <QPlainTextEdit>
 #include "cwglx/MeshLoader.h"
 
 static QDoubleSpinBox *CreateColorSpinBox(QHBoxLayout *layout) {
@@ -197,6 +198,8 @@ TesterWidget::TesterWidget()
     lastLayout->addStretch();
     QPushButton *confirmButton = new QPushButton("确认");
     lastLayout->addWidget(confirmButton);
+    QPushButton *exportButton = new QPushButton("导出");
+    lastLayout->addWidget(exportButton);
 
     auto applySelectedMaterial = [=, this] (int index) {
       switch (index) {
@@ -287,6 +290,41 @@ TesterWidget::TesterWidget()
 
         m_CustomMaterial.shininess = static_cast<GLfloat>(shininess->value());
         m_CurrentMaterial = &m_CustomMaterial;
+      }
+    );
+
+    connect(
+      exportButton,
+      &QPushButton::clicked,
+      [=, this] {
+        QPlainTextEdit *exportWindow = new QPlainTextEdit(this);
+        exportWindow->setWindowTitle("导出");
+        exportWindow->setReadOnly(true);
+        exportWindow->setWindowFlags(Qt::Window);
+        exportWindow->setAttribute(Qt::WA_DeleteOnClose);
+        exportWindow->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
+
+        exportWindow->setPlainText(
+          QStringLiteral(
+            "CW_DEFINE_MATERIAL(CustomMaterial,\n"
+            "                   %1f, %2f, %3f, 1.0f,\n"
+            "                   %4f, %5f, %6f, 1.0f,\n"
+            "                   %7f, %8f, %9f, 1.0f,\n"
+            "                   %10f)"
+          ).arg(ambientR->value())
+           .arg(ambientG->value())
+           .arg(ambientB->value())
+           .arg(diffuseR->value())
+           .arg(diffuseG->value())
+           .arg(diffuseB->value())
+           .arg(specularR->value())
+           .arg(specularG->value())
+           .arg(specularB->value())
+           .arg(shininess->value())
+        );
+        exportWindow->setFixedSize(400, 300);
+
+        exportWindow->show();
       }
     );
 
