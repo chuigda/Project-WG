@@ -10,6 +10,8 @@ FILEVERSION     WG_PRODUCT_VERSION
 PRODUCTVERSION  WG_PRODUCT_VERSION
 FILEOS          VOS_NT
 FILETYPE        VFT_APP
+FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+FILEFLAGS       VS_FF_PRIVATEBUILD
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
@@ -23,6 +25,7 @@ BEGIN
             VALUE "FileVersion", WG_PRODUCT_VERSION_STRING
             VALUE "OriginalFilename", "Project-WG.exe"
             VALUE "InternalName", "Project-WG.exe"
+            VALUE "PrivateBuild", "Specially built for Mio/UPhoenix"
         END
     END
     BLOCK "VarFileInfo"
