@@ -6,31 +6,10 @@
 
 std::pair<QDialog::DialogCode, LicensePresenter*>
 PrecheckLicense() {
-  QString preamble = cw::ReadToString(":/PREAMBLE");
-  QString agplText = cw::ReadToString(":/LICENSE");
-  QString ccText = cw::ReadToString(":/LICENSE-CC-BY-NC-SA");
-  QString agplBrief = cw::ReadToString(":/AGPL-BRIEF");
-  QString ccBrief = cw::ReadToString(":/CC-BY-NC-SA-BRIEF");
+  QString mioText = cw::ReadToString(":/LICENSE-MIO-PHOENIX");
 
   LicensePresenter *presenter = new LicensePresenter();
-  presenter->AddLicense(LicenseContent {
-    "前言",
-    preamble
-  });
-
-  presenter->AddLicense(LicenseContent {
-    "GNU Affero 通用公共许可证 第三版",
-    agplText,
-    agplBrief,
-    "https://www.gnu.org/licenses/agpl-3.0.zh-cn.html"
-  });
-
-  presenter->AddLicense(LicenseContent {
-    "署名-非商业性使用-相同方式共享 4.0 国际",
-    ccText,
-    ccBrief,
-    "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"
-  });
+  presenter->AddLicense(LicenseContent { "缪/菲尼克斯 特别许可证", mioText });
 
   if (QFile::exists("LICENSE.AGREED")) {
     return std::make_pair(QDialog::Accepted, presenter);
@@ -53,10 +32,6 @@ int main(int argc, char *argv[]) {
   bool startHideGL = !startHideGLEnv.trimmed().isEmpty();
 
   auto [agreed, presenter] = PrecheckLicense();
-  if (agreed != QDialog::Accepted) {
-    delete presenter;
-    return 0;
-  }
 
   presenter->RequireAgreement(false);
   ControlPanel panel { presenter, startHideGL };

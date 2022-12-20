@@ -53,8 +53,7 @@ private:
   QPlainTextEdit *m_BriefText;
   QPlainTextEdit *m_LicenseText;
   QLabel *m_LicenseLink;
-  QPushButton *m_DisagreeButton;
-  QPushButton *m_AgreeButton;
+  QPushButton *m_OkButton;
 };
 
 #endif
