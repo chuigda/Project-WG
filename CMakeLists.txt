@@ -32,6 +32,11 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 # if we are using Windows
 if (WIN32)
+    # more specifically, if we are using MSVC
+    if (MSVC)
+        message(FATAL_ERROR "This program was not designed as MSVC compatible")
+    endif()
+
     # add definition
     add_definitions(-DCW_WIN32)
 

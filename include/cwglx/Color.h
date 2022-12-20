@@ -113,6 +113,14 @@ public:
     return m_Repr[3];
   }
 
+  constexpr inline void SetRed(GLfloat red) noexcept { m_Repr[0] = red; }
+
+  constexpr inline void SetGreen(GLfloat red) noexcept { m_Repr[1] = red; }
+
+  constexpr inline void SetBlue(GLfloat red) noexcept { m_Repr[2] = red; }
+
+  constexpr inline void SetAlpha(GLfloat red) noexcept { m_Repr[3] = red; }
+
   [[nodiscard]]
   constexpr inline std::array<GLfloat, 4> const& GetRepr() const noexcept {
     return m_Repr;

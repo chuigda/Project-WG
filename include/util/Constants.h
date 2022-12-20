@@ -28,6 +28,12 @@ constexpr inline std::size_t countof(T const (&unused)[N]) noexcept {
   return N;
 }
 
+template <Wife T, std::size_t N>
+__attribute__((always_inline))
+constexpr inline std::size_t countof(std::array<T, N> const&) noexcept {
+  return N;
+}
+
 template <Wife T>
 __attribute__((always_inline))
 constexpr inline T FlipEnum(T input) noexcept {

@@ -32,7 +32,8 @@ static void ProcessMeshLine(PlainTriangles* triangles,
                             std::vector<Vertex>& verticesPool,
                             const QString& meshLine,
                             const char *meshFile,
-                            size_t lineNo)
+                            size_t lineNo,
+                            double ratio)
 {
   if (meshLine.isEmpty() || meshLine.startsWith('#')) {
     return;
@@ -59,7 +60,7 @@ static void ProcessMeshLine(PlainTriangles* triangles,
     PARSE_DOUBLE(y, parts[2], success)
     PARSE_DOUBLE(z, parts[3], success)
 
-    verticesPool.emplace_back(x, y, z);
+    verticesPool.emplace_back(x * ratio, y * ratio, z * ratio);
   } else if (parts[0] == "f") {
     if (parts.length() != 4) {
       qWarning() << "error processing file:"
@@ -97,7 +98,7 @@ static void ProcessMeshLine(PlainTriangles* triangles,
 #undef PARSE_DOUBLE
 #undef PARSE_INT
 
-std::unique_ptr<PlainTriangles> LoadMesh(const char *meshFile) {
+std::unique_ptr<PlainTriangles> LoadMesh(const char *meshFile, double ratio) {
   QFile file(meshFile);
   if (!file.open(QIODevice::ReadOnly)) {
     qWarning() << "cannot open mesh file:" << meshFile;
@@ -111,7 +112,7 @@ std::unique_ptr<PlainTriangles> LoadMesh(const char *meshFile) {
   std::size_t lineNo = 1;
   while (!textStream.atEnd()) {
     QString line = textStream.readLine().trimmed();
-    ProcessMeshLine(triangles.get(), verticesPool, line, meshFile, lineNo);
+    ProcessMeshLine(triangles.get(), verticesPool, line, meshFile, lineNo, ratio);
     lineNo += 1;
   }
 

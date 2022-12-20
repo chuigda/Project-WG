@@ -14,7 +14,7 @@ class PaintWidget final : public QOpenGLWidget, public GLFunctions {
 public:
   explicit PaintWidget(EntityStatus *entityStatus,
                        cw::Drawable **chosenMesh,
-                       cw::Material const**chosenMaterial);
+                       cw::StandardMaterial const**chosenMaterial);
 
   void RunWithGLContext(std::function<void(void)> const& f);
 
@@ -32,7 +32,7 @@ protected:
 private:
   EntityStatus *m_EntityStatus;
   cw::Drawable* *m_ChosenMesh;
-  cw::Material const* *m_ChosenMaterial;
+  cw::StandardMaterial const* *m_ChosenMaterial;
 
   std::unique_ptr<cw::Light> m_Light;
   std::unique_ptr<cw::Light> m_Light2;

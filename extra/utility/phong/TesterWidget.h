@@ -5,6 +5,8 @@
 #include "cwglx/drawable/PlainTriangles.h"
 
 struct TestMesh {
+  std::unique_ptr<cw::PlainTriangles> teapotMesh;
+
   std::unique_ptr<cw::PlainTriangles> monitorMesh;
   std::unique_ptr<cw::PlainTriangles> monitorIntakeMesh;
 
@@ -43,9 +45,11 @@ private:
   EntityStatus m_EntityStatus;
   cw::StandardMaterial m_CustomMaterial;
   cw::Drawable* m_CurrentMesh;
-  cw::Material const* m_CurrentMaterial;
+  cw::StandardMaterial const* m_CurrentMaterial;
 
   PaintWidget *m_PaintWidget;
+
+  GLfloat rotation;
 };
 
 #endif // PROJECT_WG_TESTER_WIDGET_H

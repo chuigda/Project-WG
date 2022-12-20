@@ -6,7 +6,7 @@
 
 namespace cw {
 
-std::unique_ptr<PlainTriangles> LoadMesh(const char *meshFile);
+std::unique_ptr<PlainTriangles> LoadMesh(const char *meshFile, double ratio = 1.0);
 
 } // namespace cw
 

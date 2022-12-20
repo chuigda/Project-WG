@@ -8,7 +8,7 @@
 
 PaintWidget::PaintWidget(EntityStatus *entityStatus,
                          cw::Drawable **chosenMesh,
-                         cw::Material const**chosenMaterial)
+                         cw::StandardMaterial const**chosenMaterial)
   : m_EntityStatus(entityStatus),
     m_ChosenMesh(chosenMesh),
     m_ChosenMaterial(chosenMaterial),
@@ -17,9 +17,16 @@ PaintWidget::PaintWidget(EntityStatus *entityStatus,
   setMinimumSize(320, 320);
 
   QTimer *timer = new QTimer(this);
-  timer->setInterval(1000 / 30);
+  timer->setTimerType(Qt::PreciseTimer);
+  timer->setInterval(1000 / 60);
   timer->start();
-  QObject::connect(timer, &QTimer::timeout, this, [this] { this->update(); });
+  QObject::connect(timer, &QTimer::timeout, this, [this] {
+    m_EntityStatus->entityRotateY += 1.25f;
+    if (m_EntityStatus->entityRotateY >= 360.0f) {
+      m_EntityStatus->entityRotateY = 0.0f;
+    }
+    this->update();
+  });
 }
 
 void PaintWidget::RunWithGLContext(const std::function<void(void)> &f) {

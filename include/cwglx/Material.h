@@ -38,11 +38,12 @@ public:
   [[nodiscard]] bool IsTransparent() const noexcept final;
   void Apply(GLFunctions *f) const noexcept final;
 
+  RGBAColorF ambient;
+  RGBAColorF diffuse;
+  RGBAColorF specular;
+  GLfloat shininess;
+
 private:
-  RGBAColorF m_Ambient;
-  RGBAColorF m_Diffuse;
-  RGBAColorF m_Specular;
-  GLfloat m_Shininess;
   GLenum m_ColorDimension;
 };
 
