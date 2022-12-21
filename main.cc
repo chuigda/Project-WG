@@ -32,7 +32,9 @@ PrecheckLicense() {
     "https://creativecommons.org/licenses/by-sa/4.0/deed.zh"
   });
 
-  if (QFile::exists("LICENSE.AGREED")) {
+  QString forceReadLicenseEnv = QString::fromLocal8Bit(qgetenv("FORCE_READ_LICENSE"));
+  if (QFile::exists("LICENSE.AGREED") &&
+      forceReadLicenseEnv.trimmed().isEmpty()) {
     return std::make_pair(QDialog::Accepted, presenter);
   }
 
