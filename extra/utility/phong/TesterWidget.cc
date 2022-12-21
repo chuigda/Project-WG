@@ -210,13 +210,14 @@ TesterWidget::TesterWidget()
 
         case 4: m_CurrentMaterial = cw::GetBlackPlasticMaterial(); break;
         case 5: m_CurrentMaterial = cw::GetSteel15N20Material(); break;
+        case 6: m_CurrentMaterial = cw::GetPinkPlasticMaterial(); break;
 
-        case 6: m_CurrentMaterial = cw::GetBronzeMaterial(); break;
-        case 7: m_CurrentMaterial = cw::GetPolishedBronzeMaterial(); break;
-        case 8: m_CurrentMaterial = cw::GetCobreMaterial(); break;
-        case 9: m_CurrentMaterial = cw::GetPolishedCobreMaterial(); break;
-        case 10: m_CurrentMaterial = cw::GetGoldMaterial(); break;
-        case 11: m_CurrentMaterial = cw::GetPolishedGoldMaterial(); break;
+        case 7: m_CurrentMaterial = cw::GetBronzeMaterial(); break;
+        case 8: m_CurrentMaterial = cw::GetPolishedBronzeMaterial(); break;
+        case 9: m_CurrentMaterial = cw::GetCobreMaterial(); break;
+        case 10: m_CurrentMaterial = cw::GetPolishedCobreMaterial(); break;
+        case 11: m_CurrentMaterial = cw::GetGoldMaterial(); break;
+        case 12: m_CurrentMaterial = cw::GetPolishedGoldMaterial(); break;
 
         default: Q_UNREACHABLE();
       }
@@ -244,6 +245,7 @@ TesterWidget::TesterWidget()
 
       comboBox->addItem("(自定) 黑色塑料");
       comboBox->addItem("(自定) 15N20钢");
+      comboBox->addItem("(自定) 粉色塑料");
 
       comboBox->addItem("(不推荐) 青铜");
       comboBox->addItem("(不推荐) 磨过的青铜");
@@ -312,16 +314,16 @@ TesterWidget::TesterWidget()
             "                   %4f, %5f, %6f, 1.0f,\n"
             "                   %7f, %8f, %9f, 1.0f,\n"
             "                   %10f)"
-          ).arg(ambientR->value())
-           .arg(ambientG->value())
-           .arg(ambientB->value())
-           .arg(diffuseR->value())
-           .arg(diffuseG->value())
-           .arg(diffuseB->value())
-           .arg(specularR->value())
-           .arg(specularG->value())
-           .arg(specularB->value())
-           .arg(shininess->value())
+          ).arg(ambientR->value(), 0, 'f', 2)
+           .arg(ambientG->value(), 0, 'f', 2)
+           .arg(ambientB->value(), 0, 'f', 2)
+           .arg(diffuseR->value(), 0, 'f', 2)
+           .arg(diffuseG->value(), 0, 'f', 2)
+           .arg(diffuseB->value(), 0, 'f', 2)
+           .arg(specularR->value(), 0, 'f', 2)
+           .arg(specularG->value(), 0, 'f', 2)
+           .arg(specularB->value(), 0, 'f', 2)
+           .arg(shininess->value(), 0, 'f', 2)
         );
         exportWindow->setFixedSize(400, 300);
 

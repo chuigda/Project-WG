@@ -82,4 +82,10 @@ CW_DEFINE_MATERIAL(Steel15N20,
                    0.774597f, 0.774597f, 0.774597f, 1.0f,
                    76.8f)
 
+CW_DEFINE_MATERIAL(PinkPlastic,
+                   0.2f, 0.2f, 0.2f, 1.0f,
+                   0.63f, 0.47f, 0.5f, 1.0f,
+                   0.7f, 0.7f, 0.7f, 1.0f,
+                   32.0f)
+
 #undef CW_DEFINE_MATERIAL
