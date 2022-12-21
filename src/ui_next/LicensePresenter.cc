@@ -63,10 +63,12 @@ LicensePresenter::LicensePresenter(QWidget *parent)
   m_LicenseLink->setTextInteractionFlags(Qt::TextBrowserInteraction);
   m_LicenseLink->setOpenExternalLinks(true);
 
-  m_OkButton = new QPushButton("好耶！");
+  m_DisagreeButton = new QPushButton("不同意");
+  m_AgreeButton = new QPushButton("同意");
   QHBoxLayout *lastRow = new QHBoxLayout();
+  lastRow->addWidget(m_DisagreeButton);
   lastRow->addStretch();
-  lastRow->addWidget(m_OkButton);
+  lastRow->addWidget(m_AgreeButton);
 
   QVBoxLayout *mainLayout = new QVBoxLayout();
   mainLayout->addLayout(firstRow);
@@ -80,7 +82,9 @@ LicensePresenter::LicensePresenter(QWidget *parent)
           this, &LicensePresenter::PrevLicense);
   connect(m_NextLicenseButton, &QPushButton::clicked,
           this, &LicensePresenter::NextLicense);
-  connect(m_OkButton, &QPushButton::clicked,
+  connect(m_DisagreeButton, &QPushButton::clicked,
+          this, &QDialog::reject);
+  connect(m_AgreeButton, &QPushButton::clicked,
           this, &QDialog::accept);
 }
 
@@ -119,7 +123,7 @@ void LicensePresenter::DisplayCurrentLicense() {
     );
   }
 
-  m_OkButton->setEnabled(m_CurrentLicense + 1 == m_Licenses.length());
+  m_AgreeButton->setEnabled(m_CurrentLicense + 1 == m_Licenses.length());
 }
 
 void LicensePresenter::showEvent(QShowEvent *) {
@@ -151,8 +155,12 @@ void LicensePresenter::NextLicense() {
 
 void LicensePresenter::RequireAgreement(bool required) {
   if (required) {
-    m_OkButton->setVisible(true);
+    m_AgreeButton->setVisible(true);
+    m_DisagreeButton->setVisible(true);
+    m_AgreeButton->setVisible(true);
   } else {
-    m_OkButton->setVisible(false);
+    m_AgreeButton->setVisible(false);
+    m_DisagreeButton->setVisible(false);
+    m_AgreeButton->setVisible(false);
   }
 }

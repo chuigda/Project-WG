@@ -10,6 +10,8 @@
 #include <QDoubleSpinBox>
 #include <QPushButton>
 #include <QPlainTextEdit>
+#include <QApplication>
+#include <QClipboard>
 #include "cwglx/MeshLoader.h"
 
 static QDoubleSpinBox *CreateColorSpinBox(QHBoxLayout *layout) {
@@ -328,13 +330,22 @@ TesterWidget::TesterWidget()
         exportWindow->setFixedSize(400, 300);
 
         exportWindow->show();
+
+        // Copy to clipboard
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(exportWindow->toPlainText());
       }
     );
 
     applySelectedMaterial(comboBox->currentIndex());
   }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "VirtualCallInCtorOrDtor"
+  // This should be safe since base class `QWidget` has been initialised,
+  // and we did not reimplement `sizeHint`
   QSize size = sizeHint();
+#pragma clang diagnostic pop
   setFixedSize(size.width() + 200, size.height() + 100);
 }
 

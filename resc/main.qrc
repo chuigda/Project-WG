@@ -4,6 +4,10 @@
         <file>eye.9.png</file>
         <file>half-face.png</file>
         <file>half-face-mouth-open.png</file>
-        <file>../LICENSE-MIO-PHOENIX</file>
+        <file>../LICENSE</file>
+        <file>../LICENSE-CC-BY-SA</file>
+        <file>PREAMBLE</file>
+        <file>AGPL-BRIEF</file>
+        <file>CC-BY-SA-BRIEF</file>
     </qresource>
 </RCC>
