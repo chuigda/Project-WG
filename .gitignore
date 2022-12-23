@@ -1,4 +1,4 @@
-# This file is used to ignore files which are generated
+﻿# This file is used to ignore files which are generated
 # ----------------------------------------------------------------------------
 
 *~
@@ -37,6 +37,7 @@ Thumbs.db
 # qtcreator generated files
 *.pro.user*
 *.user*
+Users*AppData*
 
 # xemacs temporary files
 *.flc

@@ -53,6 +53,7 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
       if (toggled) {
         m_VTSTrackControl->show();
       } else {
+        m_VTSTrackControl->StopTracking();
         m_VTSTrackControl->hide();
       }
       setFixedSize(minimumSizeHint());

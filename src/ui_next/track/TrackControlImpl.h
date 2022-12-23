@@ -23,14 +23,12 @@ signals:
 #pragma clang diagnostic pop
 
 public slots:
-  void DisplayVTSVersion(const QString& version);
   void HandleError(const QString& error);
   void HandleHeadStatus(wgc0310::HeadStatus headStatus);
 
 private:
   wgc0310::HeadStatus *m_HeadStatus;
   QThread *m_WorkerThread;
-  QLabel *m_VTSVersionLabel;
 };
 
 struct OSFTrackParameter2 {

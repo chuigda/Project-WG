@@ -92,7 +92,7 @@ set_property(SOURCE ${CWGLX_SOURCES} PROPERTY SKIP_AUTOMOC ON)
 
 qt_add_library(CWGLX ${CWGLX_SOURCES} ${CWGLX_RESC})
 
-target_link_libraries(CWGLX PUBLIC
+target_link_libraries(CWGLX PRIVATE
                       Qt6::Widgets
                       Qt6::OpenGLWidgets)
 
@@ -114,7 +114,7 @@ set_property(SOURCE ${CWUTIL_SOURCES} PROPERTY SKIP_AUTOMOC ON)
 
 qt_add_library(CWUtil ${CWUTIL_SOURCES} ${CWUTIL_RESC})
 
-target_link_libraries(CWUtil PUBLIC Qt6::Core)
+target_link_libraries(CWUtil PRIVATE Qt6::Core)
 
 # Main executable
 set(PROJECT_SOURCES
@@ -180,7 +180,7 @@ set(PROJECT_SOURCES
 include_directories(include)
 
 qt_add_executable(Project-WG MANUAL_FINALIZATION ${PROJECT_SOURCES} ${PROJECT_WG_RESC})
-target_link_libraries(Project-WG PUBLIC
+target_link_libraries(Project-WG PRIVATE
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
                       Qt6::Multimedia
@@ -205,7 +205,7 @@ qt_add_executable(PhongTester MANUAL_FINALIZATION
                   resc/phong-tester.qrc
                   ${PHONG_TESTER_RESC})
 
-target_link_libraries(PhongTester PUBLIC
+target_link_libraries(PhongTester PRIVATE
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
                       CWGLX
@@ -217,14 +217,14 @@ qt_finalize_executable(PhongTester)
 
 # Attachments
 qt_add_library(TrivialAttachment SHARED extra/attachments/TrivialAttachment.cc)
-target_link_libraries(TrivialAttachment PUBLIC
+target_link_libraries(TrivialAttachment PRIVATE
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
                       CWGLX)
 
 qt_add_library(Emitter SHARED extra/attachments/Emitter/Emitter.cc
                               extra/attachments/Emitter/emitter.qrc)
-target_link_libraries(Emitter PUBLIC
+target_link_libraries(Emitter PRIVATE
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
                       CWGLX
@@ -232,14 +232,14 @@ target_link_libraries(Emitter PUBLIC
 
 # Animations
 qt_add_library(TrivialAnimation SHARED extra/animations/TrivialAnimation.cc)
-target_link_libraries(TrivialAnimation PUBLIC
+target_link_libraries(TrivialAnimation PRIVATE
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
                       CWGLX)
 
 qt_add_library(Taunter SHARED extra/animations/Taunter/Taunter.cc
                               extra/animations/Taunter/taunter.qrc)
-target_link_libraries(Taunter PUBLIC
+target_link_libraries(Taunter PRIVATE
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
                       CWGLX

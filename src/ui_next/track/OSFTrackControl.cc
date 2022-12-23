@@ -161,7 +161,7 @@ void OSFTrackWorker::HandleData() {
     wgc0310::HeadStatus pose {
       .rotationX = facePacket->euler[0],
       .rotationY = facePacket->euler[1],
-      .rotationZ = facePacket->euler[2],
+      .rotationZ = -facePacket->euler[2],
       .leftEye = facePacket->eyeLeft,
       .rightEye = facePacket->eyeRight,
       .mouthStatus = facePacket->mouthOpen > 0.05f ?
