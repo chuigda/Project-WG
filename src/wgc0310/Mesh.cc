@@ -75,6 +75,7 @@ void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
   LOAD_MESH_MTL("./model/wheel.mesh", blackPlastic, wheel)
   LOAD_MESH_MTL("./model/monitor.mesh", plastic, monitor)
   LOAD_MESH_MTL("./model/monitor-intake.mesh", chrome, monitorIntake)
+  LOAD_LINE_MESH("./model/line-mesh/monitor.mesh", monitorStroke)
 
   LOAD_MESH_MTL("./model/chest-box.mesh", plastic, chestBox)
   LOAD_LINE_MESH("./model/line-mesh/chest-box.mesh", chestBoxStroke)

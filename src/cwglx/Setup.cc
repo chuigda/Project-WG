@@ -20,6 +20,8 @@ void SetupPreferredSettings(GLFunctions *f) noexcept {
   f->glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
   f->glShadeModel(GL_SMOOTH);
 
+  f->glLineWidth(1.5f);
+
   f->glEnable(GL_LIGHTING);
   f->glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
   f->glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);

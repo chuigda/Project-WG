@@ -237,8 +237,10 @@ void GLWindow::paintGL() {
 
     glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
     glDisable(GL_LIGHTING);
-    glLineWidth(1.5f);
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, 0.001f);
     m_Mesh.chestBoxStroke->Draw(this);
+    glPopMatrix();
     glEnable(GL_LIGHTING);
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
@@ -259,6 +261,15 @@ void GLWindow::paintGL() {
     glTranslatef(0.0f, 0.375f, 0.0f);
     m_Mesh.monitor->Draw(this);
     m_Mesh.monitorIntake->Draw(this);
+
+    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+    glDisable(GL_LIGHTING);
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, 0.001f);
+    m_Mesh.monitorStroke->Draw(this);
+    glPopMatrix();
+    glEnable(GL_LIGHTING);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     glTranslatef(0.0f, 9.25f + 1.875f, 4.5f);
     m_Screen->Draw(this);
