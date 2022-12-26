@@ -9,8 +9,6 @@
 
 namespace cw {
 
-class TriangleGen;
-
 class PlainTriangles final : public Drawable {
 public:
   explicit PlainTriangles(bool computeNormal = true);
@@ -29,7 +27,6 @@ public:
 
   void AddTriangle(const Triangle& triangle);
   void AddTriangles(const Triangle *triangles, std::size_t count);
-  void AddTriangles(TriangleGen *generator);
 
   void PreInitialize(GLFunctions *f) const;
 

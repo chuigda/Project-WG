@@ -1,7 +1,5 @@
 #include "cwglx/drawable/PlainTriangles.h"
-
 #include "cwglx/GLImpl.h"
-#include "cwglx/drawable/TriangleGen.h"
 
 namespace cw {
 
@@ -133,27 +131,6 @@ void PlainTriangles::AddTriangles(const Triangle *triangles,
 
   for (std::size_t i = 0; i < count; i++) {
     const Triangle& triangle = triangles[i];
-    AddTriangleInner(triangle,
-                     SecretInternalsDoNotUseOrYouWillBeFired);
-  }
-}
-
-void PlainTriangles::AddTriangles(TriangleGen *generator) {
-  if (m_VBOInitialized) {
-    qWarning() << "PlainTriangles::AddTriangles():"
-               << "VBO already initialized, any newly added triangles simply"
-               << "wont draw!";
-    return;
-  }
-
-  if (m_VBODeleted) {
-    qWarning() << "PlainTriangles::AddTriangles():"
-               << "VBO deleted, any newly added triangles simply wont draw!";
-    return;
-  }
-
-  while (generator->HasNextTriangle()) {
-    const auto triangle = generator->NextTriangle();
     AddTriangleInner(triangle,
                      SecretInternalsDoNotUseOrYouWillBeFired);
   }
