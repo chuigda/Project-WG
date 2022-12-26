@@ -192,7 +192,7 @@ void GLWindow::paintGL() {
   glScalef(0.01f, 0.01f, 0.01f);
 
   if (m_StatusExtra->customClearColor) {
-    cw::RGBAColorF clearColor{m_StatusExtra->clearColor};
+    cw::RGBAColorF clearColor { m_StatusExtra->clearColor };
     glClearColor(clearColor.GetRed(),
                  clearColor.GetGreen(),
                  clearColor.GetBlue(),
@@ -201,6 +201,10 @@ void GLWindow::paintGL() {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   }
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  if (m_StatusExtra->stroke) {
+    glLineWidth(m_StatusExtra->strokeLineWidth);
+  }
 
   m_Light->Enable(this);
   m_Light2->Enable(this);
@@ -235,14 +239,18 @@ void GLWindow::paintGL() {
     m_Mesh.power->Draw(this);
     m_Mesh.powerPin->Draw(this);
 
-    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-    glDisable(GL_LIGHTING);
-    glPushMatrix();
-    glTranslatef(0.0f, 0.0f, 0.001f);
-    m_Mesh.chestBoxStroke->Draw(this);
-    glPopMatrix();
-    glEnable(GL_LIGHTING);
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    if (m_StatusExtra->stroke) {
+      glColor4fv(m_StatusExtra->strokeColor.GetRawRepr().data());
+      glDisable(GL_LIGHTING);
+      glPushMatrix();
+      glScalef(m_StatusExtra->strokeAdjustment,
+               m_StatusExtra->strokeAdjustment,
+               m_StatusExtra->strokeAdjustment);
+      m_Mesh.chestBoxStroke->Draw(this);
+      glPopMatrix();
+      glEnable(GL_LIGHTING);
+      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    }
 
     glPushMatrix();
     DrawArm(m_BodyStatus->rightArmStatus, 1.0f, &rightBigArm, &rightSmallArm);
@@ -262,14 +270,18 @@ void GLWindow::paintGL() {
     m_Mesh.monitor->Draw(this);
     m_Mesh.monitorIntake->Draw(this);
 
-    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-    glDisable(GL_LIGHTING);
-    glPushMatrix();
-    glTranslatef(0.0f, 0.0f, 0.001f);
-    m_Mesh.monitorStroke->Draw(this);
-    glPopMatrix();
-    glEnable(GL_LIGHTING);
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    if (m_StatusExtra->stroke) {
+      glColor4fv(m_StatusExtra->strokeColor.GetRawRepr().data());
+      glDisable(GL_LIGHTING);
+      glPushMatrix();
+      glScalef(m_StatusExtra->strokeAdjustment,
+               m_StatusExtra->strokeAdjustment,
+               m_StatusExtra->strokeAdjustment);
+      m_Mesh.monitorStroke->Draw(this);
+      glPopMatrix();
+      glEnable(GL_LIGHTING);
+      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    }
 
     glTranslatef(0.0f, 9.25f + 1.875f, 4.5f);
     m_Screen->Draw(this);

@@ -5,10 +5,15 @@
 #include "cwglx/Color.h"
 
 struct StatusExtra {
-  bool customClearColor = false;
-  cw::RGBAColor clearColor { 0, 0, 0, 255 };
-
   bool stayOnTop = false;
+
+  bool customClearColor = false;
+  cw::RGBAColorF clearColor { 0.0f, 0.0f, 0.0f, 1.0f };
+
+  bool stroke = false;
+  cw::RGBAColorF strokeColor { 0.0f, 0.0f, 0.0f, 1.0f };
+  GLfloat strokeLineWidth = 1.0f;
+  GLfloat strokeAdjustment = 0.001f;
 };
 
 class ExtraControl final : public CloseSignallingWidget {

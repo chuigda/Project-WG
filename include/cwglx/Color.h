@@ -127,6 +127,16 @@ public:
   }
 
   [[nodiscard]]
+  constexpr inline std::array<GLfloat, 4>& GetRawRepr() noexcept {
+    return m_Repr;
+  }
+
+  [[nodiscard]]
+  constexpr inline std::array<GLfloat, 4> const& GetRawRepr() const noexcept {
+    return m_Repr;
+  }
+
+  [[nodiscard]]
   constexpr inline bool IsTransparent() const noexcept {
     return m_Repr[3] <= 0.99;
   }
