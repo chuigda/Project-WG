@@ -228,10 +228,12 @@ void GLWindow::paintGL() {
 
   for (std::size_t i = 0; i < 10; i++) {
     m_Mesh.waist->Draw(this);
+    DrawStroked(m_Mesh.waistStroke);
     glTranslatef(0.0f, 1.0f, 0.0f);
     glRotatef(m_HeadStatus->rotationZ / 10.0f, 0.0f, 0.0f, 1.0f);
     glRotatef(m_HeadStatus->rotationX / 10.0f, 1.0f, 0.0f, 0.0f);
     m_Mesh.abdomen->Draw(this);
+    DrawStroked(m_Mesh.abdomenStroke);
     glTranslatef(0.0f, 1.0f, 0.0f);
   }
 
@@ -419,6 +421,7 @@ void GLWindow::DrawArm(const wgc0310::ArmStatus &armStatus,
   glRotatef(coeff * armStatus.rotation[0], 1.0f, 0.0f, 0.0f);
   m_Mesh.shoulder->Draw(this);
   m_Mesh.shoulderPlate->Draw(this);
+  DrawStroked(m_Mesh.shoulderStroke);
 
   glTranslatef(4.75, 0.0f, 0.0f);
   glRotatef(armStatus.rotation[1] / 2.0f, 0.0f, 0.0f, 1.0f);
@@ -443,11 +446,13 @@ void GLWindow::DrawArm(const wgc0310::ArmStatus &armStatus,
   *smallArmMat = cw::RawMatrix::GetFromContext(this);
   m_Mesh.smallArm->Draw(this);
   m_Mesh.smallArmCover->Draw(this);
+  DrawStroked(m_Mesh.smallArmStroke);
 
   glTranslatef(25.0f, 0.0f, 0.0f);
   glRotatef(coeff * armStatus.rotation[4], 0.0f, 0.0f, 1.0f);
   m_Mesh.claw->Draw(this);
   m_Mesh.clawCover->Draw(this);
+  DrawStroked(m_Mesh.clawStroke);
 }
 
 void GLWindow::DrawEye(float top, float bottom, float left, float right) {

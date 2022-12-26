@@ -34,6 +34,8 @@ public:
   // 腹部模型
   cw::Drawable const* abdomen;
   cw::Drawable const* waist;
+  cw::Drawable const* abdomenStroke;
+  cw::Drawable const* waistStroke;
 
   // 肩部模型
   cw::Drawable const* shoulder;
@@ -50,9 +52,12 @@ public:
 
   cw::Drawable const* smallArm;
   cw::Drawable const* smallArmCover;
+  cw::Drawable const* smallArmStroke;
+
   cw::Drawable const* wheelSmall;
   cw::Drawable const* claw;
   cw::Drawable const* clawCover;
+  cw::Drawable const* clawStroke;
 };
 
 } // namespace wgc0310

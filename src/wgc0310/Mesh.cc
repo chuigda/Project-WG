@@ -87,9 +87,12 @@ void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
 
   LOAD_MESH_MTL("./model/abdomen.mesh", blackPlastic, abdomen)
   LOAD_MESH_MTL("./model/waist.mesh", plastic, waist)
+  LOAD_LINE_MESH("./model/line-mesh/abdomen.mesh", abdomenStroke)
+  LOAD_LINE_MESH("./model/line-mesh/waist.mesh", waistStroke)
 
   LOAD_MESH_MTL("./model/shoulder-connector.mesh", plastic, shoulder)
   LOAD_MESH_MTL("./model/shoulder-plate.mesh", chrome, shoulderPlate)
+  LOAD_LINE_MESH("./model/line-mesh/shoulder.mesh", shoulderStroke)
 
   LOAD_MESH_MTL("./model/big-arm.mesh", chrome, bigArm)
   LOAD_MESH_MTL("./model/big-arm-cover.mesh", plastic, bigArmCover)
@@ -100,9 +103,12 @@ void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
 
   LOAD_MESH_MTL("./model/small-arm.mesh", chrome, smallArm)
   LOAD_MESH_MTL("./model/small-arm-cover.mesh", plastic, smallArmCover)
+  LOAD_LINE_MESH("./model/line-mesh/small-arm.mesh", smallArmStroke)
+
   LOAD_MESH_MTL("./model/wheel-small.mesh", blackPlastic, wheelSmall)
   LOAD_MESH_MTL("./model/claw.mesh", steel, claw)
   LOAD_MESH_MTL("./model/claw-cover.mesh", plastic, clawCover)
+  LOAD_LINE_MESH("./model/line-mesh/claw.mesh", clawStroke)
 
   #undef LOAD_MESH_MTL
 }
