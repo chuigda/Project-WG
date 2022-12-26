@@ -237,6 +237,7 @@ void GLWindow::paintGL() {
 
     glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
     glDisable(GL_LIGHTING);
+    glLineWidth(1.5f);
     m_Mesh.chestBoxStroke->Draw(this);
     glEnable(GL_LIGHTING);
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
