@@ -137,6 +137,7 @@ set(PROJECT_SOURCES
     src/ui_next/AboutBox.cc
     src/ui_next/LicensePresenter.cc
     src/ui_next/GLWindow.cc
+    src/ui_next/SearchDialog.cc
     include/ui_next/EntityStatus.h
     include/ui_next/ControlPanel.h
     include/ui_next/GLInfoDisplay.h
@@ -151,6 +152,7 @@ set(PROJECT_SOURCES
     include/ui_next/LicensePresenter.h
     include/ui_next/GLWindow.h
     include/ui_next/CloseSignallingWidget.h
+    include/ui_next/SearchDialog.h
 
     src/wgc0310/Mesh.cc
     src/wgc0310/ScreenGlass.cc

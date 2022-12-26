@@ -13,7 +13,7 @@ struct StatusExtra {
   bool stroke = false;
   cw::RGBAColorF strokeColor { 0.0f, 0.0f, 0.0f, 1.0f };
   GLfloat strokeLineWidth = 1.0f;
-  GLfloat strokeAdjustment = 0.001f;
+  GLfloat strokeAdjustment = 1.001f;
 };
 
 class ExtraControl final : public CloseSignallingWidget {

@@ -6,6 +6,7 @@
 class QLineEdit;
 class QPlainTextEdit;
 class GLWindow;
+class SearchDialog;
 
 class GLInfoDisplay : public CloseSignallingWidget {
   Q_OBJECT
@@ -23,6 +24,7 @@ private:
   QLineEdit *m_Version;
   QLineEdit *m_Renderer;
   QPlainTextEdit *m_Extensions;
+  SearchDialog *m_SearchDialog;
 };
 
 #endif // PROJECT_WG_UINEXT_GLINFO_H

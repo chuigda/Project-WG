@@ -128,13 +128,13 @@ void PlainMesh::AddTriangles(const Triangle *triangles,
 void PlainMesh::AddTriangleImpl(const Triangle &triangle) {
   const auto &[v0, v1, v2] = triangle;
 
-  const Vector v0v1 = v1 - v0;
-  const Vector v1v2 = v2 - v1;
-  const VectorF normal = VectorF::Downscale(v0v1 * v1v2);
-
   for (std::size_t i = 0; i < 3; i++) {
     m_Vertices.push_back(VertexF::Downscale(triangle[i]));
     if (m_ComputeNormal) {
+      const Vector v0v1 = v1 - v0;
+      const Vector v1v2 = v2 - v1;
+      const VectorF normal = VectorF::Downscale(v0v1 * v1v2);
+
       m_NormalVectors.push_back(normal);
     }
   }

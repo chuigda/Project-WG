@@ -40,7 +40,9 @@ GLWindow::GLWindow(EntityStatus const* entityStatus,
     m_MouthTexture(nullptr),
     m_MouthOpenTexture(nullptr),
     m_VolumeIndices {},
-    m_VolumeVBO { 0, 0 }
+    m_VolumeVBO { 0, 0 },
+    m_PerformanceCounter(0),
+    m_PerformanceCounterEnabled(false)
 {
   setWindowTitle("Project-WG - 绘图输出窗口");
   setWindowFlags(Qt::CustomizeWindowHint
@@ -82,6 +84,14 @@ void GLWindow::RunWithGLContext(std::function<void(void)> const& f) {
   f();
   doneCurrent();
 }
+
+void GLWindow::EnablePerformanceCounter() {
+  Q_ASSERT(this->isValid());
+
+  m_PerformanceCounterEnabled = true;
+  glGenQueries(1, &m_PerformanceCounter);
+}
+
 
 void GLWindow::initializeGL() {
   QOpenGLWidget::initializeGL();
@@ -166,6 +176,10 @@ void GLWindow::initializeGL() {
 }
 
 void GLWindow::paintGL() {
+  if (m_PerformanceCounterEnabled) {
+    glBeginQuery(GL_TIME_ELAPSED, m_PerformanceCounter);
+  }
+
   // prepare screen content
   m_Screen->BeginScreenContext(this);
   DrawScreenContent();
@@ -294,6 +308,20 @@ void GLWindow::paintGL() {
   m_Mesh.colorTimerShell->Draw(this);
 
   DrawAttachments(rightBigArm, rightSmallArm, leftBigArm, leftSmallArm);
+
+  if (m_PerformanceCounterEnabled) {
+    glEndQuery(GL_TIME_ELAPSED);
+  }
+}
+
+GLuint64 GLWindow::QueryPerformanceCounter() {
+  Q_ASSERT(this->isValid());
+
+  GLuint64 result = 0;
+  if (m_PerformanceCounterEnabled) {
+    glGetQueryObjectui64v(m_PerformanceCounter, GL_QUERY_RESULT, &result);
+  }
+  return result;
 }
 
 void GLWindow::resizeGL(int w, int h) {

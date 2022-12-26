@@ -38,6 +38,8 @@ public:
   ~GLWindow() final;
 
   void RunWithGLContext(std::function<void(void)> const& f);
+  void EnablePerformanceCounter();
+  GLuint64 QueryPerformanceCounter();
 
 protected:
   void initializeGL() final;
@@ -93,6 +95,8 @@ private:
   std::array<cw::Vertex2DF, 640> m_VolumeVertices;
   std::array<GLuint, 640> m_VolumeIndices;
   std::array<GLuint, 2> m_VolumeVBO;
+  GLuint m_PerformanceCounter;
+  bool m_PerformanceCounterEnabled;
 };
 
 #endif // PROJECT_WG_UINEXT_GLWINDOW_H
