@@ -38,11 +38,16 @@ public:
   // 肩部模型
   cw::Drawable const* shoulder;
   cw::Drawable const* shoulderPlate;
+  cw::Drawable const* shoulderStroke;
 
   // 胳膊模型
   cw::Drawable const* bigArm;
   cw::Drawable const* bigArmCover;
+  cw::Drawable const* bigArmStroke;
+
   cw::Drawable const* bigArmConnector;
+  cw::Drawable const* bigArmConnectorStroke;
+
   cw::Drawable const* smallArm;
   cw::Drawable const* smallArmCover;
   cw::Drawable const* wheelSmall;

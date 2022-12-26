@@ -63,6 +63,7 @@ private:
                cw::RawMatrix *bigArmMat,
                cw::RawMatrix *smallArmMat);
   void DrawEye(float top, float bottom, float left, float right);
+  void DrawStroked(cw::Drawable const* mesh);
 
 private:
   // Internal status

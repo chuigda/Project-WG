@@ -93,7 +93,11 @@ void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
 
   LOAD_MESH_MTL("./model/big-arm.mesh", chrome, bigArm)
   LOAD_MESH_MTL("./model/big-arm-cover.mesh", plastic, bigArmCover)
+  LOAD_LINE_MESH("./model/line-mesh/big-arm.mesh", bigArmStroke)
+
   LOAD_MESH_MTL("./model/big-arm-connector.mesh", steel, bigArmConnector)
+  LOAD_LINE_MESH("./model/line-mesh/big-arm-connector.mesh", bigArmConnectorStroke)
+
   LOAD_MESH_MTL("./model/small-arm.mesh", chrome, smallArm)
   LOAD_MESH_MTL("./model/small-arm-cover.mesh", plastic, smallArmCover)
   LOAD_MESH_MTL("./model/wheel-small.mesh", blackPlastic, wheelSmall)

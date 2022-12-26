@@ -252,19 +252,7 @@ void GLWindow::paintGL() {
     m_Mesh.chestPlate->Draw(this);
     m_Mesh.power->Draw(this);
     m_Mesh.powerPin->Draw(this);
-
-    if (m_StatusExtra->stroke) {
-      glColor4fv(m_StatusExtra->strokeColor.GetRawRepr().data());
-      glDisable(GL_LIGHTING);
-      glPushMatrix();
-      glScalef(m_StatusExtra->strokeAdjustment,
-               m_StatusExtra->strokeAdjustment,
-               m_StatusExtra->strokeAdjustment);
-      m_Mesh.chestBoxStroke->Draw(this);
-      glPopMatrix();
-      glEnable(GL_LIGHTING);
-      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    }
+    DrawStroked(m_Mesh.chestBoxStroke);
 
     glPushMatrix();
     DrawArm(m_BodyStatus->rightArmStatus, 1.0f, &rightBigArm, &rightSmallArm);
@@ -283,19 +271,7 @@ void GLWindow::paintGL() {
     glTranslatef(0.0f, 0.375f, 0.0f);
     m_Mesh.monitor->Draw(this);
     m_Mesh.monitorIntake->Draw(this);
-
-    if (m_StatusExtra->stroke) {
-      glColor4fv(m_StatusExtra->strokeColor.GetRawRepr().data());
-      glDisable(GL_LIGHTING);
-      glPushMatrix();
-      glScalef(m_StatusExtra->strokeAdjustment,
-               m_StatusExtra->strokeAdjustment,
-               m_StatusExtra->strokeAdjustment);
-      m_Mesh.monitorStroke->Draw(this);
-      glPopMatrix();
-      glEnable(GL_LIGHTING);
-      glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    }
+    DrawStroked(m_Mesh.monitorStroke);
 
     glTranslatef(0.0f, 9.25f + 1.875f, 4.5f);
     m_Screen->Draw(this);
@@ -452,10 +428,12 @@ void GLWindow::DrawArm(const wgc0310::ArmStatus &armStatus,
   *bigArmMat = cw::RawMatrix::GetFromContext(this);
   m_Mesh.bigArm->Draw(this);
   m_Mesh.bigArmCover->Draw(this);
+  DrawStroked(m_Mesh.bigArmStroke);
 
   glTranslatef(20.0, 0.0f, 0.0f);
   glRotatef(-1.0f * armStatus.rotation[2], 1.0f, 0.0f, 0.0f);
   m_Mesh.bigArmConnector->Draw(this);
+  DrawStroked(m_Mesh.bigArmConnectorStroke);
 
   glTranslatef(4.5, 0.0f, 0.0f);
   glRotatef(coeff * armStatus.rotation[3] / 2.0f, 0.0f, 0.0f, 1.0f);
@@ -516,4 +494,19 @@ void GLWindow::DrawEye(float top, float bottom, float left, float right) {
     glVertex2f(right, bottom + 7.0f);
   }
   glEnd();
+}
+
+void GLWindow::DrawStroked(const cw::Drawable *mesh) {
+  if (m_StatusExtra->stroke) {
+    glColor4fv(m_StatusExtra->strokeColor.GetRawRepr().data());
+    glDisable(GL_LIGHTING);
+    glPushMatrix();
+    glScalef(m_StatusExtra->strokeAdjustment,
+             m_StatusExtra->strokeAdjustment,
+             m_StatusExtra->strokeAdjustment);
+    mesh->Draw(this);
+    glPopMatrix();
+    glEnable(GL_LIGHTING);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  }
 }
