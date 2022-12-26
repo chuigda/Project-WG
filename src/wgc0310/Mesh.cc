@@ -75,10 +75,10 @@ void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
   LOAD_MESH_MTL("./model/wheel.mesh", blackPlastic, wheel)
   LOAD_MESH_MTL("./model/monitor.mesh", plastic, monitor)
   LOAD_MESH_MTL("./model/monitor-intake.mesh", chrome, monitorIntake)
-  LOAD_LINE_MESH("./model/line-mesh/monitor.mesh", monitorStroke)
+  LOAD_LINE_MESH("./model/stroke/monitor.mesh", monitorStroke)
 
   LOAD_MESH_MTL("./model/chest-box.mesh", plastic, chestBox)
-  LOAD_LINE_MESH("./model/line-mesh/chest-box.mesh", chestBoxStroke)
+  LOAD_LINE_MESH("./model/stroke/chest-box.mesh", chestBoxStroke)
   LOAD_MESH_MTL("./model/chest-plate.mesh", chrome, chestPlate)
   LOAD_MESH_MTL("./model/power.mesh", blackPlastic, power)
   LOAD_MESH_MTL("./model/power-pin.mesh", brass, powerPin)
@@ -87,28 +87,28 @@ void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
 
   LOAD_MESH_MTL("./model/abdomen.mesh", blackPlastic, abdomen)
   LOAD_MESH_MTL("./model/waist.mesh", plastic, waist)
-  LOAD_LINE_MESH("./model/line-mesh/abdomen.mesh", abdomenStroke)
-  LOAD_LINE_MESH("./model/line-mesh/waist.mesh", waistStroke)
+  LOAD_LINE_MESH("./model/stroke/abdomen.mesh", abdomenStroke)
+  LOAD_LINE_MESH("./model/stroke/waist.mesh", waistStroke)
 
   LOAD_MESH_MTL("./model/shoulder-connector.mesh", plastic, shoulder)
   LOAD_MESH_MTL("./model/shoulder-plate.mesh", chrome, shoulderPlate)
-  LOAD_LINE_MESH("./model/line-mesh/shoulder.mesh", shoulderStroke)
+  LOAD_LINE_MESH("./model/stroke/shoulder.mesh", shoulderStroke)
 
   LOAD_MESH_MTL("./model/big-arm.mesh", chrome, bigArm)
   LOAD_MESH_MTL("./model/big-arm-cover.mesh", plastic, bigArmCover)
-  LOAD_LINE_MESH("./model/line-mesh/big-arm.mesh", bigArmStroke)
+  LOAD_LINE_MESH("./model/stroke/big-arm.mesh", bigArmStroke)
 
   LOAD_MESH_MTL("./model/big-arm-connector.mesh", steel, bigArmConnector)
-  LOAD_LINE_MESH("./model/line-mesh/big-arm-connector.mesh", bigArmConnectorStroke)
+  LOAD_LINE_MESH("./model/stroke/big-arm-connector.mesh", bigArmConnectorStroke)
 
   LOAD_MESH_MTL("./model/small-arm.mesh", chrome, smallArm)
   LOAD_MESH_MTL("./model/small-arm-cover.mesh", plastic, smallArmCover)
-  LOAD_LINE_MESH("./model/line-mesh/small-arm.mesh", smallArmStroke)
+  LOAD_LINE_MESH("./model/stroke/small-arm.mesh", smallArmStroke)
 
   LOAD_MESH_MTL("./model/wheel-small.mesh", blackPlastic, wheelSmall)
   LOAD_MESH_MTL("./model/claw.mesh", steel, claw)
   LOAD_MESH_MTL("./model/claw-cover.mesh", plastic, clawCover)
-  LOAD_LINE_MESH("./model/line-mesh/claw.mesh", clawStroke)
+  LOAD_LINE_MESH("./model/stroke/claw.mesh", clawStroke)
 
   #undef LOAD_MESH_MTL
 }
