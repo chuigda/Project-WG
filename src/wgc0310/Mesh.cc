@@ -38,7 +38,7 @@ WGCMeshCollection::WGCMeshCollection(GLFunctions *f, cw::DrawableArena &arena)
 void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
   #define LOAD_MESH_MTL(PATH, MTL, TGT) \
     { \
-      std::unique_ptr<cw::PlainTriangles> triangles = cw::LoadMesh(PATH); \
+      std::unique_ptr<cw::PlainMesh> triangles = cw::LoadMesh(PATH); \
       triangles->PreInitialize(f); \
       const auto meshPtr = arena.Put(std::move(triangles)); \
       const auto mtlMeshPtr = arena.Put(                          \
@@ -51,7 +51,7 @@ void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
 
   #define LOAD_MESH(PATH, TGT) \
     {                        \
-      std::unique_ptr<cw::PlainTriangles> triangles = cw::LoadMesh(PATH); \
+      std::unique_ptr<cw::PlainMesh> triangles = cw::LoadMesh(PATH); \
       triangles->PreInitialize(f); \
       const auto meshPtr = arena.Put(std::move(triangles)); \
       TGT = meshPtr; \

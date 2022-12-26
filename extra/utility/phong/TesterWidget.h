@@ -2,25 +2,25 @@
 #define PROJECT_WG_TESTER_WIDGET_H
 
 #include "PaintWidget.h"
-#include "cwglx/drawable/PlainTriangles.h"
+#include "cwglx/drawable/PlainMesh.h"
 
 struct TestMesh {
-  std::unique_ptr<cw::PlainTriangles> teapotMesh;
+  std::unique_ptr<cw::PlainMesh> teapotMesh;
 
-  std::unique_ptr<cw::PlainTriangles> monitorMesh;
-  std::unique_ptr<cw::PlainTriangles> monitorIntakeMesh;
+  std::unique_ptr<cw::PlainMesh> monitorMesh;
+  std::unique_ptr<cw::PlainMesh> monitorIntakeMesh;
 
-  std::unique_ptr<cw::PlainTriangles> chestBoxMesh;
-  std::unique_ptr<cw::PlainTriangles> chestPlateMesh;
+  std::unique_ptr<cw::PlainMesh> chestBoxMesh;
+  std::unique_ptr<cw::PlainMesh> chestPlateMesh;
 
-  std::unique_ptr<cw::PlainTriangles> bigArmMesh;
-  std::unique_ptr<cw::PlainTriangles> bigArmCoverMesh;
+  std::unique_ptr<cw::PlainMesh> bigArmMesh;
+  std::unique_ptr<cw::PlainMesh> bigArmCoverMesh;
 
-  std::unique_ptr<cw::PlainTriangles> smallArmMesh;
-  std::unique_ptr<cw::PlainTriangles> smallArmCoverMesh;
+  std::unique_ptr<cw::PlainMesh> smallArmMesh;
+  std::unique_ptr<cw::PlainMesh> smallArmCoverMesh;
 
-  std::unique_ptr<cw::PlainTriangles> clawMesh;
-  std::unique_ptr<cw::PlainTriangles> clawCoverMesh;
+  std::unique_ptr<cw::PlainMesh> clawMesh;
+  std::unique_ptr<cw::PlainMesh> clawCoverMesh;
 
   std::unique_ptr<cw::Drawable> headMesh;
   std::unique_ptr<cw::Drawable> chestMesh;

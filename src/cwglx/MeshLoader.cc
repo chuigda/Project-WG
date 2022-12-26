@@ -28,7 +28,7 @@ namespace cw {
     return; \
   }
 
-static void ProcessMeshLine(PlainTriangles* triangles,
+static void ProcessMeshLine(PlainMesh* triangles,
                             std::vector<Vertex>& verticesPool,
                             const QString& meshLine,
                             const char *meshFile,
@@ -98,7 +98,7 @@ static void ProcessMeshLine(PlainTriangles* triangles,
 #undef PARSE_DOUBLE
 #undef PARSE_INT
 
-std::unique_ptr<PlainTriangles> LoadMesh(const char *meshFile, double ratio) {
+std::unique_ptr<PlainMesh> LoadMesh(const char *meshFile, double ratio) {
   QFile file(meshFile);
   if (!file.open(QIODevice::ReadOnly)) {
     qWarning() << "cannot open mesh file:" << meshFile;
@@ -106,8 +106,8 @@ std::unique_ptr<PlainTriangles> LoadMesh(const char *meshFile, double ratio) {
   }
 
   QTextStream textStream(&file);
-  std::unique_ptr<PlainTriangles> triangles =
-    std::make_unique<PlainTriangles>();
+  std::unique_ptr<PlainMesh> triangles =
+    std::make_unique<PlainMesh>();
   std::vector<Vertex> verticesPool;
   std::size_t lineNo = 1;
   while (!textStream.atEnd()) {

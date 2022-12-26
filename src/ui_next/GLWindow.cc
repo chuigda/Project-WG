@@ -6,8 +6,7 @@
 #include "glu/FakeGLU.h"
 #include "cwglx/Setup.h"
 #include "cwglx/RawMatrix.h"
-#include "cwglx/drawable/TriangleGen.h"
-#include "cwglx/drawable/PlainTriangles.h"
+#include "cwglx/drawable/PlainMesh.h"
 #include "wgc0310/ScreenGlass.h"
 
 GLWindow::GLWindow(EntityStatus const* entityStatus,
@@ -111,10 +110,7 @@ void GLWindow::initializeGL() {
 
   // screen glass
   {
-    std::unique_ptr<cw::TriangleGen> glassGenerator = wgc0310::ScreenGlass();
-    std::unique_ptr<cw::PlainTriangles> glassTriangles =
-      std::make_unique<cw::PlainTriangles>();
-    glassTriangles->AddTriangles(glassGenerator.get());
+    std::unique_ptr<cw::PlainMesh> glassTriangles = wgc0310::ScreenGlass();
     glassTriangles->PreInitialize(this);
 
     const auto glassMeshPtr = m_Arena.Put(std::move(glassTriangles));

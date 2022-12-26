@@ -76,9 +76,11 @@ set(CWGLX_SOURCES
     include/cwglx/GLInfo.h
     include/cwglx/RawMatrix.h
 
-    src/cwglx/drawable/PlainTriangles.cc
+    src/cwglx/drawable/PlainMesh.cc
+    src/cwglx/drawable/PlainLineMesh.cc
     src/cwglx/drawable/Composition.cc
-    include/cwglx/drawable/PlainTriangles.h
+    include/cwglx/drawable/PlainMesh.h
+    include/cwglx/drawable/PlainLineMesh.h
     include/cwglx/drawable/Composition.h
 
     src/glu/FakeGLU.cc

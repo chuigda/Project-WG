@@ -210,9 +210,9 @@ private:
   QWidget *m_Widget;
   EmitterStatus m_Status;
 
-  std::unique_ptr<cw::PlainTriangles> m_Emitter;
-  std::unique_ptr<cw::PlainTriangles> m_SideCover;
-  std::unique_ptr<cw::PlainTriangles> m_PowerSource;
+  std::unique_ptr<cw::PlainMesh> m_Emitter;
+  std::unique_ptr<cw::PlainMesh> m_SideCover;
+  std::unique_ptr<cw::PlainMesh> m_PowerSource;
   std::unique_ptr<cw::Texture2D> m_SpaciumTexture;
   cw::StandardMaterial const* m_PlasticMaterial;
   cw::StandardMaterial const* m_BlackPlasticMaterial;
