@@ -27,7 +27,7 @@ public:
 
   void AddLines(const Vertex *vertices, std::size_t count);
 
-  void PreInitialize(GLFunctions *f);
+  void PreInitialize(GLFunctions *f) const noexcept;
 
 private:
   std::vector<VertexF> m_Vertices;
