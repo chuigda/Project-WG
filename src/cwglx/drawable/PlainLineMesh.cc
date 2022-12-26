@@ -42,7 +42,7 @@ void PlainLineMesh::Draw(GLFunctions *f) const noexcept {
   {
     f->glEnableClientState(GL_VERTEX_ARRAY);
     f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    f->glVertexPointer(2, GL_FLOAT, 0, nullptr);
+    f->glVertexPointer(3, GL_FLOAT, 0, nullptr);
 
     f->glDrawArrays(GL_LINES, 0, static_cast<GLsizei>(m_Vertices.size()));
   }
@@ -75,10 +75,11 @@ void PlainLineMesh::AddLines(const Vertex *vertices,
 
 void PlainLineMesh::PreInitialize(GLFunctions *f) const noexcept{
   if (m_VBOInitialized) {
-    qWarning() << "PlainLineMesh::PreInitialize():"
-               << "VBO already initialized, skipping";
     return;
   }
+  qDebug() << "PlainLineMesh::PreInitialize():"
+           << m_Vertices.size() / 2
+           << "lines ready to draw";
 
   f->glGenBuffers(1, &m_VBO);
   f->glBindBuffer(GL_ARRAY_BUFFER, m_VBO);

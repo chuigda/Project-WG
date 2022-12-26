@@ -23,6 +23,7 @@ public:
 
   // 胸部模型
   cw::Drawable const* chestBox;
+  cw::Drawable const* chestBoxStroke;
   cw::Drawable const* chestPlate;
   cw::Drawable const* power;
   cw::Drawable const* powerPin;

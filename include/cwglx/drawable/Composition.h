@@ -28,25 +28,6 @@ private:
   GLfloat m_RotationValue;
 };
 
-class PositionedDrawable final : public Drawable {
-public:
-  PositionedDrawable(std::vector<TranslationStep>&& translationSteps,
-                     Drawable const* drawable);
-
-  ~PositionedDrawable() final;
-
-  void Draw(GLFunctions *f) const noexcept final;
-
-  void Delete(GLFunctions *f) const noexcept final;
-
-  CW_DERIVE_UNCOPYABLE(PositionedDrawable)
-  CW_DERIVE_UNMOVABLE(PositionedDrawable)
-
-private:
-  std::vector<TranslationStep> m_TranslationSteps;
-  Drawable const* m_Drawable;
-};
-
 class MaterializedDrawable final : public Drawable {
 public:
   MaterializedDrawable(const Material* material,

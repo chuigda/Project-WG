@@ -235,6 +235,12 @@ void GLWindow::paintGL() {
     m_Mesh.power->Draw(this);
     m_Mesh.powerPin->Draw(this);
 
+    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+    glDisable(GL_LIGHTING);
+    m_Mesh.chestBoxStroke->Draw(this);
+    glEnable(GL_LIGHTING);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+
     glPushMatrix();
     DrawArm(m_BodyStatus->rightArmStatus, 1.0f, &rightBigArm, &rightSmallArm);
     glPopMatrix();

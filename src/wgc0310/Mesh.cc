@@ -50,10 +50,18 @@ void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
     }
 
   #define LOAD_MESH(PATH, TGT) \
-    {                        \
-      std::unique_ptr<cw::PlainMesh> triangles = cw::LoadMesh(PATH); \
-      triangles->PreInitialize(f); \
-      const auto meshPtr = arena.Put(std::move(triangles)); \
+    { \
+      std::unique_ptr<cw::PlainMesh> mesh = cw::LoadMesh(PATH); \
+      mesh->PreInitialize(f); \
+      const auto meshPtr = arena.Put(std::move(mesh)); \
+      TGT = meshPtr; \
+    }
+
+  #define LOAD_LINE_MESH(PATH, TGT) \
+    {                               \
+      std::unique_ptr<cw::PlainLineMesh> lineMesh = cw::LoadLineMesh(PATH); \
+      lineMesh->PreInitialize(f);   \
+      const auto meshPtr = arena.Put(std::move(lineMesh)); \
       TGT = meshPtr; \
     }
 
@@ -69,6 +77,7 @@ void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
   LOAD_MESH_MTL("./model/monitor-intake.mesh", chrome, monitorIntake)
 
   LOAD_MESH_MTL("./model/chest-box.mesh", plastic, chestBox)
+  LOAD_LINE_MESH("./model/line-mesh/chest-box.mesh", chestBoxStroke)
   LOAD_MESH_MTL("./model/chest-plate.mesh", chrome, chestPlate)
   LOAD_MESH_MTL("./model/power.mesh", blackPlastic, power)
   LOAD_MESH_MTL("./model/power-pin.mesh", brass, powerPin)

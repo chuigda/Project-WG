@@ -28,28 +28,6 @@ void TranslationStep::ApplyTranslation(GLFunctions *f) const noexcept {
   }
 }
 
-PositionedDrawable::
-PositionedDrawable(std::vector<TranslationStep> &&translationSteps,
-                   const Drawable *drawable)
-  : m_TranslationSteps(std::move(translationSteps)),
-    m_Drawable(drawable)
-{}
-
-PositionedDrawable::~PositionedDrawable() = default;
-
-void PositionedDrawable::Draw(GLFunctions *f) const noexcept {
-  f->glPushMatrix();
-  for (const auto &step : m_TranslationSteps) {
-    step.ApplyTranslation(f);
-  }
-  m_Drawable->Draw(f);
-  f->glPopMatrix();
-}
-
-void PositionedDrawable::Delete(GLFunctions *f) const noexcept {
-  Q_UNUSED(f)
-}
-
 MaterializedDrawable::
 MaterializedDrawable(const Material *material,
                      std::vector<const Drawable *> &&drawables)
