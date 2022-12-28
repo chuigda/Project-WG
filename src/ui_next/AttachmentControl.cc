@@ -44,16 +44,16 @@ AttachmentControl::AttachmentControl(wgc0310::AttachmentStatus *attachmentStatus
 
   connect(m_GLWindow, &GLWindow::OpenGLInitialized,
           this, &AttachmentControl::ReloadAttachments);
-  connect(m_ReloadButton, &QPushButton::clicked,
-          this, [this] {
-            m_GLWindow->RunWithGLContext([this] {
-              m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
-              m_GLWindow->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
-              ReloadAttachments();
-              m_GLWindow->glPopClientAttrib();
-              m_GLWindow->glPopAttrib();
-            });
-          });
+  // connect(m_ReloadButton, &QPushButton::clicked,
+  //         this, [this] {
+  //           m_GLWindow->RunWithGLContext([this] {
+  //             m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
+  //             m_GLWindow->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
+  //             ReloadAttachments();
+  //             m_GLWindow->glPopClientAttrib();
+  //             m_GLWindow->glPopAttrib();
+  //           });
+  //         });
 
   LinkButtonAndContextMenu(m_RightBigArmAttachment,
                            m_RightBigArmConfig,
@@ -180,7 +180,7 @@ AttachmentControl::AttachmentControl(wgc0310::AttachmentStatus *attachmentStatus
 void AttachmentControl::ReloadAttachments() {
   m_AttachmentStatus->Reset();
   for (const auto &attachment: m_Attachments) {
-    attachment->Delete(m_GLWindow);
+    attachment->Delete(m_GLWindow->GL);
   }
   m_Attachments.clear();
   for (auto sharedObject: m_SharedObjects) {
@@ -275,7 +275,7 @@ void AttachmentControl::ReloadAttachments() {
       continue;
     }
 
-    animation->Initialize(m_GLWindow);
+    animation->Initialize(m_GLWindow->GL);
 
     QAction *action = m_ItemSelectMenu->addAction(animation->GetName());
     action->setData(QVariant { static_cast<uint>(m_Attachments.size()) });

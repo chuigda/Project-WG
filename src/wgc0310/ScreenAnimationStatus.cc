@@ -2,8 +2,8 @@
 
 #include <QTimer>
 #include <QWidget>
-#include "cwglx/GLImpl.h"
-#include "cwglx/Texture.h"
+#include "cwglx/GL/GLImpl.h"
+#include "cwglx/Base/Texture.h"
 
 namespace wgc0310 {
 
@@ -31,25 +31,6 @@ bool ScreenAnimationStatus::HasThingToDraw() const noexcept {
 
 void ScreenAnimationStatus::DrawOnScreen(GLFunctions *f) const noexcept {
   if (staticScreen) {
-    f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    f->glTranslatef(0.0f, 0.0f, 0.1f);
-
-    staticScreen->texture->BeginTexture(f);
-    f->glBegin(GL_QUADS);
-    {
-      f->glTexCoord2f(0.0f, 1.0f);
-      f->glVertex2f(-320.0f, 240.0f);
-
-      f->glTexCoord2f(0.0f, 0.0f);
-      f->glVertex2f(-320.0f, -240.0f);
-
-      f->glTexCoord2f(1.0f, 0.0f);
-      f->glVertex2f(320.0f, -240.0f);
-
-      f->glTexCoord2f(1.0f, 1.0f);
-      f->glVertex2f(320.0f, 240.0f);
-    }
-    f->glEnd();
   } else if (animation) {
     if (m_NeedRewind) {
       m_NeedRewind = false;

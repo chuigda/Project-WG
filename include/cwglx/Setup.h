@@ -1,12 +1,12 @@
-#ifndef PROJECT_WG_SETUP_H
-#define PROJECT_WG_SETUP_H
+#ifndef PROJECT_GL2_SETUP_H
+#define PROJECT_GL2_SETUP_H
 
-#include "cwglx/GL.h"
+#include "include/cwglx/GL/GL.h"
 
 namespace cw {
 
-void SetupPreferredSettings(GLFunctions *f) noexcept;
+void SetupPreferred(GLFunctions *f);
 
 } // namespace cw
 
-#endif //PROJECT_WG_SETUP_H
+#endif // PROJECT_GL2_SETUP_H

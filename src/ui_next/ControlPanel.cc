@@ -55,7 +55,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
     m_BodyControl(new BodyControl(&m_BodyStatus, this)),
     m_AttachmentControl(new AttachmentControl(&m_AttachmentStatus, m_GLWindow, &m_ExtraStatus)),
     m_SoundControl(new SoundControl(&m_VolumeLevels, &m_VolumeLevelsUpdated, &m_WorkerThread)),
-    m_ExtraControl(new ExtraControl(&m_ExtraStatus)),
+    m_ExtraControl(new ExtraControl(m_GLWindow, &m_ExtraStatus)),
     m_AboutBox(new AboutBox(presenter)),
     m_OpenGLSettingsButton(new QPushButton("OpenGL")),
     m_CameraSettingsButton(new QPushButton("物体位置")),
@@ -187,15 +187,15 @@ void ControlPanel::closeEvent(QCloseEvent *e) {
 }
 
 void ControlPanel::NextTick() {
-  if (m_BodyStatus.playAnimationStatus.IsPlayingAnimation()) {
-    if (!m_BodyStatus.playAnimationStatus.NextTick(&m_BodyStatus)) {
-      m_BodyStatus.playAnimationStatus.SetAnimation(nullptr);
-      emit DoneBodyAnimation();
-    }
-  }
-
-  m_AttachmentStatus.NextTick();
-  m_ScreenAnimationStatus.NextTick();
-  m_BodyStatus.NextTick();
+  // if (m_BodyStatus.playAnimationStatus.IsPlayingAnimation()) {
+  //   if (!m_BodyStatus.playAnimationStatus.NextTick(&m_BodyStatus)) {
+  //     m_BodyStatus.playAnimationStatus.SetAnimation(nullptr);
+  //     emit DoneBodyAnimation();
+  //   }
+  // }
+  //
+  // m_AttachmentStatus.NextTick();
+  // m_ScreenAnimationStatus.NextTick();
+  // m_BodyStatus.NextTick();
   m_GLWindow->update();
 }

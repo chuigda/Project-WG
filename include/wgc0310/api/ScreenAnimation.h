@@ -1,7 +1,7 @@
 #ifndef PROJECT_WG_WGC0310_SCREEN_ANIMATION_H
 #define PROJECT_WG_WGC0310_SCREEN_ANIMATION_H
 
-#include "cwglx/GL.h"
+#include "cwglx/GL/GL.h"
 #include "wgc0310/api/WGAPI.h"
 #include "util/Derive.h"
 

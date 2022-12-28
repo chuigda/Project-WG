@@ -4,7 +4,8 @@
 #include <cstdint>
 #include <QString>
 
-#include "cwglx/GL.h"
+#include "cwglx/GL/GL.h"
+#include "cwglx/Base/Texture.h"
 #include "util/Derive.h"
 #include "include/wgc0310/api/ScreenAnimation.h"
 

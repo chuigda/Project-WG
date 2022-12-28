@@ -43,7 +43,7 @@ ComputeHCylinder(double surfaceHeight,
   return ComputeVCylinder(surfaceHeight, bulb, segments);
 }
 
-std::vector<std::vector<cw::Vertex>>
+std::vector<std::vector<glm::vec3>>
 ComputeScreenVertices(double screenWidth,
                       double screenHeight,
                       double bulb,
@@ -59,13 +59,13 @@ ComputeScreenVertices(double screenWidth,
       ComputeHCylinder(screenHeight, bulb / 2.0, vSegments);
 
   // compute the vertices
-  std::vector<std::vector<cw::Vertex>> result;
+  std::vector<std::vector<glm::vec3>> result;
   result.reserve(vSegments + 1);
 
   for (std::size_t i = 0; i <= vSegments; i++) {
     const auto& [y, z1] = hCylinder[vSegments - i];
 
-    std::vector<cw::Vertex> line;
+    std::vector<glm::vec3> line;
     line.reserve(hSegments + 1);
 
     for (std::size_t j = 0; j <= hSegments; j++) {

@@ -6,7 +6,8 @@
 #include <QGridLayout>
 #include <QMenu>
 #include <QTimer>
-#include "cwglx/GLInfo.h"
+#include "cwglx/GL/GLImpl.h"
+#include "cwglx/GL/GLInfo.h"
 #include "ui_next/GLWindow.h"
 #include "ui_next/SearchDialog.h"
 
@@ -69,7 +70,7 @@ GLInfoDisplay::GLInfoDisplay(GLWindow *glWindow)
 }
 
 void GLInfoDisplay::LoadGLInfo() {
-  cw::GLInfo info = cw::GLInfo::AutoDetect(m_GLWindow);
+  cw::GLInfo info = cw::GLInfo::AutoDetect(m_GLWindow->GL);
 
   m_Vendor->setText(info.vendor);
   m_Version->setText(info.version);
@@ -141,9 +142,9 @@ void GLInfoDisplay::LoadGLInfo() {
     connect(timer, &QTimer::timeout, this, [this, timer, mem] {
       this->m_GLWindow->RunWithGLContext([this, timer, mem] {
         GLint cur, dedicated;
-        m_GLWindow->glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &cur);
-        m_GLWindow->glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &dedicated);
-        GLenum err = m_GLWindow->glGetError();
+        m_GLWindow->GL->glGetIntegerv(GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VIDMEM_NVX, &cur);
+        m_GLWindow->GL->glGetIntegerv(GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX, &dedicated);
+        GLenum err = m_GLWindow->GL->glGetError();
         if (err == GL_NO_ERROR) {
           mem->setText(QStringLiteral("%1 MB / %2 MB")
                          .arg((dedicated - cur) / 1024)

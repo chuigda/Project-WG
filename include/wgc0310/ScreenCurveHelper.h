@@ -2,11 +2,11 @@
 #define PROJECT_WG_WGC0310_SCREEN_CURVE_HELPER_H
 
 #include <vector>
-#include "cwglx/Vertex.h"
+#include <glm/vec3.hpp>
 
 namespace wgc0310 {
 
-std::vector<std::vector<cw::Vertex>>
+std::vector<std::vector<glm::vec3>>
 ComputeScreenVertices(double screenWidth,
                       double screenHeight,
                       double bulb,
