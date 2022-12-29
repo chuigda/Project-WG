@@ -132,6 +132,9 @@ set(PROJECT_SOURCES
     src/ui_next/LicensePresenter.cc
     src/ui_next/GLWindow.cc
     src/ui_next/SearchDialog.cc
+    src/ui_next/ShaderEdit.cc
+    src/ui_next/ShaderHighlighter.cc
+    src/ui_next/CodeEdit.cc
     include/ui_next/EntityStatus.h
     include/ui_next/ControlPanel.h
     include/ui_next/GLInfoDisplay.h
@@ -147,6 +150,9 @@ set(PROJECT_SOURCES
     include/ui_next/GLWindow.h
     include/ui_next/CloseSignallingWidget.h
     include/ui_next/SearchDialog.h
+    include/ui_next/ShaderEdit.h
+    include/ui_next/ShaderHighlighter.h
+    include/ui_next/CodeEdit.h
 
     src/wgc0310/Mesh.cc
     src/wgc0310/Shader.cc

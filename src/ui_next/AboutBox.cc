@@ -21,7 +21,7 @@ AboutBox::AboutBox(LicensePresenter *presenter)
 <hr/>
 (C) 2022 Chuigda WhiteGive<br/>
 <a href="https://github.com/chuigda/Project-WG">https://github.com/chuigda/Project-WG</a><br/>
-使用 OpenGL 3.3 (Compatibility Profile) 绘制的可爱且能动的小机器人<br/>
+使用 OpenGL 3.3 绘制的可爱且能动的小机器人<br/>
 欢迎来 <a href="https://live.bilibili.com/10309712">我的直播间</a> 凑热闹以及卡牌子<br/>
 <br/>
 特别鸣谢

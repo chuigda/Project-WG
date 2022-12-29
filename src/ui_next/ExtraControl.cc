@@ -6,7 +6,6 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>
-#include <QRadioButton>
 #include "ui_next/GLWindow.h"
 
 static QSpinBox *CreateColorSpinBox(GLfloat *linkedValue) {
@@ -38,7 +37,8 @@ static QDoubleSpinBox *CreateAPSpinBox(GLfloat *linkedValue,
   return ret;
 }
 
-ExtraControl::ExtraControl(GLWindow *glWindow, StatusExtra *statusExtra)
+ExtraControl::ExtraControl(GLWindow *glWindow,
+                           StatusExtra *statusExtra)
   : m_GLWindow(glWindow),
     m_StatusExtra(statusExtra)
 {
@@ -95,50 +95,6 @@ ExtraControl::ExtraControl(GLWindow *glWindow, StatusExtra *statusExtra)
         }
       );
     }
-  }
-
-  // 着色器
-  {
-    QGroupBox *group = new QGroupBox("着色器选择");
-    layout->addWidget(group);
-    QVBoxLayout *vBox = new QVBoxLayout();
-    group->setLayout(vBox);
-
-    QRadioButton *phong = new QRadioButton("冯氏着色器 (Phong)");
-    phong->setChecked(true);
-    phong->setToolTip("Project-WG 从 0.1.0 开始默认使用的着色器");
-    vBox->addWidget(phong);
-
-    QRadioButton *gouraud = new QRadioButton("高氏着色器 (Gouraud)");
-    gouraud->setToolTip("用顶点着色器进行光线计算，然后进行插值\r\n"
-                        "因为处理的样本总数更少，可能会有更好的性能，但是效果较差");
-    vBox->addWidget(gouraud);
-
-    QRadioButton *phongWithNormalTex = new QRadioButton("冯氏着色器 + 纹理");
-    phongWithNormalTex->setToolTip("在冯氏着色器的基础上使用纹理增加细节");
-    phongWithNormalTex->setEnabled(false);
-    vBox->addWidget(phongWithNormalTex);
-
-    QRadioButton *pbr = new QRadioButton("基于物理规则渲染 (PBR)");
-    pbr->setToolTip("模拟真实世界的物理规则进行渲染，需要强劲的电脑");
-    pbr->setEnabled(false);
-    vBox->addWidget(pbr);
-
-    connect(phong, &QRadioButton::toggled, m_GLWindow, [this] (bool toggled) {
-      if (toggled) {
-        m_GLWindow->RunWithGLContext([this] {
-          m_GLWindow->SetShader(0);
-        });
-      }
-    });
-
-    connect(gouraud, &QRadioButton::toggled, m_GLWindow, [this] (bool toggled) {
-      if (toggled) {
-        m_GLWindow->RunWithGLContext([this] {
-          m_GLWindow->SetShader(1);
-        });
-      }
-    });
   }
 
   // 描边

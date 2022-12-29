@@ -15,9 +15,22 @@ struct ShaderCollection {
   void Delete(GLFunctions *f);
 };
 
-std::unique_ptr<ShaderCollection> LoadDefaultShader(GLFunctions *f);
+struct ShaderText {
+  QString opaqueVS;
+  QString opaqueFS;
 
-std::unique_ptr<ShaderCollection> LoadGouraudShader(GLFunctions *f);
+  QString translucentVS;
+  QString translucentFS;
+};
+
+std::unique_ptr<ShaderCollection>
+CompileShader(GLFunctions *f, ShaderText const&, QString *err);
+
+ShaderText GetPhongShaderText();
+
+ShaderText GetLegacyPhongShaderText();
+
+ShaderText GetGouraudShaderText();
 
 } // namespace wgc0310
 

@@ -49,17 +49,18 @@ public slots:
     connect(m_Websocket, &QWebSocket::textMessageReceived,
             this, &VTSTrackWorker::ReceiveTokenPacket);
     connect(m_Websocket,
-            static_cast<void (QWebSocket::*)(QAbstractSocket::SocketError)>(&QWebSocket::error),
+            QOverload<QAbstractSocket::SocketError>::of(&QWebSocket::error),
             this,
             [this] (QAbstractSocket::SocketError error) {
               StopCommunication();
               emit TrackingError(QStringLiteral("Websocket 错误 (%1)").arg(error));
             });
-    connect(m_Websocket,
-            &QWebSocket::connected,
-            this,
-            [this] {
-      m_Websocket->sendTextMessage(R"json(
+    connect(
+      m_Websocket,
+      &QWebSocket::connected,
+      this,
+      [this] {
+        m_Websocket->sendTextMessage(R"json(
 {
   "apiName": "VTubeStudioPublicAPI",
   "apiVersion": "1.0",

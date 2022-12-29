@@ -10,6 +10,7 @@
 #include "ui_next/EntityStatus.h"
 #include "ui_next/ExtraControl.h"
 #include "util/CircularBuffer.h"
+#include "wgc0310/Shader.h"
 
 class QPushButton;
 class GLWindow;
@@ -20,6 +21,7 @@ class ScreenAnimationControl;
 class BodyControl;
 class AttachmentControl;
 class SoundControl;
+class ShaderEdit;
 class AboutBox;
 class LicensePresenter;
 
@@ -67,6 +69,7 @@ private:
   AttachmentControl *m_AttachmentControl;
   SoundControl *m_SoundControl;
   ExtraControl *m_ExtraControl;
+  ShaderEdit *m_ShaderEdit;
   AboutBox *m_AboutBox;
 
   QPushButton *m_OpenGLSettingsButton;
@@ -77,6 +80,7 @@ private:
   QPushButton *m_PoseEstimationButton;
   QPushButton *m_VolumeAnalysisButton;
   QPushButton *m_ExtraSettingsButton;
+  QPushButton *m_ShaderEditButton;
   QPushButton *m_AboutButton;
 };
 

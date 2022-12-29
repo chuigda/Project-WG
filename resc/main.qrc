@@ -10,17 +10,21 @@
         <file>AGPL-BRIEF</file>
         <file>CC-BY-SA-BRIEF</file>
 
+        <file>shader/empty/empty.vert</file>
+        <file>shader/empty/empty.frag</file>
+
         <file>shader/common/emissive.vert</file>
         <file>shader/common/emissive.frag</file>
         <file>shader/common/stroke.vert</file>
         <file>shader/common/stroke.frag</file>
         <file>shader/phong/opaque.vert</file>
         <file>shader/phong/opaque.frag</file>
+        <file>shader/phong/opaque.legacy.frag</file>
         <file>shader/phong/translucent.vert</file>
         <file>shader/phong/translucent.frag</file>
         <file>shader/gouraud/opaque.vert</file>
         <file>shader/gouraud/opaque.frag</file>
-        <file>shader/debug/dbg.vert</file>
-        <file>shader/debug/dbg.frag</file>
+        <file>shader/gouraud/translucent.vert</file>
+        <file>shader/gouraud/translucent.frag</file>
     </qresource>
 </RCC>

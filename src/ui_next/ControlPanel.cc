@@ -14,6 +14,7 @@
 #include "ui_next/BodyControl.h"
 #include "ui_next/AttachmentControl.h"
 #include "ui_next/SoundControl.h"
+#include "ui_next/ShaderEdit.h"
 #include "ui_next/AboutBox.h"
 
 static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widget) {
@@ -56,6 +57,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
     m_AttachmentControl(new AttachmentControl(&m_AttachmentStatus, m_GLWindow, &m_ExtraStatus)),
     m_SoundControl(new SoundControl(&m_VolumeLevels, &m_VolumeLevelsUpdated, &m_WorkerThread)),
     m_ExtraControl(new ExtraControl(m_GLWindow, &m_ExtraStatus)),
+    m_ShaderEdit(new ShaderEdit(m_GLWindow)),
     m_AboutBox(new AboutBox(presenter)),
     m_OpenGLSettingsButton(new QPushButton("OpenGL")),
     m_CameraSettingsButton(new QPushButton("物体位置")),
@@ -65,6 +67,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
     m_PoseEstimationButton(new QPushButton("姿态控制")),
     m_VolumeAnalysisButton(new QPushButton("音频分析")),
     m_ExtraSettingsButton(new QPushButton("附加选项")),
+    m_ShaderEditButton(new QPushButton("着色器")),
     m_AboutButton(new QPushButton("关于"))
 {
   setWindowTitle("控制面板");
@@ -86,6 +89,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
   LinkButtonAndWidget(m_AttachmentButton, m_AttachmentControl);
   LinkButtonAndWidget(m_VolumeAnalysisButton, m_SoundControl);
   LinkButtonAndWidget(m_ExtraSettingsButton, m_ExtraControl);
+  LinkButtonAndWidget(m_ShaderEditButton, m_ShaderEdit);
   LinkButtonAndWidget(m_AboutButton, m_AboutBox);
 
   connect(m_ExtraControl, &ExtraControl::SetStayOnTop, this, [this] (bool stayOnTop) {
@@ -96,6 +100,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
     bool bodyControl = m_BodyControl->isVisible();
     bool attachmentControl = m_AttachmentControl->isVisible();
     bool soundControl = m_SoundControl->isVisible();
+    bool shaderEdit = m_ShaderEdit->isVisible();
     bool aboutBox = m_AboutBox->isVisible();
 
     this->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
@@ -108,6 +113,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
     m_AttachmentControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_SoundControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_ExtraControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_ShaderEdit->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_AboutBox->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
 
     this->show();
@@ -120,6 +126,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
     if (attachmentControl) { m_AttachmentControl->show(); }
     if (soundControl) { m_SoundControl->show(); }
     m_ExtraControl->show();
+    if (shaderEdit) { m_ShaderEdit->show(); }
     if (aboutBox) { m_AboutBox->show(); }
   });
 
@@ -134,10 +141,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
   layout->addWidget(m_FaceAnimationButton, 1, 0);
   layout->addWidget(m_VolumeAnalysisButton, 1, 1);
   layout->addWidget(m_ExtraSettingsButton, 1, 2);
-
-  QLabel *label = new QLabel("广告位招租");
-  label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-  layout->addWidget(label, 1, 3);
+  layout->addWidget(m_ShaderEditButton, 1, 3);
   layout->addWidget(m_AboutButton, 1, 4);
 
   this->setLayout(layout);
@@ -162,7 +166,7 @@ void ControlPanel::closeEvent(QCloseEvent *e) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
   int r = QMessageBox::warning(this,
-                               "警告 ",
+                               "警告",
                                "如果关闭这个窗口，将会退出整个程序，确定吗？",
                                "我手滑了",
                                "JUST DO IT!");
@@ -178,6 +182,7 @@ void ControlPanel::closeEvent(QCloseEvent *e) {
     m_AttachmentControl->close();
     m_SoundControl->close();
     m_ExtraControl->close();
+    m_ShaderEdit->close();
     m_AboutBox->close();
 
     e->accept();

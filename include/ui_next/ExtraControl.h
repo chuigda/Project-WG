@@ -5,7 +5,12 @@
 #include "cwglx/GL/GL.h"
 #include "ui_next/CloseSignallingWidget.h"
 
+namespace wgc0310 {
+struct ShaderText;
+} // namespace wgc0310
+
 class GLWindow;
+class ShaderEdit;
 
 struct StatusExtra {
   bool stayOnTop = false;

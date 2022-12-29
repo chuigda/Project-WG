@@ -40,9 +40,41 @@ private:
 };
 
 struct WGCMeshCollection {
+  // 调试用的茶壶
+  SimpleObject teapot;
+
+  // 头部模型
   SimpleObject monitor;
   SimpleObject monitorIntake;
-  StrokeObject monitorStroke;
+  SimpleObject wheel;
+
+  // 胸部模型
+  SimpleObject chestBox;
+  SimpleObject chestPlate;
+  SimpleObject power;
+  SimpleObject powerPin;
+  SimpleObject colorTimer;
+  SimpleObject colorTimerShell;
+
+  // 腰部模型
+  SimpleObject abdomen;
+  SimpleObject waist;
+
+  // 肩部模型
+  SimpleObject shoulder;
+  SimpleObject shoulderPlate;
+
+  // 手臂模型
+  SimpleObject bigArm;
+  SimpleObject bigArmCover;
+  SimpleObject bigArmConnector;
+
+  SimpleObject smallArm;
+  SimpleObject smallArmCover;
+
+  SimpleObject claw;
+  SimpleObject clawCover;
+  SimpleObject wheelSmall;
 
   void Delete(GLFunctions *f);
 };

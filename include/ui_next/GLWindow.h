@@ -9,10 +9,10 @@
 #include "wgc0310/Mesh.h"
 #include "wgc0310/HeadStatus.h"
 #include "wgc0310/ScreenAnimationStatus.h"
+#include "wgc0310/Shader.h"
 #include "ui_next/EntityStatus.h"
 #include "ui_next/ExtraControl.h"
 #include "util/CircularBuffer.h"
-#include "wgc0310/Shader.h"
 
 class GLWindow final : public QOpenGLWidget {
   Q_OBJECT
@@ -33,7 +33,7 @@ public:
   void EnablePerformanceCounter();
   GLuint64 QueryPerformanceCounter();
 
-  void SetShader(int shaderSet);
+  bool SetShader(std::unique_ptr<wgc0310::ShaderCollection> &&shader);
 
   // OpenGL function
   GLFunctions *GL;
@@ -65,6 +65,7 @@ private:
   cw::CircularBuffer<qreal, 160> *m_VolumeLevels;
   bool *m_VolumeLevelsUpdated;
   wgc0310::ScreenDisplayMode const *m_ScreenDisplayMode;
+
   StatusExtra const* m_StatusExtra;
 
   std::unique_ptr<wgc0310::ShaderCollection> m_Shader;

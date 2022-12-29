@@ -1,13 +1,13 @@
 #ifndef PROJECT_WG_FILEUTIL_H
 #define PROJECT_WG_FILEUTIL_H
 
-#include <QString>
+class QString;
 
 namespace cw {
 
-QString ReadToString(const char *fileName);
-
 QString ReadToString(QString const &fileName);
+
+bool WriteToFile(QString const& fileName, QString const& content);
 
 } // namespace cw
 

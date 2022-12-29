@@ -16,7 +16,7 @@ AttachmentControl::AttachmentControl(wgc0310::AttachmentStatus *attachmentStatus
   : m_AttachmentStatus(attachmentStatus),
     m_GLWindow(glWindow),
     m_StatusExtra(statusExtra),
-    m_ItemSelectMenu(new QMenu()),
+    m_ItemSelectMenu(new QMenu(this)),
     m_RightBigArmAttachment(new QPushButton("右侧大臂")),
     m_RightSmallArmAttachment(new QPushButton("右侧小臂")),
     m_LeftBigArmAttachment(new QPushButton("左侧大臂")),
@@ -44,16 +44,12 @@ AttachmentControl::AttachmentControl(wgc0310::AttachmentStatus *attachmentStatus
 
   connect(m_GLWindow, &GLWindow::OpenGLInitialized,
           this, &AttachmentControl::ReloadAttachments);
-  // connect(m_ReloadButton, &QPushButton::clicked,
-  //         this, [this] {
-  //           m_GLWindow->RunWithGLContext([this] {
-  //             m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
-  //             m_GLWindow->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
-  //             ReloadAttachments();
-  //             m_GLWindow->glPopClientAttrib();
-  //             m_GLWindow->glPopAttrib();
-  //           });
-  //         });
+  connect(m_ReloadButton, &QPushButton::clicked,
+          this, [this] {
+            m_GLWindow->RunWithGLContext([this] {
+              ReloadAttachments();
+            });
+          });
 
   LinkButtonAndContextMenu(m_RightBigArmAttachment,
                            m_RightBigArmConfig,
@@ -297,7 +293,10 @@ void AttachmentControl::LinkButtonAndContextMenu(QPushButton *button,
     m_AttachmentSlot = attachmentSlot;
     m_ActivatedAttachmentButton = button;
     m_ActivatedAttachmentConfigButton = configButton;
-    m_ItemSelectMenu->popup(mapToGlobal(button->pos()));
+
+    QPoint point = mapToGlobal(button->pos());
+    point.setY(point.y() + button->height());
+    m_ItemSelectMenu->popup(point);
   });
 }
 

@@ -3,7 +3,6 @@
 #include <QWindow>
 #include <QTimer>
 #include <QCloseEvent>
-#include <QMessageBox>
 #include <QApplication>
 #include <glm/gtc/matrix_transform.hpp>
 #include "cwglx/Setup.h"
@@ -71,6 +70,8 @@ GLWindow::~GLWindow() {
     if (m_PerformanceCounterEnabled) {
       GL->glDeleteQueries(1, &m_PerformanceCounter);
     }
+
+    delete GL;
   });
 }
 
@@ -90,8 +91,6 @@ void GLWindow::EnablePerformanceCounter() {
 void GLWindow::initializeGL() {
   QOpenGLWidget::initializeGL();
   cw::SetupPreferred(GL);
-
-  SetShader(0);
 
   m_Screen = std::make_unique<wgc0310::Screen>(GL);
   m_Mesh = wgc0310::LoadWGCMesh(GL);
@@ -138,12 +137,6 @@ void GLWindow::paintGL() {
 
   m_Mesh->monitor.Draw(GL);
 
-  m_Shader->strokeShader.UseProgram(GL);
-  modelView = glm::scale(modelView, glm::vec3(m_StatusExtra->strokeAdjustment));
-  m_Shader->strokeShader.SetUniform(GL, QStringLiteral("modelView"), modelView);
-
-  m_Mesh->monitorStroke.Draw(GL);
-
   if (m_PerformanceCounterEnabled) {
     GL->glEndQuery(GL_TIME_ELAPSED);
   }
@@ -159,25 +152,12 @@ GLuint64 GLWindow::QueryPerformanceCounter() {
   return result;
 }
 
-void GLWindow::SetShader(int shaderSet) {
+bool GLWindow::SetShader(std::unique_ptr<wgc0310::ShaderCollection> &&shader) {
   Q_ASSERT(this->isValid());
-
-  std::unique_ptr<wgc0310::ShaderCollection> newShader = nullptr;
-  if (shaderSet == 0) {
-    newShader = wgc0310::LoadDefaultShader(GL);
-  } else if (shaderSet == 1) {
-    newShader = wgc0310::LoadGouraudShader(GL);
-  }
-
-  if (!newShader) {
-    QMessageBox::critical(this, "错误", "无法编译 OpenGL 着色器程序");
-    return;
-  }
-
   if (m_Shader) {
     m_Shader->Delete(GL);
   }
-  m_Shader = std::move(newShader);
+  m_Shader = std::move(shader);
 
   glm::vec3 light0 { -30.0, 15.0, 10.0 };
   glm::vec3 light1 { 30.0, 15.0, 10.0 };
@@ -201,6 +181,8 @@ void GLWindow::SetShader(int shaderSet) {
 
   m_Shader->opaqueShader.UseProgram(GL);
   m_Shader->opaqueShader.SetUniform(GL, QStringLiteral("projection"), m_Projection);
+
+  return true;
 }
 
 void GLWindow::resizeGL(int w, int h) {
