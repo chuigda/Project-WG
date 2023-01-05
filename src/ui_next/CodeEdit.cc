@@ -3,6 +3,12 @@
 #include <QKeyEvent>
 #include <QTextBlock>
 
+CodeEdit::CodeEdit(QWidget *parent)
+  : QTextEdit(parent)
+{
+  setAcceptRichText(false);
+}
+
 void CodeEdit::keyPressEvent(QKeyEvent *event) {
   switch (event->key()) {
     case Qt::Key_Tab: {

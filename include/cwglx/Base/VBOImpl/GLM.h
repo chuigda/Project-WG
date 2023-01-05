@@ -1,7 +1,7 @@
 #ifndef PROJECT_GL2_GLM_H
 #define PROJECT_GL2_GLM_H
 
-#include <glm/glm.hpp>
+#include <glm/fwd.hpp>
 #include "include/cwglx/GL/GL.h"
 #include "util/Wife.h"
 

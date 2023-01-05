@@ -5,6 +5,7 @@
 #include <QString>
 #include <QList>
 #include <QDebug>
+#include <glm/geometric.hpp>
 
 namespace cw {
 

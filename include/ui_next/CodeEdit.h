@@ -8,6 +8,7 @@ class CodeEdit final : public QTextEdit {
   Q_OBJECT
 
 public:
+  explicit CodeEdit(QWidget *parent = nullptr);
   ~CodeEdit() final = default;
 
   // overwrite several events
