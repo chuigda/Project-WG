@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QFile>
+
 #include "ui_next/LicensePresenter.h"
 #include "ui_next/ControlPanel.h"
 #include "util/FileUtil.h"

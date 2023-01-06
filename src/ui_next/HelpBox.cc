@@ -16,6 +16,7 @@ public:
     : QTextBrowser(parent)
   {
     setContextMenuPolicy(Qt::NoContextMenu);
+    setContentsMargins(0, 8, 0, 0);
   }
 
 protected:
@@ -88,5 +89,6 @@ HelpBox::HelpBox(QWidget *parent)
     this->setWindowTitle("帮助查看器 - " + browser->documentTitle());
   });
 
+  browser->document()->setDefaultStyleSheet(cw::ReadToString(":/help/index.css"));
   browser->setSource(QUrl("qrc:/help/index.html"), QTextDocument::HtmlResource);
 }

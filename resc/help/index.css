@@ -1,0 +1,20 @@
+* {
+    font-size: 12pt;
+    font-family: 'Noto Sans SC', 'Noto Sans', '等线', DengXian, 'sans-serif', sans;
+}
+
+td {
+    padding: 4px;
+}
+
+.title {
+    text-align: center;
+}
+
+h1 {
+    margin-top: 0px;
+}
+
+.img {
+    text-align: center;
+}

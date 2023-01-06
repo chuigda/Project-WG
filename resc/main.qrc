@@ -9,11 +9,27 @@
         <file>PREAMBLE</file>
         <file>AGPL-BRIEF</file>
         <file>CC-BY-SA-BRIEF</file>
-
         <file>help/index.html</file>
+        <file>help/error.html</file>
+        <file>help/index.css</file>
         <file>help/pages/opengl.html</file>
         <file>help/pages/about.html</file>
-        <file>help/images/control-panel.png</file>
+        <file>help/pages/position.html</file>
+        <file>help/pages/tracking.html</file>
+        <file>help/pages/tracking/vts.html</file>
+        <file>help/pages/tracking/osf.html</file>
+        <file>help/pages/tracking/manual.html</file>
+        <file>help/images/help-system.jpg</file>
         <file>help/images/opengl.png</file>
+        <file>help/images/position.png</file>
+        <file>help/images/tracking/vts.png</file>
+        <file>help/images/tracking/vts-accept.png</file>
+        <file>help/images/tracking/vts-config.png</file>
+        <file>help/images/tracking/vts-follow.png</file>
+        <file>help/images/tracking/osf.png</file>
+        <file>help/images/tracking/osf-config.png</file>
+        <file>help/images/tracking/manual.png</file>
+        <file>help/images/tracking/manual-audio.png</file>
+        <file>help/images/tracking/manual-mouth.png</file>
     </qresource>
 </RCC>
