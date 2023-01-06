@@ -14,7 +14,9 @@ class TextBrowser : public QTextBrowser {
 public:
   explicit TextBrowser(QWidget *parent = nullptr)
     : QTextBrowser(parent)
-  {}
+  {
+    setContextMenuPolicy(Qt::NoContextMenu);
+  }
 
 protected:
   void paintEvent(QPaintEvent *e) override {

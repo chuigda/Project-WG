@@ -18,7 +18,14 @@
 
 static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widget) {
   button->setCheckable(true);
-  QObject::connect(button, &QPushButton::toggled, widget, &QWidget::setVisible);
+  QObject::connect(button, &QPushButton::toggled, widget, [widget] (bool toggled) {
+    if (toggled) {
+      widget->show();
+      widget->setWindowState(widget->windowState() & ~Qt::WindowMinimized);
+    } else {
+      widget->hide();
+    }
+  });
   QObject::connect(widget, &CloseSignallingWidget::AboutToClose, button, [button] {
     button->blockSignals(true);
     button->setChecked(false);
