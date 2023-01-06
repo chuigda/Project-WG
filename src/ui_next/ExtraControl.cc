@@ -109,8 +109,12 @@ ExtraControl::ExtraControl(StatusExtra *statusExtra, GLWindow *glWindow)
     QRadioButton *msaa8 = new QRadioButton("8x MSAA");
     msaa8->setChecked(true);
 
+    QCheckBox *lineSmooth = new QCheckBox("线条平滑");
+    lineSmooth->setChecked(true);
+
     vBox->addWidget(disabled);
     vBox->addWidget(msaa8);
+    vBox->addWidget(lineSmooth);
 
     connect(disabled, &QRadioButton::toggled, this, [this](bool toggled) {
       if (toggled) {
@@ -126,6 +130,16 @@ ExtraControl::ExtraControl(StatusExtra *statusExtra, GLWindow *glWindow)
           m_GLWindow->glEnable(GL_MULTISAMPLE);
         });
       }
+    });
+
+    connect(lineSmooth, &QCheckBox::toggled, this, [this](bool toggled) {
+      m_GLWindow->RunWithGLContext([this, toggled] {
+        if (toggled) {
+          m_GLWindow->glEnable(GL_LINE_SMOOTH);
+        } else {
+          m_GLWindow->glDisable(GL_LINE_SMOOTH);
+        }
+      });
     });
   }
 
