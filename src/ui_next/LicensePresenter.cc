@@ -25,9 +25,9 @@ LicensePresenter::LicensePresenter(QWidget *parent)
 
   m_LicenseNameLabel = new QLabel("LicenseNamePlaceholder (?/?)");
   m_PrevLicenseButton = new QPushButton("◀");
-  m_PrevLicenseButton->setMaximumWidth(24);
+  m_PrevLicenseButton->setFixedWidth(24);
   m_NextLicenseButton = new QPushButton("▶");
-  m_NextLicenseButton->setMaximumWidth(24);
+  m_NextLicenseButton->setFixedWidth(24);
 
   QHBoxLayout *firstRow = new QHBoxLayout();
   firstRow->addWidget(m_LicenseNameLabel);

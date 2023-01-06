@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
   }
 
   presenter->RequireAgreement(false);
-  ControlPanel panel { presenter, startHideGL };
+  ControlPanel panel { startHideGL };
   panel.show();
 
   return QApplication::exec();

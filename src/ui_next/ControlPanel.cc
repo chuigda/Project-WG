@@ -14,7 +14,7 @@
 #include "ui_next/BodyControl.h"
 #include "ui_next/AttachmentControl.h"
 #include "ui_next/SoundControl.h"
-#include "ui_next/AboutBox.h"
+#include "ui_next/HelpBox.h"
 
 static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widget) {
   button->setCheckable(true);
@@ -26,8 +26,7 @@ static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widg
   });
 }
 
-ControlPanel::ControlPanel(LicensePresenter *presenter,
-                           bool startHideGL)
+ControlPanel::ControlPanel(bool startHideGL)
   : QWidget(nullptr, Qt::Window),
     m_ScreenDisplayMode(wgc0310::ScreenDisplayMode::CapturedExpression),
     m_VolumeLevels(0.0),
@@ -56,7 +55,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
     m_AttachmentControl(new AttachmentControl(&m_AttachmentStatus, m_GLWindow, &m_ExtraStatus)),
     m_SoundControl(new SoundControl(&m_VolumeLevels, &m_VolumeLevelsUpdated, &m_WorkerThread)),
     m_ExtraControl(new ExtraControl(&m_ExtraStatus, m_GLWindow)),
-    m_AboutBox(new AboutBox(presenter)),
+    m_HelpBox(new HelpBox()),
     m_OpenGLSettingsButton(new QPushButton("OpenGL")),
     m_CameraSettingsButton(new QPushButton("物体位置")),
     m_BodyAnimationButton(new QPushButton("关节动画")),
@@ -65,7 +64,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
     m_PoseEstimationButton(new QPushButton("姿态控制")),
     m_VolumeAnalysisButton(new QPushButton("音频分析")),
     m_ExtraSettingsButton(new QPushButton("附加选项")),
-    m_AboutButton(new QPushButton("关于"))
+    m_HelpButton(new QPushButton("帮助"))
 {
   setWindowTitle("控制面板");
 
@@ -86,7 +85,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
   LinkButtonAndWidget(m_AttachmentButton, m_AttachmentControl);
   LinkButtonAndWidget(m_VolumeAnalysisButton, m_SoundControl);
   LinkButtonAndWidget(m_ExtraSettingsButton, m_ExtraControl);
-  LinkButtonAndWidget(m_AboutButton, m_AboutBox);
+  LinkButtonAndWidget(m_HelpButton, m_HelpBox);
 
   connect(m_ExtraControl, &ExtraControl::SetStayOnTop, this, [this] (bool stayOnTop) {
     bool glInfo = m_GLInfoDisplay->isVisible();
@@ -96,7 +95,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
     bool bodyControl = m_BodyControl->isVisible();
     bool attachmentControl = m_AttachmentControl->isVisible();
     bool soundControl = m_SoundControl->isVisible();
-    bool aboutBox = m_AboutBox->isVisible();
+    bool helpBox = m_HelpBox->isVisible();
 
     this->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_GLWindow->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
@@ -108,7 +107,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
     m_AttachmentControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_SoundControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
     m_ExtraControl->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
-    m_AboutBox->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
+    m_HelpBox->setWindowFlag(Qt::WindowStaysOnTopHint, stayOnTop);
 
     this->show();
     m_GLWindow->show();
@@ -120,7 +119,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
     if (attachmentControl) { m_AttachmentControl->show(); }
     if (soundControl) { m_SoundControl->show(); }
     m_ExtraControl->show();
-    if (aboutBox) { m_AboutBox->show(); }
+    if (helpBox) { m_HelpBox->show(); }
   });
 
   QGridLayout *layout = new QGridLayout();
@@ -138,7 +137,7 @@ ControlPanel::ControlPanel(LicensePresenter *presenter,
   QLabel *label = new QLabel("广告位招租");
   label->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
   layout->addWidget(label, 1, 3);
-  layout->addWidget(m_AboutButton, 1, 4);
+  layout->addWidget(m_HelpButton, 1, 4);
 
   this->setLayout(layout);
 #pragma clang diagnostic push
@@ -178,7 +177,7 @@ void ControlPanel::closeEvent(QCloseEvent *e) {
     m_AttachmentControl->close();
     m_SoundControl->close();
     m_ExtraControl->close();
-    m_AboutBox->close();
+    m_HelpBox->close();
 
     e->accept();
   } else {

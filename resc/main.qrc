@@ -9,5 +9,11 @@
         <file>PREAMBLE</file>
         <file>AGPL-BRIEF</file>
         <file>CC-BY-SA-BRIEF</file>
+
+        <file>help/index.html</file>
+        <file>help/pages/opengl.html</file>
+        <file>help/pages/about.html</file>
+        <file>help/images/control-panel.png</file>
+        <file>help/images/opengl.png</file>
     </qresource>
 </RCC>

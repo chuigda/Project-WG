@@ -20,14 +20,14 @@ class ScreenAnimationControl;
 class BodyControl;
 class AttachmentControl;
 class SoundControl;
-class AboutBox;
+class HelpBox;
 class LicensePresenter;
 
 class ControlPanel final : public QWidget {
   Q_OBJECT
 
 public:
-  explicit ControlPanel(LicensePresenter *presenter, bool startHideGL);
+  explicit ControlPanel(bool startHideGL);
   ~ControlPanel() noexcept final;
 
 signals:
@@ -67,7 +67,7 @@ private:
   AttachmentControl *m_AttachmentControl;
   SoundControl *m_SoundControl;
   ExtraControl *m_ExtraControl;
-  AboutBox *m_AboutBox;
+  HelpBox *m_HelpBox;
 
   QPushButton *m_OpenGLSettingsButton;
   QPushButton *m_CameraSettingsButton;
@@ -77,7 +77,7 @@ private:
   QPushButton *m_PoseEstimationButton;
   QPushButton *m_VolumeAnalysisButton;
   QPushButton *m_ExtraSettingsButton;
-  QPushButton *m_AboutButton;
+  QPushButton *m_HelpButton;
 };
 
 #endif // PROJECT_WG_UINEXT_CONTROL_PANEL_H

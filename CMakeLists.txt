@@ -135,6 +135,7 @@ set(PROJECT_SOURCES
     src/ui_next/SoundControl.cc
     src/ui_next/ExtraControl.cc
     src/ui_next/AboutBox.cc
+    src/ui_next/HelpBox.cc
     src/ui_next/LicensePresenter.cc
     src/ui_next/GLWindow.cc
     src/ui_next/SearchDialog.cc
@@ -149,6 +150,7 @@ set(PROJECT_SOURCES
     include/ui_next/SoundControl.h
     include/ui_next/ExtraControl.h
     include/ui_next/AboutBox.h
+    include/ui_next/HelpBox.h
     include/ui_next/LicensePresenter.h
     include/ui_next/GLWindow.h
     include/ui_next/CloseSignallingWidget.h

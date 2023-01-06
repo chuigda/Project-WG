@@ -176,24 +176,6 @@ public:
         }
         f->glEnd();
       }
-
-      /*
-      f->glBegin(GL_QUADS);
-      {
-        f->glColor3f(1.0f, 0.0f, 0.0f);
-        f->glVertex3f(4.0f, 4.425f, 0.0f);
-
-        f->glColor3f(1.0f, 0.0f, 0.0f);
-        f->glVertex3f(17.0f, 4.425f, 0.0f);
-
-        f->glColor3f(0.0f, 0.0f, 1.0f);
-        f->glVertex3f(17.0f, 104.0f + 4.425f, 0.0f);
-
-        f->glColor3f(0.0f, 0.0f, 1.0f);
-        f->glVertex3f(4.0f, 104.0f + 4.425f, 0.0f);
-      }
-      f->glEnd();
-      */
     }
     f->glPopAttrib();
     f->glPopClientAttrib();
