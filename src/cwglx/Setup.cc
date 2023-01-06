@@ -28,7 +28,8 @@ void SetupPreferredSettings(GLFunctions *f) noexcept {
 
   f->glEnable(GL_MULTISAMPLE);
   f->glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-  f->glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+  // disabled
+  // f->glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
   f->glEnable(GL_TEXTURE_2D);
   f->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);

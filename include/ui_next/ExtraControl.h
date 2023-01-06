@@ -16,11 +16,14 @@ struct StatusExtra {
   GLfloat strokeAdjustment = 1.001f;
 };
 
+class GLWindow;
+
 class ExtraControl final : public CloseSignallingWidget {
   Q_OBJECT
 
 public:
-  explicit ExtraControl(StatusExtra *statusExtra);
+  explicit ExtraControl(StatusExtra *statusExtra,
+                        GLWindow *glWindow);
 
 signals:
 #pragma clang diagnostic push
@@ -30,6 +33,7 @@ signals:
 
 private:
   StatusExtra *m_StatusExtra;
+  GLWindow *m_GLWindow;
 };
 
 #endif // PROJECT_WG_UINEXT_EXTRA_CONTROL_H

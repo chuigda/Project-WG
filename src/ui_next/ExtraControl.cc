@@ -6,6 +6,9 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>
+#include <QRadioButton>
+
+#include "ui_next/GLWindow.h"
 
 static QSpinBox *CreateColorSpinBox(GLfloat *linkedValue) {
   QSpinBox *ret = new QSpinBox();
@@ -36,8 +39,9 @@ static QDoubleSpinBox *CreateAPSpinBox(GLfloat *linkedValue,
   return ret;
 }
 
-ExtraControl::ExtraControl(StatusExtra *statusExtra)
-  : m_StatusExtra(statusExtra)
+ExtraControl::ExtraControl(StatusExtra *statusExtra, GLWindow *glWindow)
+  : m_StatusExtra(statusExtra),
+    m_GLWindow(glWindow)
 {
   setWindowTitle("附加选项");
 
@@ -92,6 +96,37 @@ ExtraControl::ExtraControl(StatusExtra *statusExtra)
         }
       );
     }
+  }
+
+  {
+    QGroupBox *groupBox = new QGroupBox("抗锯齿");
+    layout->addWidget(groupBox);
+
+    QVBoxLayout *vBox = new QVBoxLayout();
+    groupBox->setLayout(vBox);
+
+    QRadioButton *disabled = new QRadioButton("关闭抗锯齿");
+    QRadioButton *msaa8 = new QRadioButton("8x MSAA");
+    msaa8->setChecked(true);
+
+    vBox->addWidget(disabled);
+    vBox->addWidget(msaa8);
+
+    connect(disabled, &QRadioButton::toggled, this, [this](bool toggled) {
+      if (toggled) {
+        m_GLWindow->RunWithGLContext([this] {
+          m_GLWindow->glDisable(GL_MULTISAMPLE);
+        });
+      }
+    });
+
+    connect(msaa8, &QRadioButton::toggled, this, [this](bool toggled) {
+      if (toggled) {
+        m_GLWindow->RunWithGLContext([this] {
+          m_GLWindow->glEnable(GL_MULTISAMPLE);
+        });
+      }
+    });
   }
 
   {
