@@ -6,7 +6,6 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>
-#include <QRadioButton>
 
 #include "ui_next/GLWindow.h"
 
@@ -105,31 +104,25 @@ ExtraControl::ExtraControl(StatusExtra *statusExtra, GLWindow *glWindow)
     QVBoxLayout *vBox = new QVBoxLayout();
     groupBox->setLayout(vBox);
 
-    QRadioButton *disabled = new QRadioButton("关闭抗锯齿");
-    QRadioButton *msaa8 = new QRadioButton("8x MSAA");
-    msaa8->setChecked(true);
+    QCheckBox *multisample = new QCheckBox("多重采样抗锯齿");
+    multisample->setToolTip("启用或关闭基于 <code>GL_MULTISAMPLE</code> 的多重采样抗锯齿");
+    multisample->setChecked(true);
 
     QCheckBox *lineSmooth = new QCheckBox("线条平滑");
+    lineSmooth->setToolTip("启用或关闭基于 <code>GL_LINE_SMOOTH</code> 的线条平滑<br/>");
     lineSmooth->setChecked(true);
 
-    vBox->addWidget(disabled);
-    vBox->addWidget(msaa8);
+    vBox->addWidget(multisample);
     vBox->addWidget(lineSmooth);
 
-    connect(disabled, &QRadioButton::toggled, this, [this](bool toggled) {
-      if (toggled) {
-        m_GLWindow->RunWithGLContext([this] {
-          m_GLWindow->glDisable(GL_MULTISAMPLE);
-        });
-      }
-    });
-
-    connect(msaa8, &QRadioButton::toggled, this, [this](bool toggled) {
-      if (toggled) {
-        m_GLWindow->RunWithGLContext([this] {
+    connect(multisample, &QCheckBox::toggled, this, [this](bool toggled) {
+      m_GLWindow->RunWithGLContext([this, toggled] {
+        if (toggled) {
           m_GLWindow->glEnable(GL_MULTISAMPLE);
-        });
-      }
+        } else {
+          m_GLWindow->glDisable(GL_MULTISAMPLE);
+        }
+      });
     });
 
     connect(lineSmooth, &QCheckBox::toggled, this, [this](bool toggled) {

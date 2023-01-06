@@ -195,7 +195,6 @@ set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 qt_finalize_executable(Project-WG)
 
 # Phong tester
-
 qt_add_executable(PhongTester MANUAL_FINALIZATION
                   extra/utility/phong/PhongTester.cc
                   extra/utility/phong/PaintWidget.cc
@@ -218,12 +217,6 @@ set_target_properties(PhongTester PROPERTIES WIN32_EXECUTABLE TRUE)
 qt_finalize_executable(PhongTester)
 
 # Attachments
-qt_add_library(TrivialAttachment SHARED extra/attachments/TrivialAttachment.cc)
-target_link_libraries(TrivialAttachment PRIVATE
-                      Qt6::Widgets
-                      Qt6::OpenGLWidgets
-                      CWGLX)
-
 qt_add_library(Emitter SHARED extra/attachments/Emitter/Emitter.cc
                               extra/attachments/Emitter/emitter.qrc)
 target_link_libraries(Emitter PRIVATE
@@ -233,12 +226,6 @@ target_link_libraries(Emitter PRIVATE
                       CWUtil)
 
 # Animations
-qt_add_library(TrivialAnimation SHARED extra/animations/TrivialAnimation.cc)
-target_link_libraries(TrivialAnimation PRIVATE
-                      Qt6::Widgets
-                      Qt6::OpenGLWidgets
-                      CWGLX)
-
 qt_add_library(Taunter SHARED extra/animations/Taunter/Taunter.cc
                               extra/animations/Taunter/taunter.qrc)
 target_link_libraries(Taunter PRIVATE
