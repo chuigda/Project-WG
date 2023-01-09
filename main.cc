@@ -1,5 +1,8 @@
 #include <QApplication>
 #include <QFile>
+#include <QSplashScreen>
+#include <QTimer>
+#include <QFontDatabase>
 
 #include "ui_next/LicensePresenter.h"
 #include "ui_next/ControlPanel.h"
@@ -52,6 +55,8 @@ int main(int argc, char *argv[]) {
   QApplication a { argc, argv };
   QApplication::setWindowIcon(QIcon(QPixmap(":/icon-v2.png")));
 
+  QFontDatabase::addApplicationFont(":/material-icons.ttf");
+
   QString startHideGLEnv = QString::fromLocal8Bit(qgetenv("START_HIDE_GL"));
   bool startHideGL = !startHideGLEnv.trimmed().isEmpty();
 
@@ -60,6 +65,17 @@ int main(int argc, char *argv[]) {
     delete presenter;
     return 0;
   }
+
+  QPixmap splashPixmap = QPixmap(":/splash.png");
+  qreal dpi = a.devicePixelRatio();
+  QSplashScreen splash(splashPixmap.scaled(640.0 / dpi, 480.0 / dpi));
+  splash.setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+  splash.setWindowFlag(Qt::SplashScreen, false);
+  splash.setEnabled(false);
+  splash.show();
+  QTimer::singleShot(2500, [&] {
+      splash.close();
+  });
 
   presenter->RequireAgreement(false);
   ControlPanel panel { startHideGL };

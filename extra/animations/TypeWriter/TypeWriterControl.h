@@ -26,6 +26,7 @@ private:
   QColor m_BackColor;
   QFont m_Font;
   QFontMetrics m_FontMetrics;
+  int m_AlignmentFlag;
 };
 
 #endif // PROJECT_WG_EXTRA_TYPEWRITER_CONTROL_H

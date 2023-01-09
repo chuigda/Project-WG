@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
+        <file>material-icons.ttf</file>
+        <file>splash.png</file>
         <file>icon-v2.png</file>
         <file>eye.9.png</file>
         <file>half-face.png</file>
@@ -19,7 +21,7 @@
         <file>help/pages/tracking/vts.html</file>
         <file>help/pages/tracking/osf.html</file>
         <file>help/pages/tracking/manual.html</file>
-        <file>help/images/help-system.jpg</file>
+        <file>help/images/help-system.png</file>
         <file>help/images/opengl.png</file>
         <file>help/images/position.png</file>
         <file>help/images/tracking/vts.png</file>

@@ -46,6 +46,28 @@ GLuint Texture2D::GetTextureId() const noexcept {
   return 0;
 }
 
+void Texture2D::UpdateContent(GLFunctions *f, const QImage &image) {
+  Q_ASSERT(!m_IsDeleted && "Texture2D has been deleted");
+  QImage rgbaImage = image.convertToFormat(QImage::Format_RGBA8888);
+
+  f->glBindTexture(GL_TEXTURE_2D, m_TextureId);
+  f->glTexImage2D(GL_TEXTURE_2D,
+                  0,
+                  GL_RGBA,
+                  rgbaImage.width(),
+                  rgbaImage.height(),
+                  0,
+                  GL_RGBA,
+                  GL_UNSIGNED_BYTE,
+                  rgbaImage.bits());
+
+  GLenum error = f->glGetError();
+  if (error != GL_NO_ERROR) {
+    qCritical() << "Texture2D::UpdateContent: failed updating texture:" << error;
+    std::abort();
+  }
+}
+
 void Texture2D::BeginTexture(GLFunctions *f) const noexcept {
   Q_ASSERT(!m_IsDeleted && "Texture2D has been deleted");
   f->glBindTexture(GL_TEXTURE_2D, m_TextureId);

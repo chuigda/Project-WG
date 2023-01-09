@@ -16,18 +16,20 @@ public:
 signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
+  void AboutToHideOrClose();
   void AboutToClose();
 #pragma clang diagnostic pop
 
 protected:
   void closeEvent(QCloseEvent *event) override {
     QWidget::closeEvent(event);
+    emit AboutToHideOrClose();
     emit AboutToClose();
   }
 
   void hideEvent(QHideEvent *event) override {
     QWidget::hideEvent(event);
-    emit AboutToClose();
+    emit AboutToHideOrClose();
   }
 };
 

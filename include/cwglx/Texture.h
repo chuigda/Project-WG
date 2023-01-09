@@ -18,6 +18,7 @@ public:
 
   [[nodiscard]] GLuint GetTextureId() const noexcept;
 
+  void UpdateContent(GLFunctions *f, const QImage &image);
   void BeginTexture(GLFunctions *f) const noexcept;
   void ApplyTexture(GLFunctions *f,
                     GLfloat x,

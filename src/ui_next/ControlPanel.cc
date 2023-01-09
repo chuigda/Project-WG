@@ -26,7 +26,7 @@ static void LinkButtonAndWidget(QPushButton *button, CloseSignallingWidget *widg
       widget->hide();
     }
   });
-  QObject::connect(widget, &CloseSignallingWidget::AboutToClose, button, [button] {
+  QObject::connect(widget, &CloseSignallingWidget::AboutToHideOrClose, button, [button] {
     button->blockSignals(true);
     button->setChecked(false);
     button->blockSignals(false);

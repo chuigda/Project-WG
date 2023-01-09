@@ -234,11 +234,11 @@ target_link_libraries(Taunter PRIVATE
                       CWGLX
                       CWUtil)
 
-# In-test animations
-qt_add_executable(TypeWriterTest
-                  extra/animations/TypeWriter/test.cc
-                  extra/animations/TypeWriter/TypeWriterControl.cc
-                  extra/animations/TypeWriter/TypeWriterControl.h)
-
-target_link_libraries(TypeWriterTest PRIVATE
-                      Qt6::Widgets)
+qt_add_library(TypeWriter SHARED extra/animations/TypeWriter/TypeWriter.cc
+                                 extra/animations/TypeWriter/TypeWriterControl.cc
+                                 extra/animations/TypeWriter/TypeWriterControl.h)
+target_link_libraries(TypeWriter PRIVATE
+                      Qt6::Widgets
+                      Qt6::OpenGLWidgets
+                      CWGLX
+                      CWUtil)
