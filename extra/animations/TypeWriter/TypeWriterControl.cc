@@ -9,6 +9,18 @@
 #include <QSpinBox>
 #include <QPushButton>
 #include <QColorDialog>
+#include <QGraphicsBlurEffect>
+
+QT_BEGIN_NAMESPACE
+// I don't know what's this, and this seems to be undocumented. But it works, weird.
+extern Q_WIDGETS_EXPORT
+void qt_blurImage(QPainter *p,
+                  QImage &blurImage,
+                  qreal radius,
+                  bool quality,
+                  bool alphaOnly,
+                  int transposed = 0);
+QT_END_NAMESPACE
 
 class PreviewWidget : public QWidget {
 public:
@@ -269,6 +281,13 @@ TypeWriterControl::TypeWriterControl(bool *contentChanged)
 QImage TypeWriterControl::capture() const {
   QImage image(m_PreviewWidget->size(), QImage::Format_RGBA8888);
   m_PreviewWidget->render(&image);
+
+  QPixmap pixmap(image.size());
+  pixmap.fill(Qt::transparent);
+
+  QPainter painter( &pixmap );
+  qt_blurImage(&painter, image, 3, true, false);
+
   return image;
 }
 
