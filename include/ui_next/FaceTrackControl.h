@@ -10,8 +10,6 @@ class OSFTrackControl;
 class ManualTrackControl;
 
 class TrackControl : public CloseSignallingWidget {
-  Q_OBJECT
-
 public:
   TrackControl(wgc0310::HeadStatus *headStatus,
                wgc0310::ScreenDisplayMode *screenDisplayMode,

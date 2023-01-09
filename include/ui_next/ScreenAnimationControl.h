@@ -15,8 +15,6 @@ class QRadioButton;
 struct StatusExtra;
 
 class ScreenAnimationControl : public CloseSignallingWidget {
-  Q_OBJECT
-
 public:
   ScreenAnimationControl(GLWindow *glWindow,
                          wgc0310::ScreenAnimationStatus *animationStatus,

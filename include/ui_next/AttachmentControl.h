@@ -14,8 +14,6 @@ class GLWindow;
 struct StatusExtra;
 
 class AttachmentControl final : public CloseSignallingWidget {
-  Q_OBJECT
-
 public:
   AttachmentControl(wgc0310::AttachmentStatus *attachmentStatus,
                     GLWindow *glWindow,

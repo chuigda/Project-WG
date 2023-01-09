@@ -24,8 +24,6 @@ struct LicenseContent {
 };
 
 class LicensePresenter final : public QDialog {
-  Q_OBJECT
-
 public:
   explicit LicensePresenter(QWidget *parent = nullptr);
 

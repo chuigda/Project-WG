@@ -134,7 +134,6 @@ set(PROJECT_SOURCES
     src/ui_next/track/ManualTrackControl.cc
     src/ui_next/SoundControl.cc
     src/ui_next/ExtraControl.cc
-    src/ui_next/AboutBox.cc
     src/ui_next/HelpBox.cc
     src/ui_next/LicensePresenter.cc
     src/ui_next/GLWindow.cc
@@ -149,7 +148,6 @@ set(PROJECT_SOURCES
     include/ui_next/FaceTrackControl.h
     include/ui_next/SoundControl.h
     include/ui_next/ExtraControl.h
-    include/ui_next/AboutBox.h
     include/ui_next/HelpBox.h
     include/ui_next/LicensePresenter.h
     include/ui_next/GLWindow.h
@@ -235,3 +233,12 @@ target_link_libraries(Taunter PRIVATE
                       Qt6::OpenGLWidgets
                       CWGLX
                       CWUtil)
+
+# In-test animations
+qt_add_executable(TypeWriterTest
+                  extra/animations/TypeWriter/test.cc
+                  extra/animations/TypeWriter/TypeWriterControl.cc
+                  extra/animations/TypeWriter/TypeWriterControl.h)
+
+target_link_libraries(TypeWriterTest PRIVATE
+                      Qt6::Widgets)

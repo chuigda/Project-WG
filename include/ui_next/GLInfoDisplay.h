@@ -9,8 +9,6 @@ class GLWindow;
 class SearchDialog;
 
 class GLInfoDisplay : public CloseSignallingWidget {
-  Q_OBJECT
-
 public:
   explicit GLInfoDisplay(GLWindow *glWindow);
 

@@ -4,8 +4,6 @@
 #include "CloseSignallingWidget.h"
 
 class HelpBox final : public CloseSignallingWidget {
-  Q_OBJECT
-
 public:
   explicit HelpBox(QWidget *parent = nullptr);
 };

@@ -18,7 +18,6 @@ signals:
 #pragma clang diagnostic pop
 
 private:
-  // Status output
   EntityStatus *m_EntityStatus;
 };
 
