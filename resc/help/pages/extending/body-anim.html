@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>扩展 Project-WG - 编写关节动画</title>
+</head>
+    <body>
+        <div class="title-margin" height="0">&nbsp;</div>
+        <center><h1>扩展 Project-WG - 编写关节动画</h1></center>
+        <hr />
+
+        <p>Project-WG 机器人左右侧共有 10 个可动关节。使用下面这样的脚本，可以定义一段动画:</p>
+        <div class="code-block">
+# 所有以井号开头的行都是注释<br />
+# “n”行用来定义动画的名称。如果不写 n 行，Project-WG 中会显示文件名<br />
+n=样例动画 <br />
+<br />
+# “s”行用来新开启一个动画分段，动画分段里所有的动作会同时开始播放，<br />
+# 而所有动作结束后才会播放下一个分段。 <br />
+# 一个动画应该至少有一个分段。 <br />
+s <br />
+# “l/r”行用来定义具体的动作，格式为: <br />
+# L/R 第几个关节 转动角度 在多少帧内完成 <br />
+# 无论输出帧率如何，Project-WG 内部会以大约 90 帧的速度计算动画 <br />
+l 1 15.0 25 <br />
+r 1 15.0 25 <br />
+l 3 15.0 25 <br />
+r 3 -15.0 25
+        </div>
+        <p>上面的脚本会让 Project-WG 的左右两侧的第一个和第三个关节同时转动 15 度。动作持续共 25 帧。</p>
+        <p>将编写完成的动画置入 <span class="code">animations/body</span> 文件夹即可生效。依据个人喜好，动画文件后缀名使用 <span class="code">.txt</span>，<span class="code">.cfg</span> 或者 <span class="code">.anim</span> 均可。增/删/改动画在 Project-WG 程序运行时也能进行。</p>
+        <p><i>提示: 可以在关节动画页面中打开详细模式，观察并尝试调整关节的旋转角度。这样可以相对“可视化”地“调试”关节动画。</i></p>
+    </body>
+</html>

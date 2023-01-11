@@ -1,16 +1,27 @@
 <RCC>
     <qresource prefix="/">
+        <!-- Google Material IconFont -->
         <file>material-icons.ttf</file>
+
+        <!-- Splash screen -->
         <file>splash.png</file>
+
+        <!-- Icon -->
         <file>icon-v2.png</file>
+
+        <!-- Rendering textures -->
         <file>eye.9.png</file>
         <file>half-face.png</file>
         <file>half-face-mouth-open.png</file>
+
+        <!-- License text -->
         <file>../LICENSE</file>
         <file>../LICENSE-CC-BY-SA</file>
         <file>PREAMBLE</file>
         <file>AGPL-BRIEF</file>
         <file>CC-BY-SA-BRIEF</file>
+
+        <!-- Help -->
         <file>help/index.html</file>
         <file>help/error.html</file>
         <file>help/index.css</file>
@@ -21,6 +32,15 @@
         <file>help/pages/tracking/vts.html</file>
         <file>help/pages/tracking/osf.html</file>
         <file>help/pages/tracking/manual.html</file>
+        <file>help/pages/body-anim.html</file>
+        <file>help/pages/attachment.html</file>
+        <file>help/pages/screen-anim.html</file>
+        <file>help/pages/audio-analysis.html</file>
+        <file>help/pages/advanced.html</file>
+        <file>help/pages/extending/body-anim.html</file>
+        <file>help/pages/extending/static-anim.html</file>
+
+        <!-- Help images -->
         <file>help/images/help-system.png</file>
         <file>help/images/opengl.png</file>
         <file>help/images/position.png</file>

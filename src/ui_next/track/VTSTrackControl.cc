@@ -113,7 +113,7 @@ private slots:
       QString messageType = object["messageType"].toString(""); \
       if (messageType == "APIError") {\
         QString errorMessage = data["message"].toString("未知错误"); \
-        emit TrackingError(QStringLiteral("VTS 服务器返回了错误响应：%1").arg(errorMessage)); \
+        emit TrackingError(QStringLiteral("VTS 服务器返回了错误响应: %1").arg(errorMessage)); \
         StopCommunication(); \
         return; \
       } \

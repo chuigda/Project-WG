@@ -1,7 +1,7 @@
 = Project-WG
 Author: Chuigda<icey@icey.tech>
 
-试图用 OpenGL 3.3（Compatibility Profile）画个可爱（？大概吧）的小机器人。
+试图用 OpenGL 3.3 (Compatibility Profile) 画个可爱 (？大概吧) 的小机器人。
 
 Try drawing a cute (?maybe) robot with OpenGL 3.3 (Compatibility Profile, i.e. Fixed function pipeline)
 
