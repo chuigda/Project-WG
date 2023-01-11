@@ -25,6 +25,7 @@ BEGIN
             VALUE "FileVersion", WG_PRODUCT_VERSION_STRING
             VALUE "OriginalFilename", "Project-WG.exe"
             VALUE "InternalName", "Project-WG.exe"
+        END
     END
     BLOCK "VarFileInfo"
     BEGIN
