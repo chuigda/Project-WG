@@ -23,6 +23,7 @@
 &nbsp;&nbsp;<br />
 &nbsp;&nbsp;# “l/r”行用来定义一个的动作，格式为: <br />
 &nbsp;&nbsp;# L/R 第几个关节 转动角度 在多少帧内完成<br />
+&nbsp;&nbsp;# 关节从 0 开始计数<br />
 &nbsp;&nbsp;l 1 15.0 25 <br />
 &nbsp;&nbsp;r 1 15.0 25 <br />
 &nbsp;&nbsp;l 3 15.0 25 <br />
@@ -31,7 +32,7 @@
 &nbsp;&nbsp;# 无论输出帧率如何，Project-WG 内部总是会以大约<br />
 &nbsp;&nbsp;# 90 帧的速度计算动画
         </div>
-        <p>上面的脚本会让机器人的左右两侧的第一个和第三个关节同时转动 15 度。动作持续共 25 帧。</p>
+        <p>上面的脚本会让机器人的左右两侧的第二个和第四个关节同时转动 15 度。动作持续共 25 帧。</p>
         <p>将编写完成的动画置入 <span class="code">animations/body</span> 文件夹即可生效。依据个人喜好，动画文件后缀名使用 <span class="code">.txt</span>，<span class="code">.cfg</span> 或者 <span class="code">.anim</span> 均可。增/删/改动画在 Project-WG 程序运行时也能进行。</p>
         <p><i>提示: 可以在关节动画页面中打开详细模式，观察并尝试调整关节的旋转角度。这样可以相对“可视化”地“调试”关节动画。</i></p>
     </body>
