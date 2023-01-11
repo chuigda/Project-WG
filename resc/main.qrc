@@ -41,7 +41,6 @@
         <file>help/pages/extending/static-anim.html</file>
 
         <!-- Help images -->
-        <file>help/images/help-system.png</file>
         <file>help/images/opengl.png</file>
         <file>help/images/position.png</file>
         <file>help/images/tracking/vts.png</file>
@@ -53,5 +52,17 @@
         <file>help/images/tracking/manual.png</file>
         <file>help/images/tracking/manual-audio.png</file>
         <file>help/images/tracking/manual-mouth.png</file>
+        <file>help/images/body-anim.png</file>
+        <file>help/images/body-anim-expand.png</file>
+        <file>help/images/body-anim-spacium.png</file>
+        <file>help/images/attachment.png</file>
+        <file>help/images/attachment-spacium.png</file>
+        <file>help/images/screen.png</file>
+        <file>help/images/screen-audio.png</file>
+        <file>help/images/screen-static-expand.png</file>
+        <file>help/images/screen-anim-expand.png</file>
+        <file>help/images/screen-anim-typewriter.png</file>
+        <file>help/images/audio.png</file>
+        <file>help/images/extra.png</file>
     </qresource>
 </RCC>
