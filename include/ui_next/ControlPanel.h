@@ -30,6 +30,8 @@ public:
   explicit ControlPanel(bool startHideGL);
   ~ControlPanel() noexcept final;
 
+  void DoneSplash();
+
 signals:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "NotImplementedFunctions"
@@ -56,6 +58,7 @@ private:
   cw::CircularBuffer<qreal, 160> m_VolumeLevels;
   bool m_VolumeLevelsUpdated;
   StatusExtra m_ExtraStatus;
+  bool m_StartHideGL;
 
   // widgets
   GLWindow *m_GLWindow;

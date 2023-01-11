@@ -73,13 +73,14 @@ int main(int argc, char *argv[]) {
   splash.setWindowFlag(Qt::SplashScreen, false);
   splash.setEnabled(false);
   splash.show();
-  QTimer::singleShot(2500, [&] {
-      splash.close();
-  });
 
-  presenter->RequireAgreement(false);
   ControlPanel panel { startHideGL };
   panel.show();
+
+  QTimer::singleShot(2500, [&] {
+      splash.close();
+      panel.DoneSplash();
+  });
 
   return QApplication::exec();
 }

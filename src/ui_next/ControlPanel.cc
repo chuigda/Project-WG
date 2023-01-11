@@ -38,6 +38,7 @@ ControlPanel::ControlPanel(bool startHideGL)
     m_ScreenDisplayMode(wgc0310::ScreenDisplayMode::CapturedExpression),
     m_VolumeLevels(0.0),
     m_VolumeLevelsUpdated(false),
+    m_StartHideGL(startHideGL),
     m_GLWindow(new GLWindow(
       &m_EntityStatus,
       &m_HeadStatus,
@@ -76,7 +77,6 @@ ControlPanel::ControlPanel(bool startHideGL)
   setWindowTitle("控制面板");
 
   m_WorkerThread.start();
-  m_GLWindow->show();
 
   QTimer *timer = new QTimer(this);
   timer->setTimerType(Qt::PreciseTimer);
@@ -153,15 +153,17 @@ ControlPanel::ControlPanel(bool startHideGL)
   // and we did not reimplement `sizeHint`
   setFixedSize(sizeHint());
 #pragma clang diagnostic pop
-
-  if (startHideGL) {
-    m_GLWindow->hide();
-  }
 }
 
 ControlPanel::~ControlPanel() noexcept {
   m_WorkerThread.quit();
   m_WorkerThread.wait();
+}
+
+void ControlPanel::DoneSplash() {
+  if (!m_StartHideGL) {
+    m_GLWindow->show();
+  }
 }
 
 void ControlPanel::closeEvent(QCloseEvent *e) {
