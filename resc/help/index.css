@@ -3,15 +3,19 @@
     font-family: 'Noto Sans SC', 'Noto Sans', '等线', DengXian, 'sans-serif', sans;
 }
 
+h1 {
+    margin-top: 0;
+}
+
 td {
     padding: 4px;
 }
 
 .code {
-    font-family: 'Noto Sans Mono SC', 'Noto Sans Mono', monospace;
+    font-family: '等距更纱黑体 SC', 'Sarasa Gothic Mono SC', 'Sarasa Gothic Mono', 'Consolas', 'Lucida Console', monospace;
 }
 
 .code-block {
-    font-family: 'Noto Sans Mono SC', 'Noto Sans Mono', monospace;
+    font-family: '等距更纱黑体 SC', 'Sarasa Gothic Mono SC', 'Sarasa Gothic Mono', 'Consolas', 'Lucida Console', monospace;
     background-color: #dfdfdf;
 }
