@@ -9,7 +9,9 @@ PRODUCTVERSION  WG_PRODUCT_VERSION
 FILEOS          VOS_NT
 FILETYPE        VFT_DLL
 FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+#if defined(WG_PRIVATE_BUILD_INFO)
 FILEFLAGS       VS_FF_PRIVATEBUILD
+#endif
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
@@ -23,7 +25,9 @@ BEGIN
             VALUE "FileVersion", CWUTIL_FILE_VERSION_STRING
             VALUE "OriginalFilename", "CWUtil.dll"
             VALUE "InternalName", "CWUtil.dll"
-            VALUE "PrivateBuild", "Specially built for Mio/UPhoenix"
+#if defined(WG_PRIVATE_BUILD_INFO)
+            VALUE "PrivateBuild", WG_PRIVATE_BUILD_INFO
+#endif
         END
     END
     BLOCK "VarFileInfo"

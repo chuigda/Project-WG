@@ -11,7 +11,9 @@ PRODUCTVERSION  WG_PRODUCT_VERSION
 FILEOS          VOS_NT
 FILETYPE        VFT_APP
 FILEFLAGSMASK   VS_FFI_FILEFLAGSMASK
+#if defined(WG_PRIVATE_BUILD_INFO)
 FILEFLAGS       VS_FF_PRIVATEBUILD
+#endif
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
@@ -24,7 +26,9 @@ BEGIN
             VALUE "FileDescription", "Project-WG Main Executable"
             VALUE "FileVersion", WG_PRODUCT_VERSION_STRING
             VALUE "OriginalFilename", "Project-WG.exe"
-            VALUE "InternalName", "Project-WG.exe"
+#if defined(WG_PRIVATE_BUILD_INFO)
+            VALUE "PrivateBuild", WG_PRIVATE_BUILD_INFO
+#endif
         END
     END
     BLOCK "VarFileInfo"
