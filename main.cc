@@ -75,11 +75,12 @@ int main(int argc, char *argv[]) {
   splash.show();
 
   ControlPanel panel { startHideGL };
-  panel.show();
 
   QTimer::singleShot(2500, [&] {
-      splash.close();
-      panel.DoneSplash();
+    splash.close();
+
+    panel.show();
+    panel.DoneSplash();
   });
 
   return QApplication::exec();
