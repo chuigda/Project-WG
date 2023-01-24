@@ -5,7 +5,13 @@ Author: Chuigda<icey@icey.tech>
 
 Try drawing a cute (?maybe) robot with OpenGL 3.3
 
-image::./blobs/render-output.jpg[]
+== ⚠️⚠️⚠️ 警告：还没完成 ⚠️⚠️⚠️
+[quote]
+____
+基于 OpenGL Core Profile 的 0.4 版本还没完成，想要成品的可以先玩 Release 里发布的 0.3.x。
+
+OpenGL Core Profile based 0.4 edition is still under development, use 0.3.x if you want to play.
+____
 
 == ⚠️⚠️⚠️ 警告：有彩笔 ⚠️⚠️⚠️
 [quote]
@@ -20,11 +26,6 @@ is also very poor, with namings of tons of jokes and memes. So you may only get 
 
 Or, maybe you really like this project and had some problem while "using" it, then come to the "issue" page
 ____
-
-== ⚠️⚠️⚠️ 警告：不支持 Qt 6.4 ⚠️⚠️⚠️
-项目用 Qt 6.2.4 和 Qt 6.3.2 的表现是正常的，但 Qt 6.4 上会黑屏，暂未查明原因。
-
-This project works with Qt 6.2.4 and Qt 6.3.2, but black-screens with Qt 6.4. The reason is unknown yet.
 
 == 许可证
 * Project-WG 的代码使用 link:https://www.gnu.org/licenses/agpl-3.0.txt[AGPLv3] 授权
