@@ -77,9 +77,9 @@ public:
   }
 
   bool Initialize(GLFunctions *f) noexcept final {
-    m_Emitter = cw::LoadMesh(":/emitter.mesh");
-    m_SideCover = cw::LoadMesh(":/emitter-side-cover.mesh");
-    m_PowerSource = cw::LoadMesh(":/emitter-power-source.mesh");
+    m_Emitter = cw::LoadMesh(":/emitter.common");
+    m_SideCover = cw::LoadMesh(":/emitter-side-cover.common");
+    m_PowerSource = cw::LoadMesh(":/emitter-power-source.common");
 
     m_Emitter->PreInitialize(f);
     m_SideCover->PreInitialize(f);

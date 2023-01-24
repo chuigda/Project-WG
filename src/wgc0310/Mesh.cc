@@ -1,116 +1,133 @@
 #include "wgc0310/Mesh.h"
 
-#include "cwglx/Drawable.h"
-#include "cwglx/MeshLoader.h"
+#include "cwglx/GL/GLImpl.h"
+#include "cwglx/Base/Shader.h"
+#include "cwglx/Object/WavefrontLoader.h"
+#include "util/FileUtil.h"
 
 namespace wgc0310 {
 
-WGCMeshCollection::WGCMeshCollection()
-  : monitor(nullptr),
-    monitorIntake(nullptr),
-    wheel(nullptr),
-    chestBox(nullptr),
-    chestPlate(nullptr),
-    power(nullptr),
-    powerPin(nullptr),
-    colorTimer(nullptr),
-    colorTimerShell(nullptr),
-    abdomen(nullptr),
-    waist(nullptr),
-    shoulder(nullptr),
-    shoulderPlate(nullptr),
-    bigArm(nullptr),
-    bigArmCover(nullptr),
-    bigArmConnector(nullptr),
-    smallArm(nullptr),
-    smallArmCover(nullptr),
-    wheelSmall(nullptr),
-    claw(nullptr),
-    clawCover(nullptr)
-{}
-
-WGCMeshCollection::WGCMeshCollection(GLFunctions *f, cw::DrawableArena &arena)
-  : WGCMeshCollection()
+SimpleObject::SimpleObject(GLFunctions *f, cw::SimpleVertex *vertices, std::size_t vertexCount)
+  : m_VAO(f),
+    m_VBO(f),
+    m_VertexCount(static_cast<GLsizei>(vertexCount))
 {
-  Load(f, arena);
+  m_VAO.Bind(f);
+  m_VBO.Bind(f);
+  m_VBO.BufferData(f, vertices, vertexCount);
+
+  m_VAO.Unbind(f);
+  m_VBO.Unbind(f);
 }
 
-void WGCMeshCollection::Load(GLFunctions *f, cw::DrawableArena &arena) {
-  #define LOAD_MESH_MTL(PATH, MTL, TGT) \
-    { \
-      std::unique_ptr<cw::PlainMesh> triangles = cw::LoadMesh(PATH); \
-      triangles->PreInitialize(f); \
-      const auto meshPtr = arena.Put(std::move(triangles)); \
-      const auto mtlMeshPtr = arena.Put(                          \
-        std::make_unique<cw::MaterializedDrawable>( \
-          MTL, std::vector { meshPtr } \
-        ) \
-      ); \
-      TGT = mtlMeshPtr; \
-    }
+void SimpleObject::Draw(GLFunctions *f, bool unbind) {
+  m_VAO.Bind(f);
+  f->glDrawArrays(GL_TRIANGLES, 0, m_VertexCount);
+  if (unbind) {
+    m_VAO.Unbind(f);
+  }
+}
 
-  #define LOAD_MESH(PATH, TGT) \
-    { \
-      std::unique_ptr<cw::PlainMesh> mesh = cw::LoadMesh(PATH); \
-      mesh->PreInitialize(f); \
-      const auto meshPtr = arena.Put(std::move(mesh)); \
-      TGT = meshPtr; \
-    }
+void SimpleObject::Delete(GLFunctions *f) {
+  m_VAO.Delete(f);
+  m_VBO.Delete(f);
+}
 
-  #define LOAD_LINE_MESH(PATH, TGT) \
-    {                               \
-      std::unique_ptr<cw::PlainLineMesh> lineMesh = cw::LoadLineMesh(PATH); \
-      lineMesh->PreInitialize(f);   \
-      const auto meshPtr = arena.Put(std::move(lineMesh)); \
-      TGT = meshPtr; \
-    }
+StrokeObject::StrokeObject(GLFunctions *f, cw::PlainVertex *vertices, std::size_t vertexCount)
+  : m_VAO(f),
+    m_VBO(f),
+    m_VertexCount(static_cast<GLsizei>(vertexCount))
+{
+  m_VAO.Bind(f);
+  m_VBO.Bind(f);
+  m_VBO.BufferData(f, vertices, vertexCount);
 
-  const auto plastic = cw::GetPlasticMaterial();
-  const auto chrome = cw::GetChromeMaterial();
-  const auto steel = cw::GetSteel15N20Material();
-  const auto brass = cw::GetBrassMaterial();
-  const auto blackPlastic = cw::GetBlackPlasticMaterial();
-  const auto glass = cw::GetGlassMaterial();
+  m_VAO.Unbind(f);
+  m_VBO.Unbind(f);
+}
 
-  LOAD_MESH_MTL("./model/wheel.mesh", blackPlastic, wheel)
-  LOAD_MESH_MTL("./model/monitor.mesh", plastic, monitor)
-  LOAD_MESH_MTL("./model/monitor-intake.mesh", chrome, monitorIntake)
-  LOAD_LINE_MESH("./model/stroke/monitor.mesh", monitorStroke)
+void StrokeObject::Draw(GLFunctions *f, bool unbind) {
+  m_VAO.Bind(f);
+  f->glDrawArrays(GL_LINES, 0, m_VertexCount);
+  if (unbind) {
+    m_VAO.Unbind(f);
+  }
+}
 
-  LOAD_MESH_MTL("./model/chest-box.mesh", plastic, chestBox)
-  LOAD_LINE_MESH("./model/stroke/chest-box.mesh", chestBoxStroke)
-  LOAD_MESH_MTL("./model/chest-plate.mesh", chrome, chestPlate)
-  LOAD_MESH_MTL("./model/power.mesh", blackPlastic, power)
-  LOAD_MESH_MTL("./model/power-pin.mesh", brass, powerPin)
-  LOAD_MESH_MTL("./model/ber-shell.mesh", glass, colorTimerShell)
-  LOAD_MESH("./model/ber.mesh", colorTimer)
+void StrokeObject::Delete(GLFunctions *f) {
+  m_VAO.Delete(f);
+  m_VBO.Delete(f);
+}
 
-  LOAD_MESH_MTL("./model/abdomen.mesh", blackPlastic, abdomen)
-  LOAD_MESH_MTL("./model/waist.mesh", plastic, waist)
-  LOAD_LINE_MESH("./model/stroke/abdomen.mesh", abdomenStroke)
-  LOAD_LINE_MESH("./model/stroke/waist.mesh", waistStroke)
+std::unique_ptr<WGCMeshCollection> LoadWGCMesh(GLFunctions *f) {
+  auto teapot = cw::LoadMesh("./model/teapot.mesh", 6.0);
 
-  LOAD_MESH_MTL("./model/shoulder-connector.mesh", plastic, shoulder)
-  LOAD_MESH_MTL("./model/shoulder-plate.mesh", chrome, shoulderPlate)
-  LOAD_LINE_MESH("./model/stroke/shoulder.mesh", shoulderStroke)
+  auto monitor = cw::LoadMesh("./model/monitor.mesh");
+  auto monitorIntake = cw::LoadMesh("./model/monitor-intake.mesh");
+  auto wheel = cw::LoadMesh("./model/wheel.mesh");
 
-  LOAD_MESH_MTL("./model/big-arm.mesh", chrome, bigArm)
-  LOAD_MESH_MTL("./model/big-arm-cover.mesh", plastic, bigArmCover)
-  LOAD_LINE_MESH("./model/stroke/big-arm.mesh", bigArmStroke)
+  auto chestBox = cw::LoadMesh("./model/chest-box.mesh");
+  auto chestPlate = cw::LoadMesh("./model/chest-plate.mesh");
+  auto power = cw::LoadMesh("./model/power.mesh");
+  auto powerPin = cw::LoadMesh("./model/power-pin.mesh");
+  auto colorTimer = cw::LoadMesh("./model/ber.mesh");
+  auto colorTimerShell = cw::LoadMesh("./model/ber-shell.mesh");
 
-  LOAD_MESH_MTL("./model/big-arm-connector.mesh", steel, bigArmConnector)
-  LOAD_LINE_MESH("./model/stroke/big-arm-connector.mesh", bigArmConnectorStroke)
+  auto abdomen = cw::LoadMesh("./model/abdomen.mesh");
+  auto waist = cw::LoadMesh("./model/waist.mesh");
 
-  LOAD_MESH_MTL("./model/small-arm.mesh", chrome, smallArm)
-  LOAD_MESH_MTL("./model/small-arm-cover.mesh", plastic, smallArmCover)
-  LOAD_LINE_MESH("./model/stroke/small-arm.mesh", smallArmStroke)
+  auto shoulder = cw::LoadMesh("./model/shoulder-connector.mesh");
+  auto shoulderPlate = cw::LoadMesh("./model/shoulder-plate.mesh");
 
-  LOAD_MESH_MTL("./model/wheel-small.mesh", blackPlastic, wheelSmall)
-  LOAD_MESH_MTL("./model/claw.mesh", steel, claw)
-  LOAD_MESH_MTL("./model/claw-cover.mesh", plastic, clawCover)
-  LOAD_LINE_MESH("./model/stroke/claw.mesh", clawStroke)
+  auto bigArm = cw::LoadMesh("./model/big-arm.mesh");
+  auto bigArmCover = cw::LoadMesh("./model/big-arm-cover.mesh");
+  auto bigArmConnector = cw::LoadMesh("./model/big-arm-connector.mesh");
 
-  #undef LOAD_MESH_MTL
+  auto smallArm = cw::LoadMesh("./model/small-arm.mesh");
+  auto smallArmCover = cw::LoadMesh("./model/small-arm-cover.mesh");
+
+  auto claw = cw::LoadMesh("./model/claw.mesh");
+  auto clawCover = cw::LoadMesh("./model/claw-cover.mesh");
+
+  auto wheelSmall = cw::LoadMesh("./model/wheel-small.mesh");
+
+  return std::unique_ptr<WGCMeshCollection>(new WGCMeshCollection { // NOLINT(modernize-make-unique)
+    .teapot = SimpleObject(f, teapot.data(), teapot.size()),
+
+    .monitor = SimpleObject(f, monitor.data(), monitor.size()),
+    .monitorIntake = SimpleObject(f, monitorIntake.data(), monitorIntake.size()),
+    .wheel = SimpleObject(f, wheel.data(), wheel.size()),
+
+    .chestBox = SimpleObject(f, chestBox.data(), chestBox.size()),
+    .chestPlate = SimpleObject(f, chestPlate.data(), chestPlate.size()),
+    .power = SimpleObject(f, power.data(), power.size()),
+    .powerPin = SimpleObject(f, powerPin.data(), powerPin.size()),
+    .colorTimer = SimpleObject(f, colorTimer.data(), colorTimer.size()),
+    .colorTimerShell = SimpleObject(f, colorTimerShell.data(), colorTimerShell.size()),
+
+    .abdomen = SimpleObject(f, abdomen.data(), abdomen.size()),
+    .waist = SimpleObject(f, waist.data(), waist.size()),
+
+    .shoulder = SimpleObject(f, shoulder.data(), shoulder.size()),
+    .shoulderPlate = SimpleObject(f, shoulderPlate.data(), shoulderPlate.size()),
+
+    .bigArm = SimpleObject(f, bigArm.data(), bigArm.size()),
+    .bigArmCover = SimpleObject(f, bigArmCover.data(), bigArmCover.size()),
+    .bigArmConnector = SimpleObject(f, bigArmConnector.data(), bigArmConnector.size()),
+
+    .smallArm = SimpleObject(f, smallArm.data(), smallArm.size()),
+    .smallArmCover = SimpleObject(f, smallArmCover.data(), smallArmCover.size()),
+
+    .claw = SimpleObject(f, claw.data(), claw.size()),
+    .clawCover = SimpleObject(f, clawCover.data(), clawCover.size()),
+
+    .wheelSmall = SimpleObject(f, wheelSmall.data(), wheelSmall.size())
+  });
+}
+
+void WGCMeshCollection::Delete(GLFunctions *f) {
+  monitor.Delete(f);
+  monitorIntake.Delete(f);
 }
 
 } // namespace wgc0310

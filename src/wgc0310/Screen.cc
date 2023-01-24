@@ -1,28 +1,39 @@
 #include "include/wgc0310/Screen.h"
 
 #include <cstdlib>
-#include <QThread>
-#include <QDebug>
 #include <QImage>
-#include "cwglx/GLImpl.h"
-#include "cwglx/Texture.h"
-#include "include/wgc0310/ScreenCurveHelper.h"
+#include <glm/vec2.hpp>
+#include "cwglx/GL/GLImpl.h"
+#include "cwglx/Base/VertexArrayObject.h"
+#include "cwglx/Base/VertexBufferObject.h"
+#include "cwglx/Base/VertexBufferObjectImpl.h"
+#include "cwglx/Base/ElementBufferObject.h"
+#include "cwglx/Base/VBOImpl/GLM.h"
+#include "cwglx/Base/Shader.h"
+#include "cwglx/Base/ShaderProgram.h"
+#include "wgc0310/ScreenCurveHelper.h"
 #include "util/Derive.h"
+#include "util/FileUtil.h"
 
 namespace wgc0310 {
+
+struct ScreenVertex {
+  glm::vec3 vertexCoord;
+  glm::vec2 texCoord;
+};
+
+using ScreenVertexVBO = CW_DEFINE_VBO_TYPE(ScreenVertex, vertexCoord, texCoord);
 
 class ScreenImpl {
 public:
   explicit ScreenImpl(GLFunctions *f);
   ~ScreenImpl();
 
-  std::vector<cw::VertexF> screenVertices;
-  std::vector<cw::Vertex2DF> screenTexCoords;
-  std::vector<GLuint> screenIndices;
-
   bool deleted;
-  std::array<GLuint, 3> vbo;
-  std::array<GLuint, 3> vbo2D;
+
+  std::unique_ptr<cw::VertexArrayObject> vao;
+  std::unique_ptr<ScreenVertexVBO> vbo;
+  std::unique_ptr<cw::ElementBufferObject> ebo;
 
   GLuint fbo;
   GLuint screenTextureId;
@@ -39,11 +50,11 @@ private:
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
-ScreenImpl::ScreenImpl(GLFunctions *f) {
+ScreenImpl::ScreenImpl(GLFunctions *f)
+  : deleted(false)
+{
   Initialize3D(f);
   InitializeTexture(f);
-
-  deleted = false;
 }
 #pragma clang diagnostic pop
 
@@ -55,18 +66,25 @@ ScreenImpl::~ScreenImpl() {
 }
 
 void ScreenImpl::Initialize3D(GLFunctions *f) {
-  std::vector<std::vector<cw::Vertex>> screenVertices_ =
+  std::vector<std::vector<glm::vec3>> screenVertices =
       ComputeScreenVertices(25.0, 18.75, 1.25, 160, 120);
+
+  std::vector<ScreenVertex> vertices;
+  vertices.reserve(160 * 120);
   for (int y = 0; y <= 120; y++) {
     for (int x = 0; x <= 160; x++) {
-      screenVertices.push_back(cw::VertexF::Downscale(screenVertices_[y][x]));
+      GLfloat u = static_cast<GLfloat>(x) / 160.0f;
+      GLfloat v = static_cast<GLfloat>(y) / 120.0f;
 
-      GLfloat texX = static_cast<GLfloat>(x) / 160.0f;
-      GLfloat texY = static_cast<GLfloat>(y) / 120.0f;
-      screenTexCoords.emplace_back(texX, texY);
+      vertices.push_back(ScreenVertex {
+        .vertexCoord = screenVertices[y][x],
+        .texCoord = glm::vec2 { u, v },
+      });
     }
   }
 
+  std::vector<GLuint> indices;
+  indices.reserve(160 * 120 * 2);
   for (int y = 0; y < 120; y ++) {
     for (int x = 0; x < 160; x ++) {
       int pointA = x + y * 161;
@@ -74,45 +92,30 @@ void ScreenImpl::Initialize3D(GLFunctions *f) {
       int pointC = (x + 1) + (y + 1) * 161;
       int pointD = (x + 1) + y * 161;
 
-      screenIndices.push_back(static_cast<GLuint>(pointA));
-      screenIndices.push_back(static_cast<GLuint>(pointB));
-      screenIndices.push_back(static_cast<GLuint>(pointC));
+      indices.push_back(static_cast<GLuint>(pointA));
+      indices.push_back(static_cast<GLuint>(pointB));
+      indices.push_back(static_cast<GLuint>(pointC));
 
-      screenIndices.push_back(static_cast<GLuint>(pointA));
-      screenIndices.push_back(static_cast<GLuint>(pointC));
-      screenIndices.push_back(static_cast<GLuint>(pointD));
+      indices.push_back(static_cast<GLuint>(pointA));
+      indices.push_back(static_cast<GLuint>(pointC));
+      indices.push_back(static_cast<GLuint>(pointD));
     }
   }
 
-  // initialize VBO for 3D things
-  f->glGenBuffers(3, vbo.data());
+  vao = std::make_unique<cw::VertexArrayObject>(f);
+  vao->Bind(f);
 
-  // 0 for vertices
-  f->glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-  f->glBufferData(
-      GL_ARRAY_BUFFER,
-      static_cast<GLsizei>(sizeof(cw::VertexF) * screenVertices.size()),
-      screenVertices.data(),
-      GL_STATIC_DRAW
-  );
+  vbo = std::make_unique<ScreenVertexVBO>(f);
+  vbo->Bind(f);
+  vbo->BufferData(f, vertices.data(), vertices.size());
 
-  // 1 for indices
-  f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1]);
-  f->glBufferData(
-      GL_ELEMENT_ARRAY_BUFFER,
-      static_cast<GLsizei>(sizeof(GLuint) * screenIndices.size()),
-      screenIndices.data(),
-      GL_STATIC_DRAW
-  );
+  ebo = std::make_unique<cw::ElementBufferObject>(f);
+  ebo->Bind(f);
+  ebo->BufferData(f, indices.data(), indices.size());
 
-  // 2 for texture coordinates
-  f->glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-  f->glBufferData(
-      GL_ARRAY_BUFFER,
-      static_cast<GLsizei>(sizeof(cw::Vertex2DF) * screenTexCoords.size()),
-      screenTexCoords.data(),
-      GL_STATIC_DRAW
-  );
+  vao->Unbind(f);
+  vbo->Unbind(f);
+  ebo->Unbind(f);
 }
 
 void ScreenImpl::InitializeTexture(GLFunctions *f) {
@@ -149,9 +152,13 @@ void ScreenImpl::InitializeTexture(GLFunctions *f) {
 
 void ScreenImpl::Delete(GLFunctions *f) {
   if (!deleted) {
-    f->glDeleteBuffers(3, vbo.data());
     f->glDeleteTextures(1, &screenTextureId);
     f->glDeleteFramebuffers(1, &fbo);
+
+    vao->Delete(f);
+    vbo->Delete(f);
+    ebo->Delete(f);
+
     deleted = true;
   }
 }
@@ -166,69 +173,23 @@ Screen::~Screen() {
 
 void Screen::BeginScreenContext(GLFunctions *f) const noexcept {
   f->glBindFramebuffer(GL_FRAMEBUFFER, m_Impl->fbo);
-
-  f->glPushAttrib(GL_ALL_ATTRIB_BITS);
-  f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
-
-  f->glViewport(0, 0, 640, 480);
-  f->glMatrixMode(GL_PROJECTION);
-  f->glLoadIdentity();
-  f->glOrtho(-320, 320, -240, 240, -1, 1);
-
-  f->glMatrixMode(GL_MODELVIEW);
-  f->glLoadIdentity();
-
-  f->glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-  f->glClear(GL_COLOR_BUFFER_BIT);
-  f->glTranslatef(0.0f, 0.0f, -0.5f);
-
-  f->glDisable(GL_LIGHTING);
-  f->glDisable(GL_MULTISAMPLE);
   f->glDisable(GL_DEPTH_TEST);
 }
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "readability-convert-member-functions-to-static"
 void Screen::DoneScreenContext(GLFunctions *f) const noexcept {
-  f->glPopClientAttrib();
-  f->glPopAttrib();
-
+  Q_UNUSED(this)
+  f->glEnable(GL_DEPTH_TEST);
   // no need to restore frame buffer here, we'll do that somewhere else
 }
-#pragma clang diagnostic pop
 
-void Screen::Draw(GLFunctions *f) const noexcept {
-  f->glPushAttrib(GL_TEXTURE_BIT | GL_COLOR_BUFFER_BIT | GL_LIGHTING_BIT);
-  f->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
-
-  f->glDisable(GL_LIGHTING);
-
-  // set color to pure white
-  f->glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-  // use the texture we've drawn
-  f->glEnable(GL_TEXTURE_2D);
+void Screen::Draw(GLFunctions *f, cw::ShaderProgram *shaderProgram) const noexcept {
+  f->glActiveTexture(GL_TEXTURE0);
   f->glBindTexture(GL_TEXTURE_2D, m_Impl->screenTextureId);
+  shaderProgram->SetUniform(f, QStringLiteral("screenTexture"), 0);
 
-  // bind our vbo
-  f->glEnableClientState(GL_VERTEX_ARRAY);
-  f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo[0]);
-  f->glVertexPointer(3, GL_FLOAT, 0, nullptr);
-
-  f->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-  f->glBindBuffer(GL_ARRAY_BUFFER, m_Impl->vbo[2]);
-  f->glTexCoordPointer(2, GL_FLOAT, 0, nullptr);
-
-  // draw the screen
-  f->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Impl->vbo[1]);
-  f->glDrawElements(GL_TRIANGLES,
-                    static_cast<GLsizei>(m_Impl->screenIndices.size()),
-                    GL_UNSIGNED_INT,
-                    nullptr);
-
-  // restore states
-  f->glPopClientAttrib();
-  f->glPopAttrib();
+  m_Impl->vao->Bind(f);
+  f->glDrawElements(GL_TRIANGLES, 120 * 160 * 6, GL_UNSIGNED_INT, nullptr);
+  m_Impl->vao->Unbind(f);
 }
 
 void Screen::Delete(GLFunctions *f) const noexcept {

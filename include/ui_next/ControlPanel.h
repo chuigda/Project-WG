@@ -6,6 +6,7 @@
 #include "wgc0310/ScreenAnimationStatus.h"
 #include "wgc0310/HeadStatus.h"
 #include "wgc0310/BodyStatus.h"
+#include "wgc0310/Shader.h"
 #include "wgc0310/AttachmentStatus.h"
 #include "ui_next/EntityStatus.h"
 #include "ui_next/ExtraControl.h"
@@ -20,6 +21,7 @@ class ScreenAnimationControl;
 class BodyControl;
 class AttachmentControl;
 class SoundControl;
+class ShaderEdit;
 class HelpBox;
 class LicensePresenter;
 
@@ -58,6 +60,7 @@ private:
   cw::CircularBuffer<qreal, 160> m_VolumeLevels;
   bool m_VolumeLevelsUpdated;
   StatusExtra m_ExtraStatus;
+
   bool m_StartHideGL;
 
   // widgets
@@ -70,6 +73,7 @@ private:
   AttachmentControl *m_AttachmentControl;
   SoundControl *m_SoundControl;
   ExtraControl *m_ExtraControl;
+  ShaderEdit *m_ShaderEdit;
   HelpBox *m_HelpBox;
 
   QPushButton *m_OpenGLSettingsButton;
@@ -80,6 +84,7 @@ private:
   QPushButton *m_PoseEstimationButton;
   QPushButton *m_VolumeAnalysisButton;
   QPushButton *m_ExtraSettingsButton;
+  QPushButton *m_ShaderEditButton;
   QPushButton *m_HelpButton;
 };
 

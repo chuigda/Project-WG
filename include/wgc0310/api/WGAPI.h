@@ -7,8 +7,8 @@
 #define WGAPI
 #endif // WGAPI
 
-// Current version: 0.3.0
-#define WGAPI_VERSION (0x00'03'0000)
+// Current version: 0.4.0
+#define WGAPI_VERSION (0x00'04'0000)
 
 namespace wgc0310 {
 extern "C" {

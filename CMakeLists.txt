@@ -29,6 +29,7 @@ find_package(Qt6 REQUIRED COMPONENTS
              OpenGLWidgets
              Multimedia
              WebSockets)
+find_package(glm REQUIRED)
 
 # if we are using Windows
 if (WIN32)
@@ -50,41 +51,34 @@ if (WIN32)
 endif()
 
 set(CWGLX_SOURCES
-    src/cwglx/Color.cc
-    src/cwglx/Material.cc
-    src/cwglx/MeshLoader.cc
-    src/cwglx/Texture.cc
-    src/cwglx/Drawable.cc
-    src/cwglx/DrawableArena.cc
-    src/cwglx/Vertex.cc
+
     src/cwglx/Setup.cc
-    src/cwglx/Light.cc
-    src/cwglx/GLInfo.cc
-    src/cwglx/RawMatrix.cc
-    include/cwglx/Color.h
-    include/cwglx/Material.h
-    include/cwglx/Texture.h
-    include/cwglx/Drawable.h
-    include/cwglx/DrawableArena.h
-    include/cwglx/Vertex.h
+    src/cwglx/Base/VertexArrayObject.cc
+    src/cwglx/Base/ElementBufferObject.cc
+    src/cwglx/Base/Texture.cc
+    src/cwglx/Base/Shader.cc
+    src/cwglx/Base/ShaderProgram.cc
+    src/cwglx/Object/Vertex.cc
+    src/cwglx/Object/Material.cc
+    src/cwglx/Object/Object.cc
+    src/cwglx/Object/WavefrontLoader.cc
+    src/cwglx/GL/GLInfo.cc
     include/cwglx/Setup.h
-    include/cwglx/Light.h
-    include/cwglx/Defs.h
-    include/cwglx/DefaultMaterials.inc
-    include/cwglx/GL.h
-    include/cwglx/GLImpl.h
-    include/cwglx/GLInfo.h
-    include/cwglx/RawMatrix.h
-
-    src/cwglx/drawable/PlainMesh.cc
-    src/cwglx/drawable/PlainLineMesh.cc
-    src/cwglx/drawable/Composition.cc
-    include/cwglx/drawable/PlainMesh.h
-    include/cwglx/drawable/PlainLineMesh.h
-    include/cwglx/drawable/Composition.h
-
-    src/glu/FakeGLU.cc
-    include/glu/FakeGLU.h
+    include/cwglx/Base/VertexArrayObject.h
+    include/cwglx/Base/VertexBufferObject.h
+    include/cwglx/Base/VertexBufferObjectImpl.h
+    include/cwglx/Base/VBOImpl/GLM.h
+    include/cwglx/Base/ElementBufferObject.h
+    include/cwglx/Base/Texture.h
+    include/cwglx/Base/Shader.h
+    include/cwglx/Base/ShaderProgram.h
+    include/cwglx/Object/Vertex.h
+    include/cwglx/Object/Material.h
+    include/cwglx/Object/Object.h
+    include/cwglx/Object/WavefrontLoader.h
+    include/cwglx/GL/GL.h
+    include/cwglx/GL/GLImpl.h
+    include/cwglx/GL/GLInfo.h
 )
 
 # CWGLX
@@ -94,7 +88,8 @@ qt_add_library(CWGLX ${CWGLX_SOURCES} ${CWGLX_RESC})
 
 target_link_libraries(CWGLX PRIVATE
                       Qt6::Widgets
-                      Qt6::OpenGLWidgets)
+                      Qt6::OpenGLWidgets
+                      glm)
 
 # CWUTIL
 set(CWUTIL_SOURCES
@@ -138,6 +133,9 @@ set(PROJECT_SOURCES
     src/ui_next/LicensePresenter.cc
     src/ui_next/GLWindow.cc
     src/ui_next/SearchDialog.cc
+    src/ui_next/ShaderEdit.cc
+    src/ui_next/ShaderHighlighter.cc
+    src/ui_next/CodeEdit.cc
     include/ui_next/EntityStatus.h
     include/ui_next/ControlPanel.h
     include/ui_next/GLInfoDisplay.h
@@ -153,22 +151,27 @@ set(PROJECT_SOURCES
     include/ui_next/GLWindow.h
     include/ui_next/CloseSignallingWidget.h
     include/ui_next/SearchDialog.h
+    include/ui_next/ShaderEdit.h
+    include/ui_next/ShaderHighlighter.h
+    include/ui_next/CodeEdit.h
 
     src/wgc0310/Mesh.cc
-    src/wgc0310/ScreenGlass.cc
+    src/wgc0310/Shader.cc
+    # src/wgc0310/ScreenGlass.cc
     src/wgc0310/Screen.cc
     src/wgc0310/ScreenCurveHelper.cc
     src/wgc0310/ScreenAnimationStatus.cc
     src/wgc0310/BodyAnim.cc
     src/wgc0310/BodyStatus.cc
     include/wgc0310/Mesh.h
-    include/wgc0310/ScreenGlass.h
+    include/wgc0310/Shader.h
+    # include/wgc0310/ScreenGlass.h
     include/wgc0310/Screen.h
     include/wgc0310/ScreenCurveHelper.h
     include/wgc0310/ScreenAnimationStatus.h
-    include/wgc0310/BodyStatus.h
-    include/wgc0310/BodyAnim.h
-    include/wgc0310/HeadStatus.h
+    # include/wgc0310/BodyStatus.h
+    # include/wgc0310/BodyAnim.h
+    # include/wgc0310/HeadStatus.h
     include/wgc0310/AttachmentStatus.h
 
     include/wgc0310/api/ScreenAnimation.h

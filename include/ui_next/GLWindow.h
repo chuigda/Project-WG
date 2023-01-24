@@ -2,27 +2,19 @@
 #define PROJECT_WG_UINEXT_GLWINDOW_H
 
 #include <QOpenGLWidget>
-#include "cwglx/Drawable.h"
-#include "cwglx/DrawableArena.h"
-#include "cwglx/GL.h"
-#include "cwglx/GLImpl.h"
-#include "cwglx/Light.h"
-#include "cwglx/Texture.h"
+#include "cwglx/GL/GL.h"
 #include "wgc0310/BodyStatus.h"
 #include "wgc0310/AttachmentStatus.h"
-#include "wgc0310/Mesh.h"
 #include "wgc0310/Screen.h"
+#include "wgc0310/Mesh.h"
 #include "wgc0310/HeadStatus.h"
 #include "wgc0310/ScreenAnimationStatus.h"
+#include "wgc0310/Shader.h"
 #include "ui_next/EntityStatus.h"
 #include "ui_next/ExtraControl.h"
 #include "util/CircularBuffer.h"
 
-namespace cw {
-struct RawMatrix;
-} // namespace cw
-
-class GLWindow final : public QOpenGLWidget, public GLFunctions {
+class GLWindow final : public QOpenGLWidget {
   Q_OBJECT
 
 public:
@@ -41,6 +33,11 @@ public:
   void EnablePerformanceCounter();
   GLuint64 QueryPerformanceCounter();
 
+  bool SetShader(std::unique_ptr<wgc0310::ShaderCollection> &&shader);
+
+  // OpenGL function
+  GLFunctions *GL;
+
 protected:
   void initializeGL() final;
   void paintGL() final;
@@ -54,16 +51,6 @@ signals:
 
 private:
   void DrawScreenContent();
-  void DrawAttachments(cw::RawMatrix const& rightBigArm,
-                       cw::RawMatrix const& rightSmallArm,
-                       cw::RawMatrix const& leftBigArm,
-                       cw::RawMatrix const& leftSmallArm);
-  void DrawArm(const wgc0310::ArmStatus &armStatus,
-               GLfloat coeff,
-               cw::RawMatrix *bigArmMat,
-               cw::RawMatrix *smallArmMat);
-  void DrawEye(float top, float bottom, float left, float right);
-  void DrawStroked(cw::Drawable const* mesh);
 
 private:
   // Internal status
@@ -78,24 +65,15 @@ private:
   cw::CircularBuffer<qreal, 160> *m_VolumeLevels;
   bool *m_VolumeLevelsUpdated;
   wgc0310::ScreenDisplayMode const *m_ScreenDisplayMode;
+
   StatusExtra const* m_StatusExtra;
 
-  // Internal states, OpenGL resources and so on
-  std::unique_ptr<cw::Light> m_Light;
-  std::unique_ptr<cw::Light> m_Light2;
+  std::unique_ptr<wgc0310::ShaderCollection> m_Shader;
+  std::unique_ptr<wgc0310::Screen> m_Screen;
+  std::unique_ptr<wgc0310::WGCMeshCollection> m_Mesh;
 
-  cw::DrawableArena m_Arena;
+  glm::mat4 m_Projection;
 
-  wgc0310::WGCMeshCollection m_Mesh;
-  cw::Drawable const* m_ScreenGlass;
-  wgc0310::Screen const* m_Screen;
-
-  std::unique_ptr<cw::Texture2D> m_EyeTexture;
-  std::unique_ptr<cw::Texture2D> m_MouthTexture;
-  std::unique_ptr<cw::Texture2D> m_MouthOpenTexture;
-  std::array<cw::Vertex2DF, 640> m_VolumeVertices;
-  std::array<GLuint, 640> m_VolumeIndices;
-  std::array<GLuint, 2> m_VolumeVBO;
   GLuint m_PerformanceCounter;
   bool m_PerformanceCounterEnabled;
 };

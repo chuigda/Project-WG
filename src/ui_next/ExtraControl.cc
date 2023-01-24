@@ -6,7 +6,6 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>
-
 #include "ui_next/GLWindow.h"
 
 static QSpinBox *CreateColorSpinBox(GLfloat *linkedValue) {
@@ -38,15 +37,17 @@ static QDoubleSpinBox *CreateAPSpinBox(GLfloat *linkedValue,
   return ret;
 }
 
-ExtraControl::ExtraControl(StatusExtra *statusExtra, GLWindow *glWindow)
-  : m_StatusExtra(statusExtra),
-    m_GLWindow(glWindow)
+ExtraControl::ExtraControl(GLWindow *glWindow,
+                           StatusExtra *statusExtra)
+  : m_GLWindow(glWindow),
+    m_StatusExtra(statusExtra)
 {
   setWindowTitle("附加选项");
 
   QVBoxLayout *layout = new QVBoxLayout();
   this->setLayout(layout);
 
+  // 常规设置
   {
     QGroupBox *groupBox = new QGroupBox("常规");
     layout->addWidget(groupBox);
@@ -69,10 +70,9 @@ ExtraControl::ExtraControl(StatusExtra *statusExtra, GLWindow *glWindow)
 
       QCheckBox *customClearColorEnabled = new QCheckBox("自定义背景色");
       customClearColorEnabled->setToolTip("不推荐。建议使用透明背景 + 游戏捕获");
-      std::array<GLfloat, 4> &colorArray = m_StatusExtra->clearColor.GetRawRepr();
-      QSpinBox *red = CreateColorSpinBox(&colorArray[0]);
-      QSpinBox *green = CreateColorSpinBox(&colorArray[1]);
-      QSpinBox *blue = CreateColorSpinBox(&colorArray[2]);
+      QSpinBox *red = CreateColorSpinBox(&m_StatusExtra->clearColor.r);
+      QSpinBox *green = CreateColorSpinBox(&m_StatusExtra->clearColor.g);
+      QSpinBox *blue = CreateColorSpinBox(&m_StatusExtra->clearColor.b);
 
       hBox->addWidget(customClearColorEnabled);
       hBox->addStretch();
@@ -97,6 +97,7 @@ ExtraControl::ExtraControl(StatusExtra *statusExtra, GLWindow *glWindow)
     }
   }
 
+  // 抗锯齿与线条平滑
   {
     QGroupBox *groupBox = new QGroupBox("抗锯齿");
     layout->addWidget(groupBox);
@@ -136,6 +137,7 @@ ExtraControl::ExtraControl(StatusExtra *statusExtra, GLWindow *glWindow)
     });
   }
 
+  // 描边
   {
     QGroupBox *groupBox = new QGroupBox("描边");
     layout->addWidget(groupBox);
@@ -152,10 +154,9 @@ ExtraControl::ExtraControl(StatusExtra *statusExtra, GLWindow *glWindow)
     hBox->addWidget(new QLabel("描边颜色"));
     hBox->addStretch();
 
-    std::array<GLfloat, 4>& colorArray = m_StatusExtra->strokeColor.GetRawRepr();
-    QSpinBox *red = CreateColorSpinBox(&colorArray[0]);
-    QSpinBox *green = CreateColorSpinBox(&colorArray[1]);
-    QSpinBox *blue = CreateColorSpinBox(&colorArray[2]);
+    QSpinBox *red = CreateColorSpinBox(&m_StatusExtra->strokeColor.r);
+    QSpinBox *green = CreateColorSpinBox(&m_StatusExtra->strokeColor.g);
+    QSpinBox *blue = CreateColorSpinBox(&m_StatusExtra->strokeColor.b);
     hBox->addWidget(new QLabel("R"));
     hBox->addWidget(red);
     hBox->addWidget(new QLabel("G"));

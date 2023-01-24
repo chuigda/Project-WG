@@ -2,8 +2,10 @@
 #define PROJECT_WG_UINEXT_CAMERA_ENTITY_STATUS_H
 
 #include <QtGui/qopengl.h>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
-#include "cwglx/GL.h"
+#include "cwglx/GL/GL.h"
 
 class EntityStatus {
 public:
@@ -28,7 +30,12 @@ public:
     *this = EntityStatus {};
   }
 
-  void ApplyEntityTransformation(GLFunctions *f) const noexcept;
+  void ToMatrix(glm::mat4 &matrix) const noexcept {
+    matrix = glm::translate(matrix, glm::vec3(-translateX, -translateY, -translateZ));
+    matrix = glm::rotate(matrix, glm::radians(entityRotateX), glm::vec3(1.0f, 0.0f, 0.0f));
+    matrix = glm::rotate(matrix, glm::radians(entityRotateY), glm::vec3(0.0f, 1.0f, 0.0f));
+    matrix = glm::rotate(matrix, glm::radians(entityRotateZ), glm::vec3(0.0f, 0.0f, 1.0f));
+  }
 };
 
 #endif // PROJECT_WG_UINEXT_CAMERA_ENTITY_STATUS_H

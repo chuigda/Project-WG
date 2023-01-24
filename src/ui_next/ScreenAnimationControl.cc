@@ -7,6 +7,7 @@
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QLabel>
+#include "cwglx/Base/Texture.h"
 #include "wgc0310/ScreenAnimationStatus.h"
 #include "ui_next/GLWindow.h"
 #include "util/DynLoad.h"
@@ -87,11 +88,7 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
       m_PlayingCapturedExpression->setChecked(true);
     }
     m_GLWindow->RunWithGLContext([this] {
-      m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
-      m_GLWindow->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
       this->ReloadStaticImages();
-      m_GLWindow->glPopClientAttrib();
-      m_GLWindow->glPopAttrib();
     });
   };
 
@@ -149,11 +146,7 @@ ScreenAnimationControl::ScreenAnimationControl(GLWindow *glWindow,
       m_PlayingCapturedExpression->setChecked(true);
     }
     m_GLWindow->RunWithGLContext([this] {
-      m_GLWindow->glPushAttrib(GL_ALL_ATTRIB_BITS);
-      m_GLWindow->glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
       this->ReloadScreenAnimations();
-      m_GLWindow->glPopClientAttrib();
-      m_GLWindow->glPopAttrib();
     });
   };
 
@@ -243,7 +236,7 @@ static void ClearLayout(QLayout *layout) {
 
 void ScreenAnimationControl::ReloadStaticImages() {
   for (const auto &image : m_StaticImages) {
-    image.texture->DeleteTexture(m_GLWindow);
+    image.texture->Delete(m_GLWindow->GL);
   }
   m_StaticImages.clear();
 
@@ -267,8 +260,7 @@ void ScreenAnimationControl::ReloadStaticImages() {
       continue;
     }
 
-    std::unique_ptr<cw::Texture2D> texture =
-      std::make_unique<cw::Texture2D>(image, m_GLWindow);
+    auto texture = std::make_unique<cw::Texture2D>(image, m_GLWindow->GL);
     m_StaticImages.push_back(wgc0310::StaticScreenImage {
       .imageName = file,
       .texture = std::move(texture)
@@ -303,7 +295,7 @@ void ScreenAnimationControl::ReloadStaticImages() {
 
 void ScreenAnimationControl::ReloadScreenAnimations() {
   for (const auto &animation : m_ScreenAnimations) {
-    animation->Delete(m_GLWindow);
+    animation->Delete(m_GLWindow->GL);
   }
   m_ScreenAnimations.clear();
   for (const auto &sharedObject : m_SharedObjects) {
@@ -385,7 +377,7 @@ void ScreenAnimationControl::ReloadScreenAnimations() {
       continue;
     }
 
-    animation->Initialize(m_GLWindow);
+    animation->Initialize(m_GLWindow->GL);
 
     m_ScreenAnimations.emplace_back(animation);
     m_SharedObjects.push_back(sharedObject);

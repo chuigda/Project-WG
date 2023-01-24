@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <QtGui/qopengl.h>
-#include "cwglx/Color.h"
+#include <glm/vec4.hpp>
 #include "wgc0310/BodyAnim.h"
 
 namespace wgc0310 {
@@ -91,18 +91,18 @@ public:
     }
   }
 
-  [[nodiscard]] constexpr inline cw::RGBAColorF GetTimerColor() const noexcept {
+  [[nodiscard]] constexpr inline glm::vec4 GetTimerColor() const noexcept {
     switch (colorTimerStatus) {
       case Blue:
-        return cw::RGBAColorF{0.0f, 0.75f, 1.0f, 1.0f};
+        return { 0.0f, 0.75f, 1.0f, 1.0f };
       case Blinking:
         if (blinkCounter > (blinkFrames / 2)) {
-          return cw::RGBAColorF{0.4, 0.4f, 0.4f, 1.0f};
+          return { 0.4, 0.4f, 0.4f, 1.0f };
         } else {
-          return cw::RGBAColorF{1.0f, 0.25f, 0.0f, 1.0f};
+          return { 1.0f, 0.25f, 0.0f, 1.0f };
         }
       case Gray:
-        return cw::RGBAColorF{0.4, 0.4f, 0.4f, 1.0f};
+        return { 0.4, 0.4f, 0.4f, 1.0f };
     }
   }
 };
