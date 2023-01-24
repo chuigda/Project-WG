@@ -49,8 +49,8 @@ public:
 
   void SetUniformMatrix4fv(GLFunctions *f, QString const& uniformName, GLfloat const* value);
 
-  CW_DERIVE_UNCOPYABLE(ShaderProgram);
-  CW_DERIVE_UNMOVABLE(ShaderProgram);
+  CW_DERIVE_UNCOPYABLE(ShaderProgram)
+  CW_DERIVE_UNMOVABLE(ShaderProgram)
 
 private:
   GLuint m_ProgramId;

@@ -6,6 +6,8 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>
+
+#include "cwglx/GL/GLImpl.h"
 #include "ui_next/GLWindow.h"
 
 static QSpinBox *CreateColorSpinBox(GLfloat *linkedValue) {
@@ -119,9 +121,9 @@ ExtraControl::ExtraControl(GLWindow *glWindow,
     connect(multisample, &QCheckBox::toggled, this, [this](bool toggled) {
       m_GLWindow->RunWithGLContext([this, toggled] {
         if (toggled) {
-          m_GLWindow->glEnable(GL_MULTISAMPLE);
+          m_GLWindow->GL->glEnable(GL_MULTISAMPLE);
         } else {
-          m_GLWindow->glDisable(GL_MULTISAMPLE);
+          m_GLWindow->GL->glDisable(GL_MULTISAMPLE);
         }
       });
     });
@@ -129,9 +131,9 @@ ExtraControl::ExtraControl(GLWindow *glWindow,
     connect(lineSmooth, &QCheckBox::toggled, this, [this](bool toggled) {
       m_GLWindow->RunWithGLContext([this, toggled] {
         if (toggled) {
-          m_GLWindow->glEnable(GL_LINE_SMOOTH);
+          m_GLWindow->GL->glEnable(GL_LINE_SMOOTH);
         } else {
-          m_GLWindow->glDisable(GL_LINE_SMOOTH);
+          m_GLWindow->GL->glDisable(GL_LINE_SMOOTH);
         }
       });
     });

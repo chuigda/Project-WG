@@ -23,8 +23,8 @@ public:
 
   [[nodiscard]] GLuint GetShaderId() const;
 
-  CW_DERIVE_UNCOPYABLE(Shader);
-  CW_DERIVE_UNMOVABLE(Shader);
+  CW_DERIVE_UNCOPYABLE(Shader)
+  CW_DERIVE_UNMOVABLE(Shader)
 
 private:
   QString m_ProgramText;

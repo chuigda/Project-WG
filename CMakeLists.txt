@@ -89,7 +89,8 @@ qt_add_library(CWGLX ${CWGLX_SOURCES} ${CWGLX_RESC})
 target_link_libraries(CWGLX PRIVATE
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
-                      glm)
+                      glm::glm
+                      CWUtil)
 
 # CWUTIL
 set(CWUTIL_SOURCES
@@ -115,7 +116,6 @@ target_link_libraries(CWUtil PRIVATE Qt6::Core)
 set(PROJECT_SOURCES
     main.cc
 
-    src/ui_next/EntityStatus.cc
     src/ui_next/ControlPanel.cc
     src/ui_next/GLInfoDisplay.cc
     src/ui_next/EntityControl.cc
@@ -191,7 +191,8 @@ target_link_libraries(Project-WG PRIVATE
                       Qt6::Multimedia
                       Qt6::WebSockets
                       CWGLX
-                      CWUtil)
+                      CWUtil
+                      glm::glm)
 
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 
@@ -204,7 +205,6 @@ qt_add_executable(PhongTester MANUAL_FINALIZATION
                   extra/utility/phong/PaintWidget.h
                   extra/utility/phong/TesterWidget.cc
                   extra/utility/phong/TesterWidget.h
-                  src/ui_next/EntityStatus.cc
                   include/ui_next/EntityStatus.h
                   resc/phong-tester.qrc
                   ${PHONG_TESTER_RESC})

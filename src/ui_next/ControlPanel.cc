@@ -63,7 +63,7 @@ ControlPanel::ControlPanel(bool startHideGL)
     m_BodyControl(new BodyControl(&m_BodyStatus, this)),
     m_AttachmentControl(new AttachmentControl(&m_AttachmentStatus, m_GLWindow, &m_ExtraStatus)),
     m_SoundControl(new SoundControl(&m_VolumeLevels, &m_VolumeLevelsUpdated, &m_WorkerThread)),
-    m_ExtraControl(new ExtraControl(&m_ExtraStatus, m_GLWindow)),
+    m_ExtraControl(new ExtraControl(m_GLWindow, &m_ExtraStatus)),
     m_ShaderEdit(new ShaderEdit(m_GLWindow)),
     m_HelpBox(new HelpBox()),
     m_OpenGLSettingsButton(new QPushButton("OpenGL")),

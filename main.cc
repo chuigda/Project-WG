@@ -3,6 +3,7 @@
 #include <QSplashScreen>
 #include <QTimer>
 #include <QFontDatabase>
+#include <QIcon>
 
 #include "ui_next/LicensePresenter.h"
 #include "ui_next/ControlPanel.h"
