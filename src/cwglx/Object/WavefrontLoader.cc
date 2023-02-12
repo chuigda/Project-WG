@@ -68,7 +68,7 @@ void LoadMaterialLibrary(GLObjectContext *ctx,
                  << "bad command (cannot set material properties without a live material)";
     }
 
-    if (command == "ka" || command == "kd" || command == "ka") {
+    if (command == "ka" || command == "kd" || command == "ks") {
       glm::vec4 *portion;
       if (command == "ka") {
         portion = &currentMaterial->ambient;
@@ -127,11 +127,8 @@ void LoadMaterialLibrary(GLObjectContext *ctx,
       float ns = parts[1].toFloat();
       currentMaterial->shine = ns;
     }
-    else if (command == "map_ka"
-               || command == "map_kd"
-               || command == "map_ks"
-               || command == "map_bump"
-               || command == "bump") {
+    else if (command == "map_ka" || command == "map_kd" || command == "map_ks"
+             || command == "map_bump" || command == "bump") {
       if (parts.length() != 2) {
         qWarning() << "LoadMaterialLibrary(GLObjectContext*, GLFunctions*, QString const&):"
                    << "when parsing line "
