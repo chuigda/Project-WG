@@ -11,68 +11,62 @@ void GLObjectContext::Delete(GLFunctions *f) {
   }
 }
 
-void GLObjectContext::AddTexture(QString texturePath,
-                                 std::unique_ptr<cw::Texture2D> texture)
+bool GLObjectContext::HasTexture(QString const& texturePath) const {
+  return m_TextureLibrary.contains(texturePath);
+}
+
+bool GLObjectContext::HasMaterial(QString const& materialName) const {
+  return m_MaterialLibrary.contains(materialName);
+}
+
+Texture2D const*
+GLObjectContext::AddTexture(QString texturePath,
+                            std::unique_ptr<cw::Texture2D> &&texture)
 {
-  m_TextureLibrary.insert(std::make_pair<>(
+  auto it = m_TextureLibrary.find(texturePath);
+
+  if (it != m_TextureLibrary.cend()) {
+    qWarning() << "GLObjectContext::AddTexture(QString, std::unique_ptr<Texture2D>&&):"
+               << "texture"
+               << texturePath
+               << "has been added (same-path)";
+    return it->second.get();
+  }
+
+  auto r = m_TextureLibrary.insert(std::make_pair<>(
     std::move(texturePath),
     std::move(texture))
   );
+  return r.first->second.get();
 }
 
-void GLObjectContext::AddMaterial(QString materialName,
-                                  glm::vec4 const& ambient,
-                                  glm::vec4 const& diffuse,
-                                  glm::vec4 const& specular,
-                                  GLfloat shine,
-                                  const QString &diffuseTexture,
-                                  const QString &specularTexture,
-                                  const QString &normalTexture)
+Material const*
+GLObjectContext::AddMaterial(QString materialName,
+                             std::unique_ptr<Material> &&material)
 {
-  if (m_MaterialLibrary.contains(materialName)) {
-    qWarning() << "GLObjectContext::AddMaterial(QString, ...):"
+  auto it = m_MaterialLibrary.find(materialName);
+
+  if (it != m_MaterialLibrary.cend()) {
+    qWarning() << "GLObjectContext::AddMaterial(QString, std::unique_ptr<Material>&&):"
                << "material"
                << materialName
-               << "has been added";
-    return;
+               << "has been added (same-name)";
+    return it->second.get();
   }
 
-  Texture2D const* diffuseTexturePtr = nullptr;
-  if (!diffuseTexture.isNull()) {
-    diffuseTexturePtr = GetTexture(diffuseTexture);
-  }
-
-  Texture2D const* specularTexturePtr = nullptr;
-  if (!specularTexture.isNull()) {
-    diffuseTexturePtr = GetTexture(specularTexture);
-  }
-
-  Texture2D const* normalTexturePtr = nullptr;
-  if (!normalTexture.isNull()) {
-    normalTexturePtr = GetTexture(normalTexture);
-  }
-
-  m_MaterialLibrary.insert(std::make_pair<>(
+  auto r = m_MaterialLibrary.insert(std::make_pair<>(
     std::move(materialName),
-    std::make_unique<Material>(
-      ambient,
-      diffuse,
-      specular,
-      shine,
-      diffuseTexturePtr,
-      specularTexturePtr,
-      normalTexturePtr,
-      SecretInternalsDoNotUseOrYouWillBeFired
-    )
+    std::move(material)
   ));
+  return r.first->second.get();
 }
 
-Texture2D const *GLObjectContext::GetTexture(const QString &textureName) const {
-  auto it = m_TextureLibrary.find(textureName);
+Texture2D const *GLObjectContext::GetTexture(const QString &texturePath) const {
+  auto it = m_TextureLibrary.find(texturePath);
   if (it == m_TextureLibrary.cend()) {
     qWarning() << "GLObjectContext::GetTexture(QString const&):"
                << "texture"
-               << textureName
+               << texturePath
                << "has not been loaded";
     return nullptr;
   }

@@ -27,8 +27,7 @@ struct Material {
                             GLfloat shine,
                             cw::Texture2D const* diffuseTexture,
                             cw::Texture2D const* specularTexture,
-                            cw::Texture2D const* normalTexture,
-                            Sinkrate)
+                            cw::Texture2D const* normalTexture)
     : ambient(ambient),
       diffuse(diffuse),
       specular(specular),
@@ -37,6 +36,16 @@ struct Material {
       specularTexture(specularTexture),
       normalTexture(normalTexture)
   {}
+
+  constexpr inline Material() : Material(
+    glm::vec4 { 0.0, 0.0, 0.0, 1.0 },
+    glm::vec4 { 0.0, 0.0, 0.0, 1.0 },
+    glm::vec4 { 0.0, 0.0, 0.0, 1.0 },
+    0.0,
+    nullptr,
+    nullptr,
+    nullptr
+  ) {}
 
   CW_DERIVE_UNCOPYABLE(Material)
   CW_DERIVE_UNMOVABLE(Material)

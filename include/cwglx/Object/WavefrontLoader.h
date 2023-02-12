@@ -6,8 +6,11 @@
 
 namespace cw {
 
-std::vector<SimpleVertex> LoadMesh(QString const& fileName, double ratio = 1.0);
-std::vector<PlainVertex> LoadLineMesh(QString const& fileName, double ratio = 1.0);
+class GLObjectContext;
+
+void LoadMaterialLibrary(GLObjectContext *ctx,
+                         GLFunctions *f,
+                         QString const& fileName);
 
 } // namespace cw
 

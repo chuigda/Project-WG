@@ -1,205 +1,194 @@
 #include "cwglx/Object/WavefrontLoader.h"
+
+#include "cwglx/Object/Object.h"
+#include "cwglx/Object/Material.h"
 #include "util/FileUtil.h"
 
-#include <glm/vec3.hpp>
 #include <QString>
-#include <QList>
 #include <QDebug>
-#include <glm/geometric.hpp>
+#include <QImage>
 
 namespace cw {
 
-#define PARSE_DOUBLE(v, s, r) \
-  double v = (s).toDouble(&(r)); \
-  if (!(r)) { \
-    warning << "error processing file:" \
-               << meshFile      \
-               << "line:"       \
-               << lineNo        \
-               << "(invalid v-line)"; \
-    return; \
-  }
+void LoadMaterialLibrary(GLObjectContext *ctx,
+                         GLFunctions *f,
+                         QString const &fileName) {
+  QString currentMaterialName;
+  std::unique_ptr<Material> currentMaterial;
 
-#define PARSE_UINT(v, s, r) \
-  std::size_t v = (s).toUInt(&(r)); \
-  if (!(r)) { \
-    warning << "error processing file:" \
-            << meshFile    \
-            << "line:"     \
-            << lineNo      \
-            << "(invalid f-line or l-line)"; \
-    return; \
-  }
+  QString fileContent = cw::ReadToString(fileName);
+  QStringList fileLines = fileContent.split('\n');
 
-static void ProcessMeshStmt(std::vector<SimpleVertex> *triangles,
-                            std::vector<glm::vec3>& verticesPool,
-                            const QString& meshLine,
-                            const QString& meshFile,
-                            size_t lineNo,
-                            double ratio)
-{
-  if (meshLine.isEmpty() || meshLine.startsWith('#')) {
-    return;
-  }
+  qsizetype lineNo = 0;
+  for (QString const &line: fileLines) {
+    lineNo += 1;
 
-  auto warning = qWarning().noquote();
-
-  QStringList parts = meshLine.split(' ');
-  if (parts.length() < 0) {
-    warning << "error processing file:" << meshFile << "line:" << lineNo;
-    return;
-  }
-
-  if (parts[0] == "v") {
-    if (parts.length() != 4) {
-      warning << "error processing file:"
-              << meshFile
-              << "line:"
-              << lineNo
-              << "(invalid v-line)";
-      return;
+    QString trimmed = line.trimmed();
+    if (trimmed.isEmpty() || trimmed.startsWith('#')) {
+      continue;
     }
 
-    bool success;
-    PARSE_DOUBLE(x, parts[1], success)
-    PARSE_DOUBLE(y, parts[2], success)
-    PARSE_DOUBLE(z, parts[3], success)
-
-    verticesPool.emplace_back(x * ratio, y * ratio, z * ratio);
-  } else if (parts[0] == "f") {
-    if (parts.length() != 4) {
-      warning << "error processing file:"
-              << meshFile
-              << "line:"
-              << lineNo
-              << "(invalid f-line)";
-      return;
+    QStringList parts = trimmed.split(' ');
+    if (parts.length() < 1) {
+      qWarning() << "LoadMaterialLibrary(GLObjectContext*, GLFunctions*, QString const&):"
+                 << "when parsing line "
+                 << lineNo
+                 << ":"
+                 << "bad command (no valid command parts)";
+      continue;
     }
 
-    bool success;
-    PARSE_UINT(idx1, parts[1], success)
-    PARSE_UINT(idx2, parts[2], success)
-    PARSE_UINT(idx3, parts[3], success)
+    QString command = parts[0].toLower();
 
-    glm::vec3 v1 = verticesPool[idx1 - 1];
-    glm::vec3 v2 = verticesPool[idx2 - 1];
-    glm::vec3 v3 = verticesPool[idx3 - 1];
+    if (command == "newmtl") {
+      if (parts.length() != 2) {
+        qWarning() << "LoadMaterialLibrary(GLObjectContext*, GLFunctions*, QString const&):"
+                   << "when parsing line "
+                   << lineNo
+                   << ":"
+                   << "bad command (newmtl expects 1 argument)";
+        continue;
+      }
 
-    glm::vec3 vn = glm::cross(v2 - v1, v3 - v2);
+      if (currentMaterial) {
+        ctx->AddMaterial(currentMaterialName, std::move(currentMaterial));
+      }
 
-    triangles->push_back(SimpleVertex { .vertexCoord = v1, .vertexNormal = vn });
-    triangles->push_back(SimpleVertex { .vertexCoord = v2, .vertexNormal = vn });
-    triangles->push_back(SimpleVertex { .vertexCoord = v3, .vertexNormal = vn });
-  } else if (parts[0] == "s" || parts[0] == "o") {
-    // do nothing, since we put only one object into one common file
-  } else {
-    warning << "warning: when processing file:"
-            << meshFile
-            << "line:"
-            << lineNo
-            << "(unknown command"
-            << parts[0]
-            << ")";
-    return;
-  }
-}
+      currentMaterialName = parts[1];
+      currentMaterial = std::make_unique<Material>();
 
-static void ProcessLineMeshStmt(std::vector<PlainVertex> *lines,
-                                std::vector<glm::vec3>& verticesPool,
-                                const QString& meshLine,
-                                const QString& meshFile,
-                                size_t lineNo,
-                                double ratio)
-{
-  if (meshLine.isEmpty() || meshLine.startsWith('#')) {
-    return;
-  }
-
-  auto warning = qWarning().noquote();
-
-  QStringList parts = meshLine.split(' ');
-  if (parts.length() < 0) {
-    warning << "error processing file:" << meshFile << "line:" << lineNo;
-    return;
-  }
-
-  if (parts[0] == "v") {
-    if (parts.length() != 4) {
-      warning << "error processing file:"
-              << meshFile
-              << "line:"
-              << lineNo
-              << "(invalid v-line)";
-      return;
+      continue;
     }
 
-    bool success;
-    PARSE_DOUBLE(x, parts[1], success)
-    PARSE_DOUBLE(y, parts[2], success)
-    PARSE_DOUBLE(z, parts[3], success)
-
-    verticesPool.emplace_back(x * ratio, y * ratio, z * ratio);
-  } else if (parts[0] == "l") {
-    if (parts.length() != 3) {
-      warning << "error processing file:"
-              << meshFile
-              << "line:"
-              << lineNo
-              << "(invalid l-line)";
-      return;
+    if (!currentMaterial) {
+      qWarning() << "LoadMaterialLibrary(GLObjectContext*, GLFunctions*, QString const&):"
+                 << "when parsing line "
+                 << lineNo
+                 << ":"
+                 << "bad command (cannot set material properties without a live material)";
     }
 
-    bool success;
-    PARSE_UINT(idx1, parts[1], success)
-    PARSE_UINT(idx2, parts[2], success)
+    if (command == "ka" || command == "kd" || command == "ka") {
+      glm::vec4 *portion;
+      if (command == "ka") {
+        portion = &currentMaterial->ambient;
+      } else if (command == "kd") {
+        portion = &currentMaterial->diffuse;
+      } else {
+        portion = &currentMaterial->specular;
+      }
 
-    lines->push_back(PlainVertex { .vertexCoord = verticesPool[idx1 - 1] });
-    lines->push_back(PlainVertex { .vertexCoord = verticesPool[idx2 - 1] });
-  } else if (parts[0] == "s" || parts[0] == "o") {
-    // do nothing, since we put only one object into one common file
-  } else {
-    warning << "warning: when processing file:"
-            << meshFile
-            << "line:"
-            << lineNo
-            << "(unknown command"
-            << parts[0]
-            << ")";
-    return;
+      if (parts.length() == 4) {
+        portion->r = parts[1].toFloat();
+        portion->g = parts[2].toFloat();
+        portion->b = parts[3].toFloat();
+      } else if (parts.length() == 5) {
+        portion->r = parts[1].toFloat();
+        portion->g = parts[2].toFloat();
+        portion->b = parts[3].toFloat();
+        portion->a = parts[4].toFloat();
+      } else {
+        qWarning() << "LoadMaterialLibrary(GLObjectContext*, GLFunctions*, QString const&):"
+                   << "when parsing line "
+                   << lineNo
+                   << ":"
+                   << "bad command (k commands expect 3 or 4 arguments)";
+      }
+    }
+    else if (command == "d" || command == "tr") {
+      if (parts.length() != 2) {
+        qWarning() << "LoadMaterialLibrary(GLObjectContext*, GLFunctions*, QString const&):"
+                   << "when parsing line "
+                   << lineNo
+                   << ":"
+                   << "bad command (d/tr expects 1 argument)";
+        continue;
+      }
+
+      float value = parts[1].toFloat();
+      if (command == "tr") {
+        value = 1.0f - value;
+      }
+
+      currentMaterial->ambient.a = value;
+      currentMaterial->diffuse.a = value;
+      currentMaterial->specular.a = value;
+    }
+    else if (command == "ns") {
+      if (parts.length() != 2) {
+        qWarning() << "LoadMaterialLibrary(GLObjectContext*, GLFunctions*, QString const&):"
+                   << "when parsing line "
+                   << lineNo
+                   << ":"
+                   << "bad command (ns expects 1 argument)";
+        continue;
+      }
+
+      float ns = parts[1].toFloat();
+      currentMaterial->shine = ns;
+    }
+    else if (command == "map_ka"
+               || command == "map_kd"
+               || command == "map_ks"
+               || command == "map_bump"
+               || command == "bump") {
+      if (parts.length() != 2) {
+        qWarning() << "LoadMaterialLibrary(GLObjectContext*, GLFunctions*, QString const&):"
+                   << "when parsing line "
+                   << lineNo
+                   << ":"
+                   << "bad command (map expects 1 argument)";
+        continue;
+      }
+
+      cw::Texture2D const **portion;
+      if (command == "map_ka") {
+        qWarning() << "LoadMaterialLibrary(GLObjectContext*, GLFunctions*, QString const&):"
+                   << "when parsing line "
+                   << lineNo
+                   << ":"
+                   << "ambient mapping not supported yet";
+        continue;
+      } else if (command == "map_kd") {
+        portion = &currentMaterial->diffuseTexture;
+      } else if (command == "map_ks") {
+        portion = &currentMaterial->specularTexture;
+      } else {
+        portion = &currentMaterial->normalTexture;
+      }
+
+      QString texturePath = parts[1];
+      if (ctx->HasTexture(texturePath)) {
+        *portion = ctx->GetTexture(texturePath);
+      } else {
+        QImage image;
+        if (!image.load(texturePath)) {
+          qWarning() << "LoadMaterialLibrary(GLObjectContext*, GLFunctions*, QString const&):"
+                     << "when parsing line "
+                     << lineNo
+                     << ":"
+                     << "cannot load texture: "
+                     << texturePath;
+          continue;
+        }
+
+        std::unique_ptr<Texture2D> texture = std::make_unique<Texture2D>(image, f);
+        *portion = ctx->AddTexture(texturePath, std::move(texture));
+      }
+    }
+    else {
+      qWarning() << "LoadMaterialLibrary(GLObjectContext*, GLFunctions*, QString const&):"
+                 << "when parsing line "
+                 << lineNo
+                 << ":"
+                 << "unsupported command: "
+                 << command;
+    }
   }
-}
 
-#undef PARSE_DOUBLE
-#undef PARSE_INT
-
-std::vector<SimpleVertex> LoadMesh(QString const& fileName, double ratio) {
-  QStringList content = ReadToString(fileName).split('\n');
-  std::vector<SimpleVertex> triangles;
-  std::vector<glm::vec3> verticesPool;
-  for (qsizetype i = 0; i < content.length(); ++i) {
-    ProcessMeshStmt(&triangles,
-                    verticesPool,
-                    content[i],
-                    fileName,
-                    i,
-                    ratio);
+  if (currentMaterial) {
+    ctx->AddMaterial(currentMaterialName, std::move(currentMaterial));
   }
-  return triangles;
-}
-
-std::vector<PlainVertex> LoadLineMesh(QString const& fileName, double ratio) {
-  QStringList content = ReadToString(fileName).split('\n');
-  std::vector<PlainVertex> lines;
-  std::vector<glm::vec3> verticesPool;
-  for (qsizetype i = 0; i < content.length(); ++i) {
-    ProcessLineMeshStmt(&lines,
-                        verticesPool,
-                        content[i],
-                        fileName,
-                        i,
-                        ratio);
-  }
-  return lines;
 }
 
 } // namespace cw

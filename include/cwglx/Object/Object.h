@@ -15,18 +15,15 @@ public:
 
   void Delete(GLFunctions *f);
 
-  void AddTexture(QString texturePath,
-                  std::unique_ptr<cw::Texture2D> texture);
-  void AddMaterial(QString materialName,
-                   glm::vec4 const& ambient = { 1.0f, 1.0f, 1.0f, 1.0f },
-                   glm::vec4 const& diffuse = { 1.0f, 1.0f, 1.0f, 1.0f },
-                   glm::vec4 const& specular = { 1.0f, 1.0f, 1.0f, 1.0f },
-                   GLfloat shine = 0.0f,
-                   QString const& diffuseTexture = QString(),
-                   QString const& specularTexture = QString(),
-                   QString const& normalTexture = QString());
+  bool HasTexture(QString const& texturePath) const;
+  bool HasMaterial(QString const& materialName) const;
 
-  Texture2D const* GetTexture(QString const& textureName) const;
+  Texture2D const* AddTexture(QString texturePath,
+                              std::unique_ptr<cw::Texture2D> &&texture);
+  Material const* AddMaterial(QString materialName,
+                              std::unique_ptr<Material> &&material);
+
+  Texture2D const* GetTexture(QString const& texturePath) const;
   Material const* GetMaterial(QString const& materialName) const;
 
 private:
