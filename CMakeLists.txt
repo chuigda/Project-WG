@@ -48,6 +48,10 @@ if (WIN32)
     set(CWGLX_RESC resc/win32/CWGLX.rc include/Version.h)
     set(PROJECT_WG_RESC resc/win32/Main.rc)
     set(PHONG_TESTER_RESC resc/win32/PhongTester.rc)
+
+    set(GLM_LINK_NAME glm::glm)
+else()
+    set(GLM_LINK_NAME glm)
 endif()
 
 set(CWGLX_SOURCES
@@ -89,14 +93,8 @@ qt_add_library(CWGLX ${CWGLX_SOURCES} ${CWGLX_RESC})
 target_link_libraries(CWGLX PRIVATE
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
+                      ${GLM_LINK_NAME}
                       CWUtil)
-
-if (WIN32)
-    # My installation requires this, don't know why though
-    target_link_libraries(CWGLX PRIVATE glm::glm)
-else()
-    target_link_libraries(CWGLX PRIVATE glm)
-endif()
 
 # CWUTIL
 set(CWUTIL_SOURCES
@@ -196,9 +194,9 @@ target_link_libraries(Project-WG PRIVATE
                       Qt6::OpenGLWidgets
                       Qt6::Multimedia
                       Qt6::WebSockets
+                      ${GLM_LINK_NAME}
                       CWGLX
-                      CWUtil
-                      glm::glm)
+                      CWUtil)
 
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 
