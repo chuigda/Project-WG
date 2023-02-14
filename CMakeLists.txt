@@ -89,8 +89,14 @@ qt_add_library(CWGLX ${CWGLX_SOURCES} ${CWGLX_RESC})
 target_link_libraries(CWGLX PRIVATE
                       Qt6::Widgets
                       Qt6::OpenGLWidgets
-                      glm::glm
                       CWUtil)
+
+if (WIN32)
+    # My installation requires this, don't know why though
+    target_link_libraries(CWGLX PRIVATE glm::glm)
+else()
+    target_link_libraries(CWGLX PRIVATE glm)
+endif()
 
 # CWUTIL
 set(CWUTIL_SOURCES
