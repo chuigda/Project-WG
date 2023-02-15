@@ -1,7 +1,7 @@
 #version 330 core
 
 in vec3 fragPos;
-in vec3 normal;
+in vec2 texCoord;
 
 struct Material {
     vec3 ambient;
@@ -11,11 +11,11 @@ struct Material {
 };
 
 uniform Material material;
-uniform vec3 light0Pos;
-uniform vec3 light1Pos;
+uniform sampler2D diffuseTex;
+uniform sampler2D normalTex;
 
 out vec4 fragColor;
 
 void main() {
-    fragColor = vec4(1.0, 0.5, 0.2, 1.0);
+    fragColor = texture(diffuseTex, texCoord);
 }
