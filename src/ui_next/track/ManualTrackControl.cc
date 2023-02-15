@@ -4,6 +4,7 @@
 #include <QKeyEvent>
 #include <QBoxLayout>
 #include <QLabel>
+
 #include "wgc0310/HeadStatus.h"
 #include "util/Constants.h"
 

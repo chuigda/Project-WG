@@ -29,6 +29,9 @@ TrackControl::TrackControl(wgc0310::HeadStatus *headStatus,
   QRadioButton *osfMode = new QRadioButton("OSF");
   modeSelectBox->addWidget(osfMode);
 
+  QRadioButton *mediaPipeMode = new QRadioButton("MediaPipe");
+  modeSelectBox->addWidget(mediaPipeMode);
+
   QRadioButton *manualMode = new QRadioButton("手动控制");
   modeSelectBox->addWidget(manualMode);
 

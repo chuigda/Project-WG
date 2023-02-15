@@ -2,8 +2,14 @@
 #define PROJECT_WG_FACE_TRACK_CONTROL_H
 
 #include <QWidget>
-#include "wgc0310/HeadStatus.h"
 #include "ui_next/CloseSignallingWidget.h"
+
+namespace wgc0310 {
+struct HeadStatus;
+class BodyStatus;
+
+enum class ScreenDisplayMode : std::int8_t;
+} // namespace wgc0310
 
 class VTSTrackControl;
 class OSFTrackControl;

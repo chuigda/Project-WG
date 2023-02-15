@@ -130,6 +130,7 @@ set(PROJECT_SOURCES
     src/ui_next/track/TrackControlImpl.h
     src/ui_next/track/VTSTrackControl.cc
     src/ui_next/track/OSFTrackControl.cc
+    src/ui_next/track/MPTrackControl.cc
     src/ui_next/track/ManualTrackControl.cc
     src/ui_next/SoundControl.cc
     src/ui_next/ExtraControl.cc

@@ -11,6 +11,8 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QMessageBox>
+
+#include "wgc0310/HeadStatus.h"
 #include "util/Derive.h"
 #include "util/CircularBuffer.h"
 

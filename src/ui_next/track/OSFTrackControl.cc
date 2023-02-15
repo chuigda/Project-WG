@@ -9,6 +9,8 @@
 #include <QMessageBox>
 #include <QNetworkDatagram>
 #include <QSpinBox>
+
+#include "wgc0310/HeadStatus.h"
 #include "util/Derive.h"
 #include "util/CircularBuffer.h"
 

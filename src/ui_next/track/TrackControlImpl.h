@@ -2,7 +2,6 @@
 #define PROJECT_WG_UINEXT_TRACK_CONTROL_IMPL_H
 
 #include "ui_next/FaceTrackControl.h"
-#include "wgc0310/HeadStatus.h"
 #include <QWidget>
 
 class QLabel;
@@ -64,6 +63,21 @@ public slots:
 
 private:
   wgc0310::HeadStatus *m_HeadStatus;
+  QThread *m_WorkerThread;
+};
+
+class MPTrackControl final : public QWidget {
+  Q_OBJECT
+
+public:
+
+public slots:
+  void HandleError(const QString& error);
+  void HandleHeadStatus(wgc0310::HeadStatus headStatus);
+
+private:
+  wgc0310::HeadStatus *m_HeadStatus;
+  wgc0310::BodyStatus *m_BodyStatus;
   QThread *m_WorkerThread;
 };
 
