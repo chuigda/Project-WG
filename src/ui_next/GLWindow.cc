@@ -161,9 +161,6 @@ bool GLWindow::SetShader(std::unique_ptr<wgc0310::ShaderCollection> &&shader) {
   m_Shader->translucentShader.UseProgram(GL);
   m_Shader->translucentShader.SetUniform(GL, QStringLiteral("projection"), m_Projection);
 
-  m_Shader->strokeShader.UseProgram(GL);
-  m_Shader->strokeShader.SetUniform(GL, QStringLiteral("projection"), m_Projection);
-
   m_Shader->opaqueShader.UseProgram(GL);
   m_Shader->opaqueShader.SetUniform(GL, QStringLiteral("projection"), m_Projection);
 
@@ -184,9 +181,6 @@ void GLWindow::resizeGL(int w, int h) {
 
   m_Shader->translucentShader.UseProgram(GL);
   m_Shader->translucentShader.SetUniform(GL, QStringLiteral("projection"), m_Projection);
-
-  m_Shader->strokeShader.UseProgram(GL);
-  m_Shader->strokeShader.SetUniform(GL, QStringLiteral("projection"), m_Projection);
 
   m_Shader->opaqueShader.UseProgram(GL);
   m_Shader->opaqueShader.SetUniform(GL, QStringLiteral("projection"), m_Projection);

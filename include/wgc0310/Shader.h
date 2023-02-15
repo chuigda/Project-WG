@@ -7,7 +7,6 @@ namespace wgc0310 {
 
 struct ShaderCollection {
   cw::ShaderProgram emissiveShader;
-  cw::ShaderProgram strokeShader;
 
   cw::ShaderProgram opaqueShader;
   cw::ShaderProgram translucentShader;

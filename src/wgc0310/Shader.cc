@@ -10,7 +10,6 @@ void wgc0310::ShaderCollection::Delete(GLFunctions *f) {
   emissiveShader.Delete(f);
   translucentShader.Delete(f);
   opaqueShader.Delete(f);
-  strokeShader.Delete(f);
 }
 
 static bool CompileShaderPair(GLFunctions *f,
@@ -84,15 +83,6 @@ static bool CompileCommonShader(GLFunctions *f, ShaderCollection *c, QString *er
   if (!CompileShaderPair(f, &c->emissiveShader, QStringLiteral("发光体"),
                          cw::ReadToString(QStringLiteral(":/shader/common/emissive.vert")),
                          cw::ReadToString(QStringLiteral(":/shader/common/emissive.frag")),
-                         err))
-  {
-    ret->Delete(f);
-    return false;
-  }
-
-  if (!CompileShaderPair(f, &c->strokeShader, QStringLiteral("边线"),
-                         cw::ReadToString(QStringLiteral(":/shader/common/stroke.vert")),
-                         cw::ReadToString(QStringLiteral(":/shader/common/stroke.frag")),
                          err))
   {
     ret->Delete(f);

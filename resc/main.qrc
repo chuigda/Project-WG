@@ -52,16 +52,10 @@
 
         <file>shader/common/emissive.vert</file>
         <file>shader/common/emissive.frag</file>
-        <file>shader/common/stroke.vert</file>
-        <file>shader/common/stroke.frag</file>
         <file>shader/standard/opaque.vert</file>
         <file>shader/standard/opaque.frag</file>
         <file>shader/standard/translucent.vert</file>
         <file>shader/standard/translucent.frag</file>
-        <file>shader/gouraud/opaque.vert</file>
-        <file>shader/gouraud/opaque.frag</file>
-        <file>shader/gouraud/translucent.vert</file>
-        <file>shader/gouraud/translucent.frag</file>
 
         <!-- Help images -->
         <file>help/images/opengl.png</file>

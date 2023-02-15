@@ -153,21 +153,10 @@ ShaderEdit::ShaderEdit(GLWindow *glWindow)
 
   QMenu *loadPresetMenu = new QMenu(this);
   {
-    QAction *phong = new QAction("冯氏着色器");
+    QAction *phong = new QAction("标准着色器");
     phong->setData(QVariant(0));
     phong->setToolTip("Project-WG 从 0.4.0 开始默认使用的着色器");
     loadPresetMenu->addAction(phong);
-
-    QAction *phongLegacy = new QAction("冯氏着色器 (旧)");
-    phongLegacy->setData(QVariant(1));
-    phongLegacy->setToolTip("冯氏着色器，但 diffuse 分量的计算会尝试模拟旧版 Project-WG 的效果");
-    loadPresetMenu->addAction(phongLegacy);
-
-    QAction *gouraud = new QAction("高洛德着色器");
-    gouraud->setData(QVariant(2));
-    gouraud->setToolTip("用顶点着色器进行光线计算，然后进行插值\r\n"
-                        "因为处理的样本总数更少，可能会有更好的性能，但是效果较差");
-    loadPresetMenu->addAction(gouraud);
   }
 
   connect(loadPresetMenu, &QMenu::triggered, this, [=, this] (QAction *action) {
@@ -185,8 +174,6 @@ ShaderEdit::ShaderEdit(GLWindow *glWindow)
 
     switch (action->data().toInt()) {
     case 0: m_ShaderText = wgc0310::GetPhongShaderText(); break;
-    case 1: m_ShaderText = wgc0310::GetLegacyPhongShaderText(); break;
-    case 2: m_ShaderText = wgc0310::GetGouraudShaderText(); break;
     default: Q_UNREACHABLE();
     }
     loadShaderCode();
