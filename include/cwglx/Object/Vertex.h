@@ -22,8 +22,10 @@ struct SimpleVertex {
 struct Vertex {
   glm::vec3 vertexCoord;
   glm::vec3 vertexNormal;
-  glm::vec4 color;
   glm::vec2 texCoord;
+
+  glm::vec3 tangent;
+  glm::vec3 biTangent;
 };
 
 using PlainVertexVBO = CW_DEFINE_VBO_TYPE(
@@ -41,8 +43,9 @@ using VertexVBO = CW_DEFINE_VBO_TYPE(
   Vertex,
   vertexCoord,
   vertexNormal,
-  color,
-  texCoord
+  texCoord,
+  tangent,
+  biTangent
 );
 
 } // namespace cw

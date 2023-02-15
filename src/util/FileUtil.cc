@@ -1,6 +1,8 @@
+#include "util/FileUtil.h"
+
+#include <QDebug>
 #include <QFile>
 #include <QTextStream>
-#include "util/FileUtil.h"
 
 namespace cw {
 
@@ -8,6 +10,8 @@ QString ReadToString(QString const& fileName) {
   QFile f(fileName);
   f.open(QIODevice::ReadOnly);
   if (!f.isOpen()) {
+    qCritical() << "ReadToString(QString const&): cannot read from file"
+                << fileName;
     return {};
   }
 

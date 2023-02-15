@@ -68,6 +68,7 @@ private:
 
   StatusExtra const* m_StatusExtra;
 
+  cw::GLObjectContext m_GLObjectContext;
   std::unique_ptr<wgc0310::ShaderCollection> m_Shader;
   std::unique_ptr<wgc0310::Screen> m_Screen;
   std::unique_ptr<wgc0310::WGCMeshCollection> m_Mesh;

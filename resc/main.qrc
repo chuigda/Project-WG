@@ -40,6 +40,12 @@
         <file>help/pages/extending/body-anim.html</file>
         <file>help/pages/extending/static-anim.html</file>
 
+        <!-- Models -->
+        <file>model/TestObject.obj</file>
+        <file>model/TestObject.mtl</file>
+        <file>model/DebugTexture.png</file>
+        <file>model/DebugTextureNorm.png</file>
+
         <!-- Shader set -->
         <file>shader/empty/empty.vert</file>
         <file>shader/empty/empty.frag</file>
@@ -48,11 +54,10 @@
         <file>shader/common/emissive.frag</file>
         <file>shader/common/stroke.vert</file>
         <file>shader/common/stroke.frag</file>
-        <file>shader/phong/opaque.vert</file>
-        <file>shader/phong/opaque.frag</file>
-        <file>shader/phong/opaque.legacy.frag</file>
-        <file>shader/phong/translucent.vert</file>
-        <file>shader/phong/translucent.frag</file>
+        <file>shader/standard/opaque.vert</file>
+        <file>shader/standard/opaque.frag</file>
+        <file>shader/standard/translucent.vert</file>
+        <file>shader/standard/translucent.frag</file>
         <file>shader/gouraud/opaque.vert</file>
         <file>shader/gouraud/opaque.frag</file>
         <file>shader/gouraud/translucent.vert</file>

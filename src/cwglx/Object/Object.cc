@@ -2,6 +2,7 @@
 
 #include <QDebug>
 #include "cwglx/GL/GLImpl.h"
+#include "cwglx/Base/ShaderProgram.h"
 
 namespace cw {
 
@@ -83,6 +84,47 @@ Material const *GLObjectContext::GetMaterial(const QString &materialName) const 
     return nullptr;
   }
   return it->second.get();
+}
+
+GLObject::GLObject(std::unique_ptr<VertexArrayObject> &&vao,
+                   std::unique_ptr<VertexVBO> &&vbo,
+                   GLsizei vertexCount,
+                   const Material *material)
+  : vao(std::move(vao)),
+    vbo(std::move(vbo)),
+    vertexCount(vertexCount),
+    material(material)
+{}
+
+void GLObject::Draw(GLFunctions *f, ShaderProgram *shaderProgram) const {
+  shaderProgram->SetUniform(f, QStringLiteral("material.ambient"), material->ambient);
+  shaderProgram->SetUniform(f, QStringLiteral("material.diffuse"), material->diffuse);
+  shaderProgram->SetUniform(f, QStringLiteral("material.specular"), material->specular);
+  shaderProgram->SetUniform(f, QStringLiteral("material.shininess"), material->shine);
+
+  if (material->diffuseTexture) {
+    material->diffuseTexture->ActivateTexture(
+      f,
+      GL_TEXTURE0,
+      shaderProgram->GetUniformLocation(f, QStringLiteral("diffuseTex"))
+    );
+  }
+
+  if (material->normalTexture) {
+    material->normalTexture->ActivateTexture(
+      f,
+      GL_TEXTURE1,
+      shaderProgram->GetUniformLocation(f, QStringLiteral("normalTex"))
+    );
+  }
+
+  vao->Bind(f);
+  f->glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+}
+
+void GLObject::Delete(GLFunctions *f) const {
+  vao->Delete(f);
+  vbo->Delete(f);
 }
 
 } // namespace cw

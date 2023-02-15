@@ -128,19 +128,19 @@ CompileShader(GLFunctions *f, ShaderText const& text, QString *err) {
 
 ShaderText GetPhongShaderText() {
   return ShaderText {
-    .opaqueVS = cw::ReadToString(QStringLiteral(":/shader/phong/opaque.vert")),
-    .opaqueFS = cw::ReadToString(QStringLiteral(":/shader/phong/opaque.frag")),
-    .translucentVS = cw::ReadToString(QStringLiteral(":/shader/phong/translucent.vert")),
-    .translucentFS = cw::ReadToString(QStringLiteral(":/shader/phong/translucent.frag"))
+    .opaqueVS = cw::ReadToString(QStringLiteral(":/shader/standard/opaque.vert")),
+    .opaqueFS = cw::ReadToString(QStringLiteral(":/shader/standard/opaque.frag")),
+    .translucentVS = cw::ReadToString(QStringLiteral(":/shader/standard/translucent.vert")),
+    .translucentFS = cw::ReadToString(QStringLiteral(":/shader/standard/translucent.frag"))
   };
 }
 
 ShaderText GetLegacyPhongShaderText() {
   return ShaderText {
-    .opaqueVS = cw::ReadToString(QStringLiteral(":/shader/phong/opaque.vert")),
-    .opaqueFS = cw::ReadToString(QStringLiteral(":/shader/phong/opaque.legacy.frag")),
-    .translucentVS = cw::ReadToString(QStringLiteral(":/shader/phong/translucent.vert")),
-    .translucentFS = cw::ReadToString(QStringLiteral(":/shader/phong/translucent.frag"))
+    .opaqueVS = cw::ReadToString(QStringLiteral(":/shader/standard/opaque.vert")),
+    .opaqueFS = cw::ReadToString(QStringLiteral(":/shader/standard/opaque.legacy.frag")),
+    .translucentVS = cw::ReadToString(QStringLiteral(":/shader/standard/translucent.vert")),
+    .translucentFS = cw::ReadToString(QStringLiteral(":/shader/standard/translucent.frag"))
   };
 }
 

@@ -133,6 +133,7 @@ void ShaderProgram::SetUniform(GLFunctions *f,
   }
 
   f->glUniform1i(uniformLocation, value);
+  qDebug() << "glGetError() after setting" << uniformName << "=" << f->glGetError();
 }
 
 void ShaderProgram::SetUniform(GLFunctions *f,

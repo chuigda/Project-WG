@@ -3,7 +3,7 @@
 #define CW_WIN32_RESOURCE
 #include "Version.h"
 
-0 ICON DISCARDABLE "phong-tester-icon.ico"
+0 ICON DISCARDABLE "standard-tester-icon.ico"
 
 1 VERSIONINFO
 FILEVERSION     PHONG_TESTER_VERSION

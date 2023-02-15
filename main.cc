@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
 
   ControlPanel panel { startHideGL };
 
-  QTimer::singleShot(2500, [&] {
+  QTimer::singleShot(500, [&] {
     splash.close();
 
     panel.show();

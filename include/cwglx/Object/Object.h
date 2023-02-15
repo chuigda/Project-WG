@@ -4,9 +4,12 @@
 #include <memory>
 #include <QMap>
 #include "cwglx/Object/Material.h"
-#include "Vertex.h"
+#include "cwglx/Base/VertexArrayObject.h"
+#include "cwglx/Object/Vertex.h"
 
 namespace cw {
+
+class ShaderProgram;
 
 class GLObjectContext final {
 public:
@@ -29,6 +32,25 @@ public:
 private:
   std::unordered_map<QString, std::unique_ptr<Material>> m_MaterialLibrary;
   std::unordered_map<QString, std::unique_ptr<Texture2D>> m_TextureLibrary;
+};
+
+struct GLObject final {
+  std::unique_ptr<VertexArrayObject> vao;
+  std::unique_ptr<VertexVBO> vbo;
+  GLsizei vertexCount;
+  Material const* material;
+
+  GLObject(std::unique_ptr<VertexArrayObject> &&vao,
+           std::unique_ptr<VertexVBO> &&vbo,
+           GLsizei vertexCount,
+           Material const* material);
+
+  void Draw(GLFunctions *f, ShaderProgram *shaderProgram) const;
+
+  void Delete(GLFunctions *f) const;
+
+  GLObject(GLObject&&) = default;
+  GLObject& operator=(GLObject&&) = default;
 };
 
 } // namespace cw

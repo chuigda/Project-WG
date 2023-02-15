@@ -116,14 +116,26 @@ struct VFDProbe<T[N]> {
     CW_IMPL_VFD_PROBE(T, F2), \
     CW_IMPL_VFD_PROBE(T, F3), \
     CW_IMPL_VFD_PROBE(T, F4), \
-    CW_IMPL_VFD_PROBE(T, F5), \
+    CW_IMPL_VFD_PROBE(T, F5) \
   >
 
-#define CW_IMPL_SELECT_DEFINE_MACRO(_1, _2, _3, _4, _5, _6, NAME, ...) NAME
+#define CW_IMPL_DEFINE_VBO_TYPE6(T, F1, F2, F3, F4, F5, F6) \
+  cw::VertexBufferObject< \
+    T, \
+    CW_IMPL_VFD_PROBE(T, F1), \
+    CW_IMPL_VFD_PROBE(T, F2), \
+    CW_IMPL_VFD_PROBE(T, F3), \
+    CW_IMPL_VFD_PROBE(T, F4), \
+    CW_IMPL_VFD_PROBE(T, F5), \
+    CW_IMPL_VFD_PROBE(T, F6) \
+  >
+
+#define CW_IMPL_SELECT_DEFINE_MACRO(_1, _2, _3, _4, _5, _6, _7, NAME, ...) NAME
 
 #define CW_DEFINE_VBO_TYPE(...) \
   CW_IMPL_SELECT_DEFINE_MACRO( \
     __VA_ARGS__, \
+    CW_IMPL_DEFINE_VBO_TYPE6, \
     CW_IMPL_DEFINE_VBO_TYPE5, \
     CW_IMPL_DEFINE_VBO_TYPE4, \
     CW_IMPL_DEFINE_VBO_TYPE3, \
