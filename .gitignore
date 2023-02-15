@@ -78,7 +78,8 @@ Users*AppData*
 # 傻逼 IDEA 不会 shadow build?
 cmake-build*
 
-# Absolute proprietary！
-alchemy/dlib_sp_68points.dat
-
 LICENSE.AGREED
+
+# 排除模型文件，此 obj 非彼 obj
+!resc/model/*.obj
+
