@@ -203,27 +203,6 @@ set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 
 qt_finalize_executable(Project-WG)
 
-# Phong tester
-qt_add_executable(PhongTester MANUAL_FINALIZATION
-                  extra/utility/phong/PhongTester.cc
-                  extra/utility/phong/PaintWidget.cc
-                  extra/utility/phong/PaintWidget.h
-                  extra/utility/phong/TesterWidget.cc
-                  extra/utility/phong/TesterWidget.h
-                  include/ui_next/EntityStatus.h
-                  resc/phong-tester.qrc
-                  ${PHONG_TESTER_RESC})
-
-target_link_libraries(PhongTester PRIVATE
-                      Qt6::Widgets
-                      Qt6::OpenGLWidgets
-                      CWGLX
-                      CWUtil)
-
-set_target_properties(PhongTester PROPERTIES WIN32_EXECUTABLE TRUE)
-
-qt_finalize_executable(PhongTester)
-
 # Attachments
 qt_add_library(Emitter SHARED extra/attachments/Emitter/Emitter.cc
                               extra/attachments/Emitter/emitter.qrc)
