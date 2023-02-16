@@ -94,7 +94,7 @@ void GLWindow::initializeGL() {
 
   m_Screen = std::make_unique<wgc0310::Screen>(GL);
   m_Mesh = std::make_unique<wgc0310::WGCMeshCollection>(
-    wgc0310::LoadWGCMesh(&m_GLObjectContext, GL)
+    wgc0310::LoadWGCModel(&m_GLObjectContext, GL)
   );
   m_DevicePixelRatio = this->windowHandle()->devicePixelRatio();
 

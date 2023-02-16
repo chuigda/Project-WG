@@ -6,6 +6,10 @@
 
 namespace cw {
 
+bool IsFileExists(QString const& fileName) {
+  return QFile::exists(fileName);
+}
+
 QString ReadToString(QString const& fileName) {
   QFile f(fileName);
   f.open(QIODevice::ReadOnly);

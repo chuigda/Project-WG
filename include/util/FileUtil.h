@@ -5,6 +5,8 @@ class QString;
 
 namespace cw {
 
+bool IsFileExists(QString const& fileName);
+
 QString ReadToString(QString const &fileName);
 
 bool WriteToFile(QString const& fileName, QString const& content);

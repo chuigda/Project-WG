@@ -82,3 +82,4 @@ LICENSE.AGREED
 
 # 排除模型文件，此 obj 非彼 obj
 !resc/model/*.obj
+!patch/model/*.obj

@@ -18,7 +18,7 @@ struct WGCMeshCollection {
   void Delete(GLFunctions *f);
 };
 
-WGCMeshCollection LoadWGCMesh(cw::GLObjectContext *ctx, GLFunctions *f);
+WGCMeshCollection LoadWGCModel(cw::GLObjectContext *ctx, GLFunctions *f);
 
 } // namespace wgc0310
 

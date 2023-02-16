@@ -3,12 +3,22 @@
 #include "cwglx/GL/GLImpl.h"
 #include "cwglx/Base/Shader.h"
 #include "cwglx/Object/WavefrontLoader.h"
+#include "util/FileUtil.h"
 
 namespace wgc0310 {
 
-WGCMeshCollection LoadWGCMesh(cw::GLObjectContext *ctx, GLFunctions *f) {
+static cw::GLObject
+LoadObjectEx(cw::GLObjectContext *ctx, GLFunctions *f, QString const& objectFile) {
+  QString patchPath = QStringLiteral("./patch/model/%1").arg(objectFile);
+  if (cw::IsFileExists(patchPath)) {
+    return cw::LoadObject(ctx, f, "./patch/model", objectFile);
+  }
+  return cw::LoadObject(ctx, f, ":/model", objectFile);
+}
+
+WGCMeshCollection LoadWGCModel(cw::GLObjectContext *ctx, GLFunctions *f) {
   return {
-    .testObject = cw::LoadObject(ctx, f, ":/model", "TestObject.obj")
+    .testObject = LoadObjectEx(ctx, f, "TestObject.obj")
   };
 }
 
