@@ -29,7 +29,6 @@ out vec4 fragColor;
 
 void main() {
     vec3 normal = texture(normalTex, texCoord).rgb;
-    normal.y = -normal.y;
     normal = normalize(normal * 2.0 - 1.0);
 
     vec3 color = texture(diffuseTex, texCoord).rgb;
