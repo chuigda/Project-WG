@@ -25,11 +25,9 @@ struct ShaderText {
 std::unique_ptr<ShaderCollection>
 CompileShader(GLFunctions *f, ShaderText const&, QString *err);
 
-ShaderText GetPhongShaderText();
+ShaderText GetStandardShaderText();
 
-ShaderText GetLegacyPhongShaderText();
-
-ShaderText GetGouraudShaderText();
+ShaderText GetDefaultShaderText();
 
 } // namespace wgc0310
 

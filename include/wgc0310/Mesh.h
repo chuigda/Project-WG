@@ -12,13 +12,13 @@
 
 namespace wgc0310 {
 
-struct WGCMeshCollection {
+struct WGCModel {
   cw::GLObject testObject;
 
   void Delete(GLFunctions *f);
 };
 
-WGCMeshCollection LoadWGCModel(cw::GLObjectContext *ctx, GLFunctions *f);
+WGCModel LoadWGCModel(cw::GLObjectContext *ctx, GLFunctions *f);
 
 } // namespace wgc0310
 

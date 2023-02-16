@@ -16,6 +16,7 @@ public:
   GLObjectContext() = default;
   ~GLObjectContext() = default;
 
+  void RemoveAll(GLFunctions *f);
   void Delete(GLFunctions *f);
 
   bool HasTexture(QString const& texturePath) const;

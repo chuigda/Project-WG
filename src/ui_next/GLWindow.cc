@@ -64,8 +64,8 @@ GLWindow::~GLWindow() {
     if (m_Shader) {
       m_Shader->Delete(GL);
     }
-    if (m_Mesh) {
-      m_Mesh->Delete(GL);
+    if (m_Model) {
+      m_Model->Delete(GL);
     }
     if (m_PerformanceCounterEnabled) {
       GL->glDeleteQueries(1, &m_PerformanceCounter);
@@ -92,11 +92,10 @@ void GLWindow::initializeGL() {
   QOpenGLWidget::initializeGL();
   cw::SetupPreferred(GL);
 
-  m_Screen = std::make_unique<wgc0310::Screen>(GL);
-  m_Mesh = std::make_unique<wgc0310::WGCMeshCollection>(
-    wgc0310::LoadWGCModel(&m_GLObjectContext, GL)
-  );
   m_DevicePixelRatio = this->windowHandle()->devicePixelRatio();
+
+  m_Screen = std::make_unique<wgc0310::Screen>(GL);
+  ReloadModel();
 
   emit OpenGLInitialized();
 }
@@ -131,7 +130,7 @@ void GLWindow::paintGL() {
 
   m_Shader->opaqueShader.UseProgram(GL);
   m_Shader->opaqueShader.SetUniform(GL, QStringLiteral("modelView"), modelView);
-  m_Mesh->testObject.Draw(GL, &m_Shader->opaqueShader);
+  m_Model->testObject.Draw(GL, &m_Shader->opaqueShader);
 
   if (m_PerformanceCounterEnabled) {
     GL->glEndQuery(GL_TIME_ELAPSED);
@@ -146,6 +145,16 @@ GLuint64 GLWindow::QueryPerformanceCounter() {
     GL->glGetQueryObjectui64v(m_PerformanceCounter, GL_QUERY_RESULT, &result);
   }
   return result;
+}
+
+void GLWindow::ReloadModel() {
+  if (m_Model) {
+    m_Model->Delete(GL);
+    m_GLObjectContext.RemoveAll(GL);
+  }
+  m_Model = std::make_unique<wgc0310::WGCModel>(
+    wgc0310::LoadWGCModel(&m_GLObjectContext, GL)
+  );
 }
 
 bool GLWindow::SetShader(std::unique_ptr<wgc0310::ShaderCollection> &&shader) {

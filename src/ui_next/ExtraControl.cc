@@ -6,6 +6,7 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>
+#include <QPushButton>
 
 #include "cwglx/GL/GLImpl.h"
 #include "ui_next/GLWindow.h"
@@ -48,6 +49,14 @@ ExtraControl::ExtraControl(GLWindow *glWindow,
 
   QVBoxLayout *layout = new QVBoxLayout();
   this->setLayout(layout);
+
+  QPushButton *reloadModelButton = new QPushButton("(调试) 重新加载模型");
+  connect(reloadModelButton, &QPushButton::clicked, m_GLWindow, [this] {
+    m_GLWindow->RunWithGLContext([this] {
+      m_GLWindow->ReloadModel();
+    });
+  });
+  layout->addWidget(reloadModelButton);
 
   // 常规设置
   {

@@ -116,7 +116,7 @@ CompileShader(GLFunctions *f, ShaderText const& text, QString *err) {
   return ret;
 }
 
-ShaderText GetPhongShaderText() {
+ShaderText GetStandardShaderText() {
   return ShaderText {
     .opaqueVS = cw::ReadToString(QStringLiteral(":/shader/standard/opaque.vert")),
     .opaqueFS = cw::ReadToString(QStringLiteral(":/shader/standard/opaque.frag")),
@@ -125,21 +125,22 @@ ShaderText GetPhongShaderText() {
   };
 }
 
-ShaderText GetLegacyPhongShaderText() {
-  return ShaderText {
-    .opaqueVS = cw::ReadToString(QStringLiteral(":/shader/standard/opaque.vert")),
-    .opaqueFS = cw::ReadToString(QStringLiteral(":/shader/standard/opaque.legacy.frag")),
-    .translucentVS = cw::ReadToString(QStringLiteral(":/shader/standard/translucent.vert")),
-    .translucentFS = cw::ReadToString(QStringLiteral(":/shader/standard/translucent.frag"))
-  };
+static QString GetShaderTextEx(QString const& shaderFileName) {
+  QString patchPath = QStringLiteral("./patch/shader/%1").arg(shaderFileName);
+  if (cw::IsFileExists(patchPath)) {
+    return cw::ReadToString(patchPath);
+  }
+
+  QString builtinPath = QStringLiteral(":/shader/standard/%1").arg(shaderFileName);
+  return cw::ReadToString(builtinPath);
 }
 
-ShaderText GetGouraudShaderText() {
+ShaderText GetDefaultShaderText() {
   return ShaderText {
-    .opaqueVS = cw::ReadToString(QStringLiteral(":/shader/gouraud/opaque.vert")),
-    .opaqueFS = cw::ReadToString(QStringLiteral(":/shader/gouraud/opaque.frag")),
-    .translucentVS = cw::ReadToString(QStringLiteral(":/shader/gouraud/translucent.vert")),
-    .translucentFS = cw::ReadToString(QStringLiteral(":/shader/gouraud/translucent.frag"))
+    .opaqueVS = GetShaderTextEx("opaque.vert"),
+    .opaqueFS = GetShaderTextEx("opaque.frag"),
+    .translucentVS = GetShaderTextEx("translucent.vert"),
+    .translucentFS = GetShaderTextEx("translucent.frag")
   };
 }
 

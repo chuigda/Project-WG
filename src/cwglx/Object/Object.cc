@@ -6,6 +6,14 @@
 
 namespace cw {
 
+void GLObjectContext::RemoveAll(GLFunctions *f) {
+  for (auto &[name, texture] : m_TextureLibrary) {
+    texture->Delete(f);
+  }
+  m_MaterialLibrary.clear();
+  m_TextureLibrary.clear();
+}
+
 void GLObjectContext::Delete(GLFunctions *f) {
   for (auto &[name, texture] : m_TextureLibrary) {
     texture->Delete(f);

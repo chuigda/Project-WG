@@ -17,7 +17,7 @@
 #include "ui_next/CodeEdit.h"
 
 ShaderEdit::ShaderEdit(GLWindow *glWindow)
-  : m_ShaderText(wgc0310::GetPhongShaderText()),
+  : m_ShaderText(wgc0310::GetDefaultShaderText()),
     m_GLWindow(glWindow),
     m_ShaderPrevIndex(0),
     m_ShaderSubPrevIndex(0)
@@ -173,7 +173,7 @@ ShaderEdit::ShaderEdit(GLWindow *glWindow)
     }
 
     switch (action->data().toInt()) {
-    case 0: m_ShaderText = wgc0310::GetPhongShaderText(); break;
+    case 0: m_ShaderText = wgc0310::GetStandardShaderText(); break;
     default: Q_UNREACHABLE();
     }
     loadShaderCode();

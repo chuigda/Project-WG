@@ -33,6 +33,7 @@ public:
   void EnablePerformanceCounter();
   GLuint64 QueryPerformanceCounter();
 
+  void ReloadModel();
   bool SetShader(std::unique_ptr<wgc0310::ShaderCollection> &&shader);
 
   // OpenGL function
@@ -71,7 +72,7 @@ private:
   cw::GLObjectContext m_GLObjectContext;
   std::unique_ptr<wgc0310::ShaderCollection> m_Shader;
   std::unique_ptr<wgc0310::Screen> m_Screen;
-  std::unique_ptr<wgc0310::WGCMeshCollection> m_Mesh;
+  std::unique_ptr<wgc0310::WGCModel> m_Model;
 
   glm::mat4 m_Projection;
 

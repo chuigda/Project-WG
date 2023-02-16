@@ -16,13 +16,13 @@ LoadObjectEx(cw::GLObjectContext *ctx, GLFunctions *f, QString const& objectFile
   return cw::LoadObject(ctx, f, ":/model", objectFile);
 }
 
-WGCMeshCollection LoadWGCModel(cw::GLObjectContext *ctx, GLFunctions *f) {
+WGCModel LoadWGCModel(cw::GLObjectContext *ctx, GLFunctions *f) {
   return {
     .testObject = LoadObjectEx(ctx, f, "TestObject.obj")
   };
 }
 
-void WGCMeshCollection::Delete(GLFunctions *f) {
+void WGCModel::Delete(GLFunctions *f) {
   testObject.Delete(f);
 }
 
