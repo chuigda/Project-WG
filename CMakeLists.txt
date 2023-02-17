@@ -211,7 +211,8 @@ qt_finalize_executable(Project-WG)
 # Configurator
 qt_add_executable(Config MANUAL_FINALIZATION
                   extra/config/main.cc
-                  extra/config/config-icon.qrc)
+                  extra/config/config-icon.qrc
+                  ${CONFIG_RESC})
 target_link_libraries(Config PRIVATE
                       Qt6::Widgets
                       CWUtil)
