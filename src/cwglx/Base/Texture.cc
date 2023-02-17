@@ -12,8 +12,14 @@ Texture2D::Texture2D(const QImage &image, GLFunctions *f)
 {
   QImage rgbaImage = image.convertToFormat(QImage::Format_RGBA8888);
 
+  GLfloat maxAnisotropy = 1.0f;
+  f->glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+
   f->glGenTextures(1, &m_TextureId);
   f->glBindTexture(GL_TEXTURE_2D, m_TextureId);
+  f->glTexParameterf(GL_TEXTURE_2D,
+                     GL_TEXTURE_MAX_ANISOTROPY_EXT,
+                     maxAnisotropy);
   f->glTexParameteri(GL_TEXTURE_2D,
                      GL_TEXTURE_MAG_FILTER,
                      GL_LINEAR);
