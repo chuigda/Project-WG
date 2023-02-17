@@ -9,18 +9,21 @@ struct GlobalConfig {
   bool lineSmoothHint = true;
   bool anisotropyFilter = true;
 
-  enum class ControlMode { None, VTS, OSF, MP, Manual };
+  enum class ControlMode {
+    None, VTS, OSF, MP, Manual
+  };
   ControlMode defaultControlMode = ControlMode::None;
 
   int vtsWebsocketPort = 8001;
 
   int osfUdpPort = 11573;
   int osfCorrectionX = 0;
-  int osfCorrectionY = 0;
-  int osfCorrectionZ = 0;
-  int osfSmooth = 8;
+  float osfCorrectionY = 0;
+  float osfCorrectionZ = 0;
+  float osfSmooth = 8;
 
   static GlobalConfig Instance;
+  static char const* ControlModeToString(ControlMode mode);
 };
 
 void InitGlobalConfig();

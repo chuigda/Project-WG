@@ -132,20 +132,6 @@ GENERATE_GET_VALUE2(float, GetFloatValue)
 GENERATE_GET_VALUE2(double, GetDoubleValue)
 GENERATE_GET_VALUE2(bool, GetBoolValue)
 
-QString IniFileData::ToString() const {
-  QString result;
-  for (auto const& section : m_Sections) {
-    result += QStringLiteral("[%1]\n").arg(section.first);
-    for (auto const& data : section.second.GetData()) {
-      result += QStringLiteral("%1=%2\n")
-        .arg(data.first)
-        .arg(data.second);
-    }
-    result += '\n';
-  }
-  return result;
-}
-
 IniFileData IniFileData::Parse(QString const& data) {
   IniFileData result;
   std::unique_ptr<IniSection> currentSection = nullptr;
@@ -194,10 +180,6 @@ IniFileData IniFileData::Parse(QString const& data) {
   }
 
   return result;
-}
-
-QString IniFileData::ToString(const IniFileData &data) {
-  return data.ToString();
 }
 
 void IniFileData::AddSection(IniSection &&section) {

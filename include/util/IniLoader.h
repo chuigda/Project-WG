@@ -80,11 +80,7 @@ public:
                                   QString const& key,
                                   bool defaultValue = false) const;
 
-  [[nodiscard]] QString ToString() const;
-
   [[nodiscard]] static IniFileData Parse(QString const& data);
-
-  [[nodiscard]] static QString ToString(IniFileData const&);
 
 private:
   IniFileData() = default;

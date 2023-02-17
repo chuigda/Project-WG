@@ -49,9 +49,25 @@ void InitGlobalConfig() {
   if (osfConfig) {
     GlobalConfig::Instance.osfUdpPort = osfConfig->GetIntValue("udp_port");
     GlobalConfig::Instance.osfCorrectionX = osfConfig->GetIntValue("correction_x");
-    GlobalConfig::Instance.osfCorrectionY = osfConfig->GetIntValue("correction_y");
-    GlobalConfig::Instance.osfCorrectionZ = osfConfig->GetIntValue("correction_z");
-    GlobalConfig::Instance.osfSmooth = osfConfig->GetIntValue("smooth");
+    GlobalConfig::Instance.osfCorrectionY = osfConfig->GetFloatValue("correction_y");
+    GlobalConfig::Instance.osfCorrectionZ = osfConfig->GetFloatValue("correction_z");
+    GlobalConfig::Instance.osfSmooth = osfConfig->GetFloatValue("smooth");
+  }
+}
+
+char const *
+GlobalConfig::ControlModeToString(GlobalConfig::ControlMode mode) {
+  switch (mode) {
+    case ControlMode::None:
+      return "none";
+    case ControlMode::VTS:
+      return "vts";
+    case ControlMode::OSF:
+      return "osf";
+    case ControlMode::MP:
+      return "mp";
+    case ControlMode::Manual:
+      return "manual";
   }
 }
 
