@@ -25,7 +25,7 @@ BEGIN
             VALUE "LegalCopyright", COPYRIGHT_INFO
             VALUE "FileDescription", "Project-WG Configurator"
             VALUE "FileVersion", WG_PRODUCT_VERSION_STRING
-            VALUE "OriginalFilename", "Project-WG.exe"
+            VALUE "OriginalFilename", "Config.exe"
 #if defined(WG_PRIVATE_BUILD_INFO)
             VALUE "PrivateBuild", WG_PRIVATE_BUILD_INFO
 #endif
