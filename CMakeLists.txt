@@ -217,6 +217,7 @@ qt_add_executable(Config MANUAL_FINALIZATION
                   ${CONFIG_RESC})
 target_link_libraries(Config PRIVATE
                       Qt6::Widgets
+                      ${GLM_LINK_NAME}
                       CWUtil)
 
 set_target_properties(Config PROPERTIES WIN32_EXECUTABLE TRUE)

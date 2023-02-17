@@ -1,9 +1,15 @@
 #ifndef PROJECT_WG_GLOBAL_CONFIG_H
 #define PROJECT_WG_GLOBAL_CONFIG_H
 
+#include <glm/vec3.hpp>
+
 namespace cw {
 
 struct GlobalConfig {
+  bool stayOnTop = false;
+  bool fillBackground = false;
+  glm::vec3 backgroundColor { 0.0, 0.0, 0.0 };
+
   bool multisampling = true;
   int multisamplingSamples = 8;
   bool lineSmoothHint = true;

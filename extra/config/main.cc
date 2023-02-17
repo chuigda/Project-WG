@@ -7,6 +7,7 @@
 #include <QRadioButton>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QPushButton>
 #include <QMessageBox>
@@ -21,6 +22,13 @@ static QDoubleSpinBox *createAngleSpinBox() {
   return ret;
 }
 
+static QSpinBox *createColorSpinBox() {
+  QSpinBox *ret = new QSpinBox();
+  ret->setMinimum(0);
+  ret->setMaximum(255);
+  return ret;
+}
+
 class ConfigWidget final : public QWidget {
 public:
   ConfigWidget() {
@@ -28,6 +36,60 @@ public:
 
     QVBoxLayout *layout = new QVBoxLayout();
     setLayout(layout);
+
+    // 通用配置
+    {
+      QGroupBox *groupBox = new QGroupBox("通用");
+      layout->addWidget(groupBox);
+
+      QVBoxLayout *vBox = new QVBoxLayout();
+      groupBox->setLayout(vBox);
+
+      QCheckBox *stayOnTop = new QCheckBox("所有窗口长居顶端");
+      stayOnTop->setChecked(cw::GlobalConfig::Instance.stayOnTop);
+      connect(stayOnTop, &QCheckBox::toggled, this, [] (bool enabled) {
+        cw::GlobalConfig::Instance.stayOnTop = enabled;
+      });
+      vBox->addWidget(stayOnTop);
+
+      QCheckBox *fillBackground = new QCheckBox("背景填充");
+      fillBackground->setChecked(cw::GlobalConfig::Instance.fillBackground);
+      connect(fillBackground, &QCheckBox::toggled, this, [] (bool enabled) {
+        cw::GlobalConfig::Instance.fillBackground = enabled;
+      });
+      vBox->addWidget(fillBackground);
+
+      {
+        QHBoxLayout *hBox = new QHBoxLayout();
+        vBox->addLayout(hBox);
+
+        hBox->addWidget(new QLabel("背景填充颜色"));
+        hBox->addStretch();
+
+        QSpinBox *r = createColorSpinBox();
+        QSpinBox *g = createColorSpinBox();
+        QSpinBox *b = createColorSpinBox();
+        r->setValue(static_cast<int>(cw::GlobalConfig::Instance.backgroundColor.r));
+        g->setValue(static_cast<int>(cw::GlobalConfig::Instance.backgroundColor.g));
+        b->setValue(static_cast<int>(cw::GlobalConfig::Instance.backgroundColor.b));
+        connect(r, &QSpinBox::valueChanged, this, [] (int value) {
+          cw::GlobalConfig::Instance.backgroundColor.r = static_cast<float>(value);
+        });
+        connect(g, &QSpinBox::valueChanged, this, [] (int value) {
+          cw::GlobalConfig::Instance.backgroundColor.g = static_cast<float>(value);
+        });
+        connect(b, &QSpinBox::valueChanged, this, [] (int value) {
+          cw::GlobalConfig::Instance.backgroundColor.b = static_cast<float>(value);
+        });
+
+        hBox->addWidget(new QLabel("R"));
+        hBox->addWidget(r);
+        hBox->addWidget(new QLabel("G"));
+        hBox->addWidget(g);
+        hBox->addWidget(new QLabel("B"));
+        hBox->addWidget(b);
+      }
+    }
 
     // 渲染配置
     {
@@ -299,34 +361,50 @@ public:
           return;
         }
 
-        cw::WriteToFile("config.ini", QStringLiteral(R"abc123([render]
+        cw::WriteToFile("config.ini", QStringLiteral(R"abc123([common]
+# 所有窗口常居顶端
+stay_on_top=%1
+# 启用背景填充
+fill_background=%2
+# 自定义背景颜色
+background_r=%3
+background_g=%4
+background_b=%5
+
+[render]
 # 多重采样抗锯齿
-multisampling=%1
+multisampling=%6
 # 多重采样抗锯齿样本数
-multisampling_samples=%2
+multisampling_samples=%7
 # 线条平滑
-line_smooth=%3
+line_smooth=%8
 # 各向异性过滤
-anisotropy_filter=%4
+anisotropy_filter=%9
 
 [control]
 # 默认模式
-default_mode=%5
+default_mode=%10
 
 [control.vts]
 # WebSocket 端口
-websocket_port=%6
+websocket_port=%11
 
 [control.osf]
 # UDP 端口
-udp_port=%7
+udp_port=%12
 # XYZ 校正
-correction_x=%8
-correction_y=%9
-correction_z=%10
+correction_x=%13
+correction_y=%14
+correction_z=%15
 # 平滑
-smooth=%11
+smooth=%16
 )abc123")
+          // common
+          .arg(cw::GlobalConfig::Instance.stayOnTop ? "true" : "false")
+          .arg(cw::GlobalConfig::Instance.fillBackground ? "true" : "false")
+          .arg(cw::GlobalConfig::Instance.backgroundColor.r)
+          .arg(cw::GlobalConfig::Instance.backgroundColor.g)
+          .arg(cw::GlobalConfig::Instance.backgroundColor.b)
           // render
           .arg(cw::GlobalConfig::Instance.multisampling ? "true" : "false")
           .arg(cw::GlobalConfig::Instance.multisamplingSamples)

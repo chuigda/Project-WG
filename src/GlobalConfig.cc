@@ -12,6 +12,21 @@ void InitGlobalConfig() {
   QString iniFileContent = ReadToString("config.ini");
   IniFileData config = IniFileData::Parse(iniFileContent);
 
+  IniSection const* commonConfig = config.GetSection("common");
+  if (commonConfig) {
+    GlobalConfig::Instance.stayOnTop =
+      commonConfig->GetBoolValue("stay_on_top");
+    GlobalConfig::Instance.fillBackground =
+      commonConfig->GetBoolValue("fill_background");
+
+    GlobalConfig::Instance.backgroundColor.r =
+      commonConfig->GetFloatValue("background_r");
+    GlobalConfig::Instance.backgroundColor.g =
+      commonConfig->GetFloatValue("background_g");
+    GlobalConfig::Instance.backgroundColor.b =
+      commonConfig->GetFloatValue("background_b");
+  }
+
   IniSection const* renderConfig = config.GetSection("render");
   if (renderConfig) {
     GlobalConfig::Instance.multisampling =
