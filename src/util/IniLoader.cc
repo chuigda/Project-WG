@@ -17,10 +17,10 @@ std::unordered_map<QString, QString> const &IniSection::GetData() const {
   return m_SectionData;
 }
 
-QString IniSection::GetData(const QString &key) const {
+QString IniSection::GetData(const QString &key, QString const& defaultValue) const {
   auto it = m_SectionData.find(key);
   if (it == m_SectionData.end()) {
-    return {};
+    return defaultValue;
   } else {
     return it->second;
   }
@@ -64,7 +64,7 @@ bool IniSection::GetBoolValue(const QString &key, bool defaultValue) const {
 }
 
 void IniSection::AddData(const QString &key, const QString &value) {
-  m_SectionData[key] = value;
+  m_SectionData.insert({ key.toLower(), value });
 }
 
 std::unordered_map<QString, IniSection> const& IniFileData::GetData() const {
@@ -80,12 +80,14 @@ IniSection const *IniFileData::GetSection(const QString &sectionName) const {
   }
 }
 
-QString IniFileData::GetData(const QString &composedKey) const {
+QString IniFileData::GetData(const QString& composedKey,
+                             const QString& defaultValue) const
+{
   QStringList keyParts = composedKey.split('.');
   if (keyParts.size() != 2) {
-    return {};
+    return defaultValue;
   } else {
-    return GetData(keyParts[0].trimmed(), keyParts[1].trimmed());
+    return GetDataEx(keyParts[0].trimmed(), keyParts[1].trimmed(), defaultValue);
   }
 }
 
@@ -104,12 +106,14 @@ GENERATE_GET_VALUE(float, GetFloatValue)
 GENERATE_GET_VALUE(double, GetDoubleValue)
 GENERATE_GET_VALUE(bool, GetBoolValue)
 
-QString IniFileData::GetData(const QString &sectionName, const QString &key) const {
+QString IniFileData::GetDataEx(const QString &sectionName,
+                               const QString &key,
+                               QString const& defaultValue) const {
   auto it = m_Sections.find(sectionName);
   if (it == m_Sections.end()) {
     return {};
   } else {
-    return it->second.GetData(key);
+    return it->second.GetData(key, defaultValue);
   }
 }
 
@@ -197,7 +201,7 @@ QString IniFileData::ToString(const IniFileData &data) {
 }
 
 void IniFileData::AddSection(IniSection &&section) {
-  QString sectionName = section.GetSectionName();
+  QString sectionName = section.GetSectionName().toLower();
   m_Sections.insert({ std::move(sectionName), std::move(section) });
 }
 

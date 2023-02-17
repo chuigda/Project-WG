@@ -22,7 +22,8 @@ public:
 
   std::unordered_map<QString, QString> const& GetData() const;
 
-  [[nodiscard]] QString GetData(QString const& key) const;
+  [[nodiscard]] QString GetData(QString const& key,
+                                QString const& defaultValue = QString()) const;
 
   [[nodiscard]] int GetIntValue(QString const& key, int defaultValue = 0) const;
 
@@ -48,7 +49,8 @@ public:
 
   [[nodiscard]] IniSection const* GetSection(QString const& sectionName) const;
 
-  [[nodiscard]] QString GetData(QString const& composedKey) const;
+  [[nodiscard]] QString GetData(QString const& composedKey,
+                                QString const& defaultValue = QString()) const;
 
   [[nodiscard]] int GetIntValue(QString const& composedKey, int defaultValue = 0) const;
 
@@ -58,7 +60,9 @@ public:
 
   [[nodiscard]] bool GetBoolValue(QString const& composedKey, bool defaultValue = false) const;
 
-  [[nodiscard]] QString GetData(QString const& sectionName, QString const& key) const;
+  [[nodiscard]] QString GetDataEx(QString const& sectionName,
+                                  QString const& key,
+                                  QString const& defaultValue = QString()) const;
 
   [[nodiscard]] int GetIntValue(QString const& sectionName,
                                 QString const& key,

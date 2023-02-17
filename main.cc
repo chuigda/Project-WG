@@ -5,6 +5,7 @@
 #include <QFontDatabase>
 #include <QIcon>
 
+#include "GlobalConfig.h"
 #include "ui_next/LicensePresenter.h"
 #include "ui_next/ControlPanel.h"
 #include "util/FileUtil.h"
@@ -53,6 +54,8 @@ PrecheckLicense() {
 }
 
 int main(int argc, char *argv[]) {
+  cw::InitGlobalConfig();
+
   QApplication a { argc, argv };
   QApplication::setWindowIcon(QIcon(QPixmap(":/icon-v2.png")));
 

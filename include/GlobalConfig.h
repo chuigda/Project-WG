@@ -10,9 +10,10 @@ struct GlobalConfig {
   bool anisotropyFilter = true;
 
   enum class ControlMode { None, VTS, OSF, MP, Manual };
-  ControlMode controlMode = ControlMode::None;
+  ControlMode defaultControlMode = ControlMode::None;
 
   int vtsWebsocketPort = 8001;
+
   int osfUdpPort = 11573;
   int osfCorrectionX = 0;
   int osfCorrectionY = 0;
