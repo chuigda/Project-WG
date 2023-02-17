@@ -7,7 +7,7 @@ namespace cw {
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
-Texture2D::Texture2D(const QImage &image, GLFunctions *f)
+Texture2D::Texture2D(const QImage &image, GLFunctions *f, bool nearest)
   : m_IsDeleted(false)
 {
   QImage rgbaImage = image.convertToFormat(QImage::Format_RGBA8888);
@@ -20,12 +20,22 @@ Texture2D::Texture2D(const QImage &image, GLFunctions *f)
   f->glTexParameterf(GL_TEXTURE_2D,
                      GL_TEXTURE_MAX_ANISOTROPY_EXT,
                      maxAnisotropy);
-  f->glTexParameteri(GL_TEXTURE_2D,
-                     GL_TEXTURE_MAG_FILTER,
-                     GL_LINEAR);
-  f->glTexParameteri(GL_TEXTURE_2D,
-                     GL_TEXTURE_MIN_FILTER,
-                     GL_LINEAR_MIPMAP_LINEAR);
+  if (nearest) {
+    f->glTexParameteri(GL_TEXTURE_2D,
+                       GL_TEXTURE_MAG_FILTER,
+                       GL_NEAREST);
+    f->glTexParameteri(GL_TEXTURE_2D,
+                       GL_TEXTURE_MIN_FILTER,
+                       GL_NEAREST);
+  } else {
+    f->glTexParameteri(GL_TEXTURE_2D,
+                       GL_TEXTURE_MAG_FILTER,
+                       GL_LINEAR);
+    f->glTexParameteri(GL_TEXTURE_2D,
+                       GL_TEXTURE_MIN_FILTER,
+                       GL_LINEAR_MIPMAP_LINEAR);
+  }
+
   f->glTexImage2D(GL_TEXTURE_2D,
                   0,
                   GL_RGBA,
@@ -35,7 +45,10 @@ Texture2D::Texture2D(const QImage &image, GLFunctions *f)
                   GL_RGBA,
                   GL_UNSIGNED_BYTE,
                   rgbaImage.bits());
-  f->glGenerateMipmap(GL_TEXTURE_2D);
+
+  if (!nearest) {
+    f->glGenerateMipmap(GL_TEXTURE_2D);
+  }
 
   GLenum error = f->glGetError();
   if (error != GL_NO_ERROR) {

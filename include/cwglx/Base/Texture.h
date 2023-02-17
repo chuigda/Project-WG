@@ -13,7 +13,7 @@ namespace cw {
 
 class Texture2D {
 public:
-  Texture2D(const QImage &image, GLFunctions *f);
+  Texture2D(const QImage &image, GLFunctions *f, bool nearest = false);
 
   [[nodiscard]] GLuint GetTextureId() const noexcept;
 
