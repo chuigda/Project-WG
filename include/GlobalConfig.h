@@ -17,10 +17,10 @@ struct GlobalConfig {
   int vtsWebsocketPort = 8001;
 
   int osfUdpPort = 11573;
-  int osfCorrectionX = 0;
+  float osfCorrectionX = 0;
   float osfCorrectionY = 0;
   float osfCorrectionZ = 0;
-  float osfSmooth = 8;
+  int osfSmooth = 8;
 
   static GlobalConfig Instance;
   static char const* ControlModeToString(ControlMode mode);

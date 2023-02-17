@@ -40,18 +40,18 @@ void InitGlobalConfig() {
     }
   }
 
-  IniSection const* vtsConfig = config.GetSection("vts");
+  IniSection const* vtsConfig = config.GetSection("control.vts");
   if (vtsConfig) {
     GlobalConfig::Instance.vtsWebsocketPort = vtsConfig->GetIntValue("websocket_port");
   }
 
-  IniSection const* osfConfig = config.GetSection("osf");
+  IniSection const* osfConfig = config.GetSection("control.osf");
   if (osfConfig) {
     GlobalConfig::Instance.osfUdpPort = osfConfig->GetIntValue("udp_port");
-    GlobalConfig::Instance.osfCorrectionX = osfConfig->GetIntValue("correction_x");
+    GlobalConfig::Instance.osfCorrectionX = osfConfig->GetFloatValue("correction_x");
     GlobalConfig::Instance.osfCorrectionY = osfConfig->GetFloatValue("correction_y");
     GlobalConfig::Instance.osfCorrectionZ = osfConfig->GetFloatValue("correction_z");
-    GlobalConfig::Instance.osfSmooth = osfConfig->GetFloatValue("smooth");
+    GlobalConfig::Instance.osfSmooth = osfConfig->GetIntValue("smooth");
   }
 }
 
