@@ -249,7 +249,6 @@ public:
         hBox->addWidget(new QLabel("校正"));
         hBox->addStretch();
 
-        hBox->addWidget(new QLabel("X"));
         QDoubleSpinBox *xSpin = createAngleSpinBox();
         xSpin->setFixedWidth(64);
         xSpin->setValue(cw::GlobalConfig::Instance.osfCorrectionX);
@@ -257,7 +256,6 @@ public:
           cw::GlobalConfig::Instance.osfCorrectionX = static_cast<float>(value);
         });
 
-        hBox->addWidget(new QLabel("Y"));
         QDoubleSpinBox *ySpin = createAngleSpinBox();
         ySpin->setFixedWidth(64);
         ySpin->setValue(cw::GlobalConfig::Instance.osfCorrectionY);
@@ -265,7 +263,6 @@ public:
           cw::GlobalConfig::Instance.osfCorrectionY = static_cast<float>(value);
         });
 
-        hBox->addWidget(new QLabel("Z"));
         QDoubleSpinBox *zSpin = createAngleSpinBox();
         zSpin->setFixedWidth(64);
         zSpin->setValue(cw::GlobalConfig::Instance.osfCorrectionZ);
@@ -273,8 +270,11 @@ public:
           cw::GlobalConfig::Instance.osfCorrectionZ = static_cast<float>(value);
         });
 
+        hBox->addWidget(new QLabel("X"));
         hBox->addWidget(xSpin);
+        hBox->addWidget(new QLabel("Y"));
         hBox->addWidget(ySpin);
+        hBox->addWidget(new QLabel("Z"));
         hBox->addWidget(zSpin);
       }
     }
