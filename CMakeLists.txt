@@ -181,6 +181,9 @@ set(PROJECT_SOURCES
     # include/wgc0310/HeadStatus.h
     include/wgc0310/AttachmentStatus.h
 
+    src/GlobalConfig.cc
+    include/GlobalConfig.h
+
     include/wgc0310/api/ScreenAnimation.h
     include/wgc0310/api/Attachment.h
     include/wgc0310/api/WGAPI.h
