@@ -300,29 +300,38 @@ public:
         }
 
         cw::WriteToFile("config.ini", QStringLiteral(R"abc123([render]
+# 多重采样抗锯齿
 multisampling=%1
+# 多重采样抗锯齿样本数
 multisampling_samples=%2
+# 线条平滑
 line_smooth=%3
+# 各向异性过滤
 anisotropy_filter=%4
 
 [control]
+# 默认模式
 default_mode=%5
 
 [control.vts]
+# WebSocket 端口
 websocket_port=%6
 
 [control.osf]
+# UDP 端口
 udp_port=%7
+# XYZ 校正
 correction_x=%8
 correction_y=%9
 correction_z=%10
+# 平滑
 smooth=%11
 )abc123")
           // render
-          .arg(cw::GlobalConfig::Instance.multisampling)
+          .arg(cw::GlobalConfig::Instance.multisampling ? "true" : "false")
           .arg(cw::GlobalConfig::Instance.multisamplingSamples)
-          .arg(cw::GlobalConfig::Instance.lineSmoothHint)
-          .arg(cw::GlobalConfig::Instance.anisotropyFilter)
+          .arg(cw::GlobalConfig::Instance.lineSmoothHint ? "true" : "false")
+          .arg(cw::GlobalConfig::Instance.anisotropyFilter ? "true" : "false")
           // control
           .arg(cw::GlobalConfig::ControlModeToString(cw::GlobalConfig::Instance.defaultControlMode))
           // control.vts
