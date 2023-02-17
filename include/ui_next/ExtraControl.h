@@ -14,11 +14,6 @@ struct StatusExtra {
 
   bool customClearColor = false;
   glm::vec4 clearColor { 0.0f, 0.0f, 0.0f, 1.0f };
-
-  bool stroke = false;
-  glm::vec4 strokeColor { 0.0f, 0.0f, 0.0f, 1.0f };
-  GLfloat strokeLineWidth = 1.0f;
-  GLfloat strokeAdjustment = 1.001f;
 };
 
 class GLWindow;

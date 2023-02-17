@@ -5,10 +5,9 @@
 
 namespace cw {
 
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cppcoreguidelines-pro-type-member-init"
 Texture2D::Texture2D(const QImage &image, GLFunctions *f, bool nearest)
-  : m_IsDeleted(false)
+  : m_TextureId(0),
+    m_IsDeleted(false)
 {
   QImage rgbaImage = image.convertToFormat(QImage::Format_RGBA8888);
 
@@ -56,11 +55,10 @@ Texture2D::Texture2D(const QImage &image, GLFunctions *f, bool nearest)
     std::abort();
   }
 }
-#pragma clang diagnostic pop
 
 GLuint Texture2D::GetTextureId() const noexcept {
   Q_ASSERT(!m_IsDeleted && "Texture2D has been deleted");
-  return 0;
+  return m_TextureId;
 }
 
 void Texture2D::ActivateTexture(GLFunctions *f,
