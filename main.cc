@@ -72,7 +72,10 @@ int main(int argc, char *argv[]) {
 
   QPixmap splashPixmap = QPixmap(":/splash.png");
   qreal dpi = a.devicePixelRatio();
-  QSplashScreen splash(splashPixmap.scaled(640.0 / dpi, 480.0 / dpi));
+  QSplashScreen splash(splashPixmap.scaled(
+    static_cast<int>(640.0 / dpi),
+    static_cast<int>(480.0 / dpi)
+  ));
   splash.setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
   splash.setWindowFlag(Qt::SplashScreen, false);
   splash.setEnabled(false);
