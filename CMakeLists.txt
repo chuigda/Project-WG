@@ -99,9 +99,11 @@ target_link_libraries(CWGLX PRIVATE
 # CWUTIL
 set(CWUTIL_SOURCES
     src/util/FileUtil.cc
+    src/util/IniLoader.cc
     src/util/DynLoad.cc
     src/util/Constants.cc
     include/util/FileUtil.h
+    include/util/IniLoader.h
     include/util/DynLoad.h
     include/util/Wife.h
     include/util/Constants.h

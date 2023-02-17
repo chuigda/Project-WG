@@ -2,7 +2,6 @@
 
 #include <QLabel>
 #include <QSpinBox>
-#include <QDoubleSpinBox>
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>
