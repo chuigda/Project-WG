@@ -9,12 +9,12 @@ IniSection::IniSection(QString sectionName, Sinkrate)
   : m_SectionName(std::move(sectionName))
 {}
 
-void IniSection::AddData(const QString &key, const QString &value, Sinkrate) {
-  m_SectionData[key] = value;
-}
-
 QString const &IniSection::GetSectionName() const {
   return m_SectionName;
+}
+
+std::unordered_map<QString, QString> const &IniSection::GetData() const {
+  return m_SectionData;
 }
 
 QString IniSection::GetData(const QString &key) const {
@@ -63,11 +63,12 @@ bool IniSection::GetBoolValue(const QString &key, bool defaultValue) const {
   }
 }
 
-IniFileData::IniFileData(Sinkrate) {}
+void IniSection::AddData(const QString &key, const QString &value) {
+  m_SectionData[key] = value;
+}
 
-void IniFileData::AddSection(IniSection &&section, Sinkrate) {
-  QString sectionName = section.GetSectionName();
-  m_Sections.insert({ std::move(sectionName), std::move(section) });
+std::unordered_map<QString, IniSection> const& IniFileData::GetData() const {
+  return m_Sections;
 }
 
 IniSection const *IniFileData::GetSection(const QString &sectionName) const {
@@ -127,8 +128,22 @@ GENERATE_GET_VALUE2(float, GetFloatValue)
 GENERATE_GET_VALUE2(double, GetDoubleValue)
 GENERATE_GET_VALUE2(bool, GetBoolValue)
 
-IniFileData ParseIniData(QString const& data) {
-  IniFileData result { SecretInternalsDoNotUseOrYouWillBeFired };
+QString IniFileData::ToString() const {
+  QString result;
+  for (auto const& section : m_Sections) {
+    result += QStringLiteral("[%1]\n").arg(section.first);
+    for (auto const& data : section.second.GetData()) {
+      result += QStringLiteral("%1=%2\n")
+        .arg(data.first)
+        .arg(data.second);
+    }
+    result += '\n';
+  }
+  return result;
+}
+
+IniFileData IniFileData::Parse(QString const& data) {
+  IniFileData result;
   std::unique_ptr<IniSection> currentSection = nullptr;
 
   QStringList lines = data.split('\n');
@@ -144,8 +159,7 @@ IniFileData ParseIniData(QString const& data) {
     if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
       QString sectionName = trimmed.mid(1, trimmed.size() - 2);
       if (currentSection) {
-        result.AddSection(std::move(*currentSection),
-                          SecretInternalsDoNotUseOrYouWillBeFired);
+        result.AddSection(std::move(*currentSection));
       }
       currentSection = std::make_unique<IniSection>(
         sectionName,
@@ -154,30 +168,37 @@ IniFileData ParseIniData(QString const& data) {
     } else {
       QStringList parts = trimmed.split('=');
       if (parts.size() != 2) {
-        qWarning() << "ParseIniData(QString const&): Invalid line in ini file at line"
+        qWarning() << "IniFileData::Parse(QString const&): Invalid line in ini file at line"
                    << lineNo
                    << "(not a key-value pair)";
         continue;
       }
 
       if (!currentSection) {
-        qWarning() << "ParseIniData(QString const&): Invalid line in ini file at line"
+        qWarning() << "IniFileData::Parse(QString const&): Invalid line in ini file at line"
                    << lineNo
                    << "(cannot add value without a valid section)";
         continue;
       }
 
-      currentSection->AddData(parts[0].trimmed(),
-                              parts[1].trimmed(),
-                              SecretInternalsDoNotUseOrYouWillBeFired);
+      currentSection->AddData(parts[0].trimmed(), parts[1].trimmed());
     }
   }
 
   if (currentSection) {
-    result.AddSection(std::move(*currentSection), SecretInternalsDoNotUseOrYouWillBeFired);
+    result.AddSection(std::move(*currentSection));
   }
 
   return result;
+}
+
+QString IniFileData::ToString(const IniFileData &data) {
+  return data.ToString();
+}
+
+void IniFileData::AddSection(IniSection &&section) {
+  QString sectionName = section.GetSectionName();
+  m_Sections.insert({ std::move(sectionName), std::move(section) });
 }
 
 } // namespace cw

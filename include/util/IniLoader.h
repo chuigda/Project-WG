@@ -10,15 +10,17 @@
 namespace cw {
 
 class IniSection {
+  friend class IniFileData;
+
 public:
-  IniSection(QString sectionName, Sinkrate);
+  explicit IniSection(QString sectionName, Sinkrate);
 
   CW_DERIVE_DEFAULT_COPY(IniSection)
   CW_DERIVE_DEFAULT_MOVE(IniSection)
 
-  void AddData(QString const& key, QString const& value, Sinkrate);
-
   [[nodiscard]] QString const& GetSectionName() const;
+
+  std::unordered_map<QString, QString> const& GetData() const;
 
   [[nodiscard]] QString GetData(QString const& key) const;
 
@@ -31,18 +33,18 @@ public:
   [[nodiscard]] bool GetBoolValue(QString const& key, bool defaultValue = false) const;
 
 private:
+  void AddData(QString const& key, QString const& value);
+
   QString m_SectionName;
   std::unordered_map<QString, QString> m_SectionData;
 };
 
 class IniFileData {
 public:
-  explicit IniFileData(Sinkrate);
-
   CW_DERIVE_DEFAULT_COPY(IniFileData)
   CW_DERIVE_DEFAULT_MOVE(IniFileData)
 
-  void AddSection(IniSection&& section, Sinkrate);
+  std::unordered_map<QString, IniSection> const& GetData() const;
 
   [[nodiscard]] IniSection const* GetSection(QString const& sectionName) const;
 
@@ -58,19 +60,34 @@ public:
 
   [[nodiscard]] QString GetData(QString const& sectionName, QString const& key) const;
 
-  [[nodiscard]] int GetIntValue(QString const& sectionName, QString const& key, int defaultValue = 0) const;
+  [[nodiscard]] int GetIntValue(QString const& sectionName,
+                                QString const& key,
+                                int defaultValue = 0) const;
 
-  [[nodiscard]] float GetFloatValue(QString const& sectionName, QString const& key, float defaultValue = 0.0) const;
+  [[nodiscard]] float GetFloatValue(QString const& sectionName,
+                                    QString const& key,
+                                    float defaultValue = 0.0) const;
 
-  [[nodiscard]] double GetDoubleValue(QString const& sectionName, QString const& key, double defaultValue = 0.0) const;
+  [[nodiscard]] double GetDoubleValue(QString const& sectionName,
+                                      QString const& key,
+                                      double defaultValue = 0.0) const;
 
-  [[nodiscard]] bool GetBoolValue(QString const& sectionName, QString const& key, bool defaultValue = false) const;
+  [[nodiscard]] bool GetBoolValue(QString const& sectionName,
+                                  QString const& key,
+                                  bool defaultValue = false) const;
+
+  [[nodiscard]] QString ToString() const;
+
+  [[nodiscard]] static IniFileData Parse(QString const& data);
+
+  [[nodiscard]] static QString ToString(IniFileData const&);
 
 private:
+  IniFileData() = default;
+  void AddSection(IniSection&& section);
+
   std::unordered_map<QString, IniSection> m_Sections;
 };
-
-IniFileData ParseIniData(QString const& data);
 
 } // namespace cw
 
