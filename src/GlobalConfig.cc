@@ -1,4 +1,5 @@
 #include <QString>
+
 #include "GlobalConfig.h"
 #include "util/FileUtil.h"
 #include "util/IniLoader.h"
@@ -13,10 +14,14 @@ void InitGlobalConfig() {
 
   IniSection const* renderConfig = config.GetSection("render");
   if (renderConfig) {
-    GlobalConfig::Instance.multisampling = renderConfig->GetBoolValue("multisampling");
-    GlobalConfig::Instance.multisamplingSamples = renderConfig->GetIntValue("multisampling_samples");
-    GlobalConfig::Instance.lineSmoothHint = renderConfig->GetBoolValue("line_smooth");
-    GlobalConfig::Instance.anisotropyFilter = renderConfig->GetBoolValue("anisotropy_filter");
+    GlobalConfig::Instance.multisampling =
+      renderConfig->GetBoolValue("multisampling");
+    GlobalConfig::Instance.multisamplingSamples =
+      renderConfig->GetIntValue("multisampling_samples");
+    GlobalConfig::Instance.lineSmoothHint =
+      renderConfig->GetBoolValue("line_smooth");
+    GlobalConfig::Instance.anisotropyFilter =
+      renderConfig->GetBoolValue("anisotropy_filter");
   }
 
   IniSection const* controlConfig = config.GetSection("control");

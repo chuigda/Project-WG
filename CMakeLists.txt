@@ -47,7 +47,7 @@ if (WIN32)
     set(CWUTIL_RESC resc/win32/CWUtil.rc include/Version.h)
     set(CWGLX_RESC resc/win32/CWGLX.rc include/Version.h)
     set(PROJECT_WG_RESC resc/win32/Main.rc)
-    set(PHONG_TESTER_RESC resc/win32/PhongTester.rc)
+    set(CONFIG_RESC extra/config/Config.rc)
 
     set(GLM_LINK_NAME glm::glm)
 else()
@@ -207,6 +207,18 @@ target_link_libraries(Project-WG PRIVATE
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)
 
 qt_finalize_executable(Project-WG)
+
+# Configurator
+qt_add_executable(Config MANUAL_FINALIZATION
+                  extra/config/main.cc
+                  extra/config/config-icon.qrc)
+target_link_libraries(Config PRIVATE
+                      Qt6::Widgets
+                      CWUtil)
+
+set_target_properties(Config PROPERTIES WIN32_EXECUTABLE TRUE)
+
+qt_finalize_executable(Config)
 
 # Attachments
 qt_add_library(Emitter SHARED extra/attachments/Emitter/Emitter.cc
