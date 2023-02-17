@@ -1,6 +1,7 @@
 #include "util/IniLoader.h"
 
 #include <utility>
+#include <QDebug>
 
 namespace cw {
 
@@ -125,5 +126,58 @@ GENERATE_GET_VALUE2(int, GetIntValue)
 GENERATE_GET_VALUE2(float, GetFloatValue)
 GENERATE_GET_VALUE2(double, GetDoubleValue)
 GENERATE_GET_VALUE2(bool, GetBoolValue)
+
+IniFileData ParseIniData(QString const& data) {
+  IniFileData result { SecretInternalsDoNotUseOrYouWillBeFired };
+  std::unique_ptr<IniSection> currentSection = nullptr;
+
+  QStringList lines = data.split('\n');
+  std::size_t lineNo = 0;
+
+  for (QString const& line : lines) {
+    lineNo += 1;
+    QString trimmed = line.trimmed();
+    if (trimmed.isEmpty() || trimmed.startsWith(';') || trimmed.startsWith('#')) {
+      continue;
+    }
+
+    if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+      QString sectionName = trimmed.mid(1, trimmed.size() - 2);
+      if (currentSection) {
+        result.AddSection(std::move(*currentSection),
+                          SecretInternalsDoNotUseOrYouWillBeFired);
+      }
+      currentSection = std::make_unique<IniSection>(
+        sectionName,
+        SecretInternalsDoNotUseOrYouWillBeFired
+      );
+    } else {
+      QStringList parts = trimmed.split('=');
+      if (parts.size() != 2) {
+        qWarning() << "ParseIniData(QString const&): Invalid line in ini file at line"
+                   << lineNo
+                   << "(not a key-value pair)";
+        continue;
+      }
+
+      if (!currentSection) {
+        qWarning() << "ParseIniData(QString const&): Invalid line in ini file at line"
+                   << lineNo
+                   << "(cannot add value without a valid section)";
+        continue;
+      }
+
+      currentSection->AddData(parts[0].trimmed(),
+                              parts[1].trimmed(),
+                              SecretInternalsDoNotUseOrYouWillBeFired);
+    }
+  }
+
+  if (currentSection) {
+    result.AddSection(std::move(*currentSection), SecretInternalsDoNotUseOrYouWillBeFired);
+  }
+
+  return result;
+}
 
 } // namespace cw

@@ -70,6 +70,8 @@ private:
   std::unordered_map<QString, IniSection> m_Sections;
 };
 
+IniFileData ParseIniData(QString const& data);
+
 } // namespace cw
 
 #endif // PROJECT_WG_INI_LOADER_H
