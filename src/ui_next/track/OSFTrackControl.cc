@@ -13,6 +13,7 @@
 #include "wgc0310/HeadStatus.h"
 #include "util/Derive.h"
 #include "util/CircularBuffer.h"
+#include "GlobalConfig.h"
 
 class OSFTrackWorker : public QObject {
   Q_OBJECT
@@ -245,9 +246,9 @@ void OSFTrackWorker::HandleData() {
   });
 }
 
-static QDoubleSpinBox *createAngleSpinBox() {
+static QDoubleSpinBox *createAngleSpinBox(double value) {
   QDoubleSpinBox *ret = new QDoubleSpinBox();
-  ret->setValue(0.0);
+  ret->setValue(value);
   ret->setMinimum(-45.0);
   ret->setMaximum(45.0);
   return ret;
@@ -294,7 +295,8 @@ OSFTrackControl::OSFTrackControl(wgc0310::HeadStatus *headStatus,
     osfUdpSettings->setLayout(osfLayout);
 
     QLabel *labelUdpAddr = new QLabel("UDP 端口");
-    QLineEdit *lineEdit = new QLineEdit("11573");
+    QLineEdit *lineEdit =
+      new QLineEdit(QString::number(cw::GlobalConfig::Instance.osfUdpPort));
     QPushButton *startButton = new QPushButton("开始监听");
     QPushButton *stopButton = new QPushButton("停止监听");
 
@@ -334,22 +336,25 @@ OSFTrackControl::OSFTrackControl(wgc0310::HeadStatus *headStatus,
 
     box->addWidget(new QLabel("平滑"));
     QSpinBox *spinSmooth = new QSpinBox();
-    spinSmooth->setValue(8);
+    spinSmooth->setValue(cw::GlobalConfig::Instance.osfSmooth);
     spinSmooth->setMinimum(1);
     spinSmooth->setMaximum(20);
     box->addWidget(spinSmooth);
     box->addStretch();
 
     box->addWidget(new QLabel("X"));
-    QDoubleSpinBox *spinX = createAngleSpinBox();
+    QDoubleSpinBox *spinX =
+      createAngleSpinBox(cw::GlobalConfig::Instance.osfCorrectionX);
     box->addWidget(spinX);
 
     box->addWidget(new QLabel("Y"));
-    QDoubleSpinBox *spinY = createAngleSpinBox();
+    QDoubleSpinBox *spinY =
+      createAngleSpinBox(cw::GlobalConfig::Instance.osfCorrectionY);
     box->addWidget(spinY);
 
     box->addWidget(new QLabel("Z"));
-    QDoubleSpinBox *spinZ = createAngleSpinBox();
+    QDoubleSpinBox *spinZ =
+      createAngleSpinBox(cw::GlobalConfig::Instance.osfCorrectionZ);
     box->addWidget(spinZ);
 
     QPushButton *okButton = new QPushButton("设定完了");
@@ -368,6 +373,7 @@ OSFTrackControl::OSFTrackControl(wgc0310::HeadStatus *headStatus,
         emit this->SetParameters(parameter);
       }
     );
+    okButton->click();
 
     layout->addWidget(groupBox);
   }

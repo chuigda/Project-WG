@@ -13,12 +13,16 @@ class GLObjectContext;
 void LoadMaterialLibrary(GLObjectContext *ctx,
                          GLFunctions *f,
                          QString const& basePath,
-                         QString const& fileName);
+                         QString const& fileName,
+                         bool linearSampling,
+                         bool anisotropyFilter);
 
 GLObject LoadObject(GLObjectContext *ctx,
                     GLFunctions *f,
                     QString const& basePath,
                     QString const& fileName,
+                    bool linearSampling,
+                    bool anisotropyFilter,
                     std::unique_ptr<VertexArrayObject> &&vao = nullptr,
                     std::unique_ptr<VertexVBO> &&vbo = nullptr);
 

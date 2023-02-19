@@ -7,6 +7,8 @@
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QLabel>
+
+#include "GlobalConfig.h"
 #include "cwglx/Base/Texture.h"
 #include "wgc0310/ScreenAnimationStatus.h"
 #include "ui_next/GLWindow.h"
@@ -260,7 +262,12 @@ void ScreenAnimationControl::ReloadStaticImages() {
       continue;
     }
 
-    auto texture = std::make_unique<cw::Texture2D>(image, m_GLWindow->GL);
+    auto texture = std::make_unique<cw::Texture2D>(
+      image,
+      m_GLWindow->GL,
+      cw::GlobalConfig::Instance.linearSampling,
+      cw::GlobalConfig::Instance.anisotropyFilter
+    );
     m_StaticImages.push_back(wgc0310::StaticScreenImage {
       .imageName = file,
       .texture = std::move(texture)

@@ -10,9 +10,9 @@ struct ShaderText;
 } // namespace wgc0310
 
 struct StatusExtra {
-  bool stayOnTop = false;
+  bool stayOnTop;
 
-  bool customClearColor = false;
+  bool customClearColor;
   glm::vec4 clearColor { 0.0f, 0.0f, 0.0f, 1.0f };
 };
 

@@ -14,9 +14,14 @@ struct GlobalConfig {
   int multisamplingSamples = 8;
   bool lineSmoothHint = true;
   bool anisotropyFilter = true;
+  bool linearSampling = true;
 
   enum class ControlMode {
-    None, VTS, OSF, MP, Manual
+    None,
+    VTS,
+    OSF,
+    MP,
+    Manual
   };
   ControlMode defaultControlMode = ControlMode::None;
 

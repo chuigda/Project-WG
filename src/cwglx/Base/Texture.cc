@@ -1,38 +1,44 @@
-#include "include/cwglx/Base/Texture.h"
+#include "cwglx/Base/Texture.h"
 
 #include <QImage>
-#include "include/cwglx/GL/GLImpl.h"
+#include "cwglx/GL/GLImpl.h"
 
 namespace cw {
 
-Texture2D::Texture2D(const QImage &image, GLFunctions *f, bool nearest)
+Texture2D::Texture2D(const QImage &image,
+                     GLFunctions *f,
+                     bool linearSampling,
+                     bool anisotropyFilter)
   : m_TextureId(0),
     m_IsDeleted(false)
 {
   QImage rgbaImage = image.convertToFormat(QImage::Format_RGBA8888);
 
-  GLfloat maxAnisotropy = 1.0f;
-  f->glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
-
   f->glGenTextures(1, &m_TextureId);
   f->glBindTexture(GL_TEXTURE_2D, m_TextureId);
-  f->glTexParameterf(GL_TEXTURE_2D,
-                     GL_TEXTURE_MAX_ANISOTROPY_EXT,
-                     maxAnisotropy);
-  if (nearest) {
-    f->glTexParameteri(GL_TEXTURE_2D,
-                       GL_TEXTURE_MAG_FILTER,
-                       GL_NEAREST);
-    f->glTexParameteri(GL_TEXTURE_2D,
-                       GL_TEXTURE_MIN_FILTER,
-                       GL_NEAREST);
-  } else {
+
+  if (anisotropyFilter) {
+    GLfloat maxAnisotropy = 1.0f;
+    f->glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+    f->glTexParameterf(GL_TEXTURE_2D,
+                       GL_TEXTURE_MAX_ANISOTROPY_EXT,
+                       maxAnisotropy);
+  }
+
+  if (linearSampling) {
     f->glTexParameteri(GL_TEXTURE_2D,
                        GL_TEXTURE_MAG_FILTER,
                        GL_LINEAR);
     f->glTexParameteri(GL_TEXTURE_2D,
                        GL_TEXTURE_MIN_FILTER,
                        GL_LINEAR_MIPMAP_LINEAR);
+  } else {
+    f->glTexParameteri(GL_TEXTURE_2D,
+                       GL_TEXTURE_MAG_FILTER,
+                       GL_NEAREST);
+    f->glTexParameteri(GL_TEXTURE_2D,
+                       GL_TEXTURE_MIN_FILTER,
+                       GL_NEAREST);
   }
 
   f->glTexImage2D(GL_TEXTURE_2D,
@@ -45,7 +51,7 @@ Texture2D::Texture2D(const QImage &image, GLFunctions *f, bool nearest)
                   GL_UNSIGNED_BYTE,
                   rgbaImage.bits());
 
-  if (!nearest) {
+  if (linearSampling) {
     f->glGenerateMipmap(GL_TEXTURE_2D);
   }
 

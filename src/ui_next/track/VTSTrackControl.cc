@@ -15,6 +15,7 @@
 #include "wgc0310/HeadStatus.h"
 #include "util/Derive.h"
 #include "util/CircularBuffer.h"
+#include "GlobalConfig.h"
 
 class VTSTrackWorker : public QObject {
   Q_OBJECT
@@ -317,7 +318,8 @@ VTSTrackControl::VTSTrackControl(wgc0310::HeadStatus *headStatus,
     vtsSettings->setLayout(vtsLayout);
 
     QLabel *labelWSAddr = new QLabel("WebSocket 端口");
-    QLineEdit *lineEdit = new QLineEdit("8001");
+    QLineEdit *lineEdit =
+      new QLineEdit(QString::number(cw::GlobalConfig::Instance.vtsWebsocketPort));
     QPushButton *startButton = new QPushButton("启动");
     QPushButton *stopButton = new QPushButton("停止");
 

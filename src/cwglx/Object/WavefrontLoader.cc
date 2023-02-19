@@ -1,13 +1,12 @@
 #include "cwglx/Object/WavefrontLoader.h"
 
-#include "cwglx/Object/Object.h"
-#include "cwglx/Object/Material.h"
-#include "util/FileUtil.h"
-
 #include <QString>
 #include <QDebug>
 #include <QImage>
 #include <glm/geometric.hpp>
+#include "cwglx/Object/Object.h"
+#include "cwglx/Object/Material.h"
+#include "util/FileUtil.h"
 
 namespace cw {
 
@@ -18,7 +17,9 @@ static glm::vec4 ParseVertex4(QStringList const& commandBuf);
 void LoadMaterialLibrary(GLObjectContext *ctx,
                          GLFunctions *f,
                          QString const &basePath,
-                         QString const &fileName) {
+                         QString const &fileName,
+                         bool linearSampling,
+                         bool anisotropyFilter) {
   QString currentMaterialName;
   std::unique_ptr<Material> currentMaterial;
 
@@ -189,7 +190,12 @@ void LoadMaterialLibrary(GLObjectContext *ctx,
           continue;
         }
 
-        std::unique_ptr<Texture2D> texture = std::make_unique<Texture2D>(image, f);
+        std::unique_ptr<Texture2D> texture = std::make_unique<Texture2D>(
+          image,
+          f,
+          linearSampling,
+          anisotropyFilter
+        );
         *portion = ctx->AddTexture(texturePath, std::move(texture));
       }
     } else {
@@ -213,6 +219,8 @@ GLObject LoadObject(GLObjectContext *ctx,
                     GLFunctions *f,
                     QString const &basePath,
                     QString const &fileName,
+                    bool linearSampling,
+                    bool anisotropyFilter,
                     std::unique_ptr<VertexArrayObject> &&vao,
                     std::unique_ptr<VertexVBO> &&vbo)
 {
@@ -258,7 +266,7 @@ GLObject LoadObject(GLObjectContext *ctx,
       }
 
       QString materialLibPath = parts[1];
-      LoadMaterialLibrary(ctx, f, basePath, materialLibPath);
+      LoadMaterialLibrary(ctx, f, basePath, materialLibPath, linearSampling, anisotropyFilter);
     } else if (command == "usemtl") {
       if (parts.length() != 2) {
         qWarning() << "LoadObject(GLObjectContext*, GLFunctions*, QString const&, QString const&, std::unique_ptr<VertexArrayObject>&&, std::unique_ptr<VertexVBO>&&):"

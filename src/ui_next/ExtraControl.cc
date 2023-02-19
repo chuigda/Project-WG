@@ -7,6 +7,7 @@
 #include <QGroupBox>
 #include <QPushButton>
 
+#include "GlobalConfig.h"
 #include "cwglx/GL/GLImpl.h"
 #include "ui_next/GLWindow.h"
 
@@ -26,6 +27,13 @@ ExtraControl::ExtraControl(GLWindow *glWindow,
   : m_GLWindow(glWindow),
     m_StatusExtra(statusExtra)
 {
+  m_StatusExtra->stayOnTop = cw::GlobalConfig::Instance.stayOnTop;
+  m_StatusExtra->customClearColor = cw::GlobalConfig::Instance.fillBackground;
+  m_StatusExtra->clearColor = glm::vec4 {
+    cw::GlobalConfig::Instance.backgroundColor,
+    1.0
+  };
+
   setWindowTitle("附加选项");
 
   QVBoxLayout *layout = new QVBoxLayout();

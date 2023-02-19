@@ -5,6 +5,8 @@
 #include <QCloseEvent>
 #include <QApplication>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "GlobalConfig.h"
 #include "cwglx/Setup.h"
 #include "cwglx/GL/GLImpl.h"
 
@@ -46,7 +48,7 @@ GLWindow::GLWindow(EntityStatus const* entityStatus,
   QSurfaceFormat format = this->format();
   format.setProfile(QSurfaceFormat::CoreProfile);
   format.setVersion(3, 3);
-  format.setSamples(8);
+  format.setSamples(cw::GlobalConfig::Instance.multisamplingSamples);
   format.setDepthBufferSize(16);
   format.setBlueBufferSize(0);
   format.setGreenBufferSize(0);
@@ -91,6 +93,14 @@ void GLWindow::EnablePerformanceCounter() {
 void GLWindow::initializeGL() {
   QOpenGLWidget::initializeGL();
   cw::SetupPreferred(GL);
+
+  if (cw::GlobalConfig::Instance.multisampling) {
+    GL->glEnable(GL_MULTISAMPLE);
+  }
+
+  if (cw::GlobalConfig::Instance.lineSmoothHint) {
+    GL->glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+  }
 
   m_DevicePixelRatio = this->windowHandle()->devicePixelRatio();
 

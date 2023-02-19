@@ -168,6 +168,27 @@ public:
         cw::GlobalConfig::Instance.anisotropyFilter = enabled;
       });
       vBox->addWidget(anisotropyFilter);
+
+      {
+        QHBoxLayout *hBox = new QHBoxLayout();
+        vBox->addLayout(hBox);
+
+        hBox->addWidget(new QLabel("纹理采样方式"));
+        hBox->addStretch();
+        QRadioButton *linearSampling = new QRadioButton("线性");
+        QRadioButton *nearestSampling = new QRadioButton("临近");
+        if (cw::GlobalConfig::Instance.linearSampling) {
+          linearSampling->setChecked(true);
+        } else {
+          nearestSampling->setChecked(true);
+        }
+
+        connect(linearSampling, &QRadioButton::toggled, this, [] (bool enabled) {
+          cw::GlobalConfig::Instance.linearSampling = enabled;
+        });
+        hBox->addWidget(linearSampling);
+        hBox->addWidget(nearestSampling);
+      }
     }
 
     // 控制器配置
@@ -380,24 +401,26 @@ multisampling_samples=%7
 line_smooth=%8
 # 各向异性过滤
 anisotropy_filter=%9
+# 纹理采样方式，true=线性采样，false=临近采样
+linear_sampling=%10
 
 [control]
 # 默认模式
-default_mode=%10
+default_mode=%11
 
 [control.vts]
 # WebSocket 端口
-websocket_port=%11
+websocket_port=%12
 
 [control.osf]
 # UDP 端口
-udp_port=%12
+udp_port=%13
 # XYZ 校正
-correction_x=%13
-correction_y=%14
-correction_z=%15
+correction_x=%14
+correction_y=%15
+correction_z=%16
 # 平滑
-smooth=%16
+smooth=%17
 )abc123")
           // common
           .arg(cw::GlobalConfig::Instance.stayOnTop ? "true" : "false")
@@ -410,6 +433,7 @@ smooth=%16
           .arg(cw::GlobalConfig::Instance.multisamplingSamples)
           .arg(cw::GlobalConfig::Instance.lineSmoothHint ? "true" : "false")
           .arg(cw::GlobalConfig::Instance.anisotropyFilter ? "true" : "false")
+          .arg(cw::GlobalConfig::Instance.linearSampling ? "true" : "false")
           // control
           .arg(cw::GlobalConfig::ControlModeToString(cw::GlobalConfig::Instance.defaultControlMode))
           // control.vts

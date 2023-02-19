@@ -37,6 +37,8 @@ void InitGlobalConfig() {
       renderConfig->GetBoolValue("line_smooth");
     GlobalConfig::Instance.anisotropyFilter =
       renderConfig->GetBoolValue("anisotropy_filter");
+    GlobalConfig::Instance.linearSampling =
+      renderConfig->GetBoolValue("linear_sampling");
   }
 
   IniSection const* controlConfig = config.GetSection("control");
