@@ -96,10 +96,15 @@ void GLWindow::initializeGL() {
 
   if (cw::GlobalConfig::Instance.multisampling) {
     GL->glEnable(GL_MULTISAMPLE);
+  } else {
+    GL->glDisable(GL_MULTISAMPLE);
   }
 
   if (cw::GlobalConfig::Instance.lineSmoothHint) {
+    GL->glEnable(GL_LINE_SMOOTH);
     GL->glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+  } else {
+    GL->glDisable(GL_LINE_SMOOTH);
   }
 
   m_DevicePixelRatio = this->windowHandle()->devicePixelRatio();

@@ -99,11 +99,11 @@ ExtraControl::ExtraControl(GLWindow *glWindow,
 
     QCheckBox *multisample = new QCheckBox("多重采样抗锯齿");
     multisample->setToolTip("启用或关闭基于 <code>GL_MULTISAMPLE</code> 的多重采样抗锯齿");
-    multisample->setChecked(true);
+    multisample->setChecked(cw::GlobalConfig::Instance.multisampling);
 
     QCheckBox *lineSmooth = new QCheckBox("线条平滑");
     lineSmooth->setToolTip("启用或关闭基于 <code>GL_LINE_SMOOTH</code> 的线条平滑<br/>");
-    lineSmooth->setChecked(true);
+    lineSmooth->setChecked(cw::GlobalConfig::Instance.lineSmoothHint);
 
     vBox->addWidget(multisample);
     vBox->addWidget(lineSmooth);
