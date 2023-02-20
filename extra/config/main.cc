@@ -7,7 +7,6 @@
 #include <QRadioButton>
 #include <QLabel>
 #include <QLineEdit>
-#include <QSpinBox>
 #include <QDoubleSpinBox>
 #include <QPushButton>
 #include <QMessageBox>
