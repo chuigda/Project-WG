@@ -44,6 +44,7 @@ if (WIN32)
     # enable RC processing
     enable_language(RC)
 
+    set(CEMENT_RESC resc/win32/Cement.rc include/Version.h)
     set(CWUTIL_RESC resc/win32/CWUtil.rc include/Version.h)
     set(CWGLX_RESC resc/win32/CWGLX.rc include/Version.h)
     set(PROJECT_WG_RESC resc/win32/Main.rc)
@@ -54,6 +55,21 @@ else()
     set(GLM_LINK_NAME glm)
 endif()
 
+# Cement
+set(CEMENT_SOURCES
+
+    src/cement/Cement.cc
+    include/cement/Cement.h)
+
+set(SOURCE ${CEMENT_SOURCES} PROPERTY SKIP_AUTOMOC ON)
+set(SOURCE ${CEMENT_SOURCES} PROPERTY SKIP_AUTOUIC ON)
+set(SOURCE ${CEMENT_SOURCES} PROPERTY SKIP_AUTORCC ON)
+
+qt_add_library(Cement ${CEMENT_SOURCES} ${CEMENT_RESC})
+
+target_link_libraries(Cement PRIVATE Qt6::Core)
+
+# CWGLX
 set(CWGLX_SOURCES
 
     src/cwglx/Setup.cc
@@ -85,7 +101,6 @@ set(CWGLX_SOURCES
     include/cwglx/GL/GLInfo.h
 )
 
-# CWGLX
 set_property(SOURCE ${CWGLX_SOURCES} PROPERTY SKIP_AUTOMOC ON)
 
 qt_add_library(CWGLX ${CWGLX_SOURCES} ${CWGLX_RESC})
@@ -201,6 +216,7 @@ target_link_libraries(Project-WG PRIVATE
                       Qt6::Multimedia
                       Qt6::WebSockets
                       ${GLM_LINK_NAME}
+                      Cement
                       CWGLX
                       CWUtil)
 
