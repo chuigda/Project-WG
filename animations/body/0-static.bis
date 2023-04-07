@@ -1,0 +1,21 @@
+#attribute name 静止状态
+
+void entry() {
+  g_arm_l0 = 0.0;
+  g_arm_r0 = 0.0;
+
+  g_arm_l2 = 0.0;
+  g_arm_r2 = 0.0;
+
+  const dx = 15.0 / 25.0;
+
+  int i;
+  for (i = 0; i < 25; i++) {
+    g_arm_l0 += dx;
+    g_arm_r0 += dx;
+    g_arm_l2 += dx;
+    g_arm_r2 -= dx;
+
+    yield;
+  }
+}
