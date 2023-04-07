@@ -5,7 +5,11 @@ edition = "2021"
 publish = false
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["lib", "cdylib"]
+
+[[bin]]
+name = "generate_cdefs"
+path = "src/bin/generate_cdef.rs"
 
 [dependencies]
 pr21 = { git = "https://github.com/Pr47/Project-21", rev = "6edf0eaab0045534b0ab18c12025d20e3a55f90e" }

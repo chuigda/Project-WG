@@ -86,3 +86,6 @@ LICENSE.AGREED
 
 # Rust 组件的构建产物
 */target
+
+# 由 generate_cdefs 动态生成
+bis_anim/include/bis/BISContext.h

@@ -1,0 +1,5 @@
+};
+
+} // namespace bis
+
+#endif // PROJECT_WG_BIS_ANIM_H
