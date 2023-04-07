@@ -1,8 +1,7 @@
 #attribute name 斯派修姆
 
 float interpolate(int start, int end, int current, float startValue, float endValue) {
-  // non-linear transformation
-  float t = (current - start) / float(end - start);
+  float t = float(current - start) / float(end - start);
   t = t * t * (3.0 - 2.0 * t);
   return startValue + (endValue - startValue) * t;
 }
