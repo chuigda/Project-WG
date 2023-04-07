@@ -1,5 +1,4 @@
 use pr21::define_io_ctx;
-use pr21::io_ctx::IOContext;
 
 define_io_ctx!(struct Context {
     // input variables

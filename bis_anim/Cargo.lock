@@ -12,7 +12,7 @@ dependencies = [
 [[package]]
 name = "pr21"
 version = "0.1.0"
-source = "git+https://github.com/Pr47/Project-21?rev=6edf0eaab0045534b0ab18c12025d20e3a55f90e#6edf0eaab0045534b0ab18c12025d20e3a55f90e"
+source = "git+https://github.com/Pr47/Project-21?rev=dffefa87e3231ae2341c7d58e8eff6ad1db67c86#dffefa87e3231ae2341c7d58e8eff6ad1db67c86"
 dependencies = [
  "smallvec",
  "xjbutil",

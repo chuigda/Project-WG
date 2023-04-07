@@ -1,7 +1,6 @@
 use std::fs::OpenOptions;
 use std::io::Write;
 use pr21::io_ctx::{IOContext, Type21};
-
 use bis_anim::ctx::Context;
 
 fn type21_to_ctype(input: Type21) -> &'static str {
@@ -21,7 +20,7 @@ fn main() {
         .unwrap();
 
     write!(output_file, "{}", include_str!("cdef_pre.h.txt")).unwrap();
-    for (field, ty) in Context::metadata() {
+    for (_, field, ty) in <Context as IOContext>::metadata() {
         writeln!(
             output_file,
             "    {} {};",
