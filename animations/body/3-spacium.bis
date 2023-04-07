@@ -1,13 +1,16 @@
 #attribute name 斯派修姆
 
-float interpolate(int start, int end, int current, float startValue, float endValue) {
+float interp(float start, float end, float current) {
+  if (current <= start) {
+    return 0.0;
+  }
+
   if (current >= end) {
     return 1.0;
   }
 
-  float t = float(current - start) / float(end - start);
-  t = t * t * (3.0 - 2.0 * t);
-  return startValue + (endValue - startValue) * t;
+  float t = (current - start) / (end - start);
+  return t * t * (3.0 - 2.0 * t);
 }
 
 void entry() {
@@ -19,17 +22,18 @@ void entry() {
   yield;
 
   int i;
-  const dx = 90.0 / 45.0;
-  for (i = 0; i < 45; i++) {
-    g_arm_l0 = interpolate(0, 45, i, 0.0, -90.0);
-    g_arm_l2 = interpolate(0, 45, i, 0.0, -90.0);
-    g_arm_r0 = interpolate(0, 45, i, 0.0, -90.0);
+  for (i = 1; i <= 45; i++) {
+    float value = -90.0 * interp(1.0, 45.0, float(i));
+    g_arm_l0 = value;
+    g_arm_l2 = value;
+    g_arm_r0 = value;
     yield;
   }
 
-  for (i = 0; i < 45; i++) {
-    g_arm_l3 = interpolate(0, 45, i, 0.0, 90.0);
-    g_arm_r3 = interpolate(0, 45, i, 0.0, 90.0);
+  for (i = 1; i <= 45; i++) {
+    float value = 90.0 * interp(1.0, 45.0, float(i));
+    g_arm_l3 = value;
+    g_arm_r3 = -value;
     yield;
   }
 }
