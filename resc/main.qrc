@@ -21,6 +21,26 @@
         <file>AGPL-BRIEF</file>
         <file>CC-BY-SA-BRIEF</file>
 
+        <!-- Models -->
+        <file>model/TestObject.obj</file>
+        <file>model/TestObject.mtl</file>
+        <file>model/DebugTexture.png</file>
+        <file>model/DebugTextureNorm.png</file>
+
+        <!-- Shader set -->
+        <file>shader/empty/empty.vert</file>
+        <file>shader/empty/empty.frag</file>
+
+        <file>shader/common/emissive.vert</file>
+        <file>shader/common/emissive.frag</file>
+        <file>shader/standard/opaque.vert</file>
+        <file>shader/standard/opaque.frag</file>
+        <file>shader/standard/translucent.vert</file>
+        <file>shader/standard/translucent.frag</file>
+
+        <!-- BIS Prelude libraries -->
+        <file>bis/interp.bis</file>
+
         <!-- Help -->
         <file>help/index.html</file>
         <file>help/error.html</file>
@@ -39,23 +59,6 @@
         <file>help/pages/advanced.html</file>
         <file>help/pages/extending/body-anim.html</file>
         <file>help/pages/extending/static-anim.html</file>
-
-        <!-- Models -->
-        <file>model/TestObject.obj</file>
-        <file>model/TestObject.mtl</file>
-        <file>model/DebugTexture.png</file>
-        <file>model/DebugTextureNorm.png</file>
-
-        <!-- Shader set -->
-        <file>shader/empty/empty.vert</file>
-        <file>shader/empty/empty.frag</file>
-
-        <file>shader/common/emissive.vert</file>
-        <file>shader/common/emissive.frag</file>
-        <file>shader/standard/opaque.vert</file>
-        <file>shader/standard/opaque.frag</file>
-        <file>shader/standard/translucent.vert</file>
-        <file>shader/standard/translucent.frag</file>
 
         <!-- Help images -->
         <file>help/images/opengl.png</file>

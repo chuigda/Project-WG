@@ -1,0 +1,12 @@
+float interp(float start, float end, float current) {
+  if (current <= start) {
+    return 0.0;
+  }
+
+  if (current >= end) {
+    return 1.0;
+  }
+
+  float t = (current - start) / (end - start);
+  return t * t * (3.0 - 2.0 * t);
+}

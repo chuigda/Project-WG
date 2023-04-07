@@ -23,7 +23,7 @@ fn main() {
     for (_, field, ty) in <Context as IOContext>::metadata() {
         writeln!(
             output_file,
-            "    {} {};",
+            "  {} {};",
             type21_to_ctype(ty),
             field
         ).unwrap();
