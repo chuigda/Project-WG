@@ -1,6 +1,6 @@
 #attribute name 静止状态
 
-void entry() {
+void main() {
   g_arm_l1 = 0.0;
   g_arm_r1 = 0.0;
 

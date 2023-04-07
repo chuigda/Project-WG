@@ -13,7 +13,7 @@ float interp(float start, float end, float current) {
   return t * t * (3.0 - 2.0 * t);
 }
 
-void entry() {
+void main() {
   g_arm_l0 = 0.0;
   g_arm_l2 = 0.0;
   g_arm_r0 = 0.0;
