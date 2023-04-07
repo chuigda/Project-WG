@@ -1,5 +1,5 @@
-#ifndef PROJECT_WG_BIS_ANIM_H
-#define PROJECT_WG_BIS_ANIM_H
+#ifndef PROJECT_WG_BIS_CONTEXT_H
+#define PROJECT_WG_BIS_CONTEXT_H
 
 #include <cstddef>
 #include <cstdint>

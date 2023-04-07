@@ -2,4 +2,4 @@
 
 } // namespace bis
 
-#endif // PROJECT_WG_BIS_ANIM_H
+#endif // PROJECT_WG_BIS_CONTEXT_H
