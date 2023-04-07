@@ -1,0 +1,11 @@
+[package]
+name = "bis_anim"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+pr21 = { git = "https://github.com/Pr47/Project-21", rev = "6edf0eaab0045534b0ab18c12025d20e3a55f90e" }
