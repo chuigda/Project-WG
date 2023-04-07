@@ -59,6 +59,10 @@ endif()
 include_directories(bis_anim/include)
 link_directories(bis_anim/target/release)
 
+add_library(TestBisLayout
+            bis_anim/include/bis/BISContext.h
+            bis_anim/src/bis/BISContext.cc)
+
 # CWGLX
 set(CWGLX_SOURCES
 
@@ -208,6 +212,7 @@ target_link_libraries(Project-WG PRIVATE
                       ${GLM_LINK_NAME}
                       CWGLX
                       CWUtil
+                      TestBisLayout
                       bis_anim)
 
 set_target_properties(Project-WG PROPERTIES WIN32_EXECUTABLE TRUE)

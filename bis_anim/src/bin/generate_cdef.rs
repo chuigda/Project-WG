@@ -11,7 +11,7 @@ fn type21_to_ctype(input: Type21) -> &'static str {
 }
 
 fn main() {
-    let mut output_file = OpenOptions::new()
+    let mut header_file = OpenOptions::new()
         .read(false)
         .write(true)
         .create(true)
@@ -19,14 +19,23 @@ fn main() {
         .open("include/bis/BISContext.h")
         .unwrap();
 
-    write!(output_file, "{}", include_str!("cdef_pre.h.txt")).unwrap();
+    write!(header_file, "{}", include_str!("cdef_pre.h.txt")).unwrap();
     for (_, field, ty) in <Context as IOContext>::metadata() {
         writeln!(
-            output_file,
+            header_file,
             "  {} {};",
             type21_to_ctype(ty),
             field
         ).unwrap();
     }
-    write!(output_file, "{}", include_str!("cdef_post.h.txt")).unwrap();
+    write!(header_file, "{}", include_str!("cdef_post.h.txt")).unwrap();
+
+    let mut source_file = OpenOptions::new()
+        .read(false)
+        .write(true)
+        .create(true)
+        .truncate(true)
+        .open("src/bis/BISContext.cc")
+        .unwrap();
+    write!(source_file, include_str!("cdef.c.txt"), std::mem::size_of::<Context>()).unwrap();
 }

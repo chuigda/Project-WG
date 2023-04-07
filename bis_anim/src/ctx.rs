@@ -71,6 +71,8 @@ define_io_ctx!(struct Context {
 #[cfg(test)]
 #[test]
 fn test_ctx_size() {
+    use pr21::io_ctx::IOContext;
+
     dbg!(std::mem::size_of::<Context>());
     eprintln!("metadata = {:?}", <Context as IOContext>::metadata());
 }
