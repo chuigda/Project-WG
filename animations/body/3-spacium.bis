@@ -1,6 +1,10 @@
 #attribute name 斯派修姆
 
 float interpolate(int start, int end, int current, float startValue, float endValue) {
+  if (current >= end) {
+    return 1.0;
+  }
+
   float t = float(current - start) / float(end - start);
   t = t * t * (3.0 - 2.0 * t);
   return startValue + (endValue - startValue) * t;
@@ -12,6 +16,7 @@ void entry() {
   g_arm_r0 = 0.0;
   g_arm_l3 = 0.0;
   g_arm_r3 = 0.0;
+  yield;
 
   int i;
   const dx = 90.0 / 45.0;
