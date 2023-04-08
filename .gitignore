@@ -85,8 +85,8 @@ LICENSE.AGREED
 !patch/model/*.obj
 
 # Rust 组件的构建产物
-*/target
+**/target
 
 # 由 generate_cdefs 动态生成
-bis_anim/include/bis/BISContext.h
-bis_anim/src/bis/BISContext.cc
+extra/bis_anim/include/bis/BISContext.h
+extra/bis_anim/src/bis/BISContext.cc

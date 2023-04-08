@@ -44,7 +44,6 @@ if (WIN32)
     # enable RC processing
     enable_language(RC)
 
-    set(CEMENT_RESC resc/win32/Cement.rc include/Version.h)
     set(CWUTIL_RESC resc/win32/CWUtil.rc include/Version.h)
     set(CWGLX_RESC resc/win32/CWGLX.rc include/Version.h)
     set(PROJECT_WG_RESC resc/win32/Main.rc)
@@ -56,12 +55,12 @@ else()
 endif()
 
 # Bis animation
-include_directories(bis_anim/include)
-link_directories(bis_anim/target/release)
+include_directories(extra/bis_anim/include)
+link_directories(extra/bis_anim/target/release)
 
 add_library(TestBisLayout
-            bis_anim/include/bis/BISContext.h
-            bis_anim/src/bis/BISContext.cc)
+            extra/bis_anim/include/bis/BISContext.h
+            extra/bis_anim/src/bis/BISContext.cc)
 
 # CWGLX
 set(CWGLX_SOURCES
