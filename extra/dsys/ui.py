@@ -1,12 +1,13 @@
 import tkinter as tk
 from tkinter import ttk
+from cain_and_abel import Cain_And_Abel
 
 
 class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        monospace_font = ("Liberation Mono", 10)
+        monospace_font = ("Courier Prime", 10)
 
         self.title("DUMMY SYSTEM (PROTOTYPE)")
         self.resizable(False, False)
@@ -14,6 +15,7 @@ class MainWindow(tk.Tk):
         # controls
         frame0 = ttk.Frame()
         self.progressIndicator = ttk.Progressbar(frame0)
+        self.progressIndicator.start(200)
         self.trackButton = ttk.Button(frame0, text="TRACK", width=8)
         self.replayButton = ttk.Button(frame0, text="REPLAY", width=8)
         self.trainButton = ttk.Button(frame0, text="TRAIN", width=8)
@@ -64,7 +66,8 @@ class MainWindow(tk.Tk):
         )
         scroll = ttk.Scrollbar(frame4, command=self.infoWindow.yview)
         self.infoWindow.config(yscrollcommand=scroll.set)
-        self.infoWindow.insert(tk.END, "INFO: READY")
+        self.infoWindow.insert(tk.END, " --- INFO WINDOW ---")
+        self.infoWindow.insert(tk.END, Cain_And_Abel)
         self.infoWindow.config(state=tk.DISABLED)
         self.infoWindow.pack(side=tk.LEFT, expand=1, fill=tk.X)
         scroll.pack(side=tk.RIGHT, fill=tk.Y)
