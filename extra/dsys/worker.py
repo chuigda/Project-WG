@@ -4,10 +4,7 @@ from asyncio import CancelledError, create_task, sleep as async_sleep
 from websockets.client import connect as connect_ws
 from websockets.exceptions import ConnectionClosed
 from metadata import Icon_Base64
-
-
-def json_stringify(obj):
-    return json.dumps(obj, separators=(',', ':'))
+from util import json_stringify
 
 
 class WebsocketWorker:
@@ -27,11 +24,12 @@ class WebsocketWorker:
         log("Connecting to VTS server at %s ..." % url)
         try:
             async with connect_ws(url) as ws:
+                log("Requesting authentication token, please check VTS window")
                 await ws.send(json_stringify({
                     "apiName": "VTubeStudioPublicAPI",
                     "apiVersion": "1.0",
-                    "requestID": "AuthenticationRequest",
-                    "messageType": "AuthenticationRequest",
+                    "requestID": "AuthenticationTokenRequest",
+                    "messageType": "AuthenticationTokenRequest",
                     "data": {
                         "pluginName": "DSYS - Flight Recorder",
                         "pluginDeveloper": "Chuigda WhiteGive",
@@ -39,11 +37,13 @@ class WebsocketWorker:
                     }
                 }))
                 resp = json.loads(await ws.recv())
-                if resp["requestID"] != "StartCommunicationAuthRequest" \
+                print(resp)
+                if resp["requestID"] != "AuthenticationTokenRequest" \
                    or resp["messageType"] != "AuthenticationTokenResponse":
                     raise Exception("*** ERROR: AUTHENTICATION FAILED")
                 auth_token = resp["data"]["authenticationToken"]
 
+                log("Authentication token received, authenticating")
                 await ws.send(json_stringify({
                     "apiName": "VTubeStudioPublicAPI",
                     "apiVersion": "1.0",
@@ -60,7 +60,8 @@ class WebsocketWorker:
                      or resp["messageType"] != "AuthenticationResponse" \
                      or resp["data"]["authenticated"] != True:
                       raise Exception("*** ERROR: AUTHENTICATION FAILED")
-                
+
+                log("Authenticated, commencing tracking operation")
                 request_id = 0
                 while True:
                     start_time = time.time()
@@ -75,7 +76,7 @@ class WebsocketWorker:
                         }
                     }))
                     resp = json.loads(await ws.recv())
-                    if resp["messageType"].to_lower().contains("error"):
+                    if resp["messageType"].lower().find("error") != -1:
                         raise Exception("*** ERROR: Received error response")
                     elif resp["messageType"] != "InputParameterListResponse":
                         continue

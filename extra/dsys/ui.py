@@ -1,8 +1,12 @@
-import datetime
+import time, datetime
 import tkinter as tk
 from tkinter import ttk
+
+from bin_rw import write_binseq
 from cain_and_abel import Cain_And_Abel
+from compdec import compress
 from metadata import About_Text
+from util import json_stringify
 from worker import WebsocketWorker
 
 
@@ -52,7 +56,7 @@ class MainWindow(tk.Tk):
         frame1 = ttk.Frame()
         label1 = ttk.Label(frame1, text="VTS", width=3, anchor="w")
         self.vts_ws_addr_entry = ttk.Entry(frame1)
-        self.vts_ws_addr_entry.insert(0, "ws://127.0.0.1:8000")
+        self.vts_ws_addr_entry.insert(0, "ws://127.0.0.1:8001")
         label1.pack(side=tk.LEFT, padx=4, pady=4)
         self.vts_ws_addr_entry.pack(side=tk.LEFT, padx=4, pady=4, expand=1, fill=tk.BOTH)
         frame1.pack(expand=1, fill=tk.X)
@@ -98,6 +102,7 @@ class MainWindow(tk.Tk):
         # websocket worker
         self.worker = WebsocketWorker()
         self.bin_log_file = None
+        self.data_buffer = []
         self.has_mstrwarn = False
 
     def show_about(self):
@@ -122,17 +127,49 @@ class MainWindow(tk.Tk):
             self.log_into_message_window("MSTRWARN is SET, CHK and RST it, then TCK")
             return
 
+        log_file_name = self.log_file_entry.get()
+        try:
+            self.bin_log_file = open(log_file_name, "wb")
+        except Exception as e:
+            self.log_into_message_window(" *** ERROR: cannot open file %s: %s: %s" % (
+                log_file_name,
+                e.__class__.__name__,
+                e
+            ))
+            self.set_mstrwarn()
+            return
+
         self.worker.connect_read(
             self.vts_ws_addr_entry.get(),
-            lambda data : data,
-            lambda : self.set_mstrwarn(),
-            lambda : self.on_task_finished(),
-            lambda x : self.log_into_message_window(x)
+            lambda data: self.save_data(data),
+            lambda: self.set_mstrwarn(),
+            lambda: self.on_task_finished(),
+            lambda x: self.log_into_message_window(x)
         )
-    
+        self.record_btn.configure(state=tk.DISABLED)
+        self.log_file_entry.configure(state=tk.DISABLED)
+
+    def save_data(self, data: object):
+        self.data_buffer.append(data)
+        if len(self.data_buffer) >= 50:
+            start_time = time.time()
+            data_text = "\n".join([json_stringify(x) for x in self.data_buffer])
+            compressed = compress(data_text)
+            write_binseq(self.bin_log_file, compressed)
+            self.data_buffer.clear()
+            end_time = time.time()
+
+            self.log_into_message_window(
+                "saved %dKiB (%dKiB compressed, r = %g%%, t = %g)" % (
+                    len(data_text) / 1024,
+                    len(compressed) / 1024,
+                    100.0 * (len(compressed) / len(data_text)),
+                    (end_time - start_time) * 1000
+                )
+            )
+
     def log_into_message_window(self, message):
         time = datetime.datetime.now().strftime("%H:%M:%S")
-
         self.info_wnd.configure(state=tk.NORMAL)
         self.info_wnd.insert(tk.END, "[%s] %s\n" % (time, message))
         self.info_wnd.configure(state=tk.DISABLED)
@@ -141,7 +178,6 @@ class MainWindow(tk.Tk):
         if self.has_mstrwarn:
             self.log_into_message_window("MSTRWARN is SET, CHK and RST it, then CLR")
             return
-
         self.info_wnd.configure(state=tk.NORMAL)
         self.info_wnd.delete(1.0, tk.END)
         self.info_wnd.insert(tk.END, " --- INFO WINDOW ---\n")
@@ -151,6 +187,12 @@ class MainWindow(tk.Tk):
         self.mstrwarn.config(fg="black", bg="light grey")
         self.has_mstrwarn = False
         self.worker.stop_task()
+
+        if self.bin_log_file:
+            self.bin_log_file.close()
+            self.bin_log_file = None
+        self.record_btn.configure(state=tk.NORMAL)
+        self.log_file_entry.configure(state=tk.NORMAL)
         self.log_into_message_window("SYS RST success")
 
     def set_mstrwarn(self):
@@ -158,4 +200,9 @@ class MainWindow(tk.Tk):
         self.has_mstrwarn = True
 
     def on_task_finished(self):
-        pass
+        if self.bin_log_file:
+            self.bin_log_file.close()
+            self.bin_log_file = None
+        self.record_btn.configure(state=tk.NORMAL)
+        self.log_file_entry.configure(state=tk.NORMAL)
+        self.log_into_message_window("TCK ended")
