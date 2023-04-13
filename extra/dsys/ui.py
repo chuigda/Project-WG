@@ -25,7 +25,15 @@ class MainWindow(tk.Tk):
         self.about_btn = ttk.Button(frame0, text="INF", width=4, command=self.show_about)
         self.progress_ind = ttk.Progressbar(frame0, maximum=50, value=0)
         
-        self.mstrwarn = tk.Label(frame0, text="MSTRWARN", fg="black", bg="light grey", border=1, relief="solid", width=10)
+        self.mstrwarn = tk.Label(
+            frame0,
+            text="MSTRWARN",
+            fg="black",
+            bg="white",
+            border=1,
+            relief="solid",
+            width=10
+        )
 
         self.replay_btn.configure(state=tk.DISABLED)
         self.dummy_btn.configure(state=tk.DISABLED)
