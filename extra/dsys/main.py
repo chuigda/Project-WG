@@ -6,7 +6,7 @@ def main():
     w = MainWindow()
     s = ttk.Style()
     s.theme_use('default')
-    s.configure('.', font=('SimSun', 10))
+    s.configure('.', font=('monospace', 10))
     w.mainloop()
 
 

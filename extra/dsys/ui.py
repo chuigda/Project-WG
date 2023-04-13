@@ -7,8 +7,7 @@ class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        self.option_add("*font", "SimSun 10")
-        monospace_font = ("SimSun", 10)
+        self.option_add("*font", "monospace 10")
 
         self.title("DUMMY SYSTEM (PROTOTYPE)")
         self.resizable(False, False)
@@ -29,7 +28,7 @@ class MainWindow(tk.Tk):
         # first row
         frame1 = ttk.Frame()
         label1 = ttk.Label(frame1, text="VTS WS ADDR", width=12, anchor="w")
-        self.vtsWsAddr = ttk.Entry(frame1, font=monospace_font)
+        self.vtsWsAddr = ttk.Entry(frame1)
         self.vtsWsAddr.insert(0, "127.0.0.1:8000")
         label1.pack(side=tk.LEFT, padx=4, pady=4)
         self.vtsWsAddr.pack(side=tk.LEFT, padx=4, pady=4, expand=1, fill=tk.BOTH)
@@ -38,7 +37,7 @@ class MainWindow(tk.Tk):
         # second row
         frame2 = ttk.Frame()
         label2 = ttk.Label(frame2, text="LOG FILE", width=12, anchor="w")
-        self.logFile = ttk.Entry(frame2, font=monospace_font)
+        self.logFile = ttk.Entry(frame2)
         self.logFile.insert(0, "~/dsys.log")
         label2.pack(side=tk.LEFT, padx=4, pady=4)
         self.logFile.pack(side=tk.LEFT, padx=4, pady=4, expand=1, fill=tk.BOTH)
@@ -47,7 +46,7 @@ class MainWindow(tk.Tk):
         # third row
         frame3 = ttk.Frame()
         label3 = ttk.Label(frame3, text="MODEL FILE", width=12, anchor="w")
-        self.modelFile = ttk.Entry(frame3, font=monospace_font)
+        self.modelFile = ttk.Entry(frame3)
         self.modelFile.insert(0, "~/dsys.onnx")
         label3.pack(side=tk.LEFT, padx=4, pady=4)
         self.modelFile.pack(side=tk.LEFT, padx=4, pady=4, expand=1, fill=tk.BOTH)
@@ -60,8 +59,7 @@ class MainWindow(tk.Tk):
             height=24,
             width=80,
             padx=4,
-            pady=4,
-            font=monospace_font
+            pady=4
         )
         scroll = ttk.Scrollbar(frame4, command=self.infoWindow.yview)
         self.infoWindow.config(yscrollcommand=scroll.set)
