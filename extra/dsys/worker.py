@@ -17,7 +17,7 @@ class WebsocketWorker:
             log
         ))
 
-    async def connect_read_impl(self, url, data_callback, done_callback, error_callback, log):
+    async def connect_read_impl(self, url, data_callback, error_callback, done_callback, log):
         log("Connecting to VTS server at %s ..." % url)
         try:
             async with connect_ws(url) as ws:
@@ -88,7 +88,7 @@ class WebsocketWorker:
             log("*** WARN: Connection closed, VTS probably closed")
             error_callback()
         except CancelledError as e:
-            pass
+            log("*** INFO: Task cancelled due to system RST")
         except Exception as e:
             log("*** ERROR: Exception in task: %s: %s" % (e.__class__.__name__, e.__str__()))
             error_callback()
