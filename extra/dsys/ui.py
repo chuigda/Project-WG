@@ -93,7 +93,7 @@ class MainWindow(tk.Tk):
 
     def show_about(self):
         if self.has_mstrwarn:
-            self.log_into_message_window("MSTRWARN is SET, CHK and RST it, then CLR")
+            self.log_into_message_window("MSTRWARN is SET, CHK and RST it, then INF")
             return
 
         if self.info_wnd.get(1.0, tk.END).strip() == About_Text.strip():
@@ -109,6 +109,10 @@ class MainWindow(tk.Tk):
         self.info_wnd.config(state=tk.DISABLED)
 
     def start_record(self):
+        if self.has_mstrwarn:
+            self.log_into_message_window("MSTRWARN is SET, CHK and RST it, then TCK")
+            return
+
         self.worker.connect_read(
             self.vts_ws_addr_entry.get(),
             lambda data : data,
