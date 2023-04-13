@@ -3,6 +3,12 @@ import json
 from asyncio import CancelledError, create_task, sleep as async_sleep
 from websockets.client import connect as connect_ws
 from websockets.exceptions import ConnectionClosed
+from metadata import Icon_Base64
+
+
+def json_stringify(obj):
+    return json.dumps(obj, separators=(',', ':'))
+
 
 class WebsocketWorker:
     def __init__(self):
@@ -21,37 +27,34 @@ class WebsocketWorker:
         log("Connecting to VTS server at %s ..." % url)
         try:
             async with connect_ws(url) as ws:
-                await ws.send("""
-{
-  "apiName": "VTubeStudioPublicAPI",
-  "apiVersion": "1.0",
-  "requestID": "StartCommunicationAuthRequest",
-  "messageType": "AuthenticationTokenRequest",
-  "data": {
-    "pluginName": "DSYS - Flight Recorder",
-    "pluginDeveloper": "Chuigda WhiteGive"
-  }
-}
-""".strip())
+                await ws.send(json_stringify({
+                    "apiName": "VTubeStudioPublicAPI",
+                    "apiVersion": "1.0",
+                    "requestID": "AuthenticationRequest",
+                    "messageType": "AuthenticationRequest",
+                    "data": {
+                        "pluginName": "DSYS - Flight Recorder",
+                        "pluginDeveloper": "Chuigda WhiteGive",
+                        "pluginIcon": Icon_Base64
+                    }
+                }))
                 resp = json.loads(await ws.recv())
                 if resp["requestID"] != "StartCommunicationAuthRequest" \
                    or resp["messageType"] != "AuthenticationTokenResponse":
                     raise Exception("*** ERROR: AUTHENTICATION FAILED")
                 auth_token = resp["data"]["authenticationToken"]
 
-                await ws.send("""
-{
-    "apiName": "VTubeStudioPublicAPI",
-    "apiVersion": "1.0",
-    "requestID": "AuthenticationRequest",
-    "messageType": "AuthenticationRequest",
-    "data": {
-        "pluginName": "DSYS - Flight Recorder",
-        "pluginDeveloper": "Chuigda WhiteGive",
-        "authenticationToken": "%s"
-    }
-}
-""".strip() % auth_token)
+                await ws.send(json_stringify({
+                    "apiName": "VTubeStudioPublicAPI",
+                    "apiVersion": "1.0",
+                    "requestID": "AuthenticationRequest",
+                    "messageType": "AuthenticationRequest",
+                    "data": {
+                        "pluginName": "DSYS - Flight Recorder",
+                        "pluginDeveloper": "Chuigda WhiteGive",
+                        "authenticationToken": auth_token
+                    }
+                }))
                 resp = json.loads(await ws.recv())
                 if resp["requestID"] != "AuthenticationRequest" \
                      or resp["messageType"] != "AuthenticationResponse" \
@@ -62,23 +65,22 @@ class WebsocketWorker:
                 while True:
                     start_time = time.time()
                     request_id += 1
-                    await ws.send("""
-{
-    "apiName": "VTubeStudioPublicAPI",
-    "apiVersion": "1.0",
-    "requestID": "GetLive2DModelRequest_%d",
-    "messageType": "InputParameterListRequest",
-    "data": {
-        "authenticationToken": "%s",
-    }
-}
-""".strip() % (request_id, auth_token))
+                    await ws.send(json_stringify({
+                        "apiName": "VTubeStudioPublicAPI",
+                        "apiVersion": "1.0",
+                        "requestID": "GetLive2DModelRequest_%d" % request_id,
+                        "messageType": "InputParameterListRequest",
+                        "data": {
+                            "authenticationToken": auth_token,
+                        }
+                    }))
                     resp = json.loads(await ws.recv())
-                    if resp["messageType"] != "InputParameterListResponse":
-                        raise Exception("*** ERROR: RECV FAILED")
+                    if resp["messageType"].to_lower().contains("error"):
+                        raise Exception("*** ERROR: Received error response")
+                    elif resp["messageType"] != "InputParameterListResponse":
+                        continue
                     data_callback(resp["data"])
                     end_time = time.time()
-
                     time_elapsed = end_time - start_time
                     if time_elapsed >= 0.04:
                         log("*** WARNING: Frame took too long to process: %fms" % (time_elapsed * 1000.0))

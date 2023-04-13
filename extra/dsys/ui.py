@@ -53,7 +53,7 @@ class MainWindow(tk.Tk):
         frame2 = ttk.Frame()
         label2 = ttk.Label(frame2, text="LOG", width=3, anchor="w")
         self.log_file_entry = ttk.Entry(frame2)
-        self.log_file_entry.insert(0, "./dsys.log")
+        self.log_file_entry.insert(0, "./dsys.tck")
         label2.pack(side=tk.LEFT, padx=4, pady=4)
         self.log_file_entry.pack(side=tk.LEFT, padx=4, pady=4, expand=1, fill=tk.BOTH)
         frame2.pack(expand=1, fill=tk.X)
@@ -89,6 +89,7 @@ class MainWindow(tk.Tk):
 
         # websocket worker
         self.worker = WebsocketWorker()
+        self.bin_log_file = None
         self.has_mstrwarn = False
 
     def show_about(self):

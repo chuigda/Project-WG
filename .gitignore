@@ -91,6 +91,6 @@ LICENSE.AGREED
 extra/bis_anim/include/bis/BISContext.h
 extra/bis_anim/src/bis/BISContext.cc
 
-extra/dsys/d_sys.spec
+extra/dsys/*.spec
 **/build
 **/dist
