@@ -94,3 +94,6 @@ extra/bis_anim/src/bis/BISContext.cc
 extra/dsys/*.spec
 **/build
 **/dist
+*.tck
+*.tck.dec
+*.onnx
