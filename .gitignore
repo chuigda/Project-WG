@@ -90,3 +90,7 @@ LICENSE.AGREED
 # 由 generate_cdefs 动态生成
 extra/bis_anim/include/bis/BISContext.h
 extra/bis_anim/src/bis/BISContext.cc
+
+extra/dsys/d_sys.spec
+**/build
+**/dist
