@@ -7,7 +7,8 @@ class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
 
-        monospace_font = ("Courier Prime", 10)
+        self.option_add("*font", "SimSun 10")
+        monospace_font = ("SimSun", 10)
 
         self.title("DUMMY SYSTEM (PROTOTYPE)")
         self.resizable(False, False)
@@ -18,12 +19,10 @@ class MainWindow(tk.Tk):
         self.progressIndicator.start(200)
         self.trackButton = ttk.Button(frame0, text="TRACK", width=8)
         self.replayButton = ttk.Button(frame0, text="REPLAY", width=8)
-        self.trainButton = ttk.Button(frame0, text="TRAIN", width=8)
         self.dummyButton = ttk.Button(frame0, text="DUMMY", width=8)
         self.progressIndicator.pack(side=tk.LEFT, expand=1, fill=tk.BOTH, padx=4, pady=4)
         self.trackButton.pack(side=tk.LEFT, padx=4, pady=4)
         self.replayButton.pack(side=tk.LEFT, padx=4, pady=4)
-        self.trainButton.pack(side=tk.LEFT, padx=4, pady=4)
         self.dummyButton.pack(side=tk.LEFT, padx=4, pady=4)
         frame0.pack(expand=1, fill=tk.X)
 
