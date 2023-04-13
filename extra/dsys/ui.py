@@ -1,4 +1,4 @@
-import time, datetime
+import datetime
 import tkinter as tk
 from tkinter import ttk
 
@@ -27,7 +27,7 @@ class MainWindow(tk.Tk):
         self.clear_btn = ttk.Button(frame0, text="CLR", width=4, command=self.clear_message_window)
         self.reset_btn = ttk.Button(frame0, text="RST", width=4, command=self.reset)
         self.about_btn = ttk.Button(frame0, text="INF", width=4, command=self.show_about)
-        self.progress_ind = ttk.Progressbar(frame0, maximum=50, value=0)
+        self.progress_ind = ttk.Progressbar(frame0, mode="indeterminate", maximum=50, value=0)
         
         self.mstrwarn = tk.Label(
             frame0,
@@ -146,27 +146,17 @@ class MainWindow(tk.Tk):
             lambda: self.on_task_finished(),
             lambda x: self.log_into_message_window(x)
         )
+        self.progress_ind.start(40)
         self.record_btn.configure(state=tk.DISABLED)
         self.log_file_entry.configure(state=tk.DISABLED)
 
     def save_data(self, data: object):
         self.data_buffer.append(data)
         if len(self.data_buffer) >= 50:
-            start_time = time.time()
             data_text = "\n".join([json_stringify(x) for x in self.data_buffer])
             compressed = compress(data_text)
             write_binseq(self.bin_log_file, compressed)
             self.data_buffer.clear()
-            end_time = time.time()
-
-            self.log_into_message_window(
-                "saved %dKiB (%dKiB compressed, r = %g%%, t = %g)" % (
-                    len(data_text) / 1024,
-                    len(compressed) / 1024,
-                    100.0 * (len(compressed) / len(data_text)),
-                    (end_time - start_time) * 1000
-                )
-            )
 
     def log_into_message_window(self, message):
         time = datetime.datetime.now().strftime("%H:%M:%S")
@@ -193,6 +183,7 @@ class MainWindow(tk.Tk):
             self.bin_log_file = None
         self.record_btn.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)
+        self.progress_ind.stop()
         self.log_into_message_window("SYS RST success")
 
     def set_mstrwarn(self):
@@ -205,4 +196,5 @@ class MainWindow(tk.Tk):
             self.bin_log_file = None
         self.record_btn.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)
+        self.progress_ind.stop()
         self.log_into_message_window("TCK ended")
