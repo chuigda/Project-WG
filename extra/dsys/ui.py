@@ -214,6 +214,7 @@ class MainWindow(tk.Tk):
             self.bin_log_file.close()
             self.bin_log_file = None
         self.record_btn.configure(state=tk.NORMAL)
+        self.replay_btn.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)
         self.progress_ind.stop()
         self.log_into_message_window("TCK/RPL ended")
