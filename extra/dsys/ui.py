@@ -22,7 +22,7 @@ class MainWindow(tk.Tk):
         # controls
         frame0 = ttk.Frame()
         self.record_btn = ttk.Button(frame0, text="TCK", width=4, command=self.start_record)
-        self.replay_btn = ttk.Button(frame0, text="RPL", width=4)
+        self.replay_btn = ttk.Button(frame0, text="RPL", width=4, command=self.start_replay)
         self.dummy_btn = ttk.Button(frame0, text="ATO", width=4)
         self.clear_btn = ttk.Button(frame0, text="CLR", width=4, command=self.clear_message_window)
         self.reset_btn = ttk.Button(frame0, text="RST", width=4, command=self.reset)
@@ -39,7 +39,6 @@ class MainWindow(tk.Tk):
             width=10
         )
 
-        self.replay_btn.configure(state=tk.DISABLED)
         self.dummy_btn.configure(state=tk.DISABLED)
 
         self.record_btn.pack(side=tk.LEFT, padx=4, pady=4)
@@ -148,6 +147,25 @@ class MainWindow(tk.Tk):
         )
         self.progress_ind.start(40)
         self.record_btn.configure(state=tk.DISABLED)
+        self.replay_btn.configure(state=tk.DISABLED)
+        self.log_file_entry.configure(state=tk.DISABLED)
+
+    def start_replay(self):
+        if self.has_mstrwarn:
+            self.log_into_message_window("MSTRWARN is SET, CHK and RST it, then RPL")
+            return
+
+        log_file_name = self.log_file_entry.get()
+        self.worker.connect_send(
+            self.vts_ws_addr_entry.get(),
+            log_file_name,
+            lambda: self.set_mstrwarn(),
+            lambda: self.on_task_finished(),
+            lambda x: self.log_into_message_window(x)
+        )
+        self.progress_ind.start(40)
+        self.record_btn.configure(state=tk.DISABLED)
+        self.replay_btn.configure(state=tk.DISABLED)
         self.log_file_entry.configure(state=tk.DISABLED)
 
     def save_data(self, data: object):
@@ -182,6 +200,7 @@ class MainWindow(tk.Tk):
             self.bin_log_file.close()
             self.bin_log_file = None
         self.record_btn.configure(state=tk.NORMAL)
+        self.replay_btn.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)
         self.progress_ind.stop()
         self.log_into_message_window("SYS RST success")
@@ -197,4 +216,4 @@ class MainWindow(tk.Tk):
         self.record_btn.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)
         self.progress_ind.stop()
-        self.log_into_message_window("TCK ended")
+        self.log_into_message_window("TCK/RPL ended")
