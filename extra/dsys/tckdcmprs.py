@@ -4,7 +4,8 @@ from compdec import decompress
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("usage: python tckdcmprs.py tck-file", file=sys.stderr)
+        print("usage: python tckdcmprs.py <tck-file>", file=sys.stderr)
+        exit(-1)
 
     try:
         with open(sys.argv[1], "rb") as f_in, open(sys.argv[1] + ".dec", "w") as f_out:
