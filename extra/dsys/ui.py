@@ -16,7 +16,7 @@ class MainWindow(tk.Tk):
 
         self.option_add("*font", "fixedsys 10")
 
-        self.title("DUMMY SYSTEM (PROTOTYPE 00, TRACKER ONLY)")
+        self.title("DUMMY SYSTEM (PROTOTYPE 00, TCK and RPL)")
         self.resizable(False, False)
 
         # controls
