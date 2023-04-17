@@ -23,14 +23,14 @@ class MainWindow(tk.Tk):
         frame0 = ttk.Frame()
         self.track_btn = ttk.Button(frame0, text="TCK", width=4, command=self.start_track)
         self.replay_btn = ttk.Button(frame0, text="RPL", width=4, command=self.start_replay)
-        self.ap1_btn = ttk.Button(frame0, text="AP1", width=4, command=self.start_autopilot_mode1)
-        self.ap2_btn = ttk.Button(frame0, text="AP2", width=4)
+        self.ap1_btn = ttk.Button(frame0, text="AP/C", width=4, command=self.start_autopilot_mode1)
         self.lin_cyc_btn = ttk.Button(frame0, text="LIN", width=4, command=self.switch_lin_cyc)
-        self.clear_btn = ttk.Button(frame0, text="CLR", width=4, command=self.clear_message_window)
+        self.bep_sil_btn = ttk.Button(frame0, text="BEP", width=4, command=self.switch_bep_sln)
         self.disconnect_btn = ttk.Button(frame0, text="DIS", width=4, command=self.disconnect)
+        self.clear_btn = ttk.Button(frame0, text="CLR", width=4, command=self.clear_message_window)
         self.reset_btn = ttk.Button(frame0, text="RST", width=4, command=self.reset)
         self.about_btn = ttk.Button(frame0, text="INF", width=4, command=self.show_about)
-        self.progress_ind = ttk.Progressbar(frame0, mode="indeterminate", maximum=50, value=0)
+        self.progress_ind = ttk.Progressbar(frame0, mode="indeterminate", maximum=100, value=0)
         
         self.mstrwarn = tk.Label(
             frame0,
@@ -42,16 +42,15 @@ class MainWindow(tk.Tk):
             width=10
         )
 
-        self.ap2_btn.configure(state=tk.DISABLED)
         self.disconnect_btn.configure(state=tk.DISABLED)
 
         self.track_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.replay_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.ap1_btn.pack(side=tk.LEFT, padx=4, pady=4)
-        self.ap2_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.lin_cyc_btn.pack(side=tk.LEFT, padx=4, pady=4)
-        self.clear_btn.pack(side=tk.LEFT, padx=4, pady=4)
+        self.bep_sil_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.disconnect_btn.pack(side=tk.LEFT, padx=4, pady=4)
+        self.clear_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.reset_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.about_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.progress_ind.pack(side=tk.LEFT, expand=1, fill=tk.BOTH, padx=4, pady=4)
@@ -133,7 +132,6 @@ class MainWindow(tk.Tk):
             lambda: self.on_task_finished("TCK"),
             lambda x: self.log_into_message_window(x)
         )
-        self.progress_ind.start(40)
         self.start_worker_update_inputs()
 
     def start_replay(self):
@@ -149,7 +147,6 @@ class MainWindow(tk.Tk):
             lambda: self.on_task_finished("RPL"),
             lambda x: self.log_into_message_window(x)
         )
-        self.progress_ind.start(40)
         self.start_worker_update_inputs()
 
     def start_autopilot_mode1(self):
@@ -167,11 +164,13 @@ class MainWindow(tk.Tk):
             filt=True,
             cyc=self.lin_cyc_btn["text"] == "CYC"
         )
-        self.progress_ind.start(40)
         self.start_worker_update_inputs()
 
     def switch_lin_cyc(self):
         self.lin_cyc_btn.configure(text="LIN" if self.lin_cyc_btn["text"] == "CYC" else "CYC")
+
+    def switch_bep_sln(self):
+        self.bep_sil_btn.configure(text="BEP" if self.bep_sil_btn["text"] == "SIL" else "SIL")
 
     def log_into_message_window(self, message):
         time = datetime.datetime.now().strftime("%H:%M:%S")
@@ -191,7 +190,6 @@ class MainWindow(tk.Tk):
     def disconnect(self):
         self.worker.stop_task()
         self.stop_worker_update_inputs()
-        self.progress_ind.stop()
         self.log_into_message_window("SYS DIS success")
 
     def reset(self):
@@ -200,20 +198,20 @@ class MainWindow(tk.Tk):
         self.worker.stop_task()
         self.worker.reset_tokens()
         self.stop_worker_update_inputs()
-        self.progress_ind.stop()
         self.log_into_message_window("SYS RST success")
 
     def set_mstrwarn(self):
         self.mstrwarn.config(fg="white", bg="red3")
         self.has_mstrwarn = True
-        winsound.PlaySound("./resc/masterwarn.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
+        if self.bep_sil_btn["text"] == "BEP":
+            winsound.PlaySound("./resc/masterwarn.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
 
     def on_task_finished(self, task_name):
         self.stop_worker_update_inputs()
-        self.progress_ind.stop()
         self.log_into_message_window("%s ended" % task_name)
         if task_name == "AP1" or task_name == "AP2":
-            winsound.PlaySound("./resc/apdisconnect.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
+            if not self.has_mstrwarn and self.bep_sil_btn["text"] == "BEP":
+                winsound.PlaySound("./resc/apdisconnect.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
 
     def start_worker_update_inputs(self):
         self.track_btn.configure(state=tk.DISABLED)
@@ -223,6 +221,7 @@ class MainWindow(tk.Tk):
         self.vts_ws_addr_entry.configure(state=tk.DISABLED)
         self.log_file_entry.configure(state=tk.DISABLED)
         self.disconnect_btn.configure(state=tk.NORMAL)
+        self.progress_ind.start(20)
 
     def stop_worker_update_inputs(self):
         self.track_btn.configure(state=tk.NORMAL)
@@ -232,3 +231,4 @@ class MainWindow(tk.Tk):
         self.vts_ws_addr_entry.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)
         self.disconnect_btn.configure(state=tk.DISABLED)
+        self.progress_ind.stop()
