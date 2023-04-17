@@ -13,8 +13,7 @@ from compdec import compress, decompress
 class WebsocketWorker:
     def __init__(self):
         self.async_task = None
-        self.read_token = None
-        self.send_token = None
+        self.token_dict = {}
 
     def connect_read(self, url, save_file, error_callback, done_callback, log):
         if self.async_task is not None:
@@ -33,9 +32,7 @@ class WebsocketWorker:
         log("Connecting to VTS server at %s ..." % url)
         try:
             async with connect_ws(url) as ws:
-                if self.read_token is None:
-                    self.read_token = \
-                        await self.establish_battlefield_control(ws, log, "DSYS - Flight Recorder")
+                auth_token = await self.establish_battlefield_control(ws, log, "DSYS - Flight Recorder")
 
                 log("Authenticated, commencing tracking operation")
                 request_id = 0
@@ -50,7 +47,7 @@ class WebsocketWorker:
                             "requestID": "GetLive2DModelRequest_%d" % request_id,
                             "messageType": "InputParameterListRequest",
                             "data": {
-                                "authenticationToken": self.read_token
+                                "authenticationToken": auth_token
                             }
                         }))
                         resp = json.loads(await ws.recv())
@@ -83,7 +80,7 @@ class WebsocketWorker:
             done_callback()
             self.async_task = None
 
-    def connect_send(self, url, data_source, error_callback, done_callback, log, filter=True):
+    def connect_send(self, url, data_source, error_callback, done_callback, log, filt=True, cyc=False):
         if self.async_task is not None:
             log("*** ERROR: another task is running, this should be a system bug")
             log("*** INFO: try RST the system")
@@ -94,57 +91,60 @@ class WebsocketWorker:
             error_callback,
             done_callback,
             log,
-            filter
+            filt,
+            cyc
         ))
 
-    async def connect_send_impl(self, url, data_source, error_callback, done_callback, log, filter):
+    async def connect_send_impl(self, url, data_source, error_callback, done_callback, log, filt, cyc):
         log("Connecting to VTS server at %s ..." % url)
         try:
             async with connect_ws(url) as ws:
-                if self.send_token is None:
-                    self.send_token = \
-                        await self.establish_battlefield_control(ws, log, "DSYS - Dummy Entry Plug")
+                auth_token = await self.establish_battlefield_control(ws, log, "DSYS - Dummy Entry Plug")
 
-                log("Authenticated, commencing AP operation")
+                log("Authenticated, commencing RPL/AP operation")
                 request_id = 0
                 data_lines = []
-                with open(data_source, "rb") as f:
-                    while True:
-                        start_time = time.time()
-                        if len(data_lines) == 0:
-                            result = read_binseq(f)
-                            if result is None:
-                                break
-                            data_lines = decompress(result).split('\n')
-                        line = data_lines.pop(0)
-                        json_data = json.loads(line)
-                        request_id += 1
-                        data = [{
-                            "id": param["name"],
-                            "value": param["value"]
-                        } for param in json_data["defaultParameters"]]
-                        if filter:
-                            data = [param for param in data if filter_param(param)]
-                        await ws.send(json_stringify({
-                            "apiName": "VTubeStudioPublicAPI",
-                            "apiVersion": "1.0",
-                            "requestID": "InjectParameterDataRequest_%d" % request_id,
-                            "messageType": "InjectParameterDataRequest",
-                            "data": {
-                                "authenticationToken": self.send_token,
-                                "mode": "set",
-                                "parameterValues": data
-                            }
-                        }))
-                        resp = json.loads(await ws.recv())
-                        if resp["messageType"].lower().find("error") != -1:
-                            raise Exception("*** ERROR: Received error response")
-                        end_time = time.time()
-                        time_elapsed = end_time - start_time
-                        if time_elapsed >= 0.04:
-                            log("*** WARNING: Frame took too long to process: %fms" % (time_elapsed * 1000.0))
-                        else:
-                            await async_sleep(0.04 - time_elapsed)
+                while True:
+                    with open(data_source, "rb") as f:
+                        while True:
+                            start_time = time.time()
+                            if len(data_lines) == 0:
+                                result = read_binseq(f)
+                                if result is None:
+                                    break
+                                data_lines = decompress(result).split('\n')
+                            line = data_lines.pop(0)
+                            json_data = json.loads(line)
+                            request_id += 1
+                            data = [{
+                                "id": param["name"],
+                                "value": param["value"]
+                            } for param in json_data["defaultParameters"]]
+                            if filt:
+                                data = [param for param in data if filter_param(param)]
+                            await ws.send(json_stringify({
+                                "apiName": "VTubeStudioPublicAPI",
+                                "apiVersion": "1.0",
+                                "requestID": "InjectParameterDataRequest_%d" % request_id,
+                                "messageType": "InjectParameterDataRequest",
+                                "data": {
+                                    "authenticationToken": auth_token,
+                                    "mode": "set",
+                                    "parameterValues": data
+                                }
+                            }))
+                            resp = json.loads(await ws.recv())
+                            if resp["messageType"].lower().find("error") != -1:
+                                raise Exception("*** ERROR: Received error response")
+                            end_time = time.time()
+                            time_elapsed = end_time - start_time
+                            if time_elapsed >= 0.04:
+                                log("*** WARNING: Frame took too long to process: %fms" % (time_elapsed * 1000.0))
+                            else:
+                                await async_sleep(0.04 - time_elapsed)
+                    # inner loop ends here
+                    if not cyc:
+                        break
         except ConnectionClosed as e:
             log("*** WARN: Connection closed, VTS probably closed")
             error_callback()
@@ -159,23 +159,28 @@ class WebsocketWorker:
             self.async_task = None
 
     async def establish_battlefield_control(self, ws, log, plugin_name):
-        log("Requesting authentication token, please check VTS window")
-        await ws.send(json_stringify({
-            "apiName": "VTubeStudioPublicAPI",
-            "apiVersion": "1.0",
-            "requestID": "AuthenticationTokenRequest",
-            "messageType": "AuthenticationTokenRequest",
-            "data": {
-                "pluginName": plugin_name,
-                "pluginDeveloper": "Chuigda WhiteGive",
-                "pluginIcon": Icon_Base64
-            }
-        }))
-        resp = json.loads(await ws.recv())
-        if resp["requestID"] != "AuthenticationTokenRequest" \
-                or resp["messageType"] != "AuthenticationTokenResponse":
-            raise Exception("*** ERROR: AUTHENTICATION FAILED")
-        auth_token = resp["data"]["authenticationToken"]
+        auth_token = self.token_dict.get(plugin_name)
+        if auth_token is not None:
+            log("Using saved authentication token")
+        else:
+            log("Requesting authentication token, please check VTS window")
+            await ws.send(json_stringify({
+                "apiName": "VTubeStudioPublicAPI",
+                "apiVersion": "1.0",
+                "requestID": "AuthenticationTokenRequest",
+                "messageType": "AuthenticationTokenRequest",
+                "data": {
+                    "pluginName": plugin_name,
+                    "pluginDeveloper": "Chuigda WhiteGive",
+                    "pluginIcon": Icon_Base64
+                }
+            }))
+            resp = json.loads(await ws.recv())
+            if resp["requestID"] != "AuthenticationTokenRequest" \
+                    or resp["messageType"] != "AuthenticationTokenResponse":
+                raise Exception("*** ERROR: AUTHENTICATION FAILED")
+            auth_token = resp["data"]["authenticationToken"]
+            self.token_dict[plugin_name] = auth_token
 
         log("Authentication token received, authenticating")
         await ws.send(json_stringify({
@@ -202,8 +207,7 @@ class WebsocketWorker:
             self.async_task = None
 
     def reset_tokens(self):
-        self.read_token = None
-        self.send_token = None
+        self.token_dict = {}
 
 
 Mouth_Related_Param = {
