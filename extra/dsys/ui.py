@@ -1,6 +1,7 @@
 import datetime
 import tkinter as tk
 from tkinter import ttk
+import winsound
 
 from cain_and_abel import Cain_And_Abel
 from metadata import About_Text
@@ -128,7 +129,7 @@ class MainWindow(tk.Tk):
             self.vts_ws_addr_entry.get(),
             log_file_name,
             lambda: self.set_mstrwarn(),
-            lambda: self.on_task_finished(),
+            lambda: self.on_task_finished("TCK"),
             lambda x: self.log_into_message_window(x)
         )
         self.progress_ind.start(40)
@@ -146,7 +147,7 @@ class MainWindow(tk.Tk):
             self.vts_ws_addr_entry.get(),
             log_file_name,
             lambda: self.set_mstrwarn(),
-            lambda: self.on_task_finished(),
+            lambda: self.on_task_finished("RPL"),
             lambda x: self.log_into_message_window(x)
         )
         self.progress_ind.start(40)
@@ -182,10 +183,13 @@ class MainWindow(tk.Tk):
     def set_mstrwarn(self):
         self.mstrwarn.config(fg="white", bg="red3")
         self.has_mstrwarn = True
+        winsound.PlaySound("./resc/masterwarn.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
 
-    def on_task_finished(self):
+    def on_task_finished(self, task_name):
         self.track_btn.configure(state=tk.NORMAL)
         self.replay_btn.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)
         self.progress_ind.stop()
-        self.log_into_message_window("TCK/RPL ended")
+        self.log_into_message_window("%s ended" % task_name)
+        if task_name == "RPL" or task_name == "AP1" or task_name == "AP2":
+            winsound.PlaySound("./resc/apdisconnect.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
