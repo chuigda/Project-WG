@@ -1,6 +1,6 @@
 import datetime
 import tkinter as tk
-from tkinter.messagebox import askyesno
+from tkinter.messagebox import askyesno, showwarning
 from pathlib import Path
 from tkinter import ttk
 import winsound
@@ -23,7 +23,8 @@ class MainWindow(tk.Tk):
         frame0 = ttk.Frame()
         self.track_btn = ttk.Button(frame0, text="TCK", width=4, command=self.start_track)
         self.replay_btn = ttk.Button(frame0, text="RPL", width=4, command=self.start_replay)
-        self.dummy_btn = ttk.Button(frame0, text="ATO", width=4)
+        self.ap1_btn = ttk.Button(frame0, text="AP1", width=4, command=self.start_autopilot_mode1)
+        self.ap2_btn = ttk.Button(frame0, text="AP2", width=4)
         self.clear_btn = ttk.Button(frame0, text="CLR", width=4, command=self.clear_message_window)
         self.reset_btn = ttk.Button(frame0, text="RST", width=4, command=self.reset)
         self.about_btn = ttk.Button(frame0, text="INF", width=4, command=self.show_about)
@@ -39,11 +40,12 @@ class MainWindow(tk.Tk):
             width=10
         )
 
-        self.dummy_btn.configure(state=tk.DISABLED)
+        self.ap2_btn.configure(state=tk.DISABLED)
 
         self.track_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.replay_btn.pack(side=tk.LEFT, padx=4, pady=4)
-        self.dummy_btn.pack(side=tk.LEFT, padx=4, pady=4)
+        self.ap1_btn.pack(side=tk.LEFT, padx=4, pady=4)
+        self.ap2_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.clear_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.reset_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.about_btn.pack(side=tk.LEFT, padx=4, pady=4)
@@ -129,6 +131,7 @@ class MainWindow(tk.Tk):
         self.progress_ind.start(40)
         self.track_btn.configure(state=tk.DISABLED)
         self.replay_btn.configure(state=tk.DISABLED)
+        self.ap1_btn.configure(state=tk.DISABLED)
         self.log_file_entry.configure(state=tk.DISABLED)
 
     def start_replay(self):
@@ -147,6 +150,27 @@ class MainWindow(tk.Tk):
         self.progress_ind.start(40)
         self.track_btn.configure(state=tk.DISABLED)
         self.replay_btn.configure(state=tk.DISABLED)
+        self.ap1_btn.configure(state=tk.DISABLED)
+        self.log_file_entry.configure(state=tk.DISABLED)
+
+    def start_autopilot_mode1(self):
+        if self.has_mstrwarn:
+            self.log_into_message_window("MSTRWARN is SET, CHK and RST it, then AP1")
+            return
+
+        log_file_name = self.log_file_entry.get()
+        self.worker.connect_send(
+            self.vts_ws_addr_entry.get(),
+            log_file_name,
+            lambda: self.set_mstrwarn(),
+            lambda: self.on_task_finished("AP1"),
+            lambda x: self.log_into_message_window(x),
+            filter=True
+        )
+        self.progress_ind.start(40)
+        self.track_btn.configure(state=tk.DISABLED)
+        self.replay_btn.configure(state=tk.DISABLED)
+        self.ap1_btn.configure(state=tk.DISABLED)
         self.log_file_entry.configure(state=tk.DISABLED)
 
     def log_into_message_window(self, message):
@@ -171,6 +195,7 @@ class MainWindow(tk.Tk):
         self.worker.reset_tokens()
         self.track_btn.configure(state=tk.NORMAL)
         self.replay_btn.configure(state=tk.NORMAL)
+        self.ap1_btn.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)
         self.progress_ind.stop()
         self.log_into_message_window("SYS RST success")
@@ -183,6 +208,7 @@ class MainWindow(tk.Tk):
     def on_task_finished(self, task_name):
         self.track_btn.configure(state=tk.NORMAL)
         self.replay_btn.configure(state=tk.NORMAL)
+        self.ap1_btn.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)
         self.progress_ind.stop()
         self.log_into_message_window("%s ended" % task_name)

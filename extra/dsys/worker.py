@@ -83,7 +83,7 @@ class WebsocketWorker:
             done_callback()
             self.async_task = None
 
-    def connect_send(self, url, data_source, error_callback, done_callback, log):
+    def connect_send(self, url, data_source, error_callback, done_callback, log, filter=True):
         if self.async_task is not None:
             log("*** ERROR: another task is running, this should be a system bug")
             log("*** INFO: try RST the system")
@@ -93,10 +93,11 @@ class WebsocketWorker:
             data_source,
             error_callback,
             done_callback,
-            log
+            log,
+            filter
         ))
 
-    async def connect_send_impl(self, url, data_source, error_callback, done_callback, log):
+    async def connect_send_impl(self, url, data_source, error_callback, done_callback, log, filter):
         log("Connecting to VTS server at %s ..." % url)
         try:
             async with connect_ws(url) as ws:
@@ -122,6 +123,8 @@ class WebsocketWorker:
                             "id": param["name"],
                             "value": param["value"]
                         } for param in json_data["defaultParameters"]]
+                        if filter:
+                            data = [param for param in data if filter_param(param)]
                         await ws.send(json_stringify({
                             "apiName": "VTubeStudioPublicAPI",
                             "apiVersion": "1.0",
@@ -201,3 +204,19 @@ class WebsocketWorker:
     def reset_tokens(self):
         self.read_token = None
         self.send_token = None
+
+
+Mouth_Related_Param = {
+    "MouthSmile",
+    "MouthOpen",
+    "VoiceVolume",
+    "VoiceFrequency",
+    "VoiceVolumePlusMouthOpen",
+    "VoiceFrequencyPlusMouthSmile"
+}
+
+
+def filter_param(param):
+    if param["id"] in Mouth_Related_Param:
+        return False
+    return True
