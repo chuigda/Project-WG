@@ -1,5 +1,7 @@
 import datetime
 import tkinter as tk
+from tkinter.messagebox import askyesno
+from pathlib import Path
 from tkinter import ttk
 import winsound
 
@@ -67,34 +69,22 @@ class MainWindow(tk.Tk):
         self.log_file_entry.pack(side=tk.LEFT, padx=4, pady=4, expand=1, fill=tk.BOTH)
         frame2.pack(expand=1, fill=tk.X)
 
-        # third row
-        frame3 = ttk.Frame()
-        label3 = ttk.Label(frame3, text="MDL", width=3, anchor="w")
-        self.model_file_entry = ttk.Entry(frame3)
-        self.model_file_entry.insert(0, "./dsys.onnx")
-
-        self.model_file_entry.config(state=tk.DISABLED)
-
-        label3.pack(side=tk.LEFT, padx=4, pady=4)
-        self.model_file_entry.pack(side=tk.LEFT, padx=4, pady=4, expand=1, fill=tk.BOTH)
-        frame3.pack(expand=1, fill=tk.X)
-
         # Status box
-        frame4 = ttk.Frame()
+        frame3 = ttk.Frame()
         self.info_wnd = tk.Text(
-            frame4,
+            frame3,
             height=24,
             width=80,
             padx=4,
             pady=4
         )
-        scroll = ttk.Scrollbar(frame4, command=self.info_wnd.yview)
+        scroll = ttk.Scrollbar(frame3, command=self.info_wnd.yview)
         self.info_wnd.config(yscrollcommand=scroll.set)
         self.info_wnd.insert(tk.END, " --- INFO WINDOW ---\n")
         self.info_wnd.config(state=tk.DISABLED)
         self.info_wnd.pack(side=tk.LEFT, expand=1, fill=tk.X)
         scroll.pack(side=tk.RIGHT, fill=tk.Y)
-        frame4.pack(expand=1, fill=tk.X, padx=4, pady=4)
+        frame3.pack(expand=1, fill=tk.X, padx=4, pady=4)
 
         # websocket worker
         self.worker = WebsocketWorker()
@@ -125,6 +115,10 @@ class MainWindow(tk.Tk):
             return
 
         log_file_name = self.log_file_entry.get()
+        if Path(log_file_name).exists():
+            if not askyesno("File Exists", "File already exists, overwrite?"):
+                return
+
         self.worker.connect_read(
             self.vts_ws_addr_entry.get(),
             log_file_name,
@@ -174,6 +168,7 @@ class MainWindow(tk.Tk):
         self.mstrwarn.config(fg="black", bg="light grey")
         self.has_mstrwarn = False
         self.worker.stop_task()
+        self.worker.reset_tokens()
         self.track_btn.configure(state=tk.NORMAL)
         self.replay_btn.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)

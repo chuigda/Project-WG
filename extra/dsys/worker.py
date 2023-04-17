@@ -13,6 +13,8 @@ from compdec import compress, decompress
 class WebsocketWorker:
     def __init__(self):
         self.async_task = None
+        self.read_token = None
+        self.send_token = None
 
     def connect_read(self, url, save_file, error_callback, done_callback, log):
         if self.async_task is not None:
@@ -31,7 +33,9 @@ class WebsocketWorker:
         log("Connecting to VTS server at %s ..." % url)
         try:
             async with connect_ws(url) as ws:
-                auth_token = await self.establish_battlefield_control(ws, log, "DSYS - Flight Recorder")
+                if self.read_token is None:
+                    self.read_token = \
+                        await self.establish_battlefield_control(ws, log, "DSYS - Flight Recorder")
 
                 log("Authenticated, commencing tracking operation")
                 request_id = 0
@@ -46,7 +50,7 @@ class WebsocketWorker:
                             "requestID": "GetLive2DModelRequest_%d" % request_id,
                             "messageType": "InputParameterListRequest",
                             "data": {
-                                "authenticationToken": auth_token
+                                "authenticationToken": self.read_token
                             }
                         }))
                         resp = json.loads(await ws.recv())
@@ -96,7 +100,9 @@ class WebsocketWorker:
         log("Connecting to VTS server at %s ..." % url)
         try:
             async with connect_ws(url) as ws:
-                auth_token = await self.establish_battlefield_control(ws, log, "DSYS - Dummy Entry Plug")
+                if self.send_token is None:
+                    self.send_token = \
+                        await self.establish_battlefield_control(ws, log, "DSYS - Dummy Entry Plug")
 
                 log("Authenticated, commencing AP operation")
                 request_id = 0
@@ -122,7 +128,7 @@ class WebsocketWorker:
                             "requestID": "InjectParameterDataRequest_%d" % request_id,
                             "messageType": "InjectParameterDataRequest",
                             "data": {
-                                "authenticationToken": auth_token,
+                                "authenticationToken": self.send_token,
                                 "mode": "set",
                                 "parameterValues": data
                             }
@@ -191,3 +197,7 @@ class WebsocketWorker:
         if self.async_task:
             self.async_task.cancel()
             self.async_task = None
+
+    def reset_tokens(self):
+        self.read_token = None
+        self.send_token = None
