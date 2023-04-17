@@ -193,7 +193,7 @@ class MainWindow(tk.Tk):
         self.log_into_message_window("SYS DIS success")
 
     def reset(self):
-        self.mstrwarn.config(fg="black", bg="light grey")
+        self.mstrwarn.config(fg="black", bg="white")
         self.has_mstrwarn = False
         self.worker.stop_task()
         self.worker.reset_tokens()
