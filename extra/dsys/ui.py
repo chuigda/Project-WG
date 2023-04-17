@@ -2,11 +2,8 @@ import datetime
 import tkinter as tk
 from tkinter import ttk
 
-from bin_rw import write_binseq
 from cain_and_abel import Cain_And_Abel
-from compdec import compress
 from metadata import About_Text
-from util import json_stringify
 from worker import WebsocketWorker
 
 
@@ -21,7 +18,7 @@ class MainWindow(tk.Tk):
 
         # controls
         frame0 = ttk.Frame()
-        self.record_btn = ttk.Button(frame0, text="TCK", width=4, command=self.start_record)
+        self.track_btn = ttk.Button(frame0, text="TCK", width=4, command=self.start_track)
         self.replay_btn = ttk.Button(frame0, text="RPL", width=4, command=self.start_replay)
         self.dummy_btn = ttk.Button(frame0, text="ATO", width=4)
         self.clear_btn = ttk.Button(frame0, text="CLR", width=4, command=self.clear_message_window)
@@ -41,7 +38,7 @@ class MainWindow(tk.Tk):
 
         self.dummy_btn.configure(state=tk.DISABLED)
 
-        self.record_btn.pack(side=tk.LEFT, padx=4, pady=4)
+        self.track_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.replay_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.dummy_btn.pack(side=tk.LEFT, padx=4, pady=4)
         self.clear_btn.pack(side=tk.LEFT, padx=4, pady=4)
@@ -121,32 +118,21 @@ class MainWindow(tk.Tk):
         self.info_wnd.insert(tk.END, About_Text)
         self.info_wnd.config(state=tk.DISABLED)
 
-    def start_record(self):
+    def start_track(self):
         if self.has_mstrwarn:
             self.log_into_message_window("MSTRWARN is SET, CHK and RST it, then TCK")
             return
 
         log_file_name = self.log_file_entry.get()
-        try:
-            self.bin_log_file = open(log_file_name, "wb")
-        except Exception as e:
-            self.log_into_message_window(" *** ERROR: cannot open file %s: %s: %s" % (
-                log_file_name,
-                e.__class__.__name__,
-                e
-            ))
-            self.set_mstrwarn()
-            return
-
         self.worker.connect_read(
             self.vts_ws_addr_entry.get(),
-            lambda data: self.save_data(data),
+            log_file_name,
             lambda: self.set_mstrwarn(),
             lambda: self.on_task_finished(),
             lambda x: self.log_into_message_window(x)
         )
         self.progress_ind.start(40)
-        self.record_btn.configure(state=tk.DISABLED)
+        self.track_btn.configure(state=tk.DISABLED)
         self.replay_btn.configure(state=tk.DISABLED)
         self.log_file_entry.configure(state=tk.DISABLED)
 
@@ -164,17 +150,9 @@ class MainWindow(tk.Tk):
             lambda x: self.log_into_message_window(x)
         )
         self.progress_ind.start(40)
-        self.record_btn.configure(state=tk.DISABLED)
+        self.track_btn.configure(state=tk.DISABLED)
         self.replay_btn.configure(state=tk.DISABLED)
         self.log_file_entry.configure(state=tk.DISABLED)
-
-    def save_data(self, data: object):
-        self.data_buffer.append(data)
-        if len(self.data_buffer) >= 50:
-            data_text = "\n".join([json_stringify(x) for x in self.data_buffer])
-            compressed = compress(data_text)
-            write_binseq(self.bin_log_file, compressed)
-            self.data_buffer.clear()
 
     def log_into_message_window(self, message):
         time = datetime.datetime.now().strftime("%H:%M:%S")
@@ -195,11 +173,7 @@ class MainWindow(tk.Tk):
         self.mstrwarn.config(fg="black", bg="light grey")
         self.has_mstrwarn = False
         self.worker.stop_task()
-
-        if self.bin_log_file:
-            self.bin_log_file.close()
-            self.bin_log_file = None
-        self.record_btn.configure(state=tk.NORMAL)
+        self.track_btn.configure(state=tk.NORMAL)
         self.replay_btn.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)
         self.progress_ind.stop()
@@ -210,10 +184,7 @@ class MainWindow(tk.Tk):
         self.has_mstrwarn = True
 
     def on_task_finished(self):
-        if self.bin_log_file:
-            self.bin_log_file.close()
-            self.bin_log_file = None
-        self.record_btn.configure(state=tk.NORMAL)
+        self.track_btn.configure(state=tk.NORMAL)
         self.replay_btn.configure(state=tk.NORMAL)
         self.log_file_entry.configure(state=tk.NORMAL)
         self.progress_ind.stop()
