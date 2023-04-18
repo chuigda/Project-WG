@@ -7,7 +7,7 @@ edition = "2021"
 rw-render = { path = "../rw-render" }
 rw-protocol = { path = "../rw-protocol" }
 
-tokio = { version = "1.27.0", features=["sync", "rt"]}
+tokio = { version = "1.27.0", features=["sync", "rt"] }
 tokio-tungstenite = "0.18"
 vulkano = "0.33"
 vulkano-win = "0.33"
