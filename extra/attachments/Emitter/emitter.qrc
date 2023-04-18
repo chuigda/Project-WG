@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>emitter.mesh</file>
-        <file>emitter-power-source.mesh</file>
-        <file>emitter-side-cover.mesh</file>
-        <file>spacium.png</file>
-    </qresource>
-</RCC>

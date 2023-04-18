@@ -1,3 +1,0 @@
-#include "bis/BISContext.h"
-
-static_assert(sizeof(bis::Context) == {}, "Unexpected size mismatch");

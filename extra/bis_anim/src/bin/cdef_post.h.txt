@@ -1,5 +1,0 @@
-};
-
-} // namespace bis
-
-#endif // PROJECT_WG_BIS_CONTEXT_H

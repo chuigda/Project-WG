@@ -1,2 +1,0 @@
-namespace cw {
-} // namespace cw

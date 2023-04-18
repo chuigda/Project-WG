@@ -1,9 +1,0 @@
-#ifndef PROJECT_WG_BIS_CONTEXT_H
-#define PROJECT_WG_BIS_CONTEXT_H
-
-#include <cstddef>
-#include <cstdint>
-
-namespace bis {
-
-extern "C" struct Context {
