@@ -1,0 +1,3 @@
+[workspace]
+
+members = ["rw-protocol", "rw-renderer"]

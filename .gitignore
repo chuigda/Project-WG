@@ -97,3 +97,5 @@ extra/dsys/*.spec
 *.tck
 *.tck.dec
 *.onnx
+
+Cargo.lock
