@@ -99,3 +99,4 @@ extra/dsys/*.spec
 *.onnx
 
 Cargo.lock
+!rw-window/Cargo.lock
