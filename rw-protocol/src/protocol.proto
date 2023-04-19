@@ -10,19 +10,16 @@ message Zdravstvuyte {
   optional string payload = 1;
 }
 
-message StatePartialUpdate {
+message GetState {}
 
-}
-
-message StateFullUpdate {
-  // very required
+message StateUpdate {
   BasicState state = 1;
 }
 
 message ClientRequest {
   oneof payload {
     Zdravstvuyte zdravstvuyte = 1;
-    StatePartialUpdate state_partial_update = 2;
-    StateFullUpdate state_full_update = 3;
+    GetState get_state = 2;
+    StateUpdate update = 3;
   }
 }

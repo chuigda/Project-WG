@@ -6,7 +6,36 @@ message BasicState {
   float rotate_x = 1;
   float rotate_y = 2;
   float rotate_z = 3;
+
   float position_x = 4;
   float position_y = 5;
   float position_z = 6;
+
+  float arm_l0 = 7;
+  float arm_l1 = 8;
+  float arm_l2 = 9;
+  float arm_l3 = 10;
+  float arm_l4 = 11;
+
+  float arm_r0 = 12;
+  float arm_r1 = 13;
+  float arm_r2 = 14;
+  float arm_r3 = 15;
+  float arm_r4 = 16;
+
+  float leg_l0 = 17;
+  float leg_l1 = 18;
+  float leg_l2 = 19;
+  float leg_l3 = 20;
+
+  float leg_r0 = 21;
+  float leg_r1 = 22;
+  float leg_r3 = 23;
+  float leg_r4 = 24;
+  float leg_r5 = 25;
+
+  float head_y = 26;
+  float waist_x = 27;
+  float waist_y = 28;
+  float waist_z = 29;
 }
