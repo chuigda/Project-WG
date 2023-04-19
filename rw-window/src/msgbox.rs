@@ -56,3 +56,18 @@ pub fn message_box(title: &str, message: &str) {
         }
     }
 }
+
+#[cfg(windows)]
+#[macro_export]
+macro_rules! message_box {
+    ($title:expr, $message:expr) => {
+        // ensure that the string is null-terminated
+        $crate::msgbox::message_box($title, $message)
+    }
+}
+
+#[cfg(not(windows))]
+#[macro_export]
+macro_rules! message_box {
+    ($title:expr, $message:expr) => {}
+}
