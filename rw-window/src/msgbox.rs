@@ -39,6 +39,7 @@ fn convert_u8_u16(input: &str) -> Box<[u16]> {
     output.into_boxed_slice()
 }
 
+#[cfg_attr(not(windows), allow(unused_variables))]
 pub fn message_box(title: &str, message: &str) {
     #[cfg(windows)]
     {
