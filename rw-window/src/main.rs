@@ -9,7 +9,7 @@ use winit::event::{Event, WindowEvent};
 use winit::event_loop::{EventLoop, ControlFlow};
 use winit::window::WindowBuilder;
 
-use rw_protocol::ClientRequest;
+use rw_protocol::BasicState;
 
 fn main() {
     if env::var("RUST_LOG").is_err() {
@@ -41,6 +41,7 @@ fn main() {
             exit(-1)
         }
     };
+    tracing::info!("Vulkan 实例初始化完成");
 
     let event_loop = EventLoop::new();
     let surface = WindowBuilder::new()

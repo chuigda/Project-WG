@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package rw.protocol;
+
+message BasicState {
+  float rotate_x = 1;
+  float rotate_y = 2;
+  float rotate_z = 3;
+  float position_x = 4;
+  float position_y = 5;
+  float position_z = 6;
+}

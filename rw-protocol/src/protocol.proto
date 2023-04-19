@@ -2,6 +2,10 @@ syntax = "proto3";
 
 package rw.protocol;
 
+import "state.proto";
+import "request.proto";
+import "response.proto";
+
 message Zdravstvuyte {
   optional string payload = 1;
 }
@@ -11,7 +15,8 @@ message StatePartialUpdate {
 }
 
 message StateFullUpdate {
-
+  // very required
+  BasicState state = 1;
 }
 
 message ClientRequest {
