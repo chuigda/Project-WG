@@ -2,6 +2,6 @@ syntax = "proto3";
 
 package rw.protocol;
 
-message Hello {
-  string payload = 1;
+message Zdravstvuyte {
+  optional string payload = 1;
 }
