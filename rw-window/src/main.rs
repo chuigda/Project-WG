@@ -12,7 +12,7 @@ use rw_protocol::ClientRequest;
 use msgbox::message_box;
 
 fn main() {
-    message_box("Hi\0", "This is a test dialog, that would only be shown on Windows.\0");
+    message_box("Hi\0", "我有个好提议，就约定在一起，去探寻魔法的秘密.\0");
 
     let library = VulkanLibrary::new().expect("Unable to load local Vulkan library/DLL");
     let required_extensions = vulkano_win::required_extensions(&library);
