@@ -5,6 +5,8 @@ use winit::event::{Event, WindowEvent};
 use winit::event_loop::{EventLoop, ControlFlow};
 use winit::window::WindowBuilder;
 
+use rw_protocol::ClientRequest;
+
 fn main() {
     let library = VulkanLibrary::new().expect("Unable to load local Vulkan library/DLL");
     let required_extensions = vulkano_win::required_extensions(&library);

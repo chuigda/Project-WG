@@ -5,3 +5,19 @@ package rw.protocol;
 message Zdravstvuyte {
   optional string payload = 1;
 }
+
+message StatePartialUpdate {
+
+}
+
+message StateFullUpdate {
+
+}
+
+message ClientRequest {
+  oneof payload {
+    Zdravstvuyte zdravstvuyte = 1;
+    StatePartialUpdate state_partial_update = 2;
+    StateFullUpdate state_full_update = 3;
+  }
+}
