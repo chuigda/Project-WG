@@ -1,3 +1,5 @@
+pub mod msgbox;
+
 use vulkano::instance::{Instance, InstanceCreateInfo};
 use vulkano::VulkanLibrary;
 use vulkano_win::VkSurfaceBuild;
@@ -7,7 +9,11 @@ use winit::window::WindowBuilder;
 
 use rw_protocol::ClientRequest;
 
+use msgbox::message_box;
+
 fn main() {
+    message_box("Hi\0", "This is a test dialog, that would only be shown on Windows.\0");
+
     let library = VulkanLibrary::new().expect("Unable to load local Vulkan library/DLL");
     let required_extensions = vulkano_win::required_extensions(&library);
     let vk_instance = Instance::new(library, InstanceCreateInfo {
