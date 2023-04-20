@@ -238,7 +238,12 @@ pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Optio
         DispatchMessageW(&msg);
     }
 
-    Box::from_raw(user_data_ptr).selected_item
+    let user_data = Box::from_raw(user_data_ptr);
+    if user_data.confirmed {
+        user_data.selected_item
+    } else {
+        None
+    }
 }
 
 unsafe extern "system" fn set_font(child: HWND, font: LPARAM) -> i32 {

@@ -4,8 +4,9 @@ use std::env;
 use std::process::exit;
 use std::sync::Arc;
 use vulkano::device::physical::{PhysicalDevice, PhysicalDeviceType};
-use vulkano::device::QueueFlags;
-use vulkano::instance::{Instance, InstanceCreateInfo};
+use vulkano::device::{Device, DeviceCreateInfo, QueueCreateInfo, QueueFlags};
+use vulkano::instance::{Instance, InstanceCreateInfo, InstanceExtensions};
+use vulkano::swapchain::Surface;
 use vulkano::VulkanLibrary;
 use vulkano_win::VkSurfaceBuild;
 use winit::event::{Event, WindowEvent};
@@ -20,7 +21,7 @@ fn main() {
 
     #[cfg(windows)] unsafe { winapi::um::winuser::SetProcessDPIAware(); }
 
-    let library = match VulkanLibrary::new() {
+    let library: Arc<VulkanLibrary> = match VulkanLibrary::new() {
         Ok(library) => library,
         Err(e) => {
             tracing::error!("无法初始化 Vulkan Library: {e}");
@@ -30,12 +31,12 @@ fn main() {
     };
     tracing::info!("Vulkan Library 初始化完成");
 
-    let required_extensions = vulkano_win::required_extensions(&library);
-    let vk_instance = Instance::new(library, InstanceCreateInfo {
+    let required_extensions: InstanceExtensions = vulkano_win::required_extensions(&library);
+    let vk_instance: Result<Arc<Instance>, _> = Instance::new(library, InstanceCreateInfo {
         enabled_extensions: required_extensions,
         ..Default::default()
     });
-    let vk_instance = match vk_instance {
+    let vk_instance: Arc<Instance> = match vk_instance {
         Ok(instance) => instance,
         Err(e) => {
             tracing::error!("无法初始化 Vulkan 实例: {e}");
@@ -45,10 +46,44 @@ fn main() {
     };
     tracing::info!("Vulkan 实例初始化完成");
 
-    let device = choose_vulkan_device(&vk_instance);
+    let physical_device: Arc<PhysicalDevice> = choose_vulkan_device(&vk_instance);
+    tracing::info!("选中了 Vulkan 设备: {}", physical_device.properties().device_name);
 
-    let event_loop = EventLoop::new();
-    let surface = WindowBuilder::new()
+    let Some(queue_family_index) = physical_device
+        .queue_family_properties()
+        .iter()
+        .enumerate()
+        .position(|(_queue_family_index, queue_family_properties)| {
+            queue_family_properties.queue_flags.contains(QueueFlags::GRAPHICS)
+        }) else
+    {
+        tracing::error!("选中的设备没有可用的图形队列");
+        message_box!("错误", "选中的设备没有可用的图形队列");
+        exit(-1)
+    };
+
+    let device_creation_result: Result<_, _> = Device::new(
+        physical_device,
+        DeviceCreateInfo {
+            // here we pass the desired queue family to use by index
+            queue_create_infos: vec![QueueCreateInfo {
+                queue_family_index: queue_family_index as u32,
+                ..Default::default()
+            }],
+            ..Default::default()
+        }
+    );
+    let (device, mut queues) = match device_creation_result {
+        Ok(res) => res,
+        Err(e) => {
+            tracing::error!("无法创建 Vulkan 设备: {e}");
+            message_box!("错误", &format!("无法创建 Vulkan 设备: \r\n{e}"));
+            exit(-1)
+        }
+    };
+
+    let event_loop: EventLoop<_> = EventLoop::new();
+    let surface: Result<Arc<Surface>, _> = WindowBuilder::new()
         .build_vk_surface(&event_loop, vk_instance.clone());
     match surface {
         Ok(_) => {},
