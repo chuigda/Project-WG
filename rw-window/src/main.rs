@@ -1,4 +1,4 @@
-pub mod msgbox;
+mod win32;
 
 use std::env;
 use std::process::exit;
@@ -8,14 +8,15 @@ use vulkano_win::VkSurfaceBuild;
 use winit::event::{Event, WindowEvent};
 use winit::event_loop::{EventLoop, ControlFlow};
 use winit::window::WindowBuilder;
-
-use rw_protocol::BasicState;
+use crate::win32::combo_box::combo_box_impl;
 
 fn main() {
     if env::var("RUST_LOG").is_err() {
         env::set_var("RUST_LOG", "info");
     }
     tracing_subscriber::fmt::init();
+
+    unsafe { combo_box_impl("一条大河波浪宽", vec![]); }
 
     let library = match VulkanLibrary::new() {
         Ok(library) => library,
