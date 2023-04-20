@@ -2,7 +2,17 @@ use std::mem::zeroed;
 use std::ptr::{null, null_mut};
 use once_cell::sync::OnceCell;
 use winapi::shared::minwindef::{LRESULT, WPARAM, LPARAM, UINT, HINSTANCE, LOWORD, HIWORD};
-use winapi::shared::windef::{HBRUSH, HWND};
+use winapi::shared::windef::{HBRUSH, HWND, HFONT};
+use winapi::um::wingdi::{
+    CreateFontW,
+    CLIP_DEFAULT_PRECIS,
+    DEFAULT_CHARSET,
+    DEFAULT_PITCH,
+    DEFAULT_QUALITY,
+    FF_DONTCARE,
+    FW_HEAVY,
+    OUT_DEFAULT_PRECIS
+};
 use winapi::um::libloaderapi::GetModuleHandleW;
 use winapi::um::winuser::{MSG, WNDCLASSW};
 use winapi::um::winuser::{
@@ -24,7 +34,8 @@ use winapi::um::winuser::{
     SetWindowLongPtrW,
     SendMessageW,
     SetWindowTextW,
-    InvalidateRect
+    InvalidateRect,
+    EnumChildWindows
 };
 use winapi::um::winuser::{
     COLOR_WINDOW,
@@ -39,6 +50,7 @@ use winapi::um::winuser::{
     WS_CHILD,
     WS_VISIBLE,
     WS_DISABLED,
+    WM_SETFONT,
     ES_LEFT,
     ES_READONLY,
     ES_MULTILINE,
@@ -130,7 +142,7 @@ pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Optio
         WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST,
         5,
         5,
-        460,
+        450,
         300,
         h_wnd,
         null_mut(),
@@ -155,8 +167,8 @@ pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Optio
         WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_LEFT | ES_READONLY,
         5,
         36,
-        460,
-        235,
+        450,
+        225,
         h_wnd,
         null_mut(),
         wnd_instance,
@@ -170,7 +182,7 @@ pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Optio
         convert_u8_u16("取消").as_ptr(),
         WS_CHILD | WS_VISIBLE,
         5,
-        275,
+        265,
         80,
         40,
         h_wnd,
@@ -185,8 +197,8 @@ pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Optio
         convert_u8_u16(WC_BUTTONA).as_ptr(),
         convert_u8_u16("确认").as_ptr(),
         WS_CHILD | WS_VISIBLE | WS_DISABLED,
-        385,
-        275,
+        375,
+        265,
         80,
         40,
         h_wnd,
@@ -212,6 +224,11 @@ pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Optio
         user_data_ptr as _
     );
 
+    let font: HFONT = CreateFontW(
+        24, 0, 0, 0, FW_HEAVY, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, convert_u8_u16("System").as_ptr()
+    );
+    EnumChildWindows(h_wnd, Some(set_font), font as _);
+
     ShowWindow(h_wnd, 1);
     UpdateWindow(h_wnd);
 
@@ -222,6 +239,11 @@ pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Optio
     }
 
     Box::from_raw(user_data_ptr).selected_item
+}
+
+unsafe extern "system" fn set_font(child: HWND, font: LPARAM) -> i32 {
+    SendMessageW(child, WM_SETFONT, font as _, 1);
+    1
 }
 
 unsafe extern "system" fn wnd_proc(
@@ -273,5 +295,22 @@ unsafe extern "system" fn wnd_proc(
             0
         },
         _ => DefWindowProcW(h_wnd, msg, w_param, l_param)
+    }
+}
+
+#[macro_export] macro_rules! combo_box {
+    ($title:expr ; $(($opt_title:expr, $opt_desc:expr)),*) => {
+        {
+            let options = vec![$(
+                $crate::win32::combo_box::ComboBoxOption {
+                    title: $crate::win32::convert_u8_u16($opt_title),
+                    description: $crate::win32::convert_u8_u16($opt_desc)
+                }
+            ),*];
+            unsafe { $crate::win32::combo_box::combo_box_impl($title, options) }
+        }
+    };
+    ($title:expr, $options:expr) => {
+        unsafe { $crate::win32::combo_box::combo_box_impl($title, $options) }
     }
 }
