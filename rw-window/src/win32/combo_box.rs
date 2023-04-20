@@ -1,12 +1,15 @@
 use std::mem::zeroed;
 use std::ptr::{null, null_mut};
 use once_cell::sync::OnceCell;
-use winapi::shared::minwindef::{LRESULT, WPARAM, LPARAM, UINT, HINSTANCE};
+use winapi::shared::minwindef::{LRESULT, WPARAM, LPARAM, UINT, HINSTANCE, LOWORD, HIWORD};
 use winapi::shared::windef::{HBRUSH, HWND};
 use winapi::um::libloaderapi::GetModuleHandleW;
 use winapi::um::winuser::{MSG, WNDCLASSW};
 use winapi::um::winuser::{
     CreateWindowExW,
+    GetWindowLongPtrW,
+    GetWindowLongW,
+    SetWindowLongW,
     DispatchMessageW,
     GetMessageW,
     LoadCursorW,
@@ -17,33 +20,78 @@ use winapi::um::winuser::{
     UpdateWindow,
     DestroyWindow,
     PostQuitMessage,
-    DefWindowProcW
+    DefWindowProcW,
+    SetWindowLongPtrW,
+    SendMessageW,
+    SetWindowTextW,
+    InvalidateRect
 };
 use winapi::um::winuser::{
     COLOR_WINDOW,
     CW_USEDEFAULT,
     IDI_APPLICATION,
     WS_EX_CLIENTEDGE,
-    WS_OVERLAPPEDWINDOW,
+    WS_OVERLAPPED,
+    WS_CAPTION,
+    WS_SYSMENU,
     WM_CLOSE,
-    WM_DESTROY
+    WM_DESTROY,
+    WS_CHILD,
+    WS_VISIBLE,
+    WS_DISABLED,
+    ES_LEFT,
+    ES_READONLY,
+    ES_MULTILINE,
+    CBS_DROPDOWNLIST,
+    GWLP_HINSTANCE,
+    GWLP_USERDATA,
+    GWL_ID,
+    GWL_STYLE,
+    CB_ADDSTRING,
+    CBN_SELCHANGE,
+    CB_GETCURSEL,
+    WM_COMMAND
+};
+
+use winapi::um::commctrl::{
+    WC_COMBOBOX,
+    WC_EDIT,
+    WC_BUTTONA
 };
 use crate::win32::convert_u8_u16;
 
 #[derive(Debug, Clone)]
 pub struct ComboBoxOption {
-    title: String,
-    description: String
+    pub title: Box<[u16]>,
+    pub description: Box<[u16]>
+}
+
+impl ComboBoxOption {
+    pub fn new(title: &str, description: &str) -> Self {
+        Self {
+            title: convert_u8_u16(title),
+            description: convert_u8_u16(description)
+        }
+    }
+}
+
+#[derive(Debug)]
+struct ComboBoxExtra {
+    h_combobox: HWND,
+    h_textbox: HWND,
+    h_confirm_button: HWND,
+    h_cancel_button: HWND,
+    selected_item: Option<usize>,
+    confirmed: bool,
+    options: Vec<ComboBoxOption>
 }
 
 const WND_CLASS_NAME: OnceCell<Box<[u16]>> = OnceCell::new();
 
-pub unsafe fn combo_box_impl(title: &str, _options: Vec<ComboBoxOption>) -> usize {
+pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Option<usize> {
     let binding = WND_CLASS_NAME;
     let wnd_class_name: &Box<[u16]> = binding.get_or_init(|| convert_u8_u16("rw-combobox"));
     let wnd_class_name: *const u16 = wnd_class_name.as_ptr();
-
-    // assert!(options.len() >= 1);
 
     let h_instance: HINSTANCE = GetModuleHandleW(null());
 
@@ -62,15 +110,106 @@ pub unsafe fn combo_box_impl(title: &str, _options: Vec<ComboBoxOption>) -> usiz
         WS_EX_CLIENTEDGE,
         wnd_class_name,
         convert_u8_u16(title).as_ptr(),
-        WS_OVERLAPPEDWINDOW,
+        WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU,
         CW_USEDEFAULT,
         CW_USEDEFAULT,
-        400,
-        240,
+        480,
+        360,
         null_mut(),
         null_mut(),
         h_instance,
         null_mut()
+    );
+
+    let wnd_instance: HINSTANCE = GetWindowLongPtrW(h_wnd, GWLP_HINSTANCE) as HINSTANCE;
+
+    let h_combobox = CreateWindowExW(
+        0,
+        convert_u8_u16(WC_COMBOBOX).as_ptr(),
+        null(),
+        WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST,
+        5,
+        5,
+        460,
+        300,
+        h_wnd,
+        null_mut(),
+        wnd_instance,
+        null_mut()
+    );
+    SetWindowLongW(h_combobox, GWL_ID, 1);
+
+    for option in &options {
+        SendMessageW(
+            h_combobox,
+            CB_ADDSTRING,
+            0,
+            option.title.as_ptr() as LPARAM
+        );
+    }
+
+    let h_textbox = CreateWindowExW(
+        WS_EX_CLIENTEDGE,
+        convert_u8_u16(WC_EDIT).as_ptr(),
+        null(),
+        WS_CHILD | WS_VISIBLE | ES_MULTILINE | ES_LEFT | ES_READONLY,
+        5,
+        36,
+        460,
+        235,
+        h_wnd,
+        null_mut(),
+        wnd_instance,
+        null_mut()
+    );
+    SetWindowLongW(h_textbox, GWL_ID, 2);
+
+    let h_cancel_button = CreateWindowExW(
+        0,
+        convert_u8_u16(WC_BUTTONA).as_ptr(),
+        convert_u8_u16("取消").as_ptr(),
+        WS_CHILD | WS_VISIBLE,
+        5,
+        275,
+        80,
+        40,
+        h_wnd,
+        null_mut(),
+        wnd_instance,
+        null_mut()
+    );
+    SetWindowLongW(h_cancel_button, GWL_ID, 3);
+
+    let h_confirm_button = CreateWindowExW(
+        0,
+        convert_u8_u16(WC_BUTTONA).as_ptr(),
+        convert_u8_u16("确认").as_ptr(),
+        WS_CHILD | WS_VISIBLE | WS_DISABLED,
+        385,
+        275,
+        80,
+        40,
+        h_wnd,
+        null_mut(),
+        wnd_instance,
+        null_mut()
+    );
+    SetWindowLongW(h_confirm_button, GWL_ID, 4);
+
+    let user_data_ptr = Box::into_raw(Box::new(ComboBoxExtra {
+        h_combobox,
+        h_textbox,
+        h_confirm_button,
+        h_cancel_button,
+        selected_item: None,
+        confirmed: false,
+        options
+    }));
+
+    SetWindowLongPtrW(
+        h_wnd,
+        GWLP_USERDATA,
+        user_data_ptr as _
     );
 
     ShowWindow(h_wnd, 1);
@@ -82,7 +221,7 @@ pub unsafe fn combo_box_impl(title: &str, _options: Vec<ComboBoxOption>) -> usiz
         DispatchMessageW(&msg);
     }
 
-    msg.wParam as _
+    Box::from_raw(user_data_ptr).selected_item
 }
 
 unsafe extern "system" fn wnd_proc(
@@ -92,6 +231,39 @@ unsafe extern "system" fn wnd_proc(
     l_param: LPARAM
 ) -> LRESULT {
     match msg {
+        WM_COMMAND => {
+            let user_data_ptr = GetWindowLongPtrW(h_wnd, GWLP_USERDATA) as *mut ComboBoxExtra;
+            let user_data = &mut *user_data_ptr;
+
+            let id = LOWORD(w_param as _);
+            let code = HIWORD(w_param as _);
+
+            if id == GetWindowLongW(user_data.h_confirm_button, GWL_ID) as u16 {
+                user_data.confirmed = true;
+                DestroyWindow(h_wnd);
+            } else if id == GetWindowLongW(user_data.h_cancel_button, GWL_ID) as u16 {
+                DestroyWindow(h_wnd);
+            } else if id == GetWindowLongW(user_data.h_combobox, GWL_ID) as u16 {
+                if code == CBN_SELCHANGE {
+                    let index = SendMessageW(
+                        user_data.h_combobox,
+                        CB_GETCURSEL,
+                        0,
+                        0
+                    ) as usize;
+                    if index >= user_data.options.len() {
+                        return 0;
+                    }
+
+                    user_data.selected_item = Some(index);
+                    let option = &user_data.options[index];
+                    SetWindowTextW(user_data.h_textbox, option.description.as_ptr());
+                    SetWindowLongW(user_data.h_confirm_button, GWL_STYLE, (WS_CHILD | WS_VISIBLE) as _);
+                    InvalidateRect(h_wnd, null(), 1);
+                }
+            }
+            0
+        },
         WM_CLOSE => {
             DestroyWindow(h_wnd);
             0

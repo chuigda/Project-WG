@@ -8,7 +8,7 @@ use vulkano_win::VkSurfaceBuild;
 use winit::event::{Event, WindowEvent};
 use winit::event_loop::{EventLoop, ControlFlow};
 use winit::window::WindowBuilder;
-use crate::win32::combo_box::combo_box_impl;
+use crate::win32::combo_box::{combo_box_impl, ComboBoxOption};
 
 fn main() {
     if env::var("RUST_LOG").is_err() {
@@ -16,7 +16,26 @@ fn main() {
     }
     tracing_subscriber::fmt::init();
 
-    unsafe { combo_box_impl("一条大河波浪宽", vec![]); }
+    #[cfg(windows)] unsafe { winapi::um::winuser::SetProcessDPIAware(); }
+
+    unsafe {
+        combo_box_impl("选择 Vulkan 设备", vec![ComboBoxOption::new(
+            "DefaultDevice",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit.\r
+Sed auctor, nisl eget ultricies lacinia, nisl nisl aliquet nisl,\r
+eget aliquet nisl nisl eget nisl. Sed auctor, nisl eget ultricies lacinia,\r
+nisl nisl aliquet nisl, eget aliquet nisl nisl eget nisl. Sed auctor,\r
+nisl eget ultricies lacinia, nisl nisl aliquet nisl, eget aliquet nisl nisl\r
+eget nisl. Sed auctor, nisl eget ultricies lacinia, nisl nisl aliquet nisl,\r
+eget aliquet nisl nisl eget nisl. Sed auctor, nisl eget ultricies lacinia,\r
+nisl nisl aliquet nisl, eget aliquet nisl nisl eget nisl. Sed auctor\r
+\r
+Cain and Abel\r
+\r
+1 And Adam knew his wife Eve, \r"
+        )]);
+    }
+    return;
 
     let library = match VulkanLibrary::new() {
         Ok(library) => library,
