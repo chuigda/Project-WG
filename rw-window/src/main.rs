@@ -82,6 +82,8 @@ fn main() {
         }
     };
 
+    tracing::info!("Vulkan 设备创建完成");
+
     let event_loop: EventLoop<_> = EventLoop::new();
     let surface: Result<Arc<Surface>, _> = WindowBuilder::new()
         .build_vk_surface(&event_loop, vk_instance.clone());
