@@ -5,4 +5,6 @@ edition = "2021"
 
 [dependencies]
 image = { version = "0.24", default-features=false, features=["png", "bmp"] }
+thiserror = "1"
 vulkano = "0.33"
+vulkano-shaders = { version = "0.33", features=["shaderc-build-from-source"] }

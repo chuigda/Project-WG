@@ -1,12 +1,19 @@
 use std::process::exit;
 use std::sync::Arc;
+use vulkano::buffer::{C, Subbuffer};
+use vulkano::command_buffer::PrimaryAutoCommandBuffer;
 use vulkano::device::physical::{PhysicalDevice, PhysicalDeviceType};
 use vulkano::device::{Device, DeviceCreateInfo, DeviceExtensions, Queue, QueueCreateInfo, QueueFlags};
 use vulkano::image::{ImageUsage, SwapchainImage};
+use vulkano::image::view::ImageView;
 use vulkano::instance::{Instance, InstanceCreateInfo, InstanceExtensions};
+use vulkano::memory::allocator::MemoryAllocator;
+use vulkano::pipeline::GraphicsPipeline;
+use vulkano::render_pass::{Framebuffer, FramebufferCreateInfo, RenderPass};
 use vulkano::swapchain::{Surface, Swapchain, SwapchainCreateInfo};
 use vulkano::VulkanLibrary;
 use winit::window::Window;
+use rw_render::triangle::MeinVertex;
 use crate::{combo_box, message_box};
 use crate::config::RwVulkanConfig;
 use crate::opt::RwOptions;
@@ -66,7 +73,8 @@ pub fn list_vulkan_devices(
                 vulkan_device_type_name(properties.device_type),
                 properties.api_version,
                 properties.driver_name.as_ref().map_or("未知驱动程序", String::as_str),
-                properties.driver_version);
+                properties.driver_version
+            );
         }
     }
 
@@ -183,7 +191,7 @@ pub fn select_vulkan_device(
 }
 
 pub fn create_vulkan_device(
-    physical_device: Arc<PhysicalDevice>,
+    physical_device: &Arc<PhysicalDevice>,
     surface: &Arc<Surface>,
 ) -> (Arc<Device>, Arc<Queue>) {
     let queue_family_index = physical_device
@@ -201,7 +209,7 @@ pub fn create_vulkan_device(
         });
 
     let (device, mut queues) = Device::new(
-        physical_device,
+        physical_device.clone(),
         DeviceCreateInfo {
             // here we pass the desired queue family to use by index
             queue_create_infos: vec![QueueCreateInfo {
@@ -267,9 +275,9 @@ fn query_vulkan_physical_devices(
 }
 
 pub fn create_swapchain(
-    physical_device: Arc<PhysicalDevice>,
-    device: Arc<Device>,
-    surface: Arc<Surface>
+    physical_device: &Arc<PhysicalDevice>,
+    device: &Arc<Device>,
+    surface: &Arc<Surface>
 ) -> (Arc<Swapchain>, Vec<Arc<SwapchainImage>>) {
     let caps = physical_device
         .surface_capabilities(&surface, Default::default())
@@ -321,6 +329,61 @@ pub fn create_swapchain(
         message_box!("错误", &format!("无法创建 Vulkan 交换链: \r\n{e}"));
         exit(-1)
     })
+}
+
+pub fn create_render_pass(device: Arc<Device>, swapchain: &Arc<Swapchain>) -> Arc<RenderPass> {
+    vulkano::single_pass_renderpass!(
+        device,
+        attachments: {
+            color: {
+                load: Clear,
+                store: Store,
+                format: swapchain.image_format(),
+                samples: 1,
+            },
+        },
+        pass: {
+            color: [color],
+            depth_stencil: {},
+        },
+    )
+    .unwrap_or_else(|e| {
+        tracing::error!("无法创建 Vulkan 渲染管线: {e}");
+        message_box!("错误", &format!("无法创建 Vulkan 渲染管线: \r\n{e}"));
+        exit(-1)
+    })
+}
+
+pub fn create_framebuffer(
+    images: &[Arc<SwapchainImage>],
+    render_pass: &Arc<RenderPass>
+) -> Box<[Arc<Framebuffer>]> {
+    images.iter()
+        .map(|image| {
+            let view = ImageView::new_default(image.clone()).unwrap();
+            Framebuffer::new(
+                render_pass.clone(),
+                FramebufferCreateInfo {
+                    attachments: vec![view],
+                    ..Default::default()
+                },
+            ).unwrap_or_else(|e| {
+                tracing::error!("无法创建 Vulkan 帧缓冲: {e}");
+                message_box!("错误", &format!("无法创建 Vulkan 帧缓冲: \r\n{e}"));
+                exit(-1)
+            })
+        })
+        .collect()
+}
+
+pub fn create_command_buffer(
+    _device: &Arc<Device>,
+    _queue: &Arc<Queue>,
+    _pipeline: &Arc<GraphicsPipeline>,
+    _framebuffer: &[Arc<Framebuffer>],
+    _vertex_buffer: &Arc<Subbuffer<[MeinVertex]>>
+) -> Box<[Arc<PrimaryAutoCommandBuffer>]> {
+    todo!()
 }
 
 #[cfg(windows)]

@@ -6,7 +6,7 @@ use crate::message_box;
 use crate::opt::RwOptions;
 
 pub fn setup_logger(config: Option<&RwConfig>, options: &RwOptions) -> bool {
-    let log_file_name = config.as_ref()
+    let log_file_name = config
         .and_then(|cfg| cfg.log.as_ref())
         .and_then(|log_cfg| Some(&log_cfg.file_name))
         .or(options.log_file.as_ref());

@@ -15,6 +15,7 @@ use vulkano_win::VkSurfaceBuild;
 use winit::event::{Event, WindowEvent};
 use winit::event_loop::{EventLoop, ControlFlow};
 use winit::window::WindowBuilder;
+
 use crate::command::log::setup_logger;
 use crate::command::vk::*;
 use crate::config::{RwConfig, try_read_config};
@@ -75,10 +76,10 @@ fn main() {
     );
     tracing::info!("选中了 Vulkan 设备: {}", physical_device.properties().device_name);
 
-    let (device, queue) = create_vulkan_device(physical_device.clone(), &surface);
+    let (device, queue) = create_vulkan_device(&physical_device, &surface);
     tracing::info!("Vulkan 设备创建完成");
 
-    let (swapchain, images) = create_swapchain(physical_device, device, surface);
+    let (swapchain, images) = create_swapchain(&physical_device, &device, &surface);
     tracing::info!("Vulkan Swapchain 创建完成");
 
     event_loop.run(|event, _, control_flow| {
