@@ -56,13 +56,14 @@ pub fn list_vulkan_devices(instance: &Arc<Instance>, use_log_file: bool) -> Infa
     }
 
     if use_log_file || cfg!(not(windows)) {
-        tracing::info!("*** 正在枚举所有可用的 Vulkan 物理设备 ***");
+        tracing::info!("正在枚举所有可用的 Vulkan 物理设备");
         for (idx, device) in physical_devices.iter().enumerate() {
             let properties = device.properties();
             let name = &properties.device_name;
 
             tracing::info!(
-                "设备序号: {}\n\
+                "找到了 Vulkan 物理设备\n\
+                 \t设备序号: {}\n\
                  \t设备名称: {}\n\
                  \t设备 ID: {}\n\
                  \t设备类别: {}\n\
