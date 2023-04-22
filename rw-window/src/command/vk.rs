@@ -1,11 +1,12 @@
-use std::io::Write;
-use std::num::ParseIntError;
 use std::process::exit;
 use std::sync::Arc;
 use vulkano::device::physical::{PhysicalDevice, PhysicalDeviceType};
-use vulkano::device::QueueFlags;
+use vulkano::device::{Device, DeviceCreateInfo, DeviceExtensions, Queue, QueueCreateInfo, QueueFlags};
+use vulkano::image::{ImageUsage, SwapchainImage};
 use vulkano::instance::{Instance, InstanceCreateInfo, InstanceExtensions};
+use vulkano::swapchain::{Surface, Swapchain, SwapchainCreateInfo};
 use vulkano::VulkanLibrary;
+use winit::window::Window;
 use crate::{combo_box, message_box};
 use crate::config::RwVulkanConfig;
 use crate::opt::RwOptions;
@@ -25,22 +26,24 @@ pub fn init_vk_library() -> Arc<VulkanLibrary> {
 
 pub fn create_vk_instance(library: Arc<VulkanLibrary>) -> Arc<Instance> {
     let required_extensions: InstanceExtensions = vulkano_win::required_extensions(&library);
-    let vk_instance: Result<Arc<Instance>, _> = Instance::new(library, InstanceCreateInfo {
+    Instance::new(library, InstanceCreateInfo {
         enabled_extensions: required_extensions,
         ..Default::default()
-    });
-    match vk_instance {
-        Ok(instance) => instance,
-        Err(e) => {
-            tracing::error!("无法初始化 Vulkan 实例: {e}");
-            message_box!("错误", &format!("无法初始化 Vulkan 实例: \r\n{e}"));
-            exit(-1)
-        }
-    }
+    })
+    .unwrap_or_else(|e| {
+        tracing::error!("无法初始化 Vulkan 实例: {e}");
+        message_box!("错误", &format!("无法初始化 Vulkan 实例: \r\n{e}"));
+        exit(-1)
+    })
 }
 
-pub fn list_vulkan_devices(instance: &Arc<Instance>, use_log_file: bool) {
-    let physical_devices: Box<[Arc<PhysicalDevice>]> = query_vulkan_physical_devices(instance);
+pub fn list_vulkan_devices(
+    instance: &Arc<Instance>,
+    use_log_file: bool,
+    surface: &Arc<Surface>
+) {
+    let physical_devices: Box<[Arc<PhysicalDevice>]>
+        = query_vulkan_physical_devices(instance, surface);
 
     if use_log_file || cfg!(not(windows)) {
         tracing::info!("正在枚举所有可用的 Vulkan 物理设备");
@@ -79,22 +82,29 @@ pub fn list_vulkan_devices(instance: &Arc<Instance>, use_log_file: bool) {
 pub fn select_vulkan_device(
     instance: &Arc<Instance>,
     options: &RwOptions,
-    config: Option<&RwVulkanConfig>
+    config: Option<&RwVulkanConfig>,
+    surface: &Arc<Surface>
 ) -> Arc<PhysicalDevice> {
-    let physical_devices: Box<[Arc<PhysicalDevice>]> = query_vulkan_physical_devices(instance);
+    let physical_devices: Box<[Arc<PhysicalDevice>]>
+        = query_vulkan_physical_devices(instance, surface);
 
-    let device_idx = options.vulkan_device_index.or(config.and_then(|config| { config.device_index }));
+    let device_idx = options.vulkan_device_index
+        .or(config.and_then(|config| { config.device_index }));
     if let Some(device_idx) = device_idx {
         if device_idx >= physical_devices.len() {
             tracing::error!("Vulkan 设备序号 {} 超出了可用的 Vulkan 设备数量", device_idx);
-            message_box!("错误", &format!("Vulkan 设备序号 {} 超出了可用的 Vulkan 设备数量", device_idx));
+            message_box!(
+                "错误",
+                &format!("Vulkan 设备序号 {} 超出了可用的 Vulkan 设备数量", device_idx)
+            );
             exit(-1)
         }
 
         return physical_devices[device_idx].clone();
     }
 
-    let device_id = options.vulkan_device_id.or(config.and_then(|config| { config.device_id }));
+    let device_id = options.vulkan_device_id
+        .or(config.and_then(|config| { config.device_id }));
     if let Some(device_id) = device_id {
         for device in physical_devices.iter() {
             if device.properties().device_id == device_id {
@@ -172,20 +182,80 @@ pub fn select_vulkan_device(
     physical_devices[device_idx].clone()
 }
 
-fn query_vulkan_physical_devices(instance: &Arc<Instance>) -> Box<[Arc<PhysicalDevice>]> {
-    let physical_devices = (match instance.enumerate_physical_devices() {
-        Ok(devices) => devices,
-        Err(e) => {
+pub fn create_vulkan_device(
+    physical_device: Arc<PhysicalDevice>,
+    surface: &Arc<Surface>,
+) -> (Arc<Device>, Arc<Queue>) {
+    let queue_family_index = physical_device
+        .queue_family_properties()
+        .iter()
+        .enumerate()
+        .position(|(_, family)| {
+            family.queue_flags.contains(QueueFlags::GRAPHICS)
+            && physical_device.surface_support(family.queue_count, surface).unwrap_or(false)
+        })
+        .unwrap_or_else(|| {
+            tracing::error!("选中的设备没有可用的图形队列");
+            message_box!("错误", "选中的设备没有可用的图形队列");
+            exit(-1)
+        });
+
+    let (device, mut queues) = Device::new(
+        physical_device,
+        DeviceCreateInfo {
+            // here we pass the desired queue family to use by index
+            queue_create_infos: vec![QueueCreateInfo {
+                queue_family_index: queue_family_index as u32,
+                ..Default::default()
+            }],
+            enabled_extensions: DeviceExtensions {
+                khr_swapchain: true,
+                ..Default::default()
+            },
+            ..Default::default()
+        }
+    )
+    .unwrap_or_else(|e| {
+        tracing::error!("无法创建 Vulkan 设备: {e}");
+        message_box!("错误", &format!("无法创建 Vulkan 设备: \r\n{e}"));
+        exit(-1)
+    });
+
+    let queue = queues.next().unwrap_or_else(|| {
+        tracing::error!("无法获取 Vulkan 设备的图形队列");
+        message_box!("错误", "无法获取 Vulkan 设备的图形队列");
+        exit(-1)
+    });
+
+    (device, queue)
+}
+
+fn query_vulkan_physical_devices(
+    instance: &Arc<Instance>,
+    surface: &Arc<Surface>
+) -> Box<[Arc<PhysicalDevice>]> {
+    let khr_swapchain_extension: DeviceExtensions = DeviceExtensions {
+        khr_swapchain: true,
+        ..Default::default()
+    };
+
+    let physical_devices = instance
+        .enumerate_physical_devices()
+        .unwrap_or_else(|e| {
             tracing::error!("无法枚举可用的 Vulkan 物理设备: {e}");
             message_box!("错误", &format!("无法枚举可用的 Vulkan 物理设备: \r\n{e}"));
             exit(-1)
-        }
-    }).filter(|device| {
-        device.properties().api_version.minor >= 3 &&
-            device.queue_family_properties()
-                .iter()
-                .any(|family| family.queue_flags.contains(QueueFlags::GRAPHICS))
-    }).collect::<Box<[_]>>();
+        })
+        .filter(|device| {
+            device.properties().api_version.minor >= 3 &&
+                device.supported_extensions().contains(&khr_swapchain_extension) &&
+                device.queue_family_properties()
+                    .iter()
+                    .any(|family| {
+                        family.queue_flags.contains(QueueFlags::GRAPHICS)
+                        && device.surface_support(family.queue_count, surface).unwrap_or(false)
+                    })
+        }).collect::<Box<[_]>>();
 
     if physical_devices.is_empty() {
         tracing::error!("没有可用的 Vulkan 物理设备");
@@ -194,6 +264,63 @@ fn query_vulkan_physical_devices(instance: &Arc<Instance>) -> Box<[Arc<PhysicalD
     }
 
     physical_devices
+}
+
+pub fn create_swapchain(
+    physical_device: Arc<PhysicalDevice>,
+    device: Arc<Device>,
+    surface: Arc<Surface>
+) -> (Arc<Swapchain>, Vec<Arc<SwapchainImage>>) {
+    let caps = physical_device
+        .surface_capabilities(&surface, Default::default())
+        .unwrap_or_else(|e| {
+            tracing::error!("无法获取 Vulkan 表面的能力: {e}");
+            message_box!("错误", &format!("无法获取 Vulkan 表面的能力: \r\n{e}"));
+            exit(-1)
+        });
+
+    let window = Arc::downcast::<Window>(surface.object().unwrap().clone()).unwrap();
+    let dimensions = window.inner_size();
+    let composite_alpha = caps.supported_composite_alpha
+        .into_iter()
+        .next()
+        .unwrap_or_else(|| {
+            tracing::error!("无法获取 Vulkan 表面的支持的 Alpha 组合");
+            message_box!("错误", &format!("无法获取 Vulkan 表面的支持的 Alpha 组合:"));
+            exit(-1)
+        });
+    let image_formats = physical_device
+        .surface_formats(&surface, Default::default())
+        .unwrap_or_else(|e| {
+            tracing::error!("无法获取 Vulkan 表面的支持的图像格式: {e}");
+            message_box!("错误", &format!("无法获取 Vulkan 表面的支持的图像格式: \r\n{e}"));
+            exit(-1)
+        });
+    if image_formats.len() == 0 {
+        tracing::error!("Vulkan 表面不支持任何图像格式");
+        message_box!("错误", "Vulkan 表面不支持任何图像格式");
+        exit(-1)
+    }
+
+    let image_format = Some(image_formats[0].0);
+
+    Swapchain::new(
+        device.clone(),
+        surface.clone(),
+        SwapchainCreateInfo {
+            min_image_count: caps.min_image_count + 1,
+            image_format,
+            image_extent: dimensions.into(),
+            image_usage: ImageUsage::COLOR_ATTACHMENT,
+            composite_alpha,
+            ..Default::default()
+        }
+    )
+    .unwrap_or_else(|e| {
+        tracing::error!("无法创建 Vulkan 交换链: {e}");
+        message_box!("错误", &format!("无法创建 Vulkan 交换链: \r\n{e}"));
+        exit(-1)
+    })
 }
 
 #[cfg(windows)]

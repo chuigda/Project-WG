@@ -8,7 +8,6 @@ use std::process::exit;
 use std::sync::Arc;
 use structopt::StructOpt;
 use vulkano::device::physical::PhysicalDevice;
-use vulkano::device::{Device, DeviceCreateInfo, QueueCreateInfo, QueueFlags};
 use vulkano::instance::Instance;
 use vulkano::swapchain::Surface;
 use vulkano::VulkanLibrary;
@@ -54,63 +53,33 @@ fn main() {
     let vk_instance: Arc<Instance> = create_vk_instance(library);
     tracing::info!("Vulkan 实例初始化完成");
 
+    let event_loop: EventLoop<_> = EventLoop::new();
+    let surface: Arc<Surface> = WindowBuilder::new()
+        .build_vk_surface(&event_loop, vk_instance.clone())
+        .unwrap_or_else(|e| {
+            tracing::error!("无法初始化 winit 窗口: {e}");
+            message_box!("错误", &format!("无法初始化 winit 窗口: \r\n{e}"));
+            exit(-1)
+        });
+    tracing::info!("winit 窗口创建完成");
+
     if options.list_devices {
-        list_vulkan_devices(&vk_instance, use_log_file);
+        list_vulkan_devices(&vk_instance, use_log_file, &surface);
     }
 
     let physical_device: Arc<PhysicalDevice> = select_vulkan_device(
         &vk_instance,
         &options,
-        config.as_ref().and_then(|config| config.vulkan.as_ref())
+        config.as_ref().and_then(|config| config.vulkan.as_ref()),
+        &surface
     );
     tracing::info!("选中了 Vulkan 设备: {}", physical_device.properties().device_name);
 
-    let Some(queue_family_index) = physical_device
-        .queue_family_properties()
-        .iter()
-        .enumerate()
-        .position(|(_queue_family_index, queue_family_properties)| {
-            queue_family_properties.queue_flags.contains(QueueFlags::GRAPHICS)
-        }) else
-    {
-        tracing::error!("选中的设备没有可用的图形队列");
-        message_box!("错误", "选中的设备没有可用的图形队列");
-        exit(-1)
-    };
-
-    let device_creation_result: Result<_, _> = Device::new(
-        physical_device,
-        DeviceCreateInfo {
-            // here we pass the desired queue family to use by index
-            queue_create_infos: vec![QueueCreateInfo {
-                queue_family_index: queue_family_index as u32,
-                ..Default::default()
-            }],
-            ..Default::default()
-        }
-    );
-    let (device, mut queues) = match device_creation_result {
-        Ok(res) => res,
-        Err(e) => {
-            tracing::error!("无法创建 Vulkan 设备: {e}");
-            message_box!("错误", &format!("无法创建 Vulkan 设备: \r\n{e}"));
-            exit(-1)
-        }
-    };
-
+    let (device, queue) = create_vulkan_device(physical_device.clone(), &surface);
     tracing::info!("Vulkan 设备创建完成");
 
-    let event_loop: EventLoop<_> = EventLoop::new();
-    let surface: Result<Arc<Surface>, _> = WindowBuilder::new()
-        .build_vk_surface(&event_loop, vk_instance.clone());
-    match surface {
-        Ok(_) => {},
-        Err(e) => {
-            tracing::error!("无法初始化 winit 窗口: {e}");
-            message_box!("错误", &format!("无法初始化 winit 窗口: \r\n{e}"));
-            exit(-1)
-        }
-    }
+    let (swapchain, images) = create_swapchain(physical_device, device, surface);
+    tracing::info!("Vulkan Swapchain 创建完成");
 
     event_loop.run(|event, _, control_flow| {
         match event {
