@@ -10,3 +10,9 @@
         ($title:expr, $message:expr) => {}
     }
 }
+
+#[cfg(windows)] pub fn set_dpi_awareness() {
+    unsafe { winapi::um::winuser::SetProcessDPIAware(); }
+}
+
+#[cfg(not(windows))] #[inline(always)] pub const fn set_dpi_awareness() {}

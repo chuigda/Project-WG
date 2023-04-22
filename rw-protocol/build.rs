@@ -1,4 +1,4 @@
-use prost_build::Config;
+// use prost_build::Config;
 
 fn main() -> std::io::Result<()> {
     // println!("cargo:rerun-if-changed=src/state.proto");

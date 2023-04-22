@@ -100,3 +100,5 @@ extra/dsys/*.spec
 
 Cargo.lock
 !rw-window/Cargo.lock
+
+*.log
