@@ -4,21 +4,19 @@ mod opt;
 mod win32;
 
 use std::env;
-use std::fs::OpenOptions;
 use std::process::exit;
 use std::sync::Arc;
 use structopt::StructOpt;
-use tracing_subscriber::layer::SubscriberExt;
-use tracing_subscriber::Registry;
-use vulkano::device::physical::{PhysicalDevice, PhysicalDeviceType};
+use vulkano::device::physical::PhysicalDevice;
 use vulkano::device::{Device, DeviceCreateInfo, QueueCreateInfo, QueueFlags};
-use vulkano::instance::{Instance, InstanceCreateInfo, InstanceExtensions};
+use vulkano::instance::Instance;
 use vulkano::swapchain::Surface;
 use vulkano::VulkanLibrary;
 use vulkano_win::VkSurfaceBuild;
 use winit::event::{Event, WindowEvent};
 use winit::event_loop::{EventLoop, ControlFlow};
 use winit::window::WindowBuilder;
+use crate::command::log::setup_logger;
 use crate::command::vk::*;
 use crate::config::{RwConfig, try_read_config};
 use crate::opt::RwOptions;
@@ -37,39 +35,7 @@ fn main() {
         try_read_config("config.toml")
     };
 
-    let log_file_name = config.as_ref()
-        .and_then(|cfg| cfg.log.as_ref())
-        .and_then(|log_cfg| Some(&log_cfg.file_name))
-        .or(options.log_file.as_ref());
-    let use_log_file: bool = if let Some(log_file_name) = log_file_name {
-        let file_appender = OpenOptions::new()
-            .write(true)
-            .append(true)
-            .create(true)
-            .open(log_file_name);
-        match file_appender {
-            Ok(appender) => {
-                let _ = tracing::subscriber::set_global_default(
-                    Registry::default()
-                        .with(tracing_subscriber::fmt::layer()
-                            .with_ansi(false)
-                            .with_writer(appender))
-                        .with(tracing_subscriber::fmt::layer()
-                            .with_writer(std::io::stdout))
-                );
-                true
-            }
-            Err(e) => {
-                tracing_subscriber::fmt::init();
-                tracing::warn!("无法打开日志文件: {e}，日志功能将不可用");
-                message_box!("错误", &format!("无法打开日志文件，日志功能将不可用: \r\n{e}"));
-                false
-            }
-        }
-    } else {
-        tracing_subscriber::fmt::init();
-        false
-    };
+    let use_log_file = setup_logger(config.as_ref(), &options);
 
     if let Some(config_file_name) = options.config_file.as_ref() {
         if config.is_none() {

@@ -1,4 +1,5 @@
-use std::convert::Infallible;
+use std::io::Write;
+use std::num::ParseIntError;
 use std::process::exit;
 use std::sync::Arc;
 use vulkano::device::physical::{PhysicalDevice, PhysicalDeviceType};
@@ -38,7 +39,7 @@ pub fn create_vk_instance(library: Arc<VulkanLibrary>) -> Arc<Instance> {
     }
 }
 
-pub fn list_vulkan_devices(instance: &Arc<Instance>, use_log_file: bool) -> Infallible {
+pub fn list_vulkan_devices(instance: &Arc<Instance>, use_log_file: bool) {
     let physical_devices: Box<[Arc<PhysicalDevice>]> = query_vulkan_physical_devices(instance);
 
     if use_log_file || cfg!(not(windows)) {
@@ -112,6 +113,61 @@ pub fn select_vulkan_device(
     ).unwrap_or_else(|| {
         exit(-1)
     });
+
+    #[cfg(not(windows))] let device_idx = {
+        println!("请选择 Vulkan 设备");
+        for (idx, device) in physical_devices.iter().enumerate() {
+            let properties = device.properties();
+            let name = &properties.device_name;
+
+            println!(
+                "\t- [{}] 设备名称: {}\n\
+                 \t      设备 ID: {}\n\
+                 \t      设备类别: {}\n\
+                 \t      Vulkan 版本: {}\n\
+                 \t      驱动程序: {}\n\
+                 \t      驱动程序内部版本号: {}\n",
+                idx,
+                name,
+                properties.device_id,
+                vulkan_device_type_name(properties.device_type),
+                properties.api_version,
+                properties.driver_name.as_ref().map_or("未知驱动程序", String::as_str),
+                properties.driver_version);
+        }
+
+        let mut input = String::new();
+        loop {
+            print!("选择 Vulkan 设备序号> ");
+            let _ = std::io::stdout().flush();
+            match std::io::stdin().read_line(&mut input) {
+                Ok(size) => {
+                    if size == 0 {
+                        tracing::error!("无法从用户输入选择 Vulkan 设备");
+                        exit(-1)
+                    }
+                    match input.trim().parse::<usize>() {
+                        Ok(idx) => {
+                            if idx >= physical_devices.len() {
+                                println!("Vulkan 设备序号 {} 超出了可用的 Vulkan 设备数量", idx);
+                                input.clear();
+                                continue;
+                            }
+
+                            break idx;
+                        }
+                        Err(_) => {
+                            continue;
+                        }
+                    }
+                }
+                Err(e) => {
+                    tracing::error!("无法从用户输入选择 Vulkan 设备: {e}");
+                    exit(-1)
+                }
+            }
+        }
+    };
 
     physical_devices[device_idx].clone()
 }
