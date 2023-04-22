@@ -19,5 +19,8 @@ pub struct RwOptions {
     pub log_file: Option<String>,
 
     #[structopt(long = "vk-device-id")]
-    pub vulkan_device_id: Option<String>
+    pub vulkan_device_id: Option<u32>,
+
+    #[structopt(long = "vk-device-index")]
+    pub vulkan_device_index: Option<usize>
 }

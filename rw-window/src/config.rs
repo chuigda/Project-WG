@@ -2,6 +2,7 @@ use std::fs::read_to_string;
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
 pub struct RwConfig {
     pub vulkan: Option<RwVulkanConfig>,
     pub protocol: Option<RwProtocolConfig>,
@@ -19,6 +20,7 @@ impl Default for RwConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
 pub struct RwProtocolConfig {
     pub ip_addr: String,
     pub port: u16
@@ -34,14 +36,17 @@ impl Default for RwProtocolConfig {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
 pub struct RwLogConfig {
     pub file_name: String,
     pub log_level: String
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
 pub struct RwVulkanConfig {
-    pub device_id: u32
+    pub device_id: Option<u32>,
+    pub device_index: Option<usize>
 }
 
 pub fn try_read_config(file_name: &str) -> Option<RwConfig> {
