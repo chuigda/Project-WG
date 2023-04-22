@@ -100,7 +100,11 @@ struct ComboBoxExtra {
 
 const WND_CLASS_NAME: OnceCell<Box<[u16]>> = OnceCell::new();
 
-pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Option<usize> {
+pub unsafe fn combo_box_impl(
+    title: &str,
+    options: Vec<ComboBoxOption>,
+    for_selection: bool
+) -> Option<usize> {
     let binding = WND_CLASS_NAME;
     let wnd_class_name: &Box<[u16]> = binding.get_or_init(|| convert_u8_u16("rw-combobox"));
     let wnd_class_name: *const u16 = wnd_class_name.as_ptr();
@@ -168,7 +172,7 @@ pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Optio
         5,
         36,
         450,
-        225,
+        if for_selection { 225 } else { 265 },
         h_wnd,
         null_mut(),
         wnd_instance,
@@ -176,37 +180,44 @@ pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Optio
     );
     SetWindowLongW(h_textbox, GWL_ID, 2);
 
-    let h_cancel_button = CreateWindowExW(
-        0,
-        convert_u8_u16(WC_BUTTONA).as_ptr(),
-        convert_u8_u16("取消").as_ptr(),
-        WS_CHILD | WS_VISIBLE,
-        5,
-        265,
-        80,
-        40,
-        h_wnd,
-        null_mut(),
-        wnd_instance,
-        null_mut()
-    );
-    SetWindowLongW(h_cancel_button, GWL_ID, 3);
+    let h_cancel_button;
+    let h_confirm_button;
+    if for_selection {
+        h_cancel_button = CreateWindowExW(
+            0,
+            convert_u8_u16(WC_BUTTONA).as_ptr(),
+            convert_u8_u16("取消").as_ptr(),
+            WS_CHILD | WS_VISIBLE,
+            5,
+            265,
+            80,
+            40,
+            h_wnd,
+            null_mut(),
+            wnd_instance,
+            null_mut()
+        );
+        SetWindowLongW(h_cancel_button, GWL_ID, 3);
 
-    let h_confirm_button = CreateWindowExW(
-        0,
-        convert_u8_u16(WC_BUTTONA).as_ptr(),
-        convert_u8_u16("确认").as_ptr(),
-        WS_CHILD | WS_VISIBLE | WS_DISABLED,
-        375,
-        265,
-        80,
-        40,
-        h_wnd,
-        null_mut(),
-        wnd_instance,
-        null_mut()
-    );
-    SetWindowLongW(h_confirm_button, GWL_ID, 4);
+        h_confirm_button = CreateWindowExW(
+            0,
+            convert_u8_u16(WC_BUTTONA).as_ptr(),
+            convert_u8_u16("确认").as_ptr(),
+            WS_CHILD | WS_VISIBLE | WS_DISABLED,
+            375,
+            265,
+            80,
+            40,
+            h_wnd,
+            null_mut(),
+            wnd_instance,
+            null_mut()
+        );
+        SetWindowLongW(h_confirm_button, GWL_ID, 4);
+    } else {
+        h_cancel_button = null_mut();
+        h_confirm_button = null_mut();
+    }
 
     let user_data_ptr = Box::into_raw(Box::new(ComboBoxExtra {
         h_combobox,
@@ -225,7 +236,9 @@ pub unsafe fn combo_box_impl(title: &str, options: Vec<ComboBoxOption>) -> Optio
     );
 
     let font: HFONT = CreateFontW(
-        24, 0, 0, 0, FW_HEAVY, 0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, convert_u8_u16("System").as_ptr()
+        24, 0, 0, 0, FW_HEAVY, 0, 0, 0, DEFAULT_CHARSET,
+        OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE,
+        convert_u8_u16("System").as_ptr()
     );
     EnumChildWindows(h_wnd, Some(set_font), font as _);
 
@@ -268,7 +281,8 @@ unsafe extern "system" fn wnd_proc(
             if id == GetWindowLongW(user_data.h_confirm_button, GWL_ID) as u16 {
                 user_data.confirmed = true;
                 DestroyWindow(h_wnd);
-            } else if id == GetWindowLongW(user_data.h_cancel_button, GWL_ID) as u16 {
+            } else if !user_data.h_cancel_button.is_null()
+                && id == GetWindowLongW(user_data.h_cancel_button, GWL_ID) as u16 {
                 DestroyWindow(h_wnd);
             } else if id == GetWindowLongW(user_data.h_combobox, GWL_ID) as u16 {
                 if code == CBN_SELCHANGE {
@@ -285,8 +299,10 @@ unsafe extern "system" fn wnd_proc(
                     user_data.selected_item = Some(index);
                     let option = &user_data.options[index];
                     SetWindowTextW(user_data.h_textbox, option.description.as_ptr());
-                    SetWindowLongW(user_data.h_confirm_button, GWL_STYLE, (WS_CHILD | WS_VISIBLE) as _);
-                    InvalidateRect(h_wnd, null(), 1);
+                    if !user_data.h_confirm_button.is_null() {
+                        SetWindowLongW(user_data.h_confirm_button, GWL_STYLE, (WS_CHILD | WS_VISIBLE) as _);
+                        InvalidateRect(h_wnd, null(), 1);
+                    }
                 }
             }
             0
@@ -304,18 +320,10 @@ unsafe extern "system" fn wnd_proc(
 }
 
 #[macro_export] macro_rules! combo_box {
-    ($title:expr ; $(($opt_title:expr, $opt_desc:expr)),*) => {
-        {
-            let options = vec![$(
-                $crate::win32::combo_box::ComboBoxOption {
-                    title: $crate::win32::convert_u8_u16($opt_title),
-                    description: $crate::win32::convert_u8_u16($opt_desc)
-                }
-            ),*];
-            unsafe { $crate::win32::combo_box::combo_box_impl($title, options) }
-        }
-    };
     ($title:expr, $options:expr) => {
-        unsafe { $crate::win32::combo_box::combo_box_impl($title, $options) }
+        unsafe { $crate::win32::combo_box::combo_box_impl($title, $options, true) }
+    };
+    ($title:expr, $options:expr, $for_select:expr) => {
+    unsafe { $crate::win32::combo_box::combo_box_impl($title, $options, $for_select) }
     }
 }

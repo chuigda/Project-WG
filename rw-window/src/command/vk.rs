@@ -100,7 +100,7 @@ pub fn list_vulkan_devices(instance: &Arc<Instance>, use_log_file: bool) -> Infa
             ))
         }).collect::<Vec<_>>();
 
-        combo_box!("选择 Vulkan 物理设备以继续", device_options);
+        combo_box!("可用的 Vulkan 设备", device_options, false);
     }
 
     exit(0)
