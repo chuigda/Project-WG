@@ -5,6 +5,12 @@ Author: Chuigda<icey@icey.tech>
 
 Try drawing a cute (?maybe) robot with OpenGL 3.3
 
+image::./blobs/come-to-dd-me.jpg[快来 D 我]
+
+在 link:https://live.bilibili.com/10309712[Bilibili] 观看我的直播
+
+Watch my live at link:https://live.bilibili.com/10309712[Bilibili]
+
 == ⚠️⚠️⚠️ 警告：还没完成 ⚠️⚠️⚠️
 [quote]
 ____

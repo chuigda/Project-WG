@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter.messagebox import askyesno
 from pathlib import Path
 from tkinter import ttk
-import winsound
+# import winsound
 
 from cain_and_abel import Cain_And_Abel
 from metadata import About_Text
@@ -204,14 +204,16 @@ class MainWindow(tk.Tk):
         self.mstrwarn.config(fg="white", bg="red3")
         self.has_mstrwarn = True
         if self.bep_sil_btn["text"] == "BEP":
-            winsound.PlaySound("./resc/masterwarn.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
+            # winsound.PlaySound("./resc/masterwarn.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
+            pass
 
     def on_task_finished(self, task_name):
         self.stop_worker_update_inputs()
         self.log_into_message_window("%s ended" % task_name)
         if task_name == "AP1" or task_name == "AP2":
             if not self.has_mstrwarn and self.bep_sil_btn["text"] == "BEP":
-                winsound.PlaySound("./resc/apdisconnect.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
+                pass
+                # winsound.PlaySound("./resc/apdisconnect.wav", winsound.SND_FILENAME | winsound.SND_ASYNC)
 
     def start_worker_update_inputs(self):
         self.track_btn.configure(state=tk.DISABLED)
