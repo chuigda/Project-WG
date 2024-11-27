@@ -1,4 +1,5 @@
 = Project-WG
+
 Author: Chuigda<icey@icey.tech>
 
 试图用 OpenGL 3.3 画个可爱（？大概吧）的小机器人。
@@ -11,12 +12,12 @@ image::./blobs/come-to-dd-me.jpg[快来 D 我]
 
 Watch my live at link:https://live.bilibili.com/10309712[Bilibili]
 
-== ⚠️⚠️⚠️ 警告：还没完成 ⚠️⚠️⚠️
+== ⚠️⚠️⚠️ 警告：已弃坑 ⚠️⚠️⚠️
 [quote]
 ____
-基于 OpenGL Core Profile 的 0.4 版本还没完成，想要成品的可以先玩 Release 里发布的 0.3.x。
+去隔壁 link:https://github.com/chuigda/Project-WGX[Project-WGX].
 
-OpenGL Core Profile based 0.4 edition is still under development, use 0.3.x if you want to play.
+Goto link:https://github.com/chuigda/Project-WGX[Project-WGX] instead.
 ____
 
 == ⚠️⚠️⚠️ 警告：有彩笔 ⚠️⚠️⚠️
